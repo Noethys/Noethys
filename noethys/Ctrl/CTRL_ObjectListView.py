@@ -63,7 +63,7 @@ class ObjectListView(OLV.ObjectListView):
             self.Enable(False)
             couleur = wx.SystemSettings.GetColour(wx.SYS_COLOUR_FRAMEBK)# self.stEmptyListMsg.GetBackgroundColour()
             self.stEmptyListMsg.SetBackgroundColour(couleur)
-        self.stEmptyListMsg.Refresh() 
+        self.stEmptyListMsg.Refresh()
 
     def SetColumns(self, columns, repopulate=True):
         self.listeColonnes = columns
@@ -166,7 +166,13 @@ class ObjectListView(OLV.ObjectListView):
             self.stEmptyListMsg.SetSize(0, sz.GetHeight()/proportion, sz.GetWidth(), sz.GetHeight()) # J'ai mis 2 a la place de 3
         except :
             self.stEmptyListMsg.SetDimensions(0, sz.GetHeight() / proportion, sz.GetWidth(), sz.GetHeight())  # J'ai mis 2 a la place de 3
-        #self.stEmptyListMsg.Wrap(sz.GetWidth())
+
+        # Masque le texte "Aucun" si version phoenix (à cause des colonnes bleues)
+        if 'phoenix' in wx.PlatformInfo:
+            self.stEmptyListMsg.Hide()
+
+        # Pour un centrage du texte
+        # self.stEmptyListMsg.SetPosition((sz.GetWidth() / 2 - self.stEmptyListMsg.GetSize()[0]/2, sz.GetHeight() / proportion))
 
     def _SortObjects(
             self,
@@ -497,11 +503,39 @@ class ObjectListView(OLV.ObjectListView):
                     filtre = "track.ID%s in %s" % (code, self.GetInscrits(mode=code, choix=choix, criteres=criteres))
                 if choix == "PRESENTS" :
                     filtre = "track.ID%s in %s" % (code, self.GetInscrits(mode=code, choix=choix, criteres=criteres))
-                    
+
+            # Cotisations
+            if typeDonnee == "cotisations" :
+                if choix == "AJOUR":
+                    filtre = "track.ID%s in %s" % (code, self.GetCotisations(mode=code, choix=choix, criteres=criteres))
+
             # Mémorisation
             listeFiltresFinale.append(filtre) 
         
         return listeFiltresFinale
+
+    def GetCotisations(self, mode="individu", choix="", criteres={}):
+        """ Récupération de la liste des individus inscrits et présents """
+        date = criteres["date"]
+        liste_cotisations = [int(IDtype_cotisation) for IDtype_cotisation in criteres["listeCotisations"].split(";")]
+
+        if len(liste_cotisations) == 0: condition = "()"
+        elif len(liste_cotisations) == 1: condition = "(%d)" % liste_cotisations[0]
+        else: condition = str(tuple(liste_cotisations))
+
+        key = "IDfamille" if mode == "famille" else "IDindividu"
+
+        import GestionDB
+        DB = GestionDB.DB()
+        req = """SELECT %s
+        FROM cotisations 
+        WHERE IDtype_cotisation IN %s AND date_debut<='%s' AND date_fin>='%s'
+        ;""" %(key, condition, date, date)
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+
+        return [donnees[0] for donnees in listeDonnees]
 
     def GetInscrits(self, mode="individu", choix="", criteres={}):
         """ Récupération de la liste des individus inscrits et présents """
@@ -719,7 +753,6 @@ class ObjectListView(OLV.ObjectListView):
         dlg = DLG_Liste_envoi_email.Dialog(self, listview=self)
         dlg.ShowModal()
         dlg.Destroy()
-
 
 
 
@@ -982,6 +1015,15 @@ class AbstractVirtualObjectListView(Abstract, ObjectListView):
         kwargs["style"] = kwargs.get("style", 0) | wx.LC_REPORT | wx.LC_VIRTUAL
 
         ObjectListView.__init__(self, *args, **kwargs)
+
+    def SetItemCount(self, count):
+        """
+        Change the number of items visible in the list
+        """
+        wx.ListCtrl.SetItemCount(self, count)
+        if 'phoenix' not in wx.PlatformInfo:
+            self.stEmptyListMsg.Show(count == 0)
+        self.lastGetObjectIndex = -1
 
 
 

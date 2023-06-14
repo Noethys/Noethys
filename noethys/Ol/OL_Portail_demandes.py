@@ -56,6 +56,8 @@ class Track(object):
         self.IDpaiement = donnees["IDpaiement"]
         self.ventilation = donnees["ventilation"]
 
+        self.nom_groupe = donnees["nom_groupe"]
+
         # Nom
         self.nom = ""
 
@@ -63,9 +65,11 @@ class Track(object):
             if self.IDfamille in dictTitulaires :
                 self.nom = dictTitulaires[self.IDfamille]["titulairesAvecCivilite"]
                 self.IDcompte_payeur = dictTitulaires[self.IDfamille]["IDcompte_payeur"]
+                self.ville = dictTitulaires[self.IDfamille]["adresse"]["ville"]
             else :
                 self.nom = "?"
                 self.IDcompte_payeur = None
+                self.ville = None
 
         if self.IDutilisateur != None :
             if self.IDutilisateur in dictUtilisateurs :
@@ -81,6 +85,7 @@ class Track(object):
         elif self.categorie == "reservations" : self.categorie_label = _(u"Réservations")
         elif self.categorie == "renseignements": self.categorie_label = _(u"Renseignements")
         elif self.categorie == "locations": self.categorie_label = _(u"Locations")
+        elif self.categorie == "pieces": self.categorie_label = _(u"Pièces")
         elif self.categorie == "compte":self.categorie_label = _(u"Compte")
         else : self.categorie_label = _(u"")
 
@@ -137,19 +142,30 @@ class ListView(GroupListView):
         for IDutilisateur, nom, prenom in listeDonnees :
             self.dictUtilisateurs[IDutilisateur] = u"%s %s" % (prenom, nom)
 
-        # Lecture Actions
         liste_conditions = []
         if self.cacher_traitees == True :
-            liste_conditions.append("etat <> 'validation'")
+            liste_conditions.append("portail_actions.etat <> 'validation'")
 
         if self.IDfamille != None :
-            liste_conditions.append("IDfamille=%d" % self.IDfamille)
+            liste_conditions.append("portail_actions.IDfamille=%d" % self.IDfamille)
 
         if len(liste_conditions) > 0 :
             conditions = "WHERE %s" % " AND ".join(liste_conditions)
         else :
             conditions = ""
 
+        # Lecture des réservations
+        req = """SELECT portail_reservations.IDaction, groupes.nom
+        FROM portail_reservations
+        LEFT JOIN portail_actions ON portail_actions.IDaction = portail_reservations.IDaction
+        LEFT JOIN inscriptions ON inscriptions.IDinscription = portail_reservations.IDinscription
+        LEFT JOIN groupes ON groupes.IDgroupe = inscriptions.IDgroupe
+        %s;""" % conditions
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        dict_inscriptions = {IDaction: nom_groupe for IDaction, nom_groupe in listeDonnees}
+
+        # Lecture Actions
         req = """SELECT IDaction, horodatage, IDfamille, IDindividu, IDutilisateur, categorie, action, description, commentaire, 
         parametres, etat, traitement_date, portail_actions.IDperiode, reponse, email_date, IDpaiement, ventilation,
         portail_periodes.nom, portail_periodes.date_debut, portail_periodes.date_fin, portail_periodes.IDmodele
@@ -172,6 +188,7 @@ class ListView(GroupListView):
                 "etat" : etat, "traitement_date" : traitement_date, "IDperiode" : IDperiode, "reponse" : reponse, "email_date" : email_date,
                 "periode_nom" : periode_nom, "periode_date_debut" : periode_date_debut, "periode_date_fin" : periode_date_fin,
                 "periode_IDmodele" : periode_IDmodele, "IDpaiement" : IDpaiement, "ventilation" : ventilation,
+                "nom_groupe": dict_inscriptions.get(IDaction, None),
             })
 
         listeListeView = []
@@ -189,6 +206,7 @@ class ListView(GroupListView):
         self.image_reservation = self.AddNamedImages("reservations", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Calendrier_modification.png"), wx.BITMAP_TYPE_PNG))
         self.image_renseignement = self.AddNamedImages("renseignements", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Etiquette2.png"), wx.BITMAP_TYPE_PNG))
         self.image_location = self.AddNamedImages("locations", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Location.png"), wx.BITMAP_TYPE_PNG))
+        self.image_piece = self.AddNamedImages("pieces", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Piece.png"), wx.BITMAP_TYPE_PNG))
         self.image_compte = self.AddNamedImages("compte", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_PNG))
         self.image_email = self.AddNamedImages("email", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Emails_exp.png"), wx.BITMAP_TYPE_PNG))
 
@@ -224,7 +242,7 @@ class ListView(GroupListView):
                 return None
 
         dictColonnes = {
-            "IDaction" : ColumnDefn(_(u""), "left", 0, "", typeDonnee="texte"),
+            "IDaction" : ColumnDefn(_(u"IDaction"), "left", 0, "", typeDonnee="texte"),
             "horodatage" : ColumnDefn(_(u"Horodatage"), "left", 140, "horodatage", typeDonnee="dateheure", stringConverter=FormateHorodatage),
             "etat" : ColumnDefn(_(u"Etat"), "left", 90, "etat_label", typeDonnee="texte", imageGetter=GetImageEtat),
             "traitement_date" : ColumnDefn(_(u"Traitée le"), "left", 80, "traitement_date", typeDonnee="date", stringConverter=FormateDate),
@@ -235,15 +253,20 @@ class ListView(GroupListView):
             "commentaire" : ColumnDefn(_(u"Commentaire"), "left", 200, "commentaire", typeDonnee="texte"),
             "email_date": ColumnDefn(_(u"Email"), "left", 95, "email_date", typeDonnee="date", stringConverter=FormateDate, imageGetter=GetImageEmail),
             "reponse" : ColumnDefn(_(u"Réponse"), "left", 200, "reponse", typeDonnee="texte"),
+            "ville": ColumnDefn(_(u"Ville de résidence"), "left", 150, "ville", typeDonnee="texte"),
+            "nom_groupe": ColumnDefn(_(u"Groupe"), "left", 120, "nom_groupe", typeDonnee="texte"),
             }
+
+        # Liste des colonnes par défaut
+        liste_colonnes = ["horodatage", "etat", "traitement_date", "categorie", "nom", "description", "periode",
+                          "commentaire", "email_date", "reponse", "ville", "nom_groupe"]
 
         # Regroupement
         if self.regroupement != None :
-            liste_colonnes = ["horodatage", "etat", "traitement_date", "categorie", "nom", "description", "periode", "commentaire", "email_date", "reponse"]
             self.SetAlwaysGroupByColumn(liste_colonnes.index(self.regroupement))
             self.SetShowGroups(True)
         else :
-            liste_colonnes = ["IDaction", "horodatage", "etat", "traitement_date", "categorie", "nom", "description", "periode", "commentaire", "email_date", "reponse"]
+            liste_colonnes.insert(0, "IDaction")
             self.SetShowGroups(False)
         self.useExpansionColumn = False
         self.showItemCounts = False
@@ -252,7 +275,7 @@ class ListView(GroupListView):
         listeTemp = []
         for code in liste_colonnes:
             listeTemp.append(dictColonnes[code])
-        self.SetColumns(listeTemp)
+        self.SetColumns2(colonnes=listeTemp, nomListe="OL_Portail_demandes")
 
         self.SetEmptyListMsg(_(u"Aucune demande"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))

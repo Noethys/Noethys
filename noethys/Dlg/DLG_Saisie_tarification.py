@@ -204,7 +204,7 @@ class Dialog(wx.Dialog):
     def Importation(self):
         listeChampsTarif = ["date_debut", "date_fin", "type", "categories_tarifs", "groupes", "etiquettes", "cotisations",
                             "caisses", "description", "jours_scolaires", "jours_vacances", "observations", "tva",
-                            "code_compta", "IDtype_quotient", "label_prestation"]
+                            "code_compta", "code_produit_local", "IDtype_quotient", "label_prestation"]
 
         if self.track_tarif == None :
             DB = GestionDB.DB()
@@ -260,6 +260,9 @@ class Dialog(wx.Dialog):
 
         # Code Comptable
         self.toolbook.GetPage("generalites").SetCodeComptable(dictTarif["code_compta"])
+
+        # Code Produit Local
+        self.toolbook.GetPage("generalites").SetCPL(dictTarif["code_produit_local"])
 
         # CONDITIONS
         page = self.toolbook.GetPage("conditions")
@@ -323,6 +326,7 @@ class Dialog(wx.Dialog):
         texteCategories = self.toolbook.GetPage("generalites").GetCategories()
         tva = self.toolbook.GetPage("generalites").GetTVA()
         code_compta = self.toolbook.GetPage("generalites").GetCodeComptable()
+        code_produit_local = self.toolbook.GetPage("generalites").GetCPL()
         label_prestation = self.toolbook.GetPage("generalites").GetLabelPrestation()
         
         # Conditions
@@ -382,6 +386,7 @@ class Dialog(wx.Dialog):
             ("observations", observations),
             ("tva", tva),
             ("code_compta", code_compta),
+            ("code_produit_local", code_produit_local),
             ("IDtype_quotient", IDtype_quotient),
             ("label_prestation", label_prestation),
             ]

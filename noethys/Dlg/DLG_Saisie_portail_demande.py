@@ -14,7 +14,7 @@ from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 import wx.html as html
-import datetime
+import datetime, re, os
 import GestionDB
 import FonctionsPerso
 from Ctrl import CTRL_Bouton_image
@@ -227,6 +227,8 @@ class CTRL_Solde(wx.TextCtrl):
         self.Layout()
         self.Refresh()
 
+    def GetSolde(self):
+        return self.GetValue()
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
@@ -602,6 +604,12 @@ class Dialog(wx.Dialog):
         DB.ReqMAJ("portail_actions", [("etat", etat), ("reponse", reponse), ("traitement_date", traitement_date), ("email_date", self.track.email_date)], "IDaction", self.track.IDaction)
         DB.Close()
 
+    def GetEtat(self):
+        if self.radio_attente.GetValue() == True:
+            return "attente"
+        else:
+            return "validation"
+
     def SetEtat(self, etat="attente", traitement_date=None):
         if etat == "attente" :
             self.radio_attente.SetValue(True)
@@ -626,6 +634,7 @@ class Dialog(wx.Dialog):
             "reservations" : "Calendrier_modifier.png",
             "renseignements": "Cotisation.png",
             "locations": "Location.png",
+            "pieces": "Piece.png",
             "compte": "Mecanisme.png",
             }
         self.ctrl_image.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/32x32/%s" % dict_images[self.track.categorie]), wx.BITMAP_TYPE_PNG))
@@ -797,6 +806,7 @@ class Dialog(wx.Dialog):
         elif self.track.categorie == "inscriptions" : self.categorie_email = "portail_demande_inscription"
         elif self.track.categorie == "renseignements": self.categorie_email = "portail_demande_renseignement"
         elif self.track.categorie == "locations": self.categorie_email = "portail_demande_location"
+        elif self.track.categorie == "pieces": self.categorie_email = "portail_demande_piece"
         else : self.categorie_email = None
         self.ctrl_modele_email.SetCategorie(self.categorie_email)
 
@@ -957,6 +967,19 @@ class Dialog(wx.Dialog):
         self.ctrl_solde.MAJ(IDfamille=self.track.IDfamille)
         self.MAJ_informations()
 
+        # Automatique : Tout traiter
+        # index = self.tracks.index(self.track)
+        # if index < len(self.tracks) - 1:
+        #     # Passage à la demande suivante
+        #     self.track = self.tracks[index + 1]
+        #     self.MAJ()
+        #     # Traitement automatique de la demande
+        #     self.Traitement(mode="automatique")
+        #     # Envoi par email
+        #     self.Envoyer(visible=False)
+
+
+
     def OnBoutonEnvoyer(self, event=None):
         self.Envoyer(visible=False)
 
@@ -1021,6 +1044,7 @@ class Dialog(wx.Dialog):
             dict_champs["{TOTAL}"] = u"%.2f %s" % (montants["total"], SYMBOLE)
             dict_champs["{REGLE}"] = u"%.2f %s" % (montants["regle"], SYMBOLE)
             dict_champs["{SOLDE}"] = u"%.2f %s" % (montants["solde"], SYMBOLE)
+            dict_champs["{SOLDE_FAMILLE}"] = self.ctrl_solde.GetSolde()
 
         return dict_champs
 
@@ -1087,6 +1111,10 @@ class Traitement():
         # Traitement des locations
         if self.track.categorie == "locations" :
             resultat = self.Traitement_locations()
+
+        # Traitement des pièces
+        if self.track.categorie == "pieces" :
+            resultat = self.Traitement_pieces()
 
         # Traitement du compte
         if self.track.categorie == "compte" :
@@ -1181,7 +1209,7 @@ class Traitement():
         IDpaiement = self.track.IDpaiement
         #factures_ID = self.dict_parametres["factures_ID"]
         systeme_paiement = self.dict_parametres.get("systeme_paiement", u"Système inconnu")
-        IDtransaction = self.dict_parametres["IDtransaction"].split("_")[1]
+        IDtransaction = self.dict_parametres["IDtransaction"].split("_")[1] if "_" in self.dict_parametres["IDtransaction"] else self.dict_parametres["IDtransaction"]
         montant_reglement = float(self.dict_parametres["montant"])
         ventilation = self.track.ventilation
 
@@ -1210,47 +1238,75 @@ class Traitement():
         # On récupère l'ID du compte bancaire de la régie si la facture est liée a une régie
         IDcompte_bancaire = None
         num_piece = ""
+        liste_paiements = [(montant_reglement, datetime.date.today())]
 
         if "payzen" in systeme_paiement :
             num_piece = IDtransaction
+            vads_payment_config = self.dict_parametres.get("config", u"SINGLE")
+            if vads_payment_config.startswith("MULTI"):
+                # Paiement en plusieurs fois
+                liste_paiements = [(float(montant)/100, datetime.datetime.strptime(date, "%Y%m%d")) for date, montant in re.findall(r"([0-9]+)>([0-9]+)", vads_payment_config)]
 
         if "tipi" in systeme_paiement :
-            IDfacture = list(dict_paiements.keys())[0]
+            IDfacture = list(dict_paiements["facture"].keys())[0]
             req = """SELECT factures_regies.IDcompte_bancaire
             FROM factures
             LEFT JOIN factures_regies ON factures_regies.IDregie = factures.IDregie
-            WHERE IDfacture=%d;""" % IDfacture
+            WHERE IDfacture=%s;""" % IDfacture
             DB.ExecuterReq(req)
             IDcompte_bancaire = DB.ResultatReq()[0][0]
             num_piece = "auth_num-" + self.dict_parametres["numauto"]
 
         DB.Close()
 
-        # Traitement manuel
+        if len(liste_paiements) > 1:
+            dlg = wx.MessageDialog(None, _(u"Il s'agit d'un paiement en %d fois. Noethys va donc vous demander de saisir successivement %d règlements.") % (len(liste_paiements), len(liste_paiements)), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+
         if self.mode == "manuel" :
             from Dlg import DLG_Saisie_reglement
-            dlg = DLG_Saisie_reglement.Dialog(None, IDcompte_payeur=IDcompte_payeur, IDreglement=None)
-            dlg.SelectionneFacture(liste_IDfacture=list(dict_paiements["facture"].keys()))
-            dlg.ctrl_montant.SetMontant(montant_reglement)
-            dlg.ctrl_numero.SetValue(num_piece)
-            dlg.ctrl_mode.SetID(IDmode_reglement)
-            dlg.OnChoixMode(None)
-            dlg.ctrl_observations.SetValue(_(u"Transaction n°%s sur %s (IDpaiement %d)" % (IDtransaction, systeme_paiement, IDpaiement)))
-            if IDcompte_bancaire not in (0, None):
-                dlg.ctrl_compte.SetID(IDcompte_bancaire)
+            for index, (montant_paiement, date_paiement) in enumerate(liste_paiements, start=1):
+                dlg = DLG_Saisie_reglement.Dialog(None, IDcompte_payeur=IDcompte_payeur, IDreglement=None)
+                # dlg.SelectionneFacture(liste_IDfacture=list(dict_paiements["facture"].keys()))
+                dlg.ctrl_date.SetDate(str(date_paiement))
+                dlg.ctrl_montant.SetMontant(montant_paiement)
+                dlg.ctrl_numero.SetValue(num_piece)
+                dlg.ctrl_mode.SetID(IDmode_reglement)
+                dlg.OnChoixMode(None)
+                observations = _(u"Transaction n°%s sur %s (IDpaiement %d).") % (IDtransaction, systeme_paiement, IDpaiement)
+                if len(liste_paiements) > 1:
+                    observations += _(u" Paiement en %d fois du %s (%d/%d).") % (len(liste_paiements), UTILS_Dates.DateDDEnFr(datetime.date.today()), index, len(liste_paiements))
+                dlg.ctrl_observations.SetValue(observations)
+                if IDcompte_bancaire not in (0, None):
+                    dlg.ctrl_compte.SetID(IDcompte_bancaire)
 
-            # Coche les périodes à ventiler
-            if len(dict_paiements["periode"]) > 0:
+                # Coche les prestations à ventiler
+                resteVentilation = FloatToDecimal(montant_paiement)
                 for ligne_prestation in dlg.ctrl_ventilation.ctrl_ventilation.listeLignesPrestations:
-                    for IDperiode, dict_periode in dict_periodes.items():
-                        if ligne_prestation.IDactivite == dict_periode["IDactivite"] and ligne_prestation.date >= dict_periode["date_debut"] and ligne_prestation.date <= dict_periode["date_fin"]:
-                            ligne_prestation.SetEtat(True, majTotaux=False)
+                    valide = False
+                    if ligne_prestation.IDfacture in list(dict_paiements["facture"].keys()):
+                        valide = True
+                    else:
+                        for IDperiode, dict_periode in dict_periodes.items():
+                            if ligne_prestation.IDactivite == dict_periode["IDactivite"] and ligne_prestation.date >= dict_periode["date_debut"] and ligne_prestation.date <= dict_periode["date_fin"]:
+                                valide = True
+                    if valide:
+                        aVentiler = resteVentilation
+                        if aVentiler > FloatToDecimal(ligne_prestation.resteAVentiler):
+                            aVentiler = FloatToDecimal(ligne_prestation.resteAVentiler)
+                        if aVentiler > FloatToDecimal(0.0):
+                            montant = aVentiler + ligne_prestation.ventilationActuelle
+                            ligne_prestation.SetEtat(etat=True, montant=montant, majTotaux=False)
+                            resteVentilation -= FloatToDecimal(aVentiler)
+
+                # MAJ des totaux de ventilation
                 dlg.ctrl_ventilation.ctrl_ventilation.MAJtotaux()
 
-            reponse = dlg.ShowModal()
-            dlg.Destroy()
-            if reponse != wx.ID_OK:
-                return False
+                reponse = dlg.ShowModal()
+                dlg.Destroy()
+                if reponse != wx.ID_OK:
+                    return False
 
             reponse = ""
             return {"etat" : True, "reponse" : reponse}
@@ -1354,6 +1410,10 @@ class Traitement():
                     age = _(u"%d ans") % ((today.year - date_naiss.year) - int((today.month, today.day) < (date_naiss.month, date_naiss.day)))
                 else :
                     age = _(u"Âge inconnu")
+            else:
+                self.EcritLog(_(u"L'individu ID%s n'existe pas dans la base de données.") % self.track.IDindividu)
+                return False
+
             intro = _(u"Confirmez l'inscription de %s (%s) à l'activité sélectionnée et sur le groupe demandé par la famille." % (prenom, age))
 
             from Dlg import DLG_Inscription
@@ -1474,6 +1534,62 @@ class Traitement():
                 return {"etat": False, "reponse": reponse}
             else :
                 return {"etat": True, "reponse": reponse}
+
+    def Traitement_pieces(self):
+        chemin = self.dict_parametres.get("chemin", "")
+        IDtype_piece = int(self.dict_parametres.get("IDtype_piece", 0))
+        titre_piece = self.track.description.replace(u"Envoi de la pièce ", u"")
+
+        # Téléchargement du fichier
+        from Utils import UTILS_Portail_synchro
+        dlgAttente = wx.BusyInfo(_(u"Téléchargement de la pièce en cours..."), None)
+        if 'phoenix' not in wx.PlatformInfo:
+            wx.Yield()
+        else:
+            wx.SafeYield(self, True)
+        synchro = UTILS_Portail_synchro.Synchro(log=self.track)
+        chemin_fichier = synchro.ConnectEtTelechargeFichier(nomFichier=os.path.basename(chemin), repFichier="pieces/", lecture=False)
+        del dlgAttente
+
+        if chemin_fichier == False:
+            dlg = wx.MessageDialog(self.parent, _(u"Le fichier ne peut pas être téléchargé !\n\nIl n'est pas accessible ou a été supprimé du serveur."), "Erreur", wx.OK | wx.ICON_ERROR)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return {"etat": False}
+
+        # Décryptage du fichier
+        from Utils import UTILS_Cryptage_fichier
+        cryptage_mdp = synchro.dict_parametres["secret_key"][:10]
+        UTILS_Cryptage_fichier.DecrypterFichier(chemin_fichier, chemin_fichier, cryptage_mdp)
+
+        # Ouverture de la DLG
+        from Dlg import DLG_Saisie_piece
+        dlg = DLG_Saisie_piece.Dialog(self.parent, IDpiece=None, IDfamille=self.track.IDfamille)
+        dlg.SetValeurs(IDfamille=self.track.IDfamille, IDtype_piece=IDtype_piece, IDindividu=self.track.IDindividu, titre=titre_piece)
+        dlg.CalcValiditeDefaut()
+        dlg.ctrl_pages.AjouterPageManuellement(fichier=chemin_fichier, titre=titre_piece)
+
+        if self.mode == "manuel":
+            if dlg.ShowModal() == wx.ID_OK:
+                IDpiece = dlg.GetIDpiece()
+                dlg.Destroy()
+                self.EcritLog(_(u"Enregistrement manuel de la pièce ID%d") % IDpiece)
+                return {"etat": True, "reponse": _(u"La pièce %s a bien été enregistrée") % titre_piece}
+
+        if self.mode == "automatique":
+            if dlg.Sauvegarde() == True:
+                IDpiece = dlg.GetIDpiece()
+                dlg.Destroy()
+                self.EcritLog(_(u"Enregistrement automatique de la pièce ID%d") % IDpiece)
+                return {"etat": True, "reponse": _(u"La pièce %s a bien été enregistrée") % titre_piece}
+            else:
+                if dlg.ShowModal() == wx.ID_OK:
+                    IDpiece = dlg.GetIDpiece()
+                    self.EcritLog(_(u"Enregistrement manuel de la pièce ID%d") % IDpiece)
+                    return {"etat": True, "reponse": _(u"La pièce %s a bien été enregistrée") % titre_piece}
+                dlg.Destroy()
+
+        return {"etat": False}
 
     def Traitement_compte(self):
         # Traitement manuel ou automatique

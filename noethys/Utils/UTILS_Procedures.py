@@ -67,6 +67,16 @@ DICT_PROCEDURES = {
     "A9007" : _(u"Correction Module Custom 1"),
     "A9011" : _(u"Custom SMDH - Suppression inscriptions"),
     "A9012" : _(u"Custom SMDH - Saisie inscriptions"),
+    "A9038" : _(u"Mise à jour de l'historique des locations"),
+    "A9045" : _(u"Mise à jour du format des lots PES"),
+    "A9050" : _(u"Cryptage des mots de passe des utilisateurs du portail"),
+    "A9052" : _(u"Validation des actions du portail en doublon"),
+    "A9055" : _(u"Création d'une table"),
+    "A9062" : _(u"Modification du type d'un champ"),
+    "A9064" : _(u"Renseignement automatique du tiers solidaire dans toutes les fiches familles"),
+    "A9068" : _(u"Désinscription de plusieurs individus"),
+    "A9070" : _(u"Conversion d'une unité multihoraires en unité standard"),
+    "A9072" : _(u"Statistiques du tarif à un euro"),
 }
 
 
@@ -1283,8 +1293,331 @@ def A9012():
     EcritStatusbar("")
     DB.Close()
 
+def A9038():
+    """ Mise à jour de l'historique des locations : Ajout de l'IDdonnee """
+    import re
+    regex = re.compile(r"ID([0-9]+)")
+    DB = GestionDB.DB()
+    # Lecture des actions liées à des locations
+    req = """SELECT IDaction, action FROM historique
+    WHERE IDcategorie IN (37, 38, 39) AND IDdonnee IS NULL;"""
+    DB.ExecuterReq(req)
+    listeDonnees = DB.ResultatReq()
+    liste_modifications = []
+    for IDaction, action in listeDonnees:
+        IDlocation = int(regex.findall(action)[0])
+        liste_modifications.append((IDaction, IDlocation))
+    EcritStatusbar(u"%s actions de l'historique à modifier" % len(liste_modifications))
+    # Modification du IDdonnee dans l'historique
+    for IDaction, IDlocation in liste_modifications:
+        DB.ReqMAJ("historique", [("IDdonnee", IDlocation),], "IDaction", IDaction)
+    DB.Close()
+    EcritStatusbar("")
+
+def A9045():
+    """ Mise à jour du format dans les lots PES : Ajout du champ format """
+    DB = GestionDB.DB()
+    DB.ExecuterReq("UPDATE pes_lots SET format='pes' WHERE format IS NULL")
+    DB.Commit()
+    DB.Close()
+
+def A9050():
+    """ Cryptage des mots de passe des utilisateurs du portail """
+    from Utils import UTILS_Internet
+    import FonctionsPerso
+    IDfichier = FonctionsPerso.GetIDfichier()
+    DB = GestionDB.DB()
+
+    # Familles
+    req = """SELECT IDfamille, internet_mdp FROM familles;"""
+    DB.ExecuterReq(req)
+    listeFamilles = DB.ResultatReq()
+    liste_modifications = []
+    for IDfamille, internet_mdp in listeFamilles:
+        if not internet_mdp.startswith("custom") and not internet_mdp.startswith("#@#"):
+            internet_mdp = UTILS_Internet.CrypteMDP(internet_mdp, IDfichier=IDfichier)
+            liste_modifications.append((internet_mdp, IDfamille))
+    DB.Executermany("UPDATE familles SET internet_mdp=? WHERE IDfamille=?", liste_modifications, commit=True)
+
+    # Utilisateurs
+    req = """SELECT IDutilisateur, internet_mdp FROM utilisateurs;"""
+    DB.ExecuterReq(req)
+    listeUtilisateurs = DB.ResultatReq()
+    liste_modifications = []
+    for IDutilisateur, internet_mdp in listeUtilisateurs:
+        if not internet_mdp.startswith("custom") and not internet_mdp.startswith("#@#"):
+            internet_mdp = UTILS_Internet.CrypteMDP(internet_mdp, IDfichier=IDfichier)
+            liste_modifications.append((internet_mdp, IDutilisateur))
+    DB.Executermany("UPDATE utilisateurs SET internet_mdp=? WHERE IDutilisateur=?", liste_modifications, commit=True)
+
+    DB.Close()
+
+def A9052():
+    """
+    Validation des actions du portail en doublon
+    """
+    DB = GestionDB.DB()
+    req = """SELECT IDaction, IDpaiement
+    FROM portail_actions
+    WHERE IDpaiement IS NOT NULL AND etat='attente'
+    ORDER BY IDaction
+    ;"""
+    DB.ExecuterReq(req)
+    listeLignes = DB.ResultatReq()
+
+    # Analyse
+    dict_resultats = {}
+    for IDaction, IDpaiement in listeLignes:
+        if IDpaiement not in dict_resultats:
+            dict_resultats[IDpaiement] = []
+        else:
+            dict_resultats[IDpaiement].append(IDaction)
+
+    # Applique l'état Validation
+    for IDpaiement, liste_actions in dict_resultats.items():
+        if liste_actions:
+            print("Modification des actions :", liste_actions)
+            if len(liste_actions) == 0: condition = "()"
+            elif len(liste_actions) == 1: condition = "(%d)" % liste_actions[0]
+            else: condition = str(tuple(liste_actions))
+            DB.ExecuterReq("UPDATE portail_actions SET etat='validation' WHERE IDaction IN %s" % condition)
+            DB.Commit()
+    DB.Close()
+
+
+def A9055():
+    """
+    Création d'une table
+    """
+    dlg = wx.TextEntryDialog(None, _(u"Saisissez le nom de la table à créer :"), _(u"Création d'une table"), "")
+    reponse = dlg.ShowModal()
+    nom_table = dlg.GetValue()
+    dlg.Destroy()
+    if reponse != wx.ID_OK:
+        return
+    DB = GestionDB.DB()
+    from Data import DATA_Tables as Tables
+    if DB.IsTableExists(nom_table) == False:
+        DB.CreationTable(nom_table, Tables.DB_DATA)
+    else:
+        dlg = wx.MessageDialog(None, _(u"Cette table existe déjà !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+        dlg.ShowModal()
+        dlg.Destroy()
+        return
+    DB.Close()
+
+
+def A9062():
+    """ Modification du type d'un champ """
+    dlg = wx.TextEntryDialog(None, _(u"Saisissez les paramètres au format suivant :\nnom_table;nom_champ;type\nExemple : parametres;nom;varchar(50)"), _(u"Modification du type d'un champ"), "")
+    reponse = dlg.ShowModal()
+    parametres = dlg.GetValue()
+    if reponse != wx.ID_OK:
+        return
+    try:
+        nom_table, nom_champ, type_champ = parametres.split(";")
+    except:
+        return
+    DB = GestionDB.DB()
+    DB.ExecuterReq("ALTER TABLE %s MODIFY %s %s" % (nom_table, nom_champ, type_champ))
+    DB.Commit()
+    DB.Close()
+
+
+def A9064():
+    """ Renseignement automatique du tiers solidaire dans toutes les fiches familles """
+    # Recherche des titulaires potentiels pour chaque famille
+    DB = GestionDB.DB()
+    req = """SELECT IDfamille, individus.IDindividu, IDcivilite, nom, prenom
+    FROM rattachements
+    LEFT JOIN individus ON individus.IDindividu = rattachements.IDindividu
+    WHERE IDcategorie=1 AND titulaire=1
+    ORDER BY IDcivilite, individus.IDindividu;"""
+    DB.ExecuterReq(req)
+    listeDonnees = DB.ResultatReq()
+    DB.Close()
+    dictIndividus = {}
+    for IDfamille, IDindividu, IDcivilite, nom, prenom in listeDonnees:
+        if (IDfamille in dictIndividus) == False:
+            dictIndividus[IDfamille] = []
+        dictIndividus[IDfamille].append({"IDcivilite": IDcivilite, "IDindividu": IDindividu, "nom": nom, "prenom": prenom})
+
+    # Recherche des familles
+    DB = GestionDB.DB()
+    req = """SELECT IDfamille, titulaire_helios, tiers_solidaire
+    FROM familles;"""
+    DB.ExecuterReq(req)
+    listeDonnees = DB.ResultatReq()
+    DB.Close()
+    listeModifications = []
+    for IDfamille, titulaire_helios, tiers_solidaire in listeDonnees:
+        reinit = False
+        if titulaire_helios == tiers_solidaire:
+            tiers_solidaire = None
+            reinit = True
+        found = False
+        for dictIndividu in dictIndividus.get(IDfamille, []):
+            if not tiers_solidaire and not found and dictIndividu["IDindividu"] != titulaire_helios:
+                tiers_solidaire = dictIndividu["IDindividu"]
+                listeModifications.append((tiers_solidaire, IDfamille))
+                found = True
+        if reinit and not found:
+            listeModifications.append((None, IDfamille))
+
+    print("Nbre de tiers solidaires a enregistrer : %d" % len(listeModifications))
+
+    # Enregistrement des modifications
+    DB = GestionDB.DB()
+    DB.Executermany("UPDATE familles SET tiers_solidaire=? WHERE IDfamille=?", listeModifications, commit=False)
+    DB.Commit()
+    DB.Close()
+
+def A9068():
+    """ Déinscription de plusieurs individus """
+    DB = GestionDB.DB()
+
+    # Demande l'activité concernée
+    req = """SELECT IDactivite, nom FROM activites ORDER BY nom;"""
+    DB.ExecuterReq(req)
+    listeActivites = DB.ResultatReq()
+    dlg = wx.SingleChoiceDialog(None, u"Sélectionnez une activité :", u"Désinscription par lot", [nom for idactivite, nom in listeActivites], wx.CHOICEDLG_STYLE)
+    dlg.SetSize((400, 400))
+    dlg.CenterOnScreen()
+    if dlg.ShowModal() == wx.ID_OK:
+        index = dlg.GetSelection()
+        IDactivite, nom = listeActivites[index]
+        dlg.Destroy()
+    else:
+        DB.Close()
+        dlg.Destroy()
+        return
+
+    # Demande les individus à désinscrire
+    req = """SELECT IDinscription, individus.nom, individus.prenom
+    FROM inscriptions
+    LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
+    WHERE IDactivite=%d AND date_desinscription IS NULL
+    ORDER BY individus.nom, individus.prenom;""" % IDactivite
+    DB.ExecuterReq(req)
+    listeInscriptions = DB.ResultatReq()
+    dlg = wx.MultiChoiceDialog(None, u"Cochez les individus à désinscrire", u"Désinscription par lot", ["%s %s" % (nom, prenom) for idinscription, nom, prenom in listeInscriptions], wx.CHOICEDLG_STYLE)
+    dlg.SetSize((400, 400))
+    dlg.CenterOnScreen()
+    if dlg.ShowModal() == wx.ID_OK:
+        listeIDinscription = [listeInscriptions[index][0] for index in dlg.GetSelections()]
+        dlg.Destroy()
+    else:
+        DB.Close()
+        dlg.Destroy()
+        return
+
+    # Saisie de la date de désinscription
+    dlg = wx.TextEntryDialog(None, u"Saisissez la date de désinscription au format JJ/MM/AAAA :", u"Désinscription par lot", "")
+    reponse = dlg.ShowModal()
+    date = dlg.GetValue()
+    if reponse != wx.ID_OK:
+        DB.Close()
+        return
+    from Utils import UTILS_Dates
+    date_erreur = False
+    try:
+        date_desinscription = UTILS_Dates.DateFrEng(date)
+    except:
+        date_erreur = True
+    if date_erreur or not date_desinscription:
+        dlg = wx.MessageDialog(None, u"La date semble erronée. Procédure annulée.", _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+        dlg.ShowModal()
+        dlg.Destroy()
+        DB.Close()
+        return
+
+    if len(listeIDinscription) == 0: condition = "IDinscription > 0"
+    elif len(listeIDinscription) == 1: condition = "IDinscription IN (%d)" % listeIDinscription[0]
+    else: condition = "IDinscription IN %s" % str(tuple(listeIDinscription))
+
+    DB.ExecuterReq("UPDATE inscriptions SET date_desinscription='%s' WHERE %s;" % (date_desinscription, condition))
+    DB.Commit()
+    DB.Close()
+
+
+def A9070():
+    """ Conversion d'une unité multihoraires en unité standard """
+    DB = GestionDB.DB()
+
+    # Demande l'activité concernée
+    req = """SELECT IDunite, unites.nom, activites.nom
+    FROM unites
+    LEFT JOIN activites ON activites.IDactivite = unites.IDactivite 
+    WHERE unites.type="Multihoraires"
+    ORDER BY activites.nom, unites.nom;"""
+    DB.ExecuterReq(req)
+    listeUnites = DB.ResultatReq()
+    dlg = wx.SingleChoiceDialog(None, u"Sélectionnez une unité multihoraires à convertir en standard :", u"Conversion", ["%s (%s)" % (nom_unite, nom_activite) for IDunite, nom_unite, nom_activite in listeUnites], wx.CHOICEDLG_STYLE)
+    dlg.SetSize((400, 400))
+    dlg.CenterOnScreen()
+    if dlg.ShowModal() == wx.ID_OK:
+        index = dlg.GetSelection()
+        IDunite, nom_unite, nom_activite = listeUnites[index]
+        dlg.Destroy()
+    else:
+        DB.Close()
+        dlg.Destroy()
+        return
+
+    DB.ExecuterReq("UPDATE unites SET type='Unitaire' WHERE IDunite=%d;" % IDunite)
+    DB.Commit()
+    DB.Close()
+
+
+def A9072():
+    """ Statistiques du tarif à un euro """
+    # Sélection de la période
+    from Dlg import DLG_Selection_dates
+    dlg = DLG_Selection_dates.Dialog(None)
+    if dlg.ShowModal() == wx.ID_OK:
+        date_debut, date_fin = dlg.GetDateDebut(), dlg.GetDateFin()
+        dlg.Destroy()
+    else:
+        dlg.Destroy()
+        return
+
+    # Demande l'activité concernée
+    DB = GestionDB.DB()
+    req = """SELECT IDactivite, nom FROM activites ORDER BY nom;"""
+    DB.ExecuterReq(req)
+    listeActivites = DB.ResultatReq()
+    dlg = wx.SingleChoiceDialog(None, u"Sélectionnez une activité :", u"Choix de l'activité", [nom_activite for IDactivite, nom_activite in listeActivites], wx.CHOICEDLG_STYLE)
+    dlg.SetSize((400, 400))
+    dlg.CenterOnScreen()
+    if dlg.ShowModal() == wx.ID_OK:
+        index = dlg.GetSelection()
+        IDactivite = listeActivites[index][0]
+        dlg.Destroy()
+    else:
+        DB.Close()
+        dlg.Destroy()
+        return
+
+    # Recherche les prestations
+    req = """SELECT IDprestation, IDindividu FROM prestations WHERE montant=1 AND IDactivite=%d AND date>='%s' AND date<='%s';""" % (IDactivite, date_debut, date_fin)
+    DB.ExecuterReq(req)
+    listePrestations = DB.ResultatReq()
+    DB.Close()
+    liste_individus = []
+    for IDprestation, IDindividu in listePrestations:
+        if IDindividu not in liste_individus:
+            liste_individus.append(IDindividu)
+
+    # Affichage des résultats
+    txt_resultats = _(u"Résultats : %d prestations / %d individus.") % (len(listePrestations), len(liste_individus))
+    dlg = wx.MessageDialog(None, txt_resultats, _(u"Résultats"), wx.OK | wx.ICON_INFORMATION)
+    dlg.ShowModal()
+    dlg.Destroy()
+    return
+
+
 if __name__ == u"__main__":
     app = wx.App(0)
     # TEST D'UNE PROCEDURE :
-    A9012()
+    A9072()
     app.MainLoop()

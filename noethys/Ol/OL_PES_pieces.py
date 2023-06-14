@@ -74,8 +74,9 @@ class Track(object):
         self.IDdepot = donnees["IDdepot"]
         
         self.titulaire_helios = donnees["titulaire_helios"]
+        self.tiers_solidaire = donnees["tiers_solidaire"]
         self.InitTitulaireHelios()
-        
+
         # Autres données Hélios
         if "idtiers_helios" in donnees["dictAutresDonnees"] :
             self.idtiers_helios = donnees["dictAutresDonnees"]["idtiers_helios"]
@@ -87,6 +88,8 @@ class Track(object):
             self.natidtiers_helios = donnees["dictAutresDonnees"]["natidtiers_helios"]
             if self.natidtiers_helios in (9999, None) :
                 self.natidtiers_helios = ""
+            else:
+                self.natidtiers_helios = "0%d" % self.natidtiers_helios
         else :
             self.natidtiers_helios = ""
         if "reftiers_helios" in donnees["dictAutresDonnees"] :
@@ -111,10 +114,18 @@ class Track(object):
                 self.natjur_helios = "%02d" % self.natjur_helios
         else :
             self.natjur_helios = "01"
-        
+
+        # Code tiers de la famille
+        self.code_tiers = u"FAM%06d" % self.IDfamille
+
+        # Code compta de la famille
+        self.code_compta = ""
+        if "code_compta" in donnees["dictAutresDonnees"] and donnees["dictAutresDonnees"]["code_compta"]:
+            self.code_compta = donnees["dictAutresDonnees"]["code_compta"]
+
         # Etat de la pièce
         self.etat = donnees["etat"] # "ajout", "modif"
-        self.AnalysePiece() 
+        self.AnalysePiece()
         
     def InitTitulaireHelios(self):
         if self.titulaire_helios in self.dictIndividus :
@@ -140,7 +151,31 @@ class Track(object):
             self.titulaireCP = ""
             self.titulaireVille = ""
             self.titulaireAdresse = ""
-        
+
+        if self.tiers_solidaire in self.dictIndividus :
+            self.tiersSolidaireCivilite = self.dictIndividus[self.tiers_solidaire]["civiliteAbrege"]
+            self.tiersSolidaireNom = self.dictIndividus[self.tiers_solidaire]["nom"]
+            self.tiersSolidairePrenom = self.dictIndividus[self.tiers_solidaire]["prenom"]
+            if self.tiersSolidaireCivilite == None :
+                self.tiersSolidaireNomComplet = u"%s %s" % (self.tiersSolidaireNom, self.tiersSolidairePrenom)
+            else :
+                self.tiersSolidaireNomComplet = u"%s %s %s" % (self.tiersSolidaireCivilite, self.tiersSolidaireNom, self.tiersSolidairePrenom)
+            self.tiersSolidaireNomPrenom = u"%s %s" % (self.tiersSolidaireNom, self.tiersSolidairePrenom)
+            self.tiersSolidaireRue = self.dictIndividus[self.tiers_solidaire]["rue"]
+            self.tiersSolidaireCP = self.dictIndividus[self.tiers_solidaire]["cp"]
+            self.tiersSolidaireVille = self.dictIndividus[self.tiers_solidaire]["ville"]
+            self.tiersSolidaireAdresse = u"%s %s %s" % (self.tiersSolidaireRue, self.tiersSolidaireCP, self.tiersSolidaireVille)
+        else :
+            self.tiersSolidaireCivilite = ""
+            self.tiersSolidaireNom = ""
+            self.tiersSolidairePrenom = ""
+            self.tiersSolidaireNomComplet = ""
+            self.tiersSolidaireNomPrenom = ""
+            self.tiersSolidaireRue = ""
+            self.tiersSolidaireCP = ""
+            self.tiersSolidaireVille = ""
+            self.tiersSolidaireAdresse = ""
+
     def InitNomsTitulaires(self):
         if self.IDfamille != None :
             self.titulaires = self.dictTitulaires[self.IDfamille]["titulairesSansCivilite"]
@@ -171,13 +206,16 @@ class Track(object):
 
 def GetDictAutresDonnees():
     DB = GestionDB.DB()
-    req = """SELECT IDfamille, idtiers_helios, natidtiers_helios, reftiers_helios, cattiers_helios, natjur_helios
+    req = """SELECT IDfamille, idtiers_helios, natidtiers_helios, reftiers_helios, cattiers_helios, natjur_helios, code_comptable
     FROM familles;"""
     DB.ExecuterReq(req)
     listeAutresDonnees = DB.ResultatReq()
     dictAutresDonnees = {}
-    for IDfamille, idtiers_helios, natidtiers_helios, reftiers_helios, cattiers_helios, natjur_helios in listeAutresDonnees :
-        dictAutresDonnees[IDfamille] = {"idtiers_helios":idtiers_helios, "natidtiers_helios":natidtiers_helios, "reftiers_helios":reftiers_helios, "cattiers_helios":cattiers_helios, "natjur_helios":natjur_helios}
+    for IDfamille, idtiers_helios, natidtiers_helios, reftiers_helios, cattiers_helios, natjur_helios, code_compta in listeAutresDonnees :
+        dictAutresDonnees[IDfamille] = {
+            "idtiers_helios": idtiers_helios, "natidtiers_helios": natidtiers_helios, "reftiers_helios": reftiers_helios,
+            "cattiers_helios": cattiers_helios, "natjur_helios": natjur_helios, "code_compta": code_compta
+        }
     DB.Close() 
     return dictAutresDonnees
 
@@ -203,7 +241,7 @@ def GetTracks(IDlot=None, IDmandat=None):
     type, IDfacture, libelle, pes_pieces.montant, 
     reglements.IDreglement, reglements.date, reglements.IDdepot,
     comptes_payeurs.IDcompte_payeur,
-    pes_pieces.titulaire_helios, pes_pieces.numero
+    pes_pieces.titulaire_helios, pes_pieces.tiers_solidaire, pes_pieces.numero
     FROM pes_pieces
     LEFT JOIN reglements ON reglements.IDpiece = pes_pieces.IDpiece
     LEFT JOIN comptes_payeurs ON comptes_payeurs.IDfamille = pes_pieces.IDfamille
@@ -213,7 +251,7 @@ def GetTracks(IDlot=None, IDmandat=None):
     listeDonnees = DB.ResultatReq()
     DB.Close()
     listeListeView = []
-    for IDpiece, IDlot, IDfamille, prelevement, prelevement_iban, prelevement_bic, prelevement_IDmandat, prelevement_rum, prelevement_date_mandat, prelevement_sequence, prelevement_titulaire, prelevement_statut, type_piece, IDfacture, libelle, montant, IDreglement, dateReglement, IDdepot, IDcompte_payeur, titulaire_helios, numero in listeDonnees :
+    for IDpiece, IDlot, IDfamille, prelevement, prelevement_iban, prelevement_bic, prelevement_IDmandat, prelevement_rum, prelevement_date_mandat, prelevement_sequence, prelevement_titulaire, prelevement_statut, type_piece, IDfacture, libelle, montant, IDreglement, dateReglement, IDdepot, IDcompte_payeur, titulaire_helios, tiers_solidaire, numero in listeDonnees :
         if IDfamille in dictAutresDonnees :
             dictTempAutresDonnees = dictAutresDonnees[IDfamille]
         else :
@@ -225,7 +263,7 @@ def GetTracks(IDlot=None, IDmandat=None):
             "prelevement_sequence" : prelevement_sequence, "prelevement_titulaire" : prelevement_titulaire, "prelevement_statut" : prelevement_statut, 
             "IDfacture" : IDfacture, "libelle" : libelle, "montant" : montant, "statut" : prelevement_statut, "IDlot" : IDlot, "etat" : None, "type" : type_piece,
             "IDreglement" : IDreglement, "dateReglement" : dateReglement, "IDdepot" : IDdepot, "IDcompte_payeur" : IDcompte_payeur,
-            "titulaire_helios" : titulaire_helios, "numero" : numero, "dictAutresDonnees" : dictTempAutresDonnees,
+            "titulaire_helios" : titulaire_helios, "tiers_solidaire": tiers_solidaire, "numero" : numero, "dictAutresDonnees" : dictTempAutresDonnees,
             }
         track = Track(dictTemp, dictTitulaires, dictIndividus)
         listeListeView.append(track)
@@ -355,6 +393,7 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Ref. Tiers"), 'left', 70, "reftiers_helios", typeDonnee="texte"),
             ColumnDefn(_(u"Cat. Tiers"), 'left', 70, "cattiers_helios", typeDonnee="texte"),
             ColumnDefn(_(u"Nat. Jur."), 'left', 70, "natjur_helios", typeDonnee="texte"),
+            ColumnDefn(_(u"Code compta."), 'left', 95, "code_compta", typeDonnee="texte"),
             ]
         
 
@@ -599,7 +638,7 @@ class ListView(FastObjectListView):
                 "prelevement_IDmandat" : prelevement_IDmandat, "prelevement_rum" : prelevement_rum, "prelevement_date_mandat" : prelevement_mandat_date,
                 "prelevement_titulaire" : prelevement_titulaire, "type" : "facture", "IDfacture" : track.IDfacture, "prelevement_sequence" : prelevement_sequence,
                 "libelle" : _(u"FACT%s") % track.numero, "montant" : montant, "prelevement_statut" : "attente", "IDlot" : self.IDlot, "etat" : "ajout", "IDreglement" : None, "dateReglement" : None,
-                "IDdepot" : None, "IDcompte_payeur" : track.IDcompte_payeur, "titulaire_helios" : track.titulaire_helios, "numero" : track.numero, "dictAutresDonnees" : dictTempAutresDonnees,
+                "IDdepot" : None, "IDcompte_payeur" : track.IDcompte_payeur, "titulaire_helios" : track.titulaire_helios, "tiers_solidaire": track.tiers_solidaire, "numero" : track.numero, "dictAutresDonnees" : dictTempAutresDonnees,
                 }
             
             if track.IDfacture not in listeFacturesPresentes :
@@ -718,10 +757,12 @@ class ListView(FastObjectListView):
         for track in listeSelections :
             if prelevement == 0 :
                 track.prelevement = 0
-                track.etat = "modif"
+                if track.etat != "ajout":
+                    track.etat = "modif"
             if prelevement == 1 and track.prelevement_iban != "" :
                 track.prelevement = 1
-                track.etat = "modif"
+                if track.etat != "ajout":
+                    track.etat = "modif"
         self.RefreshObjects(listeSelections)
 
 
@@ -834,7 +875,7 @@ class ListView(FastObjectListView):
 
     def MAJtotaux(self):
         """ Créé le texte infos avec les stats du lot """
-        if self.GetParent().GetName() != "DLG_Saisie_pes_lot" :
+        if self.GetParent().GetName() != "DLG_Saisie_lot_tresor_public" :
             return
         # Label de staticbox
         texte = self.GetTexteTotaux()
@@ -915,6 +956,7 @@ class ListView(FastObjectListView):
                 ("prelevement_titulaire", track.prelevement_titulaire),
                 ("prelevement_statut", track.prelevement_statut),
                 ("titulaire_helios", track.titulaire_helios),
+                ("tiers_solidaire", track.tiers_solidaire),
                 ("type", track.type),
                 ("IDfacture", track.IDfacture),
                 ("numero", track.numero),

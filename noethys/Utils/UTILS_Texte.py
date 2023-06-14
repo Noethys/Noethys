@@ -10,7 +10,32 @@
 
 
 import re
-from Utils.UTILS_Traduction import _
+try:
+    from Utils.UTILS_Traduction import _
+except:
+    pass
+
+
+def Parser_voie(texte=""):
+    if not texte:
+        return {}
+    texte = texte.replace(",", "")
+    types_voies = [u"rue", u"avenue", u"boulevard", u"bd", u"bvd", u"lieu dit", u"lieu-dit", u"route", u"clos", u"ldt", u"square", u"impasse", u"cours", u"esplanade", u"allée", u"résidence", u"chemin", u"place", u"cité", u"hameau", u"coteau"]
+    liste_types_voies = []
+    for type_voie in types_voies:
+        liste_types_voies.extend([u"%s des" % type_voie, u"%s de la" % type_voie, u"%s de" % type_voie, u"%s du" % type_voie, type_voie])
+    regex = re.compile(r"(?P<numero>.+)(?P<type>" + "|".join(liste_types_voies) + r")(?P<nom>.*)", re.S)
+    resultat = regex.match(texte.lower())
+    if not resultat:
+        regex2 = re.compile(r"(?P<numero>[0-9]+)(?P<nom>.*)", re.S)
+        resultat = regex2.match(texte.lower())
+    if not resultat:
+        return {"nom": texte.lower().capitalize()}
+    dict_resultats = resultat.groupdict()
+    dict_resultats["numero"] = dict_resultats.get("numero", "").strip().capitalize()
+    dict_resultats["nom"] = dict_resultats.get("nom", "").strip().capitalize()
+    dict_resultats["type"] = dict_resultats.get("type", "").strip().replace(" des", "").replace(" de la", "").replace(" du", "").replace(" de", "").capitalize()
+    return dict_resultats
 
 
 def Supprime_accent(texte):
@@ -59,12 +84,7 @@ def Incrementer(s):
 
 def T(_):
     print(_, ">", Incrementer(_))
+
+
 if __name__=='__main__':
-    T("10dsc_0010.jpg")
-    T("10dsc_0099.jpg")
-    T("dsc_9.jpg")
-    T("0000001.exe")
-    T("9999999.exe")
-    T("ref-04851")
-    T("0000099")
-    T("E9ABC")
+    print(Parser_voie("21 rue des cormorans"))

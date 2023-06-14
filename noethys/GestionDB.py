@@ -1316,7 +1316,7 @@ if __name__ == "__main__":
         
     # # Ajouter un champ
     # db = DB(suffixe="DATA")
-    # db.AjoutChamp("locations", "serie", "VARCHAR(100)")
+    # db.AjoutChamp("pes_lots", "options", "VARCHAR(1000)")
     # db.Close()
 
     # # Exportation d'une table dans la base DEFAUT
@@ -1332,7 +1332,7 @@ if __name__ == "__main__":
     # Test Conversion d'un champ
 ##    db = DB(suffixe="DATA")
 ##    db.ConversionTypeChamp(nomTable="factures", nomChamp="numero", typeChamp="VARCHAR(100)")
-##    db.Close() 
+##    db.Close()
     
     # Création de tous les index
 ##    db = DB(suffixe="DATA")

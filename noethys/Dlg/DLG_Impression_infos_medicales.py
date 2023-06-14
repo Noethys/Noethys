@@ -131,6 +131,12 @@ class CTRL_Options(CTRL_Propertygrid.CTRL):
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
+        # Insérer texte d'introduction
+        propriete = wxpg.BoolProperty(label=_(u"Insérer un texte d'introduction"), name="afficher_introduction", value=False)
+        propriete.SetHelpString(_(u"Cochez cette case pour insérer un texte d'introduction"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
         # Catégorie
         self.Append(wxpg.PropertyCategory(_(u"Colonne Photo")))
 
@@ -496,6 +502,13 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return False
 
+        # Vérification qu'il y a des colonnes
+        if not dictParametres["colonnes"]:
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement créer au moins une colonne !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+
         # Recherche les catégories utilisées
         liste_categories_utilisees = []
         for nom_categorie, categories in dictParametres["colonnes"]:
@@ -531,8 +544,11 @@ class Dialog(wx.Dialog):
                 
         # Récupération des noms des groupes
         dictGroupes = dictParametres["dict_groupes"]
+        dictActivites = dictParametres["dict_activites"]
 
         DB = GestionDB.DB()
+
+        texte_introduction = []
 
         # ------------ MODE PRESENTS ---------------------------------
 
@@ -560,11 +576,18 @@ class Dialog(wx.Dialog):
             LEFT JOIN individus ON individus.IDindividu = consommations.IDindividu
             WHERE consommations.etat IN ("reservation", "present")
             AND IDactivite IN %s AND %s
-            GROUP BY individus.IDindividu
+            GROUP BY individus.IDindividu, IDactivite, IDgroupe
             ORDER BY nom, prenom
             ;""" % (conditionActivites, conditionsPeriodes)
             DB.ExecuterReq(req)
             listeIndividus = DB.ResultatReq()
+
+            # Création du texte d'introduction
+            liste_dates = []
+            for date_debut, date_fin in dictParametres["liste_periodes"]:
+                liste_dates.append(date_debut)
+                liste_dates.append(date_fin)
+            texte_introduction.append(u"Individus présents sur la période du %s au %s" % (UTILS_Dates.DateDDEnFr(min(liste_dates)), UTILS_Dates.DateDDEnFr(max(liste_dates))))
 
 
         # ------------ MODE INSCRITS ---------------------------------
@@ -585,7 +608,7 @@ class Dialog(wx.Dialog):
             FROM individus 
             LEFT JOIN inscriptions ON inscriptions.IDindividu = individus.IDindividu
             WHERE inscriptions.statut='ok' AND IDactivite IN %s
-            GROUP BY individus.IDindividu
+            GROUP BY individus.IDindividu, IDactivite, IDgroupe
             ORDER BY nom, prenom
             ;""" % conditionActivites
             DB.ExecuterReq(req)
@@ -680,7 +703,13 @@ class Dialog(wx.Dialog):
         
         # Insère un header
         Header() 
-        
+
+        # Texte d'introduction
+        para_style_introduction = ParagraphStyle(name="normal", fontName="Helvetica", fontSize=7, leading=7, spaceBefore=0, spaceAfter=0, alignment=1)
+        if texte_introduction and dictParametres["afficher_introduction"]:
+            story.append(Paragraph("".join([u"<para>%s</para>" % texte for texte in texte_introduction]), para_style_introduction))
+            story.append(Spacer(0, 15))
+
         # Activités
         for IDactivite in listeActivites :
 
@@ -690,7 +719,11 @@ class Dialog(wx.Dialog):
                 indexGroupe = 1
                 for IDgroupe in dictOuvertures[IDactivite] :
                     nomGroupe = dictGroupes[IDgroupe]["nom"]
-                    
+                    if isinstance(dictActivites[IDactivite], dict):
+                        nomActivite = dictActivites[IDactivite]["nom"]
+                    else:
+                        nomActivite = dictActivites[IDactivite]
+
                     # Initialisation du tableau
                     dataTableau = []
                     largeursColonnes = []
@@ -724,7 +757,7 @@ class Dialog(wx.Dialog):
                         largeursColonnes.append(largeurColonnes)
 
                     # Création de l'entete de groupe
-                    ligne = [nomGroupe,]
+                    ligne = [u"%s - %s" % (nomActivite, nomGroupe),]
                     for x in range(0, len(labelsColonnes)-1):
                         ligne.append("")
                     dataTableau.append(ligne)

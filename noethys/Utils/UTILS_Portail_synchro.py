@@ -38,6 +38,8 @@ from Utils import UTILS_Cotisations_manquantes
 from Utils import UTILS_Organisateur
 from Utils import UTILS_Cryptage_fichier
 from Utils import UTILS_Config
+from Utils import UTILS_Customize
+from Utils import UTILS_Internet
 import FonctionsPerso
 import GestionDB
 
@@ -175,6 +177,7 @@ class Synchro():
         liste_lignes.append(Ecrit_ligne("PREFIXE_TABLES", self.dict_parametres["prefixe_tables"], type_valeur=str))
         liste_lignes.append(Ecrit_ligne("DEBUG", self.dict_parametres["mode_debug"], type_valeur=bool))
         liste_lignes.append(Ecrit_ligne("TALISMAN", self.dict_parametres["talisman"], type_valeur=bool))
+        liste_lignes.append(Ecrit_ligne("CAPTCHA", self.dict_parametres["captcha"], type_valeur=int))
 
         # Paramètres SMTP pour Flask-mail
         if self.dict_parametres["email_type_adresse"] > 0 :
@@ -518,6 +521,8 @@ class Synchro():
                 session.add(models.Parametre(nom="PAYZEN_CERTIFICAT_TEST", parametre=str(self.dict_parametres["payzen_certificat_test"])))
             if "payzen_certificat_production" in self.dict_parametres:
                 session.add(models.Parametre(nom="PAYZEN_CERTIFICAT_PRODUCTION", parametre=str(self.dict_parametres["payzen_certificat_production"])))
+            if "payzen_echelonnement" in self.dict_parametres:
+                session.add(models.Parametre(nom="PAYZEN_ECHELONNEMENT", parametre=str(self.dict_parametres["payzen_echelonnement"])))
 
         session.add(models.Parametre(nom="ACCUEIL_TITRE", parametre=self.dict_parametres["accueil_titre"]))
         session.add(models.Parametre(nom="ACCUEIL_BIENVENUE", parametre=self.dict_parametres["accueil_bienvenue"]))
@@ -545,18 +550,25 @@ class Synchro():
         session.add(models.Parametre(nom="FACTURES_INTRO", parametre=self.dict_parametres["factures_intro"]))
         session.add(models.Parametre(nom="FACTURES_DEMANDE_FACTURE", parametre=str(self.dict_parametres["factures_demande_facture"])))
         session.add(models.Parametre(nom="FACTURES_PREFACTURATION", parametre=str(self.dict_parametres["factures_prefacturation"])))
+        session.add(models.Parametre(nom="FACTURES_AFFICHER_SOLDE_TOTAL", parametre=str(self.dict_parametres["factures_afficher_solde_total"])))
+        session.add(models.Parametre(nom="FACTURES_AFFICHER_SOLDE_FAMILLE", parametre=str(self.dict_parametres["factures_afficher_solde_famille"])))
+        session.add(models.Parametre(nom="FACTURES_AFFICHER_SOLDE_DETAIL", parametre=str(self.dict_parametres["factures_afficher_solde_detail"])))
         session.add(models.Parametre(nom="REGLEMENTS_AFFICHER", parametre=str(self.dict_parametres["reglements_afficher"])))
         session.add(models.Parametre(nom="REGLEMENTS_INTRO", parametre=self.dict_parametres["reglements_intro"]))
         session.add(models.Parametre(nom="REGLEMENTS_DEMANDE_RECU", parametre=str(self.dict_parametres["reglements_demande_recu"])))
         session.add(models.Parametre(nom="PIECES_AFFICHER", parametre=str(self.dict_parametres["pieces_afficher"])))
         session.add(models.Parametre(nom="PIECES_INTRO", parametre=self.dict_parametres["pieces_intro"]))
         session.add(models.Parametre(nom="PIECES_AUTORISER_TELECHARGEMENT", parametre=str(self.dict_parametres["pieces_autoriser_telechargement"])))
+        session.add(models.Parametre(nom="PIECES_AUTORISER_UPLOAD", parametre=str(self.dict_parametres["pieces_autoriser_upload"])))
         session.add(models.Parametre(nom="COTISATIONS_AFFICHER", parametre=str(self.dict_parametres["cotisations_afficher"])))
         session.add(models.Parametre(nom="COTISATIONS_INTRO", parametre=self.dict_parametres["cotisations_intro"]))
         session.add(models.Parametre(nom="LOCATIONS_AFFICHER", parametre=str(self.dict_parametres["locations_afficher"])))
         session.add(models.Parametre(nom="LOCATIONS_INTRO", parametre=self.dict_parametres["locations_intro"]))
         session.add(models.Parametre(nom="LOCATIONS_PERIODE_SAISIE", parametre=self.dict_parametres["locations_periode_saisie"]))
         session.add(models.Parametre(nom="PLANNING_LOCATIONS_INTRO", parametre=self.dict_parametres["planning_locations_intro"]))
+        session.add(models.Parametre(nom="LOCATIONS_HEURE_MIN", parametre=self.dict_parametres["locations_heure_min"]))
+        session.add(models.Parametre(nom="LOCATIONS_HEURE_MAX", parametre=self.dict_parametres["locations_heure_max"]))
+        session.add(models.Parametre(nom="LOCATIONS_AFFICHER_AUTRES_LOUEURS", parametre=str(self.dict_parametres["locations_afficher_autres_loueurs"])))
         session.add(models.Parametre(nom="HISTORIQUE_AFFICHER", parametre=str(self.dict_parametres["historique_afficher"])))
         session.add(models.Parametre(nom="HISTORIQUE_INTRO", parametre=self.dict_parametres["historique_intro"]))
         session.add(models.Parametre(nom="HISTORIQUE_DELAI", parametre=str(self.dict_parametres["historique_delai"])))
@@ -566,6 +578,21 @@ class Synchro():
         session.add(models.Parametre(nom="MENTIONS_AFFICHER", parametre=str(self.dict_parametres["mentions_afficher"])))
         session.add(models.Parametre(nom="AIDE_AFFICHER", parametre=str(self.dict_parametres["aide_afficher"])))
 
+        # Calcule des soldes des familles
+        dictPrestations = {}
+        dictReglements = {}
+        if self.dict_parametres["factures_afficher_solde_famille"]:
+            req = """SELECT IDfamille, SUM(montant) AS total_prestations FROM prestations GROUP BY IDfamille;"""
+            DB.ExecuterReq(req)
+            for IDfamille, total_prestations in DB.ResultatReq():
+                dictPrestations[IDfamille] = total_prestations
+
+            req = """SELECT IDfamille, SUM(montant) AS total_reglements FROM reglements 
+            LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = reglements.IDcompte_payeur
+            GROUP BY IDfamille;"""
+            DB.ExecuterReq(req)
+            for IDfamille, total_reglements in DB.ResultatReq():
+                dictReglements[IDfamille] = total_reglements
 
         # Recherche des adresses emails des familles
         req = """SELECT rattachements.IDindividu, rattachements.IDfamille, mail
@@ -622,8 +649,11 @@ class Synchro():
                         nomDossier = u"%s %s" % (dictDonnee["prenom"], dictDonnee["nom"])
 
                     # Cryptage du mot de passe
-                    if "custom" not in dictDonnee["internet_mdp"] :
-                        dictDonnee["internet_mdp"] = SHA256.new(dictDonnee["internet_mdp"].encode('utf-8')).hexdigest()
+                    if "custom" not in dictDonnee["internet_mdp"]:
+                        mdp = dictDonnee["internet_mdp"]
+                        if mdp.startswith("#@#"):
+                            mdp = UTILS_Internet.DecrypteMDP(mdp, IDfichier=IDfichier)
+                        dictDonnee["internet_mdp"] = SHA256.new(mdp.encode('utf-8')).hexdigest()
 
                     # Génération du session_token
                     session_token = "%s-%d-%s-%s-%d" % (profil, dictDonnee["ID"], dictDonnee["internet_identifiant"], dictDonnee["internet_mdp"][:20], dictDonnee["internet_actif"])
@@ -638,10 +668,13 @@ class Synchro():
                     # Autre paramètres
                     liste_parametres = []
                     if profil == "famille":
+                        # Prélèvement auto
                         prelevement_auto = dictDonnee.get("prelevement_activation", 0)
                         if not prelevement_auto:
                             prelevement_auto = 0
                         liste_parametres.append("prelevement_auto==%d" % prelevement_auto)
+                        # Solde de la famille
+                        liste_parametres.append("solde==%s" % (dictReglements.get(IDfamille, 0.0) - dictPrestations.get(IDfamille, 0.0)))
                     parametres = "##".join(liste_parametres)
 
                     # Si famille archivée ou effacée
@@ -928,16 +961,16 @@ class Synchro():
                 date_limite = datetime.date.today() + relativedelta.relativedelta(months=-nbre_mois)
                 conditions_locations = "WHERE locations.date_fin >= '%s'" % date_limite
 
-            req = """SELECT IDlocation, IDfamille, IDproduit, date_saisie, date_debut, date_fin, quantite, partage
+            req = """SELECT IDlocation, IDfamille, IDproduit, date_saisie, date_debut, date_fin, quantite, partage, description
             FROM locations 
             %s
             ;""" % conditions_locations
             DB.ExecuterReq(req)
             listeLocations = DB.ResultatReq()
-            for IDlocation, IDfamille, IDproduit, date_saisie, date_debut, date_fin, quantite, partage in listeLocations:
+            for IDlocation, IDfamille, IDproduit, date_saisie, date_debut, date_fin, quantite, partage, description in listeLocations:
                 date_debut = UTILS_Dates.DateEngEnDateDDT(date_debut)
                 date_fin = UTILS_Dates.DateEngEnDateDDT(date_fin)
-                m = models.Location(IDlocation=IDlocation, IDfamille=IDfamille, IDproduit=IDproduit, date_debut=date_debut, date_fin=date_fin, quantite=quantite, partage=partage)
+                m = models.Location(IDlocation=IDlocation, IDfamille=IDfamille, IDproduit=IDproduit, date_debut=date_debut, date_fin=date_fin, quantite=quantite, partage=partage, description=description)
                 session.add(m)
 
             liste_tables_modifiees.append("locations")
@@ -1361,7 +1394,8 @@ class Synchro():
 
         cryptage_mdp = self.dict_parametres["secret_key"][:10] #base64.b64decode(password)
         nomFichierCRYPT = nomFichierZIP.replace(".zip", ".crypt")
-        UTILS_Cryptage_fichier.CrypterFichier(nomFichierZIP, nomFichierCRYPT, cryptage_mdp, ancienne_methode=True)
+        ancienne_methode = UTILS_Customize.GetValeur("version_cryptage", "connecthys", "1", ajouter_si_manquant=False) in ("1", None)
+        UTILS_Cryptage_fichier.CrypterFichier(nomFichierZIP, nomFichierCRYPT, cryptage_mdp, ancienne_methode=ancienne_methode)
         os.remove(nomFichierZIP)
 
         # Pour contrer le bug de Pickle dans le cryptage
@@ -1451,6 +1485,7 @@ class Synchro():
         cryptage = UTILS_Cryptage_fichier.AESCipher(self.dict_parametres["secret_key"][10:20], bs=16, prefixe=u"#@#")
 
         # Recherche la dernière demande téléchargée
+        last = 0
         DB = GestionDB.DB()
         req = """
         SELECT ref_unique
@@ -1462,9 +1497,10 @@ class Synchro():
         result = DB.ResultatReq()
         listeDonnees = [x[0] for x in result]
         if len(listeDonnees) > 0 :
-            last = int(listeDonnees[0])
-        else :
-            last = 0
+            try:
+                last = int(listeDonnees[0])
+            except:
+                pass
 
         # Téléchargement des demandes non enregistrées
         if full_synchro == True :
@@ -1581,13 +1617,16 @@ class Synchro():
                     # Mémorisation des renseignements
                     if "renseignements" in action and len(action["renseignements"]) > 0:
                         for renseignement in action["renseignements"] :
-                            valeur = cryptage.decrypt(renseignement["valeur"])
-                            listeRenseignements.append([renseignement["champ"], valeur, prochainIDaction])
+                            try:
+                                valeur = cryptage.decrypt(renseignement["valeur"])
+                                listeRenseignements.append([renseignement["champ"], valeur, prochainIDaction])
+                            except:
+                                pass
 
                     # Mémorisation des locations
                     if "locations" in action and len(action["locations"]) > 0:
                         for location in action["locations"] :
-                            listeLocations.append([location["date_debut"], location["date_fin"], location["IDlocation"], location["IDproduit"], prochainIDaction, location["etat"], location["partage"]])
+                            listeLocations.append([location["date_debut"], location["date_fin"], location["IDlocation"], location["IDproduit"], prochainIDaction, location["etat"], location["partage"], location["description"]])
 
                     prochainIDaction += 1
 
@@ -1599,7 +1638,7 @@ class Synchro():
             if len(listeRenseignements) > 0 :
                 DB.Executermany("INSERT INTO portail_renseignements (champ, valeur, IDaction) VALUES (?, ?, ?)", listeRenseignements, commit=False)
             if len(listeLocations) > 0 :
-                DB.Executermany("INSERT INTO portail_reservations_locations (date_debut, date_fin, IDlocation, IDproduit, IDaction, etat, partage) VALUES (?, ?, ?, ?, ?, ?, ?)", listeLocations, commit=False)
+                DB.Executermany("INSERT INTO portail_reservations_locations (date_debut, date_fin, IDlocation, IDproduit, IDaction, etat, partage, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", listeLocations, commit=False)
             if len(listePasswordsFamilles) > 0 :
                 DB.Executermany("UPDATE familles SET internet_mdp=? WHERE IDfamille=?", listePasswordsFamilles, commit=False)
                 if len(listePasswordsFamilles) == 1:
@@ -1898,10 +1937,15 @@ class Synchro():
                     self.log.EcritLog(_(u"[ERREUR] Envoi du fichier '%s' par SSH/SFTP impossible.") % nomFichier)
                     return False
 
+                try:
+                    ftp.chmod(rep + "/" + nomFichier, mode=0o644)
+                except Exception as err:
+                    print("CHMOD 0644 sur %s impossible :" % nomFichier, err)
+
         return True
 
 
-    def ConnectEtTelechargeFichier(self, nomFichier="", repFichier=None):
+    def ConnectEtTelechargeFichier(self, nomFichier="", repFichier=None, lecture=True):
         resultats = self.Connexion()
         if resultats == False :
             return False
@@ -1912,14 +1956,16 @@ class Synchro():
         resultat = self.TelechargeFichier(ftp=ftp, nomFichier=nomFichier, repFichier=repFichier)
         if resultat == False :
             return False
-        cheminFichier = os.path.join(resultat[0], resultat[1])
-        fichier = codecs.open(cheminFichier, encoding='utf-8', mode='r')
-        contenu_fichier = fichier.read()
-        fichier.close()
-
         self.Deconnexion(ftp)
+        cheminFichier = os.path.join(resultat[0], resultat[1])
 
-        return contenu_fichier
+        if lecture:
+            fichier = codecs.open(cheminFichier, encoding='utf-8', mode='r')
+            contenu_fichier = fichier.read()
+            fichier.close()
+            return contenu_fichier
+
+        return cheminFichier
 
 
 if __name__ == '__main__':

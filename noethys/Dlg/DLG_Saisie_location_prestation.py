@@ -24,7 +24,7 @@ from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
-
+import wx.lib.agw.floatspin as FS
 from Ctrl.CTRL_Tarification_calcul import CHAMPS_TABLE_LIGNES
 from Dlg.DLG_Ouvertures import Track_tarif
 
@@ -208,6 +208,13 @@ class Dialog(wx.Dialog):
         
         self.label_montant = wx.StaticText(self, -1, _(u"Montant :"))
         self.ctrl_montant = CTRL_Saisie_euros.CTRL(self)
+        self.ctrl_montant.SetMinSize((70, -1))
+
+        self.label_tva = wx.StaticText(self, -1, _(u"Taux TVA :"))
+        self.ctrl_tva = FS.FloatSpin(self, -1, min_val=0, max_val=100, increment=0.1, agwStyle=FS.FS_RIGHT)
+        self.ctrl_tva.SetFormat("%f")
+        self.ctrl_tva.SetDigits(2)
+        self.ctrl_tva.SetMinSize((70, -1))
 
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
@@ -254,11 +261,14 @@ class Dialog(wx.Dialog):
         
         grid_sizer_prestation.Add(self.label_date_prestation, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         
-        grid_sizer_prestation_2 = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
+        grid_sizer_prestation_2 = wx.FlexGridSizer(rows=1, cols=7, vgap=5, hgap=5)
         grid_sizer_prestation_2.Add(self.ctrl_date_prestation, 0, 0, 0)
-        grid_sizer_prestation_2.Add( (40, 5), 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_prestation_2.Add( (20, 5), 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_prestation_2.Add(self.label_montant, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_prestation_2.Add(self.ctrl_montant, 0, 0, 0)
+        grid_sizer_prestation_2.Add( (20, 5), 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_prestation_2.Add(self.label_tva, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_prestation_2.Add(self.ctrl_tva, 0, 0, 0)
         grid_sizer_prestation.Add(grid_sizer_prestation_2, 1, wx.EXPAND, 0)
 
         grid_sizer_prestation.AddGrowableCol(1)
@@ -286,6 +296,8 @@ class Dialog(wx.Dialog):
         self.ctrl_date_prestation.SetDate(datetime.date.today())
         self.ctrl_label.SetValue(track.label)
         self.ctrl_montant.SetMontant(track.montant)
+        self.ctrl_tva.SetValue(track.tva)
+        self.track.code_compta = track.code_compta
 
     def OnDoubleClick(self, event=None):
         self.OnBoutonOk()
@@ -327,6 +339,7 @@ class Dialog(wx.Dialog):
         self.track.label = self.ctrl_label.GetValue()
         self.track.date = self.ctrl_date_prestation.GetDate()
         self.track.montant = self.ctrl_montant.GetMontant()
+        self.track.tva = self.ctrl_tva.GetValue()
         return self.track
 
     def SetTrack(self, track=None):
@@ -334,6 +347,7 @@ class Dialog(wx.Dialog):
             self.ctrl_label.SetValue(track.label)
             self.ctrl_date_prestation.SetDate(track.date)
             self.ctrl_montant.SetMontant(track.montant)
+            self.ctrl_tva.SetValue(track.tva)
 
 
 

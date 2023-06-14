@@ -485,8 +485,8 @@ class Panel_identite(wx.Panel):
         dictDonnees = {
             "IDcivilite" : self.ctrl_civilite.GetID(),
             "nom_jfille" : self.ctrl_nomjfille.GetValue(),
-            "nom" : self.ctrl_nom.GetValue(),
-            "prenom" : self.ctrl_prenom.GetValue(),
+            "nom" : self.ctrl_nom.GetValue().strip(),
+            "prenom" : self.ctrl_prenom.GetValue().strip(),
             "numsecu" : self.ctrl_numsecu.GetValue(),
             "nationalite" : self.ctrl_nationalite.GetValue(),
             "datenaiss" : self.ctrl_datenaiss.GetDate(),
@@ -518,21 +518,21 @@ class Panel_identite(wx.Panel):
         dictDonnees = self.GetData()
         DB = GestionDB.DB()
         listeDonnees = [    
-                            ("IDcivilite", dictDonnees["IDcivilite"]),
-                            ("nom_jfille", dictDonnees["nom_jfille"]),
-                            ("nom", dictDonnees["nom"]),
-                            ("prenom", dictDonnees["prenom"]),
-                            ("num_secu", dictDonnees["numsecu"]),
-                            ("IDnationalite", dictDonnees["nationalite"]),
-                            ("date_naiss", dictDonnees["datenaiss"]),
-                            ("IDpays_naiss", dictDonnees["paysnaiss"]),
-                            ("cp_naiss", dictDonnees["cpnaiss"]),
-                            ("ville_naiss",  dictDonnees["villenaiss"]),
-                            ("deces",  dictDonnees["deces"]),
-                            ("annee_deces",  dictDonnees["annee_deces"]),
-                            ("memo",  dictDonnees["memo"]),
-                            ("IDtype_sieste", dictDonnees["IDtype_sieste"]),
-                        ]
+            ("IDcivilite", dictDonnees["IDcivilite"]),
+            ("nom_jfille", dictDonnees["nom_jfille"]),
+            ("nom", dictDonnees["nom"]),
+            ("prenom", dictDonnees["prenom"]),
+            ("num_secu", dictDonnees["numsecu"]),
+            ("IDnationalite", dictDonnees["nationalite"]),
+            ("date_naiss", dictDonnees["datenaiss"]),
+            ("IDpays_naiss", dictDonnees["paysnaiss"]),
+            ("cp_naiss", dictDonnees["cpnaiss"]),
+            ("ville_naiss",  dictDonnees["villenaiss"]),
+            ("deces",  dictDonnees["deces"]),
+            ("annee_deces",  dictDonnees["annee_deces"]),
+            ("memo",  dictDonnees["memo"]),
+            ("IDtype_sieste", dictDonnees["IDtype_sieste"]),
+        ]
         DB.ReqMAJ("individus", listeDonnees, "IDindividu", self.IDindividu)
         DB.Close()
 

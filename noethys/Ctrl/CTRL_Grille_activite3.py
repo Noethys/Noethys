@@ -310,7 +310,7 @@ class CTRL(HTL.HyperTreeList):
         LEFT JOIN ouvertures ON ouvertures.IDactivite = activites.IDactivite
         LEFT JOIN groupes ON groupes.IDgroupe = ouvertures.IDgroupe
         WHERE ouvertures.date='%s'
-        GROUP BY groupes.IDgroupe
+        GROUP BY groupes.IDgroupe, activites.IDactivite
         ORDER BY groupes.ordre;""" % str(self.date)
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()

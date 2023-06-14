@@ -1,11 +1,14 @@
 # Noethys
 Config.dat
 Customize.ini
+setup_*.py
+build_*.bat
 Aide/
 Temp/
 Updates/
 Sync/
-Installeur/
+Installeur_py2/
+Installeur_py3/
 PaquetDebian/
 Travaux/
 Noethys.egg-info/
@@ -15,7 +18,8 @@ TODO.xlsx
 nologin.txt
 PackagerLinux.py
 CreateurANNONCES.py
-CreateurMAJ.py
+CreateurMAJ_py2.py
+CreateurMAJ_py3.py
 setup_source.bat
 setup_wheel.bat
 setup_windows.bat
@@ -42,6 +46,9 @@ __pycache__/
 .Python
 env/
 venv/
+venv2/
+venv3/
+venv27/
 build/
 develop-eggs/
 dist/

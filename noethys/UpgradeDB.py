@@ -1443,6 +1443,106 @@ class DB(GestionDB.DB):
 
         # =============================================================
 
+        versionFiltre = (1, 2, 8, 2)
+        if versionFichier < versionFiltre:
+            try:
+                self.AjoutChamp("historique", "IDdonnee", "INTEGER")
+                from Utils import UTILS_Procedures
+                UTILS_Procedures.A9038()
+            except Exception as err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
+
+        versionFiltre = (1, 2, 8, 5)
+        if versionFichier < versionFiltre:
+            try:
+                self.AjoutChamp("pes_lots", "format", "VARCHAR(100)")
+                self.AjoutChamp("pes_lots", "options", "VARCHAR(1000)")
+                from Utils import UTILS_Procedures
+                UTILS_Procedures.A9045()
+            except Exception as err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
+
+        versionFiltre = (1, 2, 8, 6)
+        if versionFichier < versionFiltre:
+            try:
+                self.AjoutChamp("activites", "code_produit_local", "VARCHAR(200)")
+                self.AjoutChamp("prestations", "code_produit_local", "VARCHAR(200)")
+                self.AjoutChamp("types_cotisations", "code_produit_local", "VARCHAR(200)")
+            except Exception as err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
+
+        versionFiltre = (1, 2, 9, 1)
+        if versionFichier < versionFiltre:
+            try:
+                self.AjoutChamp("activites", "inscriptions_multiples", "INTEGER")
+            except Exception as err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
+
+        versionFiltre = (1, 2, 9, 3)
+        if versionFichier < versionFiltre:
+            try:
+                self.AjoutChamp("pieces", "titre", "VARCHAR(200)")
+            except Exception as err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
+
+        versionFiltre = (1, 2, 9, 7)
+        if versionFichier < versionFiltre:
+            try:
+                self.AjoutChamp("locations", "description", "VARCHAR(200)")
+                self.AjoutChamp("portail_reservations_locations", "description", "VARCHAR(200)")
+            except Exception as err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
+
+        versionFiltre = (1, 3, 0, 5)
+        if versionFichier < versionFiltre:
+            try:
+                self.AjoutChamp("tarifs", "code_produit_local", "VARCHAR(200)")
+            except Exception as err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
+
+        versionFiltre = (1, 3, 0, 6)
+        if versionFichier < versionFiltre:
+            try:
+                self.AjoutChamp("memo_journee", "couleur", "VARCHAR(50)")
+            except Exception as err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
+
+        versionFiltre = (1, 3, 1, 4)
+        if versionFichier < versionFiltre:
+            try:
+                self.AjoutChamp("familles", "tiers_solidaire", "INTEGER")
+                self.AjoutChamp("pes_pieces", "tiers_solidaire", "INTEGER")
+            except Exception as err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
+
+        versionFiltre = (1, 3, 1, 8)
+        if versionFichier < versionFiltre:
+            try:
+                self.AjoutChamp("activites", "code_service", "VARCHAR(200)")
+            except Exception as err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
+
+
 
 
         return True

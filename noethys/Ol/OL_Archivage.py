@@ -228,7 +228,7 @@ class ListView(FastObjectListView):
     def GetParametresImpression(self):
         dictParametres = {
             "titre": _(u"Liste des %s") % self.mode,
-            "total": _(u"> %s %s") % (len(self.donnees), self.mode),
+            "total": _(u"> %s %s") % (len(self.GetFilteredObjects()), self.mode),
             "orientation": wx.PORTRAIT,
         }
         return dictParametres

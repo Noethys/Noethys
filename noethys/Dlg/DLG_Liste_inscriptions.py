@@ -230,7 +230,7 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         intro = _(u"Vous pouvez ici consulter et imprimer la liste des inscriptions. Commencez par sélectionner une activité avant de cliquer sur le bouton 'Rafraîchir la liste' pour afficher les résultats. Vous pouvez également regrouper les données par type d'informations et sélectionner les colonnes à afficher. Les données peuvent être ensuite imprimées ou exportées au format Texte ou Excel.")
-        titre = _(u"Liste des inscriptions")
+        titre = _(u"Liste des inscriptions à une activité")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Activite.png")
 

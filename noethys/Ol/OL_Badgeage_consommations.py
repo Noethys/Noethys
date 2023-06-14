@@ -88,6 +88,8 @@ class ListView(FastObjectListView):
             return UTILS_Dates.DateEngFr(str(dateDD))
 
         def FormateHeure(heure):
+            if not heure:
+                return ""
             heure = heure.replace(":", "h")
             return heure
 
@@ -136,7 +138,7 @@ class ListView(FastObjectListView):
     def GetParametresImpression(self):
         dictParametres = {
             "titre": _(u"Liste des consommations badgées"),
-            "total": _(u"> %s consommations") % len(self.donnees),
+            "total": _(u"> %s consommations") % len(self.GetFilteredObjects()),
             "orientation": wx.PORTRAIT,
         }
         return dictParametres

@@ -111,7 +111,7 @@ class CTRL_Groupes(wx.CheckListBox):
     
 # ----------------------------------------------------------------------------------------------------------------------------------
 
-class CTRL_Choix_donnees(wx.Choice):
+class CTRL_Choix_valeurs(wx.Choice):
     def __init__(self, parent):
         wx.Choice.__init__(self, parent, -1) 
         self.parent = parent
@@ -128,14 +128,35 @@ class CTRL_Choix_donnees(wx.Choice):
         if index == 1 : return "temps_presence"
         if index == 2 : return "temps_facture"
 
+
 # ----------------------------------------------------------------------------------------------------------------------------------
 
-class CTRL_Choix_regroupement(wx.Choice):
+class CTRL_Choix_colonnes(wx.Choice):
+    def __init__(self, parent):
+        wx.Choice.__init__(self, parent, -1)
+        self.parent = parent
+        self.MAJ()
+
+    def MAJ(self):
+        self.listeLabels = [_(u"Unités"), _(u"Unités + groupes"), _(u"Unités + événements")]
+        self.SetItems(self.listeLabels)
+        self.Select(0)
+
+    def GetValeur(self):
+        index = self.GetSelection()
+        if index == 0: return "unites"
+        if index == 1: return "unites_groupes"
+        if index == 2: return "unites_evenements"
+
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+class CTRL_Choix_lignes(wx.Choice):
     def __init__(self, parent):
         wx.Choice.__init__(self, parent, -1) 
         self.parent = parent
         self.listeDonnees = [
-            {"label" : _(u"Jour"), "code" : "jour"},
+            {"label" : _(u"Date"), "code" : "jour"},
             {"label" : _(u"Mois"), "code" : "mois"},
             {"label" : _(u"Année"), "code" : "annee"},
             {"label" : _(u"Activité"), "code" : "activite"},
@@ -167,6 +188,7 @@ class CTRL_Choix_regroupement(wx.Choice):
         for public in ("famille", "individu") :
             for dictTemp in q.GetQuestions(public) :
                 label = _(u"Question %s. : %s") % (public[:3], dictTemp["label"])
+                if len(label) > 45: label = label[:45] + "..."
                 code = "question_%s_%d" % (public, dictTemp["IDquestion"])
                 self.listeDonnees.append({"label" : label, "code" : code})
 
@@ -263,14 +285,15 @@ class Parametres(wx.Panel):
         self.box_groupes_staticbox = wx.StaticBox(self, -1, _(u"Groupes"))
         self.ctrl_groupes = CTRL_Groupes(self)
         self.ctrl_groupes.SetMinSize((200, 50))
-        self.check_detail_groupes = wx.CheckBox(self, -1, _(u"Afficher détail par groupe"))
-        
+
         # Affichage
         self.box_affichage_staticbox = wx.StaticBox(self, -1, _(u"Options"))
-        self.label_donnees = wx.StaticText(self, -1, _(u"Données :"))
-        self.ctrl_donnees = CTRL_Choix_donnees(self)
-        self.label_regroupement = wx.StaticText(self, -1, _(u"Regroup. :"))
-        self.ctrl_regroupement = CTRL_Choix_regroupement(self)
+        self.label_lignes = wx.StaticText(self, -1, _(u"Lignes :"))
+        self.ctrl_lignes = CTRL_Choix_lignes(self)
+        self.label_colonnes = wx.StaticText(self, -1, _(u"Colonnes :"))
+        self.ctrl_colonnes = CTRL_Choix_colonnes(self)
+        self.label_valeurs = wx.StaticText(self, -1, _(u"Valeurs :"))
+        self.ctrl_valeurs = CTRL_Choix_valeurs(self)
         self.label_mode = wx.StaticText(self, -1, _(u"Mode :"))
         self.ctrl_mode = CTRL_Choix_mode(self)
         self.label_etat = wx.StaticText(self, -1, _(u"Etat :"))
@@ -283,9 +306,9 @@ class Parametres(wx.Panel):
         self.__do_layout()
 
         self.Bind(wx.EVT_CHECKLISTBOX, self.Actualiser, self.ctrl_groupes)
-        self.Bind(wx.EVT_CHECKBOX, self.Actualiser, self.check_detail_groupes)
-        self.Bind(wx.EVT_CHOICE, self.Actualiser, self.ctrl_donnees) 
-        self.Bind(wx.EVT_CHOICE, self.Actualiser, self.ctrl_regroupement) 
+        self.Bind(wx.EVT_CHOICE, self.Actualiser, self.ctrl_valeurs)
+        self.Bind(wx.EVT_CHOICE, self.Actualiser, self.ctrl_lignes)
+        self.Bind(wx.EVT_CHOICE, self.Actualiser, self.ctrl_colonnes)
         self.Bind(wx.EVT_CHOICE, self.OnChoixMode, self.ctrl_mode) 
         self.Bind(wx.EVT_CHECKLISTBOX, self.Actualiser, self.ctrl_etat)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonActualiser, self.bouton_actualiser)
@@ -295,9 +318,9 @@ class Parametres(wx.Panel):
         self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de période")))
         self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"Sélectionnez une activité")))
         self.ctrl_groupes.SetToolTip(wx.ToolTip(_(u"Cochez les groupes à prendre en compte")))
-        self.check_detail_groupes.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher le détail par groupe")))
-        self.ctrl_donnees.SetToolTip(wx.ToolTip(_(u"Sélectionnez le type de données à afficher")))
-        self.ctrl_regroupement.SetToolTip(wx.ToolTip(_(u"Sélectionnez le regroupement par période")))
+        self.ctrl_valeurs.SetToolTip(wx.ToolTip(_(u"Sélectionnez le type de données à afficher")))
+        self.ctrl_lignes.SetToolTip(wx.ToolTip(_(u"Sélectionnez le type de données par ligne")))
+        self.ctrl_colonnes.SetToolTip(wx.ToolTip(_(u"Sélectionnez le type de données par colonne")))
         self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser la liste")))
 
     def __do_layout(self):
@@ -321,16 +344,17 @@ class Parametres(wx.Panel):
         # Groupes
         box_groupes = wx.StaticBoxSizer(self.box_groupes_staticbox, wx.VERTICAL)
         box_groupes.Add(self.ctrl_groupes, 1, wx.ALL|wx.EXPAND, 5)
-        box_groupes.Add(self.check_detail_groupes, 0, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 5)
         grid_sizer_base.Add(box_groupes, 1, wx.EXPAND, 0)
         
         # affichage
         box_affichage = wx.StaticBoxSizer(self.box_affichage_staticbox, wx.VERTICAL)
-        grid_sizer_affichage = wx.FlexGridSizer(rows=4, cols=2, vgap=5, hgap=5)
-        grid_sizer_affichage.Add(self.label_donnees, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_affichage.Add(self.ctrl_donnees, 0, wx.EXPAND|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_affichage.Add(self.label_regroupement, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_affichage.Add(self.ctrl_regroupement, 0, wx.EXPAND|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_affichage = wx.FlexGridSizer(rows=5, cols=2, vgap=5, hgap=5)
+        grid_sizer_affichage.Add(self.label_lignes, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_affichage.Add(self.ctrl_lignes, 0, wx.EXPAND|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_affichage.Add(self.label_colonnes, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_affichage.Add(self.ctrl_colonnes, 0, wx.EXPAND|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_affichage.Add(self.label_valeurs, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_affichage.Add(self.ctrl_valeurs, 0, wx.EXPAND|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_affichage.Add(self.label_mode, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_affichage.Add(self.ctrl_mode, 0, wx.EXPAND|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_affichage.Add(self.label_etat, 0, wx.ALIGN_RIGHT, 0)
@@ -402,9 +426,9 @@ class Parametres(wx.Panel):
         date_fin = self.ctrl_date_fin.GetDate() 
         IDactivite = self.ctrl_activite.GetID()
         listeGroupes = self.ctrl_groupes.GetListeGroupes()
-        detail_groupes = self.check_detail_groupes.GetValue() 
-        affichage_donnees = self.ctrl_donnees.GetValeur() 
-        affichage_regroupement = self.ctrl_regroupement.GetValeur() 
+        affichage_valeurs = self.ctrl_valeurs.GetValeur()
+        affichage_lignes = self.ctrl_lignes.GetValeur()
+        affichage_colonnes = self.ctrl_colonnes.GetValeur()
         affichage_mode = self.ctrl_mode.GetValeur() 
         affichage_etat = self.ctrl_etat.GetValeur()
         
@@ -436,8 +460,8 @@ class Parametres(wx.Panel):
         labelParametres = " | ".join(listeParametres)
         
         # MAJ
-        self.parent.ctrl_resultats.MAJ(date_debut=date_debut, date_fin=date_fin, IDactivite=IDactivite, listeGroupes=listeGroupes, detail_groupes=detail_groupes, 
-                                                    affichage_donnees=affichage_donnees, affichage_regroupement=affichage_regroupement,
+        self.parent.ctrl_resultats.MAJ(date_debut=date_debut, date_fin=date_fin, IDactivite=IDactivite, listeGroupes=listeGroupes,
+                                                    affichage_valeurs=affichage_valeurs, affichage_lignes=affichage_lignes, affichage_colonnes=affichage_colonnes,
                                                     affichage_mode=affichage_mode, affichage_etat=affichage_etat, labelParametres=labelParametres)
 
 

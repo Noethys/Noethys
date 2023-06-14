@@ -52,7 +52,7 @@ def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False, inclure_tel
     SELECT IDindividu, IDcivilite, individus.nom, prenom, date_naiss, adresse_auto, rue_resid, cp_resid, ville_resid, mail, individus.IDsecteur, secteurs.nom %s
     FROM individus
     LEFT JOIN secteurs ON secteurs.IDsecteur = individus.IDsecteur
-    ;""" % champs_telephones
+    WHERE deces=0 OR deces IS NULL;""" % champs_telephones
     DB.ExecuterReq(req)
     listeIndividus = DB.ResultatReq()  
     dictIndividus = {}

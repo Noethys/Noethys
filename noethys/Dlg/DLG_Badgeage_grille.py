@@ -109,10 +109,11 @@ class CTRL_Titre(wx.Panel):
 # ------------------------------------------------------------------------------------------------------------
 
 class CTRL(wx.Panel):
-    def __init__(self, parent, panel_facturation=None):
+    def __init__(self, parent, panel_facturation=None, usage=None):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
         self.mode = "reservation"
+        self.usage = usage
         
         # Labels
         self.ctrl_titre = CTRL_Titre(self)
@@ -213,9 +214,9 @@ class CTRL(wx.Panel):
         hasPlaces = True
         if case.HasPlaceDisponible(*conditions) == False :
             hasPlaces = False
-            if mode == "reservation" :
+            if mode == "reservation" and self.usage != "nomadhys":
                 return _(u"Il n'y a plus de place le %s.") % UTILS_Dates.DateDDEnFr(date)
-        
+
         # Vérifie la compatibilité avec les autres unités
         incompatibilite = case.VerifieCompatibilitesUnites()
         if incompatibilite != None :

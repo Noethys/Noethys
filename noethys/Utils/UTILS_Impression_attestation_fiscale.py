@@ -240,9 +240,9 @@ class Impression():
                                     )
             
             for nomCompletIndividu, dictIndividu in dictCompte["individus"] :
-                dataTableau.append( (nomCompletIndividu, dictIndividu["date_naiss"],  u"%.2f %s" % (dictIndividu["regle"], SYMBOLE)) )
+                dataTableau.append( (nomCompletIndividu, dictIndividu["date_naiss"],  u"%.2f %s" % (dictIndividu[dictOptions["type_montant"]], SYMBOLE)) )
             
-            dataTableau.append( ("", "Total :",  dictCompte["{MONTANT_REGLE}"]) )
+            dataTableau.append( ("", "Total :",  dictCompte["{MONTANT_%s}" % dictOptions["type_montant"].upper()]) )
             
             style = TableStyle([
                     ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'), 

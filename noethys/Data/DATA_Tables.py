@@ -125,6 +125,7 @@ DB_DATA = {
                                     ("autorisation_cafpro", "INTEGER", u"Autorisation de consultation CAFPRO (0/1)"),
                                     ("autre_adresse_facturation", "VARCHAR(450)", u"Autre adresse de facturation"),
                                     ("etat", "VARCHAR(50)", u"Etat"),
+                                    ("tiers_solidaire", "INTEGER", u"IDindividu du tiers solidaire"),
                                     ], # Les familles
     
     "rattachements":[       ("IDrattachement", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID rattachement"),
@@ -216,6 +217,7 @@ DB_DATA = {
                                     ("IDfamille", "INTEGER", u"IDfamille"),
                                     ("date_debut", "DATE", u"Date de début"),
                                     ("date_fin", "DATE", u"Date de fin"),
+                                    ("titre", "VARCHAR(200)", u"Titre de la pièce"),
                                     ], # Pièces rattachées aux individus ou familles
 
     "organisateur":[          ("IDorganisateur", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Organisateur"),
@@ -276,6 +278,8 @@ DB_DATA = {
                                     ("portail_reservations_absenti", "VARCHAR(100)", u"Application d'une absence injustifiée"),
                                     ("portail_unites_multiples", "INTEGER", u"Sélection multiple d'unités autorisée (0/1)"),
                                     ("regie", "INTEGER", u"ID de la régie associée"),
+                                    ("code_produit_local", "VARCHAR(200)", u"Code produit local pour export compta"),
+                                    ("inscriptions_multiples", "INTEGER", u"Autoriser les inscriptions multiples (0/1)"),
                                     ], # Activités
 
     "agrements":[            ("IDagrement", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Agrément"),
@@ -439,6 +443,7 @@ DB_DATA = {
                                     ("label_prestation", "VARCHAR(300)", u"Label de la prestation"),
                                     ("IDevenement", "INTEGER", u"ID de l'évènement associé"),
                                     ("IDproduit", "INTEGER", u"ID du produit associé"),
+                                    ("code_produit_local", "VARCHAR(200)", u"Code produit local pour export compta"),
                                     ], # Tarifs
 
     "combi_tarifs":          [("IDcombi_tarif", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID combinaison de tarif"),
@@ -535,6 +540,7 @@ DB_DATA = {
                                     ("IDindividu", "INTEGER", u"ID de l'individu"),
                                     ("date", "DATE", u"Date"),
                                     ("texte", "VARCHAR(200)", u"Texte du mémo"),
+                                    ("couleur", "VARCHAR(50)", u"Couleur"),
                                     ], # Mémo journées
 
     "prestations":[           ("IDprestation", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID prestation"),
@@ -560,6 +566,7 @@ DB_DATA = {
                                     ("IDcontrat", "INTEGER", u"ID du contrat associé"),
                                     ("date_valeur", "DATE", u"Date de valeur comptable de la prestation"),
                                     ("IDdonnee", "INTEGER", u"ID d'une donnée associée"),
+                                    ("code_produit_local", "VARCHAR(200)", u"Code produit local pour export compta"),
                                     ], # Prestations
 
     "comptes_payeurs":[  ("IDcompte_payeur", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID compte_payeur"),
@@ -715,6 +722,7 @@ DB_DATA = {
                                     ("carte", "INTEGER", u"(0/1) Est une carte d'adhérent"),
                                     ("defaut", "INTEGER", u"(0/1) Cotisation sélectionnée par défaut"),
                                     ("code_comptable", "VARCHAR(450)", u"Code comptable pour facturation et export logiciels compta"),
+                                    ("code_produit_local", "VARCHAR(200)", u"Code produit local pour export compta"),
                                     ], # Types de cotisations
 
     "unites_cotisations":[ ("IDunite_cotisation", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID unité cotisation"),
@@ -877,6 +885,7 @@ DB_DATA = {
                                     ("IDindividu", "INTEGER", u"ID de l'individu"),
                                     ("IDcategorie", "INTEGER", u"ID de la catégorie d'action"),
                                     ("action", "VARCHAR(500)", u"Action"),
+                                    ("IDdonnee", "INTEGER", u"Donnée associée à l'action"),
                                     ], # Historique
 
     "attestations":[           ("IDattestation", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDattestation"),
@@ -1355,6 +1364,7 @@ DB_DATA = {
                                     ("prelevement_titulaire", "VARCHAR(400)", u"Titulaire du compte bancaire"),
                                     ("prelevement_statut", "VARCHAR(100)", u"Statut du prélèvement"),
                                     ("titulaire_helios", "INTEGER", u"Tiers Trésor public"),
+                                    ("tiers_solidaire", "INTEGER", u"IDindividu du tiers solidaire"),
                                     ("type", "VARCHAR(400)", u"Type du prélèvement"),
                                     ("IDfacture", "INTEGER", u"ID de la facture"),
                                     ("numero", "BIGINT", u"Numéro de facture"),
@@ -1384,6 +1394,8 @@ DB_DATA = {
                                     ("code_etab", "VARCHAR(100)", u"Code Etablissement"),
                                     ("prelevement_libelle", "VARCHAR(450)", u"Libellé du prélèvement"),
                                     ("objet_piece", "VARCHAR(450)", u"Objet de la pièce"),
+                                    ("format", "VARCHAR(100)", u"Format du lot"),
+                                    ("options", "VARCHAR(1000)", u"Options diverses"),
                                     ], # Lots PESV2 ORMC
 
     "contrats":[               ("IDcontrat", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID contrat"),
@@ -1620,6 +1632,7 @@ DB_DATA = {
                                     ("etat", "VARCHAR(100)", u"ajouter, modifier ou supprimer"),
                                     ("resultat", "VARCHAR(100)", u"Résultat du traitement"),
                                     ("partage", "INTEGER", u"Partage du produit (0/1)"),
+                                    ("description", "VARCHAR(200)", u"Description"),
                                     ], # Réservations de locations enregistrées sur le portail
 
     "portail_messages":             [("IDmessage", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDmessage"),
@@ -1695,6 +1708,7 @@ DB_DATA = {
                                     ("IDlocation_portail", "VARCHAR(100)", u"IDlocation sur le portail"),
                                     ("serie", "VARCHAR(100)", u"uuid de la série"),
                                     ("partage", "INTEGER", u"Autoriser le partage de la ressource (0/1)"),
+                                    ("description", "VARCHAR(200)", u"Description"),
                                     ],  # Locations
 
 

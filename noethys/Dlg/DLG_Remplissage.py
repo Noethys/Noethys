@@ -21,6 +21,8 @@ from Ctrl import CTRL_Ticker_presents
 from Utils import UTILS_Config
 
 AFFICHE_PRESENTS = 1
+MAJ_AUTO_REMPLISSAGE = 0
+MAJ_AUTO_EN_ATTENTE = None
 
 ID_MODE_PLACES_INITIALES = wx.Window.NewControlId()
 ID_MODE_PLACES_PRISES = wx.Window.NewControlId()
@@ -94,7 +96,7 @@ class ToolBar(wx.ToolBar):
         self.GetParent().OuvrirListeAttente()
 
     def Parametres(self, event):
-        global AFFICHE_PRESENTS
+        global AFFICHE_PRESENTS, MAJ_AUTO_REMPLISSAGE
         from Dlg import DLG_Parametres_remplissage
         dictDonnees = self.GetParent().dictDonnees
         if "modeAffichage" in dictDonnees :
@@ -103,9 +105,9 @@ class ToolBar(wx.ToolBar):
             modeAffichage = "nbrePlacesPrises"
         abregeGroupes = self.GetParent().ctrl_remplissage.GetAbregeGroupes()
         totaux = self.GetParent().ctrl_remplissage.GetAfficheTotaux()
-        print(totaux)
         affichePresents = AFFICHE_PRESENTS
-        dlg = DLG_Parametres_remplissage.Dialog(None, dictDonnees, abregeGroupes=abregeGroupes, affichePresents=affichePresents, totaux=totaux)
+        maj_auto_remplissage = MAJ_AUTO_REMPLISSAGE
+        dlg = DLG_Parametres_remplissage.Dialog(None, dictDonnees, abregeGroupes=abregeGroupes, affichePresents=affichePresents, totaux=totaux, maj_auto_remplissage=maj_auto_remplissage)
         if dlg.ShowModal() == wx.ID_OK:
             # Mise à jour des paramètres du tableau
             listeActivites = dlg.GetListeActivites()
@@ -124,6 +126,9 @@ class ToolBar(wx.ToolBar):
             # Affiche ticker des présents
             AFFICHE_PRESENTS = dlg.GetAffichePresents()
             UTILS_Config.SetParametre("remplissage_affiche_presents", int(AFFICHE_PRESENTS))
+            # MAJ auto remplissage
+            MAJ_AUTO_REMPLISSAGE = dlg.GetMAJautoRemplissage()
+            UTILS_Config.SetParametre("remplissage_maj_auto", int(MAJ_AUTO_REMPLISSAGE))
             # MAJ
             self.GetParent().MAJ()
         dlg.Destroy()
@@ -205,8 +210,9 @@ class Panel(wx.Panel):
         self.ctrl_presents = CTRL_Ticker_presents.CTRL(self, delai=60, listeActivites=[15,])
         self.ctrl_presents.Show(False) 
 
-        global AFFICHE_PRESENTS
-        AFFICHE_PRESENTS = UTILS_Config.GetParametre("remplissage_affiche_presents", 1) 
+        global AFFICHE_PRESENTS, MAJ_AUTO_REMPLISSAGE
+        AFFICHE_PRESENTS = UTILS_Config.GetParametre("remplissage_affiche_presents", 1)
+        MAJ_AUTO_REMPLISSAGE = UTILS_Config.GetParametre("remplissage_maj_auto", 0)
 
         if "modeAffichage" in self.dictDonnees :
             if self.dictDonnees["modeAffichage"] == "nbrePlacesInitial" : self.toolBar.ToggleTool(ID_MODE_PLACES_INITIALES, True)
@@ -251,11 +257,16 @@ class Panel(wx.Panel):
         self.ctrl_remplissage.SetDictDonnees(self.dictDonnees)
         # Mémorisation du dict de données dans le config
         UTILS_Config.SetParametre("dict_selection_periodes_activites", self.dictDonnees)
-    
+
     def MAJ(self):
+        global MAJ_AUTO_EN_ATTENTE
         self.ctrl_remplissage.MAJ() 
-        self.MAJpresents() 
-    
+        self.MAJpresents()
+        if MAJ_AUTO_REMPLISSAGE:
+            if MAJ_AUTO_EN_ATTENTE:
+                MAJ_AUTO_EN_ATTENTE.Stop()
+            MAJ_AUTO_EN_ATTENTE = wx.CallLater(MAJ_AUTO_REMPLISSAGE, self.MAJ)
+
     def MAJpresents(self):
         """ MAJ du Ticker des présents """
         listeActivites = self.dictDonnees["listeActivites"]

@@ -186,7 +186,7 @@ class ListView(FastObjectListView):
             self.dictParametres["groupes_activites"] = listeID
 
         # Activités
-            self.dictParametres["activites"] = []
+        self.dictParametres["activites"] = []
         if "liste_activites" in dictParametres:
             listeID = [int(ID) for ID in dictParametres["liste_activites"].split(";")]
             self.dictParametres["activites"] = listeID
@@ -725,6 +725,8 @@ class ListView(FastObjectListView):
             pass
 
     def RechercherSiDlgOuverte(self, widget=None):
+        if not widget:
+            return False
         for child in widget.GetChildren():
             if "wxDialog" in child.__str__():
                 return True

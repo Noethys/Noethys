@@ -208,8 +208,13 @@ class Panel(wx.Panel):
         self.bouton_defaut_responsable = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Ok.png"), wx.BITMAP_TYPE_ANY))
 
         # Code comptable
-        self.staticbox_code_comptable_staticbox = wx.StaticBox(self, -1, _(u"Code comptable"))
+        self.staticbox_comptabilite_staticbox = wx.StaticBox(self, -1, _(u"Comptabilité"))
+        self.label_code_comptable = wx.StaticText(self, -1, _(u"Code comptable :"))
         self.ctrl_code_comptable = wx.TextCtrl(self, -1, "")
+        self.label_code_produit_local = wx.StaticText(self, -1, _(u"Code produit local :"))
+        self.ctrl_code_produit_local = wx.TextCtrl(self, -1, "")
+        self.label_code_service = wx.StaticText(self, -1, _(u"Code service :"))
+        self.ctrl_code_service = wx.TextCtrl(self, -1, "")
 
         # Régie de facturation
         self.staticbox_regie_facturation_staticbox = wx.StaticBox(self, -1, _(u"Régie de facturation"))
@@ -218,7 +223,7 @@ class Panel(wx.Panel):
         # Groupes d'activités
         self.staticbox_groupes_staticbox = wx.StaticBox(self, -1, _(u"Regroupement d'activités"))
         self.ctrl_groupes = CTRL_Groupes_activite(self)
-        self.ctrl_groupes.SetMinSize((320, 80))
+        self.ctrl_groupes.SetMinSize((320, 70))
         
         # Logo
         self.staticbox_logo_staticbox = wx.StaticBox(self, -1, _(u"Logo"))
@@ -249,9 +254,10 @@ class Panel(wx.Panel):
         self.ctrl_public.Show(False)
 
         # Nombre max d'inscrits
-        self.staticbox_limitation_inscrits_staticbox = wx.StaticBox(self, -1, _(u"Limitation du nombre d'inscrits"))
-        self.check_limitation_inscrits = wx.CheckBox(self, -1, _(u"Nombre d'inscrits max. :"))
+        self.staticbox_limitation_inscrits_staticbox = wx.StaticBox(self, -1, _(u"Inscriptions"))
+        self.check_limitation_inscrits = wx.CheckBox(self, -1, _(u"Nombre d'inscrits maximal :"))
         self.ctrl_limitation_inscrits = wx.SpinCtrl(self, -1, size=(80, -1), min=1, max=99999)
+        self.check_inscriptions_multiples = wx.CheckBox(self, -1, _(u"Autoriser les inscriptions multiples pour un individu"))
 
         self.__set_properties()
         self.__do_layout()
@@ -308,7 +314,10 @@ class Panel(wx.Panel):
         self.check_limitation_inscrits.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour définir un nombre maximal d'inscrits pour cette activité (Utile uniquement pour les activités à durée limitée)")))
         self.ctrl_limitation_inscrits.SetToolTip(wx.ToolTip(_(u"Saisissez le nombre maximal d'inscrits de cette activité (Utile uniquement pour les activités à durée limitée)")))
         self.ctrl_code_comptable.SetToolTip(wx.ToolTip(_(u"Saisissez un code comptable si vous souhaitez utiliser l'export des écritures comptables vers des logiciels de compta")))
+        self.ctrl_code_produit_local.SetToolTip(wx.ToolTip(_(u"Saisissez un code produit local si vous souhaitez utiliser l'export vers les logiciels de comptabilité publique")))
+        self.ctrl_code_service.SetToolTip(wx.ToolTip(_(u"Saisissez un code service si vous souhaitez utiliser l'export vers les logiciels de comptabilité publique")))
         self.ctrl_regie_facturation.SetToolTip(wx.ToolTip(_(u"Sélectionnez une régie de facturation")))
+        self.check_inscriptions_multiples.SetToolTip(wx.ToolTip(_(u"Autoriser un individu à être inscrit plusieurs fois à la même activité. ATTENTION, ne pas utiliser cette option si vous utilisez des consommations dans cette activité car la grille des consommations est incompatible.")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
@@ -349,20 +358,26 @@ class Panel(wx.Panel):
         grid_sizer_gauche.Add(staticbox_groupes, 1, wx.EXPAND, 0)
 
         # Limitation nombre inscrits
-        staticbox_limitation_inscrits = wx.StaticBoxSizer(self.staticbox_limitation_inscrits_staticbox, wx.HORIZONTAL)
-        staticbox_limitation_inscrits.Add(self.check_limitation_inscrits, 0, wx.ALL|wx.EXPAND, 5)
-        staticbox_limitation_inscrits.Add(self.ctrl_limitation_inscrits, 0, wx.RIGHT|wx.EXPAND, 5)
-        grid_sizer_gauche.Add(staticbox_limitation_inscrits, 1, wx.EXPAND, 0)
+        staticbox_inscriptions = wx.StaticBoxSizer(self.staticbox_limitation_inscrits_staticbox, wx.VERTICAL)
+        grid_sizer_limitation_inscrits = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+        grid_sizer_limitation_inscrits.Add(self.check_limitation_inscrits, 0, wx.EXPAND, 0)
+        grid_sizer_limitation_inscrits.Add(self.ctrl_limitation_inscrits, 0, wx.EXPAND, 0)
+        staticbox_inscriptions.Add(grid_sizer_limitation_inscrits, 0, wx.LEFT | wx.RIGHT | wx.EXPAND, 5)
+        staticbox_inscriptions.Add(self.check_inscriptions_multiples, 0, wx.ALL | wx.EXPAND, 5)
+        grid_sizer_gauche.Add(staticbox_inscriptions, 1, wx.EXPAND, 0)
 
-        # Régie de facturation
-        staticbox_regie_facturation = wx.StaticBoxSizer(self.staticbox_regie_facturation_staticbox, wx.HORIZONTAL)
-        staticbox_regie_facturation.Add(self.ctrl_regie_facturation, 1, wx.ALL|wx.EXPAND, 5)
-        grid_sizer_gauche.Add(staticbox_regie_facturation, 1, wx.EXPAND, 0)
-
-        # Code comptable
-        staticbox_code_comptable = wx.StaticBoxSizer(self.staticbox_code_comptable_staticbox, wx.HORIZONTAL)
-        staticbox_code_comptable.Add(self.ctrl_code_comptable, 1, wx.ALL|wx.EXPAND, 5)
-        grid_sizer_gauche.Add(staticbox_code_comptable, 1, wx.EXPAND, 0)
+        # Comptabilite
+        staticbox_code_comptabilite = wx.StaticBoxSizer(self.staticbox_comptabilite_staticbox, wx.HORIZONTAL)
+        grid_sizer_comptabilite = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=5)
+        grid_sizer_comptabilite.Add(self.label_code_comptable, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_comptabilite.Add(self.ctrl_code_comptable, 0, wx.EXPAND, 0)
+        grid_sizer_comptabilite.Add(self.label_code_produit_local, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_comptabilite.Add(self.ctrl_code_produit_local, 0, wx.EXPAND, 0)
+        grid_sizer_comptabilite.Add(self.label_code_service, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_comptabilite.Add(self.ctrl_code_service, 0, wx.EXPAND, 0)
+        grid_sizer_comptabilite.AddGrowableCol(1)
+        staticbox_code_comptabilite.Add(grid_sizer_comptabilite, 1, wx.ALL | wx.EXPAND, 5)
+        grid_sizer_gauche.Add(staticbox_code_comptabilite, 1, wx.EXPAND, 0)
 
         grid_sizer_gauche.AddGrowableRow(2)
         
@@ -387,6 +402,10 @@ class Panel(wx.Panel):
         staticbox_responsables.Add(grid_sizer_responsables, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_droit.Add(staticbox_responsables, 1, wx.EXPAND, 0)
 
+        # Régie de facturation
+        staticbox_regie_facturation = wx.StaticBoxSizer(self.staticbox_regie_facturation_staticbox, wx.HORIZONTAL)
+        staticbox_regie_facturation.Add(self.ctrl_regie_facturation, 1, wx.ALL|wx.EXPAND, 5)
+        grid_sizer_droit.Add(staticbox_regie_facturation, 1, wx.EXPAND, 0)
 
         # Public
         staticbox_public = wx.StaticBoxSizer(self.staticbox_public_staticbox, wx.VERTICAL)
@@ -518,7 +537,7 @@ class Panel(wx.Panel):
         """ Importation des données """
         db = GestionDB.DB()
         req = """SELECT nom, abrege, coords_org, rue, cp, ville, tel, fax, mail, site, 
-        logo_org, logo, date_debut, date_fin, public, nbre_inscrits_max, code_comptable, regie
+        logo_org, logo, date_debut, date_fin, public, nbre_inscrits_max, code_comptable, regie, code_produit_local, inscriptions_multiples, code_service
         FROM activites 
         WHERE IDactivite=%d;""" % self.IDactivite
         db.ExecuterReq(req)
@@ -591,12 +610,24 @@ class Panel(wx.Panel):
         if nbre_inscrits_max != None :
             self.check_limitation_inscrits.SetValue(True)
             self.ctrl_limitation_inscrits.SetValue(nbre_inscrits_max)
-            
-        # Code comptable
+
+        # Inscriptions multiples
+        if activite[19] == 1:
+            self.check_inscriptions_multiples.SetValue(True)
+
+        # Comptabilité
         code_comptable = activite[16]
         if code_comptable != None :
             self.ctrl_code_comptable.SetValue(code_comptable)
-            
+
+        code_produit_local = activite[18]
+        if code_produit_local != None:
+            self.ctrl_code_produit_local.SetValue(code_produit_local)
+
+        code_service = activite[20]
+        if code_service != None:
+            self.ctrl_code_service.SetValue(code_service)
+
         # Régie de facturation
         regie = activite[17]
         if regie != None :
@@ -725,10 +756,15 @@ class Panel(wx.Panel):
             nbre_inscrits_max = self.ctrl_limitation_inscrits.GetValue()
         else :
             nbre_inscrits_max = None
-        
-        # Code comptable
+
+        # Inscriptions multiples
+        inscriptions_multiples = int(self.check_inscriptions_multiples.GetValue())
+
+        # Comptabilité
         code_comptable = self.ctrl_code_comptable.GetValue() 
-        
+        code_produit_local = self.ctrl_code_produit_local.GetValue()
+        code_service = self.ctrl_code_service.GetValue()
+
         # Régie de facturation
         regie = self.ctrl_regie_facturation.GetID()
         
@@ -751,6 +787,9 @@ class Panel(wx.Panel):
                 ("nbre_inscrits_max", nbre_inscrits_max),
                 ("code_comptable", code_comptable),
                 ("regie", regie),
+                ("code_produit_local", code_produit_local),
+                ("code_service", code_service),
+                ("inscriptions_multiples", inscriptions_multiples),
             ]
         DB.ReqMAJ("activites", listeDonnees, "IDactivite", self.IDactivite)
         

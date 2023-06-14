@@ -72,7 +72,7 @@ class ListView(FastObjectListView):
     def GetTracks(self):
         """ Récupération des données """
         # Conditions
-        conditions = []
+        conditions = ["individus.etat IS NULL"]
         if self.IDecole != None :
             conditions.append("scolarite.IDecole=%d " % self.IDecole)
         if self.IDclasse != None :
@@ -88,13 +88,13 @@ class ListView(FastObjectListView):
         DB = GestionDB.DB()
         req = """
         SELECT individus.IDindividu, individus.IDcivilite, individus.nom, individus.prenom, individus.date_naiss,
-        IDscolarite, MIN(date_debut), MAX(date_fin), scolarite.IDniveau, niveaux_scolaires.abrege
+        MIN(date_debut), MAX(date_fin), MIN(niveaux_scolaires.abrege)
         FROM individus 
         LEFT JOIN scolarite ON scolarite.IDindividu = individus.IDindividu
         LEFT JOIN niveaux_scolaires ON niveaux_scolaires.IDniveau = scolarite.IDniveau
         %s
         GROUP BY individus.IDindividu
-        ORDER BY individus.nom, individus.prenom, scolarite.IDniveau
+        ORDER BY individus.nom, individus.prenom
         ;""" % txtConditions
 
         DB.ExecuterReq(req)
@@ -112,11 +112,9 @@ class ListView(FastObjectListView):
             dictTemp["nomIndividu"] = valeurs[2]
             dictTemp["prenomIndividu"] = valeurs[3]
             dictTemp["date_naiss"] = valeurs[4]
-            dictTemp["IDscolarite"] = valeurs[5]
-            dictTemp["date_debut"] = valeurs[6]
-            dictTemp["date_fin"] = valeurs[7]
-            dictTemp["IDniveau"] = valeurs[8]
-            dictTemp["abregeNiveau"] = valeurs[9]
+            dictTemp["date_debut"] = valeurs[5]
+            dictTemp["date_fin"] = valeurs[6]
+            dictTemp["abregeNiveau"] = valeurs[7]
             
             # Infos sur la civilité
             dictTemp["genre"] = dictCivilites[dictTemp["IDcivilite"]]["sexe"]

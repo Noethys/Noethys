@@ -317,11 +317,12 @@ class Dialog(wx.Dialog):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
-        objet, texte_xml, IDadresse = listeDonnees[0]
-        self.ctrl_objet.SetValue(objet)
-        if texte_xml != None :
-            self.ctrl_editeur.SetXML(texte_xml)
-        self.ctrl_exp.SetID(IDadresse)
+        if listeDonnees:
+            objet, texte_xml, IDadresse = listeDonnees[0]
+            self.ctrl_objet.SetValue(objet)
+            if texte_xml != None :
+                self.ctrl_editeur.SetXML(texte_xml)
+            self.ctrl_exp.SetID(IDadresse)
     
     def ChargerModeleDefaut(self):
         DB = GestionDB.DB()

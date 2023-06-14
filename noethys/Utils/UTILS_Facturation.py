@@ -193,7 +193,8 @@ class Facturation():
         label, prestations.montant_initial, prestations.montant, prestations.tva, 
         prestations.IDactivite, activites.nom, activites.abrege,
         prestations.IDtarif, noms_tarifs.nom, categories_tarifs.nom, IDfacture, 
-        prestations.IDindividu, prestations.IDfamille
+        prestations.IDindividu, prestations.IDfamille,
+        forfait_date_debut, forfait_date_fin
         FROM prestations
         LEFT JOIN activites ON prestations.IDactivite = activites.IDactivite
         LEFT JOIN tarifs ON prestations.IDtarif = tarifs.IDtarif
@@ -222,7 +223,7 @@ class Facturation():
         LEFT JOIN emetteurs ON emetteurs.IDemetteur = reglements.IDemetteur
         LEFT JOIN payeurs ON payeurs.IDpayeur = reglements.IDpayeur
         %s
-        GROUP BY ventilation.IDprestation, ventilation.IDreglement
+        GROUP BY ventilation.IDprestation, ventilation.IDreglement, ventilation.IDcompte_payeur
         ORDER BY prestations.date
         ;""" % conditions
         DB.ExecuterReq(req)
@@ -253,7 +254,7 @@ class Facturation():
         else :
             date_min = datetime.date(9999, 12, 31)
             date_max = datetime.date(1, 1, 1)
-            for IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, tva, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDfamille in listePrestations :
+            for IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, tva, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDfamille, forfait_date_debut, forfait_date_fin in listePrestations :
                 if dictFactures[IDfacture]["date_debut"] < date_min :
                     date_min = dictFactures[IDfacture]["date_debut"]
                 if dictFactures[IDfacture]["date_fin"] > date_max :
@@ -278,7 +279,8 @@ class Facturation():
         label, prestations.montant, 
         prestations.IDactivite, activites.nom, activites.abrege,
         prestations.IDtarif, noms_tarifs.nom, categories_tarifs.nom, IDfacture, 
-        prestations.IDindividu, prestations.IDfamille
+        prestations.IDindividu, prestations.IDfamille,
+        forfait_date_debut, forfait_date_fin
         FROM prestations
         LEFT JOIN activites ON prestations.IDactivite = activites.IDactivite
         LEFT JOIN tarifs ON prestations.IDtarif = tarifs.IDtarif
@@ -302,7 +304,7 @@ class Facturation():
         LEFT JOIN prestations ON prestations.IDprestation = ventilation.IDprestation
         LEFT JOIN activites ON prestations.IDactivite = activites.IDactivite
         %s 
-        GROUP BY prestations.IDprestation
+        GROUP BY ventilation.IDprestation
         ;""" % conditions
         DB.ExecuterReq(req)
         listeVentilationReports = DB.ResultatReq()  
@@ -405,7 +407,7 @@ class Facturation():
         num_facture = 0
         dictComptes = {}
         dictComptesPayeursFactures = {}
-        for IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, tva, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDfamille in listePrestations :
+        for IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, tva, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDfamille, forfait_date_debut, forfait_date_fin in listePrestations :
             montant = FloatToDecimal(montant) 
             
             if (IDcompte_payeur in dictComptesPayeursFactures) == False :
@@ -635,7 +637,7 @@ class Facturation():
                 "montant_initial" : montant_initial, "montant" : montant, "tva" : tva, 
                 "IDtarif" : IDtarif, "nomTarif" : nomTarif, "nomCategorieTarif" : nomCategorieTarif, 
                 "montant_ventilation" : montant_ventilation, "listeDatesConso" : listeDates,
-                "deductions" : deductions,
+                "deductions" : deductions, "forfait_date_debut": UTILS_Dates.DateEngEnDateDD(forfait_date_debut), "forfait_date_fin": UTILS_Dates.DateEngEnDateDD(forfait_date_fin),
                 }
 
             dictComptes[ID]["individus"][IDindividu]["activites"][IDactivite]["presences"][date]["unites"].append(dictPrestation)
@@ -675,7 +677,7 @@ class Facturation():
             dictComptes[ID]["{TOTAL_DEDUCTIONS}"] = u"%.02f %s" % (totalDeductions, SYMBOLE)
 
         # Intégration du REPORT des anciennes prestations NON PAYEES
-        for IDprestation, IDcompte_payeur, date, categorie, label, montant, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDfamille in listeReports :
+        for IDprestation, IDcompte_payeur, date, categorie, label, montant, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDfamille, forfait_date_debut, forfait_date_fin in listeReports :
             montant = FloatToDecimal(montant) 
             
             if IDprestation in dictVentilationReports :
@@ -742,6 +744,8 @@ class Facturation():
         else : conditions = str(tuple(listeFactures))
         
         DB = GestionDB.DB()
+
+        # Importation des factures
         req = """
         SELECT 
         factures.IDfacture, factures.IDprefixe, factures_prefixes.prefixe, factures.numero, factures.IDcompte_payeur, factures.activites, factures.individus,
@@ -757,7 +761,23 @@ class Facturation():
         ORDER BY factures.date_edition
         ;""" % conditions
         DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()     
+        listeDonnees = DB.ResultatReq()
+
+        # Importation des classes
+        dict_scolarites = {}
+        if dictOptions.get("afficher_classes"):
+            req = """SELECT scolarite.IDindividu, ecoles.nom, classes.nom, classes.date_debut, classes.date_fin
+            FROM scolarite 
+            LEFT JOIN ecoles ON ecoles.IDecole = scolarite.IDecole
+            LEFT JOIN classes ON classes.IDclasse = scolarite.IDclasse;"""
+            DB.ExecuterReq(req)
+            listeScolarites = DB.ResultatReq()
+            for IDindividu, nom_ecole, nom_classe, date_debut, date_fin in listeScolarites:
+                dict_scolarites.setdefault(IDindividu, [])
+                dict_scolarites[IDindividu].append({
+                    "nom_classe": nom_classe, "nom_ecole": nom_ecole,
+                    "date_debut": UTILS_Dates.DateEngEnDateDD(date_debut), "date_fin": UTILS_Dates.DateEngEnDateDD(date_fin),
+                })
 
         # Récupération des prélèvements
         req = """SELECT 
@@ -913,10 +933,11 @@ class Facturation():
                 
                 for IDindividu, dictIndividu in dictCompte["individus"].items() :
                     dictIndividu["select"] = True
+                    dictIndividu["scolarites"] = dict_scolarites.get(IDindividu, [])
 
                 # Recherche de prélèvements
                 if IDfacture in dictPrelevements :
-                    if datePrelevement < dictCompte["date_edition"] :
+                    if datePrelevement and datePrelevement < dictCompte["date_edition"]:
                         verbe = _(u"a été")
                     else :
                         verbe = _(u"sera")
@@ -1151,7 +1172,7 @@ def ModificationFacture(listeFactures=[], dict_valeurs={}):
 
         # Modification Date émission
         if "date_emission" in dict_valeurs :
-            DB.ReqMAJ("factures", [("date_emission", dict_valeurs["date_emission"]), ], "IDfacture", IDfacture)
+            DB.ReqMAJ("factures", [("date_edition", dict_valeurs["date_emission"]), ], "IDfacture", IDfacture)
 
         # Modification Date_échéance
         if "date_echeance" in dict_valeurs :

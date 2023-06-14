@@ -197,6 +197,12 @@ class Dialog(wx.Dialog):
         self.ctrl_reglements = self.listviewAvecFooter.GetListview()
         self.ctrl_recherche = OL_Liste_reglements_detail.CTRL_Outils(self, listview=self.ctrl_reglements)
 
+        self.label_regroupement = wx.StaticText(self, -1, _(u"Regroupement des prestations :"))
+        self.choix_regroupements = [("label", _(u"Nom de prestation")), ("IDactivite", _(u"Nom de l'activité"))]
+        self.ctrl_regroupement = wx.Choice(self, -1, choices=[label for code, label in self.choix_regroupements])
+        self.ctrl_regroupement.Select(0)
+        self.Bind(wx.EVT_CHOICE, self.OnChoixRegroupement, self.ctrl_regroupement)
+
         self.bouton_apercu = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_texte = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Texte2.png"), wx.BITMAP_TYPE_ANY))
@@ -268,7 +274,14 @@ class Dialog(wx.Dialog):
         
         grid_sizer_gauche = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         grid_sizer_gauche.Add(self.listviewAvecFooter, 0, wx.EXPAND, 0)
-        grid_sizer_gauche.Add(self.ctrl_recherche, 0, wx.EXPAND, 0)
+
+        grid_sizer_commandes = wx.FlexGridSizer(rows=1, cols=4, vgap=3, hgap=3)
+        grid_sizer_commandes.Add(self.ctrl_recherche, 1, wx.ALIGN_CENTER_VERTICAL|wx.EXPAND, 0)
+        grid_sizer_commandes.Add(self.label_regroupement, 0, wx.ALIGN_CENTER_VERTICAL|wx.LEFT, 30)
+        grid_sizer_commandes.Add(self.ctrl_regroupement, 0, wx.ALIGN_CENTER_VERTICAL|wx.LEFT, 0)
+        grid_sizer_commandes.AddGrowableCol(0)
+        grid_sizer_gauche.Add(grid_sizer_commandes, 1, wx.EXPAND, 10)
+
         grid_sizer_gauche.AddGrowableRow(0)
         grid_sizer_gauche.AddGrowableCol(0)
         grid_sizer_contenu.Add(grid_sizer_gauche, 1, wx.EXPAND, 0)
@@ -299,7 +312,11 @@ class Dialog(wx.Dialog):
         grid_sizer_base.AddGrowableCol(0)
         self.Layout()
         self.CenterOnScreen()
-        
+
+    def OnChoixRegroupement(self, event=None):
+        self.ctrl_reglements.detail = self.choix_regroupements[self.ctrl_regroupement.GetSelection()][0]
+        self.ctrl_reglements.MAJ()
+
     def OnBoutonAide(self, event): 
         from Utils import UTILS_Aide
         UTILS_Aide.Aide("Listedetailleedesreglements")

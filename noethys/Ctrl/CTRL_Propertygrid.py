@@ -40,6 +40,32 @@ else:
 
 
 
+class Propriete_date(wxpg.PyProperty):
+    def __init__(self, label, name=wxpg.LABEL_AS_NAME, value=None):
+        wxpg.PyProperty.__init__(self, label, name)
+        self.SetValue(value)
+
+    def GetClassName(self):
+        return self.__class__.__name__
+
+    def GetEditor(self):
+        return "TextCtrl"
+
+    def ValueToString(self, value, flags):
+        if isinstance(value, datetime.datetime) or isinstance(value, datetime.date):
+            return value.strftime("%d/%m/%Y")
+        return ""
+
+    def StringToValue(self, s, flags):
+        if not s:
+            return (True, None)
+        try:
+            date = datetime.datetime.strptime(s, "%d/%m/%Y")
+        except:
+            return (False, None)
+        return (True, date)
+
+
 class EditeurChoix(ChoiceEditor):
     def __init__(self):
         ChoiceEditor.__init__(self)
@@ -47,7 +73,10 @@ class EditeurChoix(ChoiceEditor):
     def CreateControls(self, propGrid, property, pos, size):
         if 'phoenix' in wx.PlatformInfo:
             ctrl = super(EditeurChoix, self).CreateControls(propGrid, property, pos, size)
-            ctrl = ctrl.m_primary
+            try:
+                ctrl = ctrl.GetPrimary()
+            except:
+                ctrl = ctrl.m_primary
             self.SetControlIntValue(property, ctrl, 0)
             return wxpg.PGWindowList(ctrl)
         else :
@@ -281,7 +310,10 @@ class EditeurComboBoxAvecBoutons(ChoiceEditor):
         # Create the 'primary' editor control (textctrl in this case)
         if 'phoenix' in wx.PlatformInfo:
             wnd = super(EditeurComboBoxAvecBoutons, self).CreateControls(propGrid, property, pos, buttons.GetPrimarySize())
-            wnd = wnd.m_primary
+            try:
+                wnd = wnd.GetPrimary()
+            except:
+                wnd = wnd.m_primary
             buttons.Finalize(propGrid, pos)
             self.buttons = buttons
             return wxpg.PGWindowList(wnd, buttons)
@@ -381,7 +413,7 @@ class EditeurDate(Editor):
 
     def CreateControls(self, propgrid, property, pos, size):
         try:
-            ctrl = ctrl = CTRL_Saisie_date.Date2(propgrid.GetPanel(), pos=pos, size=(-1, 25))
+            ctrl = CTRL_Saisie_date.Date2(propgrid.GetPanel(), pos=pos, size=(-1, 25))
             ctrl.SetDate(property.GetDisplayedString())
             if 'phoenix' in wx.PlatformInfo:
                 return wxpg.PGWindowList(ctrl)

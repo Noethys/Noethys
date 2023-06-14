@@ -71,6 +71,8 @@ def Export_ebp_compta(ligne, dictParametres, numLigne, typeComptable=None):
     
     def GetSens(montant, sens):
         if FloatToDecimal(montant) < FloatToDecimal(0.0) :
+            if isinstance(montant, str):
+                montant = FloatToDecimal(montant)
             montant = -montant
             if sens == "D" : 
                 sens = "C"
@@ -1375,6 +1377,7 @@ class CTRL_Parametres_quadracompta(CTRL_Parametres) :
             _(u"Données"),
             {"type":"choix", "label":_(u"Ventes"), "description": _(u"Type de données à afficher"), "code": "quadra_type_ventes", "tip": _(u"Sélectionnez le type de données à afficher"), "choix": [_(u"Factures de la période"), _(u"Prestations de la période")], "defaut": 0, "obligatoire": True},
             {"type":"choix", "label":_(u"Règlements"), "description": _(u"Type de données à afficher"), "code": "quadra_type_reglements", "tip": _(u"Sélectionnez le type de données à afficher"), "choix": [_(u"Règlements déposés sur la période"), _(u"Règlements saisis sur la période")], "defaut": 0, "obligatoire": True},
+            {"type":"check", "label":_(u"Utiliser code compta de la famille"), "description": _(u"Utiliser le code comptable de la famille"), "code": "quadra_code_compta_famille", "tip": _(u"Cochez cette case pour utiliser le code comptable saisi dans l'onglet divers de la fiche famille. Sinon un code générique sera utilisé."), "defaut": True, "obligatoire": True},
             _(u"Affichage"),
             {"type": "check", "label": _(u"Insérer entête noms des champs"), "description": _(u"Insérer ligne noms des champs"), "code": "quadra_ligne_noms_champs", "tip": _(u"Cochez cette case pour insérer en début de fichier une ligne avec les noms des champs"), "defaut": True, "obligatoire": True},
             {"type": "check", "label": _(u"Séparer les écritures avec ligne vide"), "description": _(u"Séparer les écritures par une ligne vide"), "code": "quadra_ligne_vide", "tip": _(u"Séparer les écritures par une ligne vide"), "defaut": True, "obligatoire": True},
@@ -1437,13 +1440,17 @@ class CTRL_Parametres_quadracompta(CTRL_Parametres) :
         # Importation des familles
         dictTitulaires = UTILS_Titulaires.GetTitulaires()
 
+        if not dictParametres["quadra_code_compta_famille"]:
+            for IDfamille in dictTitulaires:
+                if not dictTitulaires[IDfamille]["code_comptable"]:
+                    dictTitulaires[IDfamille]["code_comptable"] = "F%06d" % IDfamille
+
         # Regroupement des prestations
         anomalies = []
         dict_resultats = {}
 
         # Si mode FACTURES, on regroupe par IDFACTURE
         for prestation in listePrestations:
-
             if dictParametres["quadra_type_ventes"] == 0:
                 cle_primaire = prestation["IDfacture"]
             else:

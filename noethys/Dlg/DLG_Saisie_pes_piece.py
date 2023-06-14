@@ -130,8 +130,8 @@ class CTRL_Titulaire_helios(wx.Choice):
         index = self.GetSelection()
         if index == -1 : return None
         return self.dictDonnees[index]["IDindividu"]
-    
-            
+
+
 
 # -----------------------------------------------------------------------------------------------------------------------
 
@@ -152,6 +152,9 @@ class Dialog(wx.Dialog):
         
         self.label_titulaire_helios = wx.StaticText(self, -1, _(u"Titulaire Hélios :"))
         self.ctrl_titulaire_helios = CTRL_Titulaire_helios(self)
+
+        self.label_tiers_solidaire = wx.StaticText(self, -1, _(u"Tiers solidaire :"))
+        self.ctrl_tiers_solidaire = CTRL_Titulaire_helios(self)
 
         # Pièce
         self.box_piece_staticbox = wx.StaticBox(self, -1, _(u"Pièce"))
@@ -235,6 +238,7 @@ class Dialog(wx.Dialog):
 
         self.ctrl_famille.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici la famille à débiter")))
         self.ctrl_titulaire_helios.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici le titulaire Hélios de la famille")))
+        self.ctrl_tiers_solidaire.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici le tiers solidaire de la famille")))
         self.ctrl_controle.SetToolTip(wx.ToolTip(_(u"Une coche verte apparaît si les coordonnées bancaires sont valides")))
         self.ctrl_prelevement_actif.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer le prélèvement automatique sur cette recette")))
         
@@ -249,11 +253,13 @@ class Dialog(wx.Dialog):
 
         # Famille
         box_famille = wx.StaticBoxSizer(self.box_famille_staticbox, wx.VERTICAL)
-        grid_sizer_famille = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
+        grid_sizer_famille = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=10)
         grid_sizer_famille.Add(self.label_famille, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_famille.Add(self.ctrl_famille, 0, wx.ALIGN_CENTER_VERTICAL | wx.EXPAND, 0)
         grid_sizer_famille.Add(self.label_titulaire_helios, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_famille.Add(self.ctrl_titulaire_helios, 0, wx.ALIGN_CENTER_VERTICAL | wx.EXPAND, 0)
+        grid_sizer_famille.Add(self.label_tiers_solidaire, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_famille.Add(self.ctrl_tiers_solidaire, 0, wx.ALIGN_CENTER_VERTICAL | wx.EXPAND, 0)
         grid_sizer_famille.AddGrowableCol(1)
         box_famille.Add(grid_sizer_famille, 1, wx.ALL|wx.EXPAND, 10)
         
@@ -399,7 +405,9 @@ class Dialog(wx.Dialog):
         self.ctrl_famille.Enable(False) 
         self.ctrl_titulaire_helios.MAJ(self.track.IDfamille)
         self.ctrl_titulaire_helios.SetID(self.track.titulaire_helios)
-        
+        self.ctrl_tiers_solidaire.MAJ(self.track.IDfamille)
+        self.ctrl_tiers_solidaire.SetID(self.track.tiers_solidaire)
+
         self.ctrl_prelevement_actif.SetValue(self.track.prelevement)
         if self.track.prelevement_iban != None : self.ctrl_iban.SetValue(self.track.prelevement_iban)
         if self.track.prelevement_bic != None : self.ctrl_bic.SetValue(self.track.prelevement_bic)
@@ -438,6 +446,7 @@ class Dialog(wx.Dialog):
     def GetTrack(self):
         IDfamille = self.ctrl_famille.GetIDfamille()
         titulaire_helios = self.ctrl_titulaire_helios.GetID()
+        tiers_solidaire = self.ctrl_tiers_solidaire.GetID()
         IDcompte_payeur = self.ctrl_famille.GetIDcompte_payeur()
         iban = self.ctrl_iban.GetValue()
         bic = self.ctrl_bic.GetValue()
@@ -492,6 +501,7 @@ class Dialog(wx.Dialog):
         track.InitNomsTitulaires() 
         
         track.titulaire_helios = titulaire_helios
+        track.tiers_solidaire = tiers_solidaire
         track.InitTitulaireHelios()
         
         track.IDcompte_payeur = IDcompte_payeur

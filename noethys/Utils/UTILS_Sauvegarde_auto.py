@@ -112,7 +112,10 @@ class Sauvegarde_auto():
                         dateCreationFichier = datetime.date.fromtimestamp(os.path.getctime(fichier))
                         nbreJoursFichier = (datetime.date.today() - dateCreationFichier).days
                         if nbreJoursFichier >= nbreJours :
-                            os.remove(fichier)
+                            try:
+                                os.remove(fichier)
+                            except:
+                                pass
                             
         return True       
 

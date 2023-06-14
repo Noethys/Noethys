@@ -43,6 +43,7 @@ CATEGORIES = [
     ("portail_demande_facture", _(u"Portail - Demande d'une facture")),
     ("portail_demande_recu_reglement", _(u"Portail - Demande d'un reçu de règlement")),
     ("portail_demande_location", _(u"Portail - Demande d'une location")),
+    ("portail_demande_piece", _(u"Portail - Demande de saisie d'une pièce")),
     ("location", _(u"Location")),
     ("location_demande", _(u"Demande de location")),
     ("commande_repas", _(u"Commande de repas")),
@@ -210,6 +211,14 @@ MOTSCLES = {
         ("{DEMANDE_REPONSE}", _(u"Réponse à la demande")),
     ],
 
+    "portail_demande_piece": [
+        ("{DEMANDE_HORODATAGE}", _(u"Date et heure de la demande")),
+        ("{DEMANDE_DESCRIPTION}", _(u"Description de la demande")),
+        ("{DEMANDE_COMMENTAIRE}", _(u"Commentaire de la demande")),
+        ("{DEMANDE_TRAITEMENT_DATE}", _(u"Date de traitement")),
+        ("{DEMANDE_REPONSE}", _(u"Réponse à la demande")),
+    ],
+
     "portail_demande_reservation" : [
                 ( "{DEMANDE_HORODATAGE}", _(u"Date et heure de la demande") ),
                 ( "{DEMANDE_DESCRIPTION}", _(u"Description de la demande") ),
@@ -222,6 +231,7 @@ MOTSCLES = {
                 ( "{TOTAL}", _(u"Total des prestations de la période") ),
                 ( "{REGLE}", _(u"Total déjà réglé pour la période") ),
                 ( "{SOLDE}", _(u"Solde de la période") ),
+                ( "{SOLDE_FAMILLE}", _(u"Solde de la fiche famille") ),
                 ],
 
     "portail_demande_facture" : [
@@ -992,8 +1002,10 @@ class CTRL(wx.Panel):
 ##            return 
         # Insère l'image dans l'éditeur
         if nomFichierLong.lower().endswith(".jpg") : typeBMP = wx.BITMAP_TYPE_JPEG
-        if nomFichierLong.lower().endswith(".png") : typeBMP = wx.BITMAP_TYPE_PNG
-        if nomFichierLong.lower().endswith(".gif") : typeBMP = wx.BITMAP_TYPE_GIF
+        elif nomFichierLong.lower().endswith(".png") : typeBMP = wx.BITMAP_TYPE_PNG
+        elif nomFichierLong.lower().endswith(".gif") : typeBMP = wx.BITMAP_TYPE_GIF
+        elif nomFichierLong.lower().endswith(".bmp"): typeBMP = wx.BITMAP_TYPE_BMP
+        else: typeBMP = wx.BITMAP_TYPE_ANY
 
         if 'phoenix' in wx.PlatformInfo:
             self.ctrl_editeur.WriteImage(bmp, bitmapType=typeBMP)

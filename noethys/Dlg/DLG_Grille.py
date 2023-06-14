@@ -505,6 +505,7 @@ class Dialog(wx.Dialog):
         ID_AFFICHAGE_PANNEAUX = 600
         ID_AFFICHAGE_PARAMETRES = wx.Window.NewControlId()
         ID_AFFICHE_COLONNE_MEMO = wx.Window.NewControlId()
+        ID_MASQUER_UNITES_FERMEES = wx.Window.NewControlId()
         ID_AFFICHE_COLONNE_TRANSPORTS = wx.Window.NewControlId()
         ID_BLOCAGE_SI_COMPLET = wx.Window.NewControlId()
         ID_AFFICHE_SANS_PRESTATION = wx.Window.NewControlId()
@@ -568,7 +569,12 @@ class Dialog(wx.Dialog):
         menuPop.AppendItem(item)
         item.Check(self.panel_grille.grille.GetAfficheColonneTransports())
         self.Bind(wx.EVT_MENU, self.On_affiche_transports, id=ID_AFFICHE_COLONNE_TRANSPORTS)
-        
+
+        item = wx.MenuItem(menuPop, ID_MASQUER_UNITES_FERMEES, _(u"Masquer les unités fermées"), _(u"Masquer les unités fermées"), wx.ITEM_CHECK)
+        menuPop.AppendItem(item)
+        item.Check(self.panel_grille.grille.GetMasquerUnitesFermees())
+        self.Bind(wx.EVT_MENU, self.On_masquer_unites_fermees, id=ID_MASQUER_UNITES_FERMEES)
+
         item = wx.MenuItem(menuPop, ID_AFFICHAGE_PARAMETRES, _(u"Définir hauteur et largeurs des cases"), _(u"Définir la hauteur des lignes et la largeur des cases"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
@@ -699,7 +705,7 @@ class Dialog(wx.Dialog):
         dlg.Destroy()
         
     def On_affichage_panneau_afficher(self, event):
-        index = event.GetId() - ID_AFFICHAGE_PANNEAUX
+        index = event.GetId() - 600
         panneau = self._mgr.GetPane(self.listePanneaux[index]["code"])
         if panneau.IsShown() :
             panneau.Hide()
@@ -714,6 +720,10 @@ class Dialog(wx.Dialog):
     def On_affiche_memo(self, event):
         grille = self.panel_grille.grille
         grille.SetAfficheColonneMemo(not grille.GetAfficheColonneMemo())
+
+    def On_masquer_unites_fermees(self, event):
+        grille = self.panel_grille.grille
+        grille.SetMasquerUnitesFermees(not grille.GetMasquerUnitesFermees())
 
     def On_affiche_transports(self, event):
         grille = self.panel_grille.grille

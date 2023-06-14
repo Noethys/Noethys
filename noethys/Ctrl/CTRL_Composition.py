@@ -110,7 +110,7 @@ class GetValeurs() :
         # Recherche des inscriptions des membres de la famille
         dictInscriptions = {}
         req = """SELECT 
-        IDinscription, IDindividu, date_inscription, parti,
+        IDinscription, IDindividu, date_inscription, date_desinscription, parti,
         activites.nom, activites.date_debut, activites.date_fin,
         groupes.nom, categories_tarifs.nom
         FROM inscriptions
@@ -120,13 +120,13 @@ class GetValeurs() :
         WHERE inscriptions.statut='ok' AND IDfamille=%d;""" % self.IDfamille
         DB.ExecuterReq(req)
         listeInscriptions = DB.ResultatReq()
-        for IDinscription, IDindividu, dateInscription, parti, nomActivite, activiteDebut, activiteFin, nomGroupe, nomCategorie in listeInscriptions :
+        for IDinscription, IDindividu, dateInscription, date_desinscription, parti, nomActivite, activiteDebut, activiteFin, nomGroupe, nomCategorie in listeInscriptions :
             if (IDindividu in dictInscriptions) == False :
                 dictInscriptions[IDindividu] = []
             dictTemp = {
                 "IDinscription":IDinscription, "dateInscription":dateInscription, "parti":parti, 
                 "nomActivite":nomActivite, "activiteDebut":activiteDebut, "activiteFin":activiteFin, 
-                "nomGroupe":nomGroupe, "nomCategorie":nomCategorie
+                "nomGroupe":nomGroupe, "nomCategorie":nomCategorie, "dateDesinscription": date_desinscription,
                 } 
             dictInscriptions[IDindividu].append(dictTemp) 
             
@@ -239,7 +239,13 @@ class GetValeurs() :
             # Infos sur les activités inscrites
             if (IDindividu in dictInscriptions) == True :
                 dictInfos[IDindividu]["inscriptions"] = True
-                dictInfos[IDindividu]["listeInscriptions"] = dictInscriptions[IDindividu]
+                liste_temp = []
+                for inscription in dictInscriptions[IDindividu]:
+                    activiteFin = str(inscription["activiteFin"]) if inscription["activiteFin"] else ""
+                    dateDesinscription = str(inscription["dateDesinscription"]) if inscription["dateDesinscription"] else ""
+                    if not inscription["parti"] and (not activiteFin or activiteFin > str(datetime.date.today())) and (not dateDesinscription or dateDesinscription > str(datetime.date.today())):
+                        liste_temp.append(inscription)
+                dictInfos[IDindividu]["listeInscriptions"] = liste_temp
             else:
                 dictInfos[IDindividu]["inscriptions"] = False
                 dictInfos[IDindividu]["listeInscriptions"] = []
@@ -440,7 +446,7 @@ class CadreIndividu():
             self.dc.SetBrush(wx.Brush((0, 0, 0), style=wx.TRANSPARENT))
             self.dc.SetPen(wx.Pen(couleurSelectionCadre, 1, wx.DOT))
             if 'phoenix' in wx.PlatformInfo:
-                self.dc.DrawRoundedRectangle(wx.Rect(x-ecart, y-ecart, largeur+(ecart*2), hauteur+(ecart*2)), radius=5*self.zoom)
+                self.dc.DrawRoundedRectangle(wx.Rect(int(x-ecart), int(y-ecart), int(largeur+(ecart*2)), int(hauteur+(ecart*2))), radius=int(5*self.zoom))
             else :
                 self.dc.DrawRoundedRectangleRect(wx.Rect(x-ecart, y-ecart, largeur+(ecart*2), hauteur+(ecart*2)), radius=5*self.zoom)
 
@@ -448,25 +454,30 @@ class CadreIndividu():
         self.dc.SetBrush(wx.Brush(couleurFondBasCadre))
         self.dc.SetPen(wx.Pen(couleurBordCadre, 1))
         if 'phoenix' in wx.PlatformInfo:
-            self.dc.DrawRoundedRectangle(wx.Rect(x, y, largeur, hauteur), radius=5*self.zoom)
+            if "linux" in sys.platform:
+                self.dc.DrawRectangle(wx.Rect(int(x), int(y), int(largeur), int(hauteur)))
+            else:
+                self.dc.DrawRoundedRectangle(wx.Rect(int(x), int(y), int(largeur), int(hauteur)), radius=5*self.zoom)
         else :
             self.dc.DrawRoundedRectangleRect(wx.Rect(x, y, largeur, hauteur), radius=5*self.zoom)
-        coordsSpline = [(x+1, y+(hauteur/3)), (x+(largeur/2.5), y+(hauteur/4.1)), (x+largeur-1, y+(hauteur/1.8))]
-        self.dc.DrawSpline(coordsSpline)
-        
-        self.dc.SetBrush(wx.Brush(couleurFondHautCadre) )
-        self.dc.FloodFill(x+5, y+5, couleurBordCadre, style=wx.FLOOD_BORDER )
-        
-        self.dc.SetPen(wx.Pen(couleurFondBasCadre, 1))
-        self.dc.DrawSpline(coordsSpline)
+
+        if "linux" not in sys.platform:
+            coordsSpline = [(int(x+1), int(y+(hauteur/3))), (int(x+(largeur/2.5)), int(y+(hauteur/4.1))), (int(x+largeur-1), int(y+(hauteur/1.8)))]
+            self.dc.DrawSpline(coordsSpline)
+
+            self.dc.SetBrush(wx.Brush(couleurFondHautCadre) )
+            self.dc.FloodFill(int(x+5), int(y+5), couleurBordCadre, style=wx.FLOOD_BORDER )
+
+            self.dc.SetPen(wx.Pen(couleurFondBasCadre, 1))
+            self.dc.DrawSpline(coordsSpline)
         
         # Intégration de la photo
         if self.photo != None :
             try:
                 img = self.photo.ConvertToImage()
-                img = img.Rescale(width=taillePhoto, height=taillePhoto, quality=wx.IMAGE_QUALITY_HIGH)
+                img = img.Rescale(width=int(taillePhoto), height=int(taillePhoto), quality=wx.IMAGE_QUALITY_HIGH)
                 self.bmp = img.ConvertToBitmap()
-                self.dc.DrawBitmap(self.bmp, x+paddingCadre, y+paddingCadre)
+                self.dc.DrawBitmap(self.bmp, int(x+paddingCadre), int(y+paddingCadre))
             except:
                 pass
         
@@ -478,7 +489,7 @@ class CadreIndividu():
         for texte, tailleFont, styleFont in self.listeTextes :
             # Font
             font = self.parent.GetFont()
-            font.SetPointSize(tailleFont*self.zoomContenuRatio)
+            font.SetPointSize(int(tailleFont*self.zoomContenuRatio))
             if styleFont == "normal" : font.SetWeight(wx.FONTWEIGHT_NORMAL)
             if styleFont == "light" : font.SetWeight(wx.FONTWEIGHT_LIGHT)
             if styleFont == "bold" : font.SetWeight(wx.FONTWEIGHT_BOLD)
@@ -490,7 +501,7 @@ class CadreIndividu():
                 if largeurTexte > largeurMaxiTexte :
                     texte = self.AdapteLargeurTexte(self.dc, texte, largeurMaxiTexte)
                 if texte == "#SPACER#" : texte = " "
-                self.dc.DrawText(texte, posXtexte, posYtexte)
+                self.dc.DrawText(texte, int(posXtexte), int(posYtexte))
                 posYtexte += hauteurTexte + 1
         
         # Dessin du cadre Accès aux consommations
@@ -501,7 +512,7 @@ class CadreIndividu():
             else:
                 bmpConso = wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Calendrier.png"), wx.BITMAP_TYPE_ANY) 
             xBmpConso, yBmpConso = x+largeur-5-32, y+5
-            self.dc.DrawBitmap(bmpConso, xBmpConso, yBmpConso)
+            self.dc.DrawBitmap(bmpConso, int(xBmpConso), int(yBmpConso))
         
         # Symboles de l'individu
         xSymbole = x + paddingCadre
@@ -509,21 +520,21 @@ class CadreIndividu():
 
         if self.titulaire == 1 :
             bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Titulaire.png"), wx.BITMAP_TYPE_ANY)
-            self.dc.DrawBitmap(bmp, xSymbole, ySymbole)
+            self.dc.DrawBitmap(bmp, int(xSymbole), int(ySymbole))
             xSymbole += 16
 
         if self.etat == "archive" :
             bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Archiver.png"), wx.BITMAP_TYPE_ANY)
-            self.dc.DrawBitmap(bmp, xSymbole, ySymbole)
+            self.dc.DrawBitmap(bmp, int(xSymbole), int(ySymbole))
             xSymbole += 16
 
         if self.etat == "efface" :
             bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Gomme.png"), wx.BITMAP_TYPE_ANY)
-            self.dc.DrawBitmap(bmp, xSymbole, ySymbole)
+            self.dc.DrawBitmap(bmp, int(xSymbole), int(ySymbole))
             xSymbole += 16
 
         # Mémorisation dans le dictionnaire d'objets
-        self.dc.SetIdBounds(self.IDobjet, wx.Rect(x, y, largeur, hauteur)) 
+        self.dc.SetIdBounds(self.IDobjet, wx.Rect(int(x), int(y), int(largeur), int(hauteur)))
         self.parent.dictIDs[self.IDobjet] = ("individu", self.IDindividu)
     
     def SurvolCalendrier(self, x, y):
@@ -740,9 +751,9 @@ class CTRL_Graphique(wx.ScrolledWindow):
             if numCol in paramFond : 
                 dc.SetBrush(wx.Brush(paramFond[numCol]["couleurFond"]))
                 dc.SetPen(wx.Pen(paramFond[numCol]["couleurFond"], 0))
-                dc.DrawRectangle(x=paramFond[numCol]["x"], y=0, width=paramFond[numCol]["width"], height=tailleDC[1])
+                dc.DrawRectangle(x=int(paramFond[numCol]["x"]), y=0, width=int(paramFond[numCol]["width"]), height=int(tailleDC[1]))
                 bmp = paramFond[numCol]["bmp"]
-                dc.DrawBitmap(bmp, xCentre-(bmp.GetSize()[0]/2.0), 10)
+                dc.DrawBitmap(bmp, int(xCentre-(bmp.GetSize()[0]/2.0)), 10)
             
             # Création des cases
             yCentre = yBloc1
@@ -777,11 +788,11 @@ class CTRL_Graphique(wx.ScrolledWindow):
                 decalage = 20 # Décalage de la ligne de lien par rapport au bord du cadre
                 listePoints = []
                 for IDindividu in (IDindividu1, IDindividu2) :
-                    xCentre = self.dictCadres[IDindividu]["ctrl"].xCentre
-                    yCentre = self.dictCadres[IDindividu]["ctrl"].yCentre
-                    largeur = self.dictCadres[IDindividu]["ctrl"].largeur*self.dictCadres[IDindividu]["ctrl"].zoom
-                    bordCadre = (xCentre-largeur/2.0-1, yCentre)
-                    extremiteLigne = (xCentre-largeur/2.0-decalage, yCentre)
+                    xCentre = int(self.dictCadres[IDindividu]["ctrl"].xCentre)
+                    yCentre = int(self.dictCadres[IDindividu]["ctrl"].yCentre)
+                    largeur = int(self.dictCadres[IDindividu]["ctrl"].largeur*self.dictCadres[IDindividu]["ctrl"].zoom)
+                    bordCadre = (int(xCentre-largeur/2.0-1), int(yCentre))
+                    extremiteLigne = (int(xCentre-largeur/2.0-decalage), int(yCentre))
                     dc.SetPen(wx.Pen((123, 241, 131), 1, wx.DOT))
                     if 'phoenix' in wx.PlatformInfo:
                         dc.DrawLine(bordCadre, extremiteLigne)
@@ -836,11 +847,11 @@ class CTRL_Graphique(wx.ScrolledWindow):
                 # Dessine les liens ENFANTS
                 listeYenfants = []
                 for IDenfant in listeEnfants :
-                    xCadreEnfant = self.dictCadres[IDenfant]["ctrl"].xCentre
-                    yCadreEnfant = self.dictCadres[IDenfant]["ctrl"].yCentre
-                    largeurCadreEnfant = self.dictCadres[IDenfant]["ctrl"].largeur*self.dictCadres[IDenfant]["ctrl"].zoom
-                    bordCadreEnfant = (xCadreEnfant-largeurCadreEnfant/2.0, yCadreEnfant)
-                    extremiteLigneEnfant = (posXLigneEnfants, yCadreEnfant)
+                    xCadreEnfant = int(self.dictCadres[IDenfant]["ctrl"].xCentre)
+                    yCadreEnfant = int(self.dictCadres[IDenfant]["ctrl"].yCentre)
+                    largeurCadreEnfant = int(self.dictCadres[IDenfant]["ctrl"].largeur*self.dictCadres[IDenfant]["ctrl"].zoom)
+                    bordCadreEnfant = (int(xCadreEnfant-largeurCadreEnfant/2.0), int(yCadreEnfant))
+                    extremiteLigneEnfant = (int(posXLigneEnfants), int(yCadreEnfant))
                     listeYenfants.append(yCadreEnfant)
                     dc.SetPen(wx.Pen((0, 0, 0), 1))
                     if 'phoenix' in wx.PlatformInfo:
@@ -849,17 +860,17 @@ class CTRL_Graphique(wx.ScrolledWindow):
                         dc.DrawLinePoint(bordCadreEnfant, extremiteLigneEnfant)
                 # Relient les enfants par une ligne VERTICALE
                 if len(listeYenfants) > 0 :
-                    dc.DrawLine(posXLigneEnfants, min(listeYenfants), posXLigneEnfants, max(listeYenfants))
+                    dc.DrawLine(int(posXLigneEnfants), int(min(listeYenfants)), int(posXLigneEnfants), int(max(listeYenfants)))
                 centreYenfants = sum(listeYenfants)/len(listeYenfants)
                 
                 # Dessine les liens PARENTS
                 listeYparents = []
                 for IDparent in listeParents :
-                    xCentre = self.dictCadres[IDparent]["ctrl"].xCentre
-                    yCentre = self.dictCadres[IDparent]["ctrl"].yCentre
-                    largeur = self.dictCadres[IDparent]["ctrl"].largeur*self.dictCadres[IDparent]["ctrl"].zoom
-                    bordCadre = (xCentre+largeur/2.0, yCentre)
-                    extremiteLigneParent = (posXLigneParents, yCentre)
+                    xCentre = int(self.dictCadres[IDparent]["ctrl"].xCentre)
+                    yCentre = int(self.dictCadres[IDparent]["ctrl"].yCentre)
+                    largeur = int(self.dictCadres[IDparent]["ctrl"].largeur*self.dictCadres[IDparent]["ctrl"].zoom)
+                    bordCadre = (int(xCentre+largeur/2.0), int(yCentre))
+                    extremiteLigneParent = (int(posXLigneParents), int(yCentre))
                     listeYparents.append(yCentre)
                     dc.SetPen(wx.Pen((0, 0, 0), 1))
                     if 'phoenix' in wx.PlatformInfo:
@@ -868,16 +879,16 @@ class CTRL_Graphique(wx.ScrolledWindow):
                         dc.DrawLinePoint(bordCadre, extremiteLigneParent)
                 # Relient les parents par une ligne VERTICALE
                 if len(listeYparents) > 0 :
-                    dc.DrawLine(posXLigneParents, min(listeYparents), posXLigneParents, max(listeYparents))
+                    dc.DrawLine(int(posXLigneParents), int(min(listeYparents)), int(posXLigneParents), int(max(listeYparents)))
                 centreYparents = sum(listeYparents)/len(listeYparents)
                 
                 # Relie la barre ENFANTS à la barre PARENTS
                 hauteurBarreHorizontale = centreYenfants
-                dc.DrawLine(posXLigneParents, hauteurBarreHorizontale, posXLigneEnfants, hauteurBarreHorizontale)
-                
+                dc.DrawLine(int(posXLigneParents), int(hauteurBarreHorizontale), int(posXLigneEnfants), int(hauteurBarreHorizontale))
+
                 # Rallonge de la barre verticale adulte
-                dc.DrawLine(posXLigneParents, hauteurBarreHorizontale, posXLigneParents, max(listeYparents))
-                dc.DrawLine(posXLigneParents, hauteurBarreHorizontale, posXLigneParents, min(listeYparents))
+                dc.DrawLine(int(posXLigneParents), int(hauteurBarreHorizontale), int(posXLigneParents), int(max(listeYparents)))
+                dc.DrawLine(int(posXLigneParents), int(hauteurBarreHorizontale), int(posXLigneParents), int(min(listeYparents)))
         
                 index += 1
         
@@ -947,10 +958,10 @@ class CTRL_Graphique(wx.ScrolledWindow):
             cadre = self.dictCadres[IDindividu]["ctrl"]
             # On met le tooltip
             self.ActiveTooltip(actif=True, IDindividu=IDindividu)
-            
+
             # Modification de la taille du cadre
             if self.zoomActif == True :
-                self.DezoomTout(ExcepteIDindividu=IDindividu) 
+                self.DezoomTout(ExcepteIDindividu=IDindividu)
                 cadre.ZoomAvant(coef=1.1, vitesse=0.5)
                 # Recherche si l'image calendrier est survolée
                 if cadre.calendrierActif == True :
@@ -968,11 +979,11 @@ class CTRL_Graphique(wx.ScrolledWindow):
         else:
             # Désactivation du toolTip
             self.ActiveTooltip(actif=False)
-            
+
             # Change le curseur de la souris
             self.SetCursor(CURSOR(wx.CURSOR_DEFAULT))
             # Dézoom tous les cadres
-            self.DezoomTout() 
+            self.DezoomTout()
     
             
     def OnLeaveWindow(self, event):
@@ -1066,9 +1077,9 @@ class CTRL_Graphique(wx.ScrolledWindow):
             nbreInscriptions = len(dictInfoIndividu["listeInscriptions"])
             message += "\n"
             if nbreInscriptions == 1 :
-                message += _(u"%s est inscrit%s à 1 activité : \n") % (prenom, lettreGenre)
+                message += _(u"%s est inscrit%s à 1 activité \n") % (prenom, lettreGenre)
             else:
-                message += _(u"%s est inscrit%s à %d activités : \n") % (prenom, lettreGenre, nbreInscriptions)
+                message += _(u"%s est inscrit%s à %d activités \n") % (prenom, lettreGenre, nbreInscriptions)
             for dictInscription in dictInfoIndividu["listeInscriptions"] :
                 message += "> %s (%s - %s) \n" % (dictInscription["nomActivite"], dictInscription["nomGroupe"], dictInscription["nomCategorie"])
 
@@ -1491,13 +1502,13 @@ class CTRL_Liste(HTL.HyperTreeList):
             self.SetPyData(brancheCategorie, {"type" : "categorie", "IDcategorie" : IDcategorie} )
             self.SetItemBold(brancheCategorie, True)
             self.SetItemBackgroundColour(brancheCategorie, wx.Colour(227, 227, 227))
-            
+
             # Création des branche INDIVIDUS
             for IDindividu, dictIndividu in dictCategories[IDcategorie] :
 
                 nom = dictIndividu["nom"]
                 prenom = dictIndividu["prenom"]
-                IDcivilite = dictIndividu["IDcivilite"]
+                IDcivilite = dictIndividu["IDcivilite"] or 1
                 categorieCivilite = Civilites.GetDictCivilites()[IDcivilite]["categorie"]
                 if categorieCivilite == "ENFANT" :
                     type = "E"
@@ -1916,9 +1927,9 @@ class CTRL_Liste(HTL.HyperTreeList):
             nbreInscriptions = len(dictInfoIndividu["listeInscriptions"])
             message += "\n"
             if nbreInscriptions == 1 :
-                message += _(u"%s est inscrit%s à 1 activité : \n") % (prenom, lettreGenre)
+                message += _(u"%s est inscrit%s à 1 activité \n") % (prenom, lettreGenre)
             else:
-                message += _(u"%s est inscrit%s à %d activités : \n") % (prenom, lettreGenre, nbreInscriptions)
+                message += _(u"%s est inscrit%s à %d activités \n") % (prenom, lettreGenre, nbreInscriptions)
             for dictInscription in dictInfoIndividu["listeInscriptions"] :
                 message += "> %s (%s - %s) \n" % (dictInscription["nomActivite"], dictInscription["nomGroupe"], dictInscription["nomCategorie"])
 

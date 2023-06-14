@@ -16,7 +16,6 @@ import wx
 from Ctrl import CTRL_Bouton_image
 import GestionDB
 import datetime
-import decimal
 import FonctionsPerso
 
 from Utils import UTILS_Titulaires
@@ -28,7 +27,7 @@ DICT_CIVILITES = Civilites.GetDictCivilites()
 
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
-
+from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 DICT_INFOS_INDIVIDUS = {}
 
 from Utils import UTILS_Interface
@@ -126,6 +125,7 @@ class ListView(GroupListView):
         self.labelParametres = ""
         self.ctrl_regroupement = kwds.pop("ctrl_regroupement", None)
         self.checkColonne = kwds.pop("checkColonne", False)
+        self.nomListe = kwds.pop("nomListe", "OL_Liste_inscriptions")
         # Initialisation du listCtrl
         self.nom_fichier_liste = __file__
         GroupListView.__init__(self, *args, **kwds)
@@ -191,29 +191,32 @@ class ListView(GroupListView):
         dictFacturation = {}
 
         # Récupère les prestations
+        condition = ("WHERE IDactivite=%d" % self.IDactivite) if self.IDactivite != 0 else ""
         req = """SELECT IDfamille, IDindividu, SUM(montant)
         FROM prestations
-        WHERE IDactivite=%d
+        %s
         GROUP BY IDfamille, IDindividu
-        ;""" % self.IDactivite
+        ;""" % condition
         DB.ExecuterReq(req)
         listePrestations = DB.ResultatReq()
         for IDfamille, IDindividu, total_prestations in listePrestations :
             if total_prestations == None :
                 total_prestations = 0.0
             dictFacturation[(IDfamille, IDindividu)] = {"prestations":total_prestations, "ventilation":0.0}
-        
+
         # Récupère la ventilation
+        condition = ("WHERE prestations.IDactivite=%d" % self.IDactivite) if self.IDactivite != 0 else ""
         req = """SELECT IDfamille, IDindividu, SUM(ventilation.montant)
         FROM ventilation
         LEFT JOIN prestations ON prestations.IDprestation = ventilation.IDprestation
-        WHERE prestations.IDactivite=%d
+        %s
         GROUP BY IDfamille, IDindividu
-        ;""" % self.IDactivite
+        ;""" % condition
         DB.ExecuterReq(req)
         listeVentilations = DB.ResultatReq()
         for IDfamille, IDindividu, total_ventilation in listeVentilations :
-            dictFacturation[(IDfamille, IDindividu)]["ventilation"] = total_ventilation
+            if (IDfamille, IDindividu) in dictFacturation:
+                dictFacturation[(IDfamille, IDindividu)]["ventilation"] = total_ventilation
 
         # Récupération des données sur les individus
         listeChamps2 = []
@@ -236,7 +239,7 @@ class ListView(GroupListView):
         LEFT JOIN categories_tarifs ON categories_tarifs.IDcategorie_tarif = inscriptions.IDcategorie_tarif
         LEFT JOIN categories_travail ON categories_travail.IDcategorie = individus.IDcategorie_travail
         WHERE inscriptions.statut='ok' %s
-        GROUP BY individus.IDindividu
+        GROUP BY individus.IDindividu, inscriptions.IDinscription
         ;""" % (",".join(listeChamps2), conditions)
         # LEFT JOIN prestations ON prestations.IDactivite = inscriptions.IDactivite a été supprimé pour accélérer le traitement
         DB.ExecuterReq(req)
@@ -288,15 +291,15 @@ class ListView(GroupListView):
                 dictTemp["ville_resid"] = DICT_INFOS_INDIVIDUS[adresse_auto]["ville_resid"]
             
             # Facturation
-            totalFacture = decimal.Decimal(str(0.0))
-            totalRegle = decimal.Decimal(str(0.0))
-            totalSolde = decimal.Decimal(str(0.0))
+            totalFacture = FloatToDecimal(0.0)
+            totalRegle = FloatToDecimal(0.0)
+            totalSolde = FloatToDecimal(0.0)
             key = (dictTemp["IDfamille"], dictTemp["IDindividu"])
             if key in dictFacturation :
-                totalFacture = decimal.Decimal(str(dictFacturation[key]["prestations"]))
-                if totalFacture == None : totalFacture = decimal.Decimal(str(0.0))
-                totalRegle = decimal.Decimal(str(dictFacturation[key]["ventilation"]))
-                if totalRegle == None : totalRegle = decimal.Decimal(str(0.0))
+                totalFacture = FloatToDecimal(dictFacturation[key]["prestations"])
+                if totalFacture == None : totalFacture = FloatToDecimal(0.0)
+                totalRegle = FloatToDecimal(dictFacturation[key]["ventilation"])
+                if totalRegle == None : totalRegle = FloatToDecimal(0.0)
                 totalSolde = totalFacture - totalRegle
             dictTemp["totalFacture"] = totalFacture
             dictTemp["totalRegle"] = totalRegle
@@ -330,7 +333,7 @@ class ListView(GroupListView):
         def GetImageVentilation(track):
             if track.totalFacture == track.totalRegle :
                 return self.imgVert
-            if track.totalRegle == 0.0 or track.totalRegle == None :
+            if track.totalRegle == FloatToDecimal(0.0) or track.totalRegle == None :
                 return self.imgRouge
             if track.totalRegle < track.totalFacture :
                 return self.imgOrange
@@ -345,10 +348,10 @@ class ListView(GroupListView):
             return u"%.2f %s" % (montant, SYMBOLE)
 
         def FormateSolde(montant):
-            if montant == None : decimal.Decimal("0.0")
-            if montant == decimal.Decimal("0.0") :
+            if montant == None : FloatToDecimal(0.0)
+            if montant == FloatToDecimal(0.0):
                 return u"%.2f %s" % (montant, SYMBOLE)
-            elif montant > decimal.Decimal(str("0.0")) :
+            elif montant > FloatToDecimal(0.0):
                 return u"- %.2f %s" % (montant, SYMBOLE)
             else:
                 return u"+ %.2f %s" % (montant, SYMBOLE)
@@ -403,7 +406,7 @@ class ListView(GroupListView):
                 listeColonnes.append(ColumnDefn(titre, "left", 100, code, typeDonnee=typeDonnee, visible=False))
 
         #self.SetColumns(listeColonnes)
-        self.SetColumns2(colonnes=listeColonnes, nomListe="OL_Liste_inscriptions")
+        self.SetColumns2(colonnes=listeColonnes, nomListe=self.nomListe)
 
         # Regroupement
         if self.regroupement != None :
@@ -417,7 +420,8 @@ class ListView(GroupListView):
 
         # Case à cocher
         if self.checkColonne == True :
-            self.CreateCheckStateColumn(0)
+            if not self.checkStateColumn:
+                self.CreateCheckStateColumn(0)
             if len(self.columns) > 0:
                 self.SetSortColumn(self.columns[1])
         else :
@@ -484,11 +488,11 @@ class ListView(GroupListView):
         global LISTE_CHAMPS
         LISTE_CHAMPS = listeChamps
         
-    def SetChampsAffiches(self, listeLabels=[]):
+    def SetChampsAffiches(self, listeLabels=[], listeCodes=[]):
         global LISTE_CHAMPS
         index = 0
         for dictTemp in LISTE_CHAMPS :
-            if dictTemp["label"] in listeLabels :
+            if dictTemp["label"] in listeLabels or dictTemp["code"] in listeCodes:
                 LISTE_CHAMPS[index]["afficher"] = True
             else:
                 LISTE_CHAMPS[index]["afficher"] = False
@@ -539,7 +543,7 @@ class ListView(GroupListView):
         dictParametres = {
             "titre" : _(u"Liste des inscriptions"),
             "intro" : self.labelParametres,
-            "total" : _(u"> %s individus") % len(self.donnees),
+            "total" : _(u"> %s individus") % (len(self.GetFilteredObjects()) if self.regroupement else len(self.innerList)),
             "orientation" : wx.PORTRAIT,
             }
         return dictParametres

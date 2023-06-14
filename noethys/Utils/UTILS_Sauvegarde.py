@@ -27,7 +27,7 @@ from Utils import UTILS_Config
 from Utils import UTILS_Cryptage_fichier
 from Utils import UTILS_Fichiers
 from Utils import UTILS_Envoi_email
-
+from Utils import UTILS_Customize
 
 LISTE_CATEGORIES = [
     (_(u"Données de base"), "DATA"),
@@ -130,8 +130,9 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
         for nomFichier in listeFichiersReseau :
             dlgprogress.Update(numEtape, _(u"Compression du fichier %s...") % nomFichier);numEtape += 1
             fichierSave = u"%s/%s.sql" % (repTemp, nomFichier)
+            options = UTILS_Customize.GetValeur("sauvegarde", "options", "", ajouter_si_manquant=False)
 
-            args = u""""%sbin/mysqldump" --defaults-extra-file="%s" --single-transaction --opt --databases %s > "%s" """ % (repMySQL, nomFichierLoginTemp, nomFichier, fichierSave)
+            args = u""""%sbin/mysqldump" --defaults-extra-file="%s" --single-transaction --opt %s --databases %s > "%s" """ % (repMySQL, nomFichierLoginTemp, options or "", nomFichier, fichierSave)
             print(("Chemin mysqldump =", args))
             if six.PY2:
                 args = args.encode('utf8')
@@ -180,7 +181,8 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
         motdepasse = base64.b64decode(motdepasse)
         if six.PY3:
             motdepasse = motdepasse.decode('utf8')
-        UTILS_Cryptage_fichier.CrypterFichier(UTILS_Fichiers.GetRepTemp(fichier=nomFichierTemp), UTILS_Fichiers.GetRepTemp(fichier=fichierCrypte), motdepasse, ancienne_methode=True)
+        ancienne_methode = UTILS_Customize.GetValeur("version_cryptage", "sauvegarde", "1", ajouter_si_manquant=False) in ("1", None)
+        UTILS_Cryptage_fichier.CrypterFichier(UTILS_Fichiers.GetRepTemp(fichier=nomFichierTemp), UTILS_Fichiers.GetRepTemp(fichier=fichierCrypte), motdepasse, ancienne_methode=ancienne_methode)
         nomFichierTemp = fichierCrypte
         extension = EXTENSIONS["crypte"]
     else:
@@ -421,15 +423,6 @@ def GetRepertoireMySQL(dictValeurs={}):
          dictValeurs = valeurs de connexion
     """
     # Récupération du chemin de MySQL à partir de la base de données
-##    import MySQLdb
-##    connexion = MySQLdb.connect(host=dictValeurs["hote"],user=dictValeurs["utilisateur"], passwd=dictValeurs["mdp"], port=dictValeurs["port"], use_unicode=True) 
-##    connexion.set_character_set('utf8')
-##    cursor = connexion.cursor()
-##    cursor.execute("SELECT @@basedir;")
-##    donnees = cursor.fetchall()
-##    if len(donnees) == 0 : 
-##        return None
-##    return donnees[0][0]
 
     # 1- Recherche automatique
     if "linux" in sys.platform :

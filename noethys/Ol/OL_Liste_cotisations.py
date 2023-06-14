@@ -119,10 +119,11 @@ class Track(object):
                 if self.IDfamille in parent.dictFamillesRattachees :
                     self.beneficiaires = parent.dictFamillesRattachees[self.IDfamille]["nomsTitulaires"]
             else:
-                self.beneficiaires = parent.titulaires[self.IDfamille]["titulairesSansCivilite"]
-                self.rue = parent.titulaires[self.IDfamille]["adresse"]["rue"]
-                self.cp = parent.titulaires[self.IDfamille]["adresse"]["cp"]
-                self.ville = parent.titulaires[self.IDfamille]["adresse"]["ville"]
+                if self.IDfamille in parent.titulaires:
+                    self.beneficiaires = parent.titulaires[self.IDfamille]["titulairesSansCivilite"]
+                    self.rue = parent.titulaires[self.IDfamille]["adresse"]["rue"]
+                    self.cp = parent.titulaires[self.IDfamille]["adresse"]["cp"]
+                    self.ville = parent.titulaires[self.IDfamille]["adresse"]["ville"]
         
         if self.IDindividu != None and self.IDindividu in parent.individus :
             self.beneficiaires = parent.individus[self.IDindividu]["nom_complet"]

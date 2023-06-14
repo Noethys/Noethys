@@ -100,7 +100,8 @@ class ListView(FastObjectListView):
         dictResultats = {}
         for IDprestation, IDcompte_payeur, date, montant, IDfamille in listePrestations :
             date = UTILS_Dates.DateEngEnDateDD(date)  
-            
+            if not montant:
+                montant = 0.0
             montant = decimal.Decimal(montant)
             if IDprestation in dictVentilation :
                 montant_ventilation = decimal.Decimal(dictVentilation[IDprestation])

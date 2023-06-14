@@ -61,7 +61,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         
         # Mémorisation des paramètres
         propriete = wxpg.BoolProperty(label=_(u"Mémoriser les paramètres"), name="memoriser_parametres", value=True)
-        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez mémoriser les paramètres de cette liste")) 
+        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez mémoriser les paramètres de cette liste"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
@@ -129,7 +129,13 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher les QF aux dates concernées dans le document")) 
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
-        
+
+        # Afficher les classes des individus
+        propriete = wxpg.BoolProperty(label=_(u"Afficher les classes"), name="afficher_classes", value=False)
+        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher les classes des individus"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
         # Catégorie 
         self.Append( wxpg.PropertyCategory(_(u"Titre")) )
 
@@ -165,7 +171,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         self.Append( wxpg.PropertyCategory(_(u"Tableau des prestations")) )
 
         # Affichage condensé ou détaillé
-        propriete = wxpg.EnumProperty(label=_(u"Affichage des prestations"), name="affichage_prestations", labels=[_(u"Détaillé"), _(u"Regroupement par label"), _(u"Regroupement par label et montant unitaire")], values=[0, 1, 2] , value=0)
+        propriete = wxpg.EnumProperty(label=_(u"Affichage des prestations"), name="affichage_prestations", labels=[_(u"Détaillé"), _(u"Regroupement par label"), _(u"Regroupement par label et montant unitaire"), _(u"Regroupement par label + dates"), _(u"Regroupement par label et montant unitaire + dates")], values=[0, 1, 2, 3, 4] , value=0)
         propriete.SetHelpString(_(u"Sélectionnez un type d'affichage")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
@@ -385,6 +391,8 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         for nom, valeur in dictParametres.items() :
             propriete = self.GetPropertyByName(nom)
             ancienneValeur = propriete.GetValue()
+            if nom == "memoriser_parametres" and valeur == "":
+                valeur = True
             propriete.SetValue(valeur)
 
     def Sauvegarde(self, forcer=False):

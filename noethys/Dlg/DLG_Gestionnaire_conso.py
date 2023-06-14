@@ -455,7 +455,7 @@ class PanelGrille(wx.Panel):
                           " date_desinscription>='{0}')".format(self.date))
 
         DB = GestionDB.DB()
-        req = """SELECT IDinscription, inscriptions.IDindividu
+        req = """SELECT inscriptions.IDindividu
         FROM inscriptions"""
         if self.filtrerClasses:
             req += """
@@ -470,7 +470,7 @@ class PanelGrille(wx.Panel):
         listeDonnees = DB.ResultatReq()
         DB.Close()
 
-        for IDinscription, IDindividu in listeDonnees:
+        for IDindividu, in listeDonnees:
             if IDindividu not in self.listeSelectionIndividus:
                 self.listeSelectionIndividus.append(IDindividu)
                 # Ajout de l'individu dans une liste pour le garder afficher lors d'une MAJ de l'affichage
@@ -889,6 +889,7 @@ class Dialog(wx.Dialog):
         self.ID_AFFICHAGE_PANNEAUX = 600
         ID_AFFICHAGE_PARAMETRES = wx.Window.NewControlId()
         ID_AFFICHE_COLONNE_MEMO = wx.Window.NewControlId()
+        ID_MASQUER_UNITES_FERMEES = wx.Window.NewControlId()
         ID_AFFICHE_COLONNE_TRANSPORTS = wx.Window.NewControlId()
         ID_BLOCAGE_SI_COMPLET = wx.Window.NewControlId()
         ID_AFFICHE_SANS_PRESTATION = wx.Window.NewControlId()
@@ -992,6 +993,11 @@ class Dialog(wx.Dialog):
         menuPop.AppendItem(item)
         item.Check(self.panel_grille.grille.GetAfficheColonneTransports())
         self.Bind(wx.EVT_MENU, self.On_affiche_transports, id=ID_AFFICHE_COLONNE_TRANSPORTS)
+
+        item = wx.MenuItem(menuPop, ID_MASQUER_UNITES_FERMEES, _(u"Masquer les unités non ouvertes"), _(u"Masquer les unités non ouvertes"), wx.ITEM_CHECK)
+        menuPop.AppendItem(item)
+        item.Check(self.panel_grille.grille.GetMasquerUnitesFermees())
+        self.Bind(wx.EVT_MENU, self.On_masquer_unites_fermees, id=ID_MASQUER_UNITES_FERMEES)
 
         item = wx.MenuItem(menuPop, ID_AFFICHAGE_PARAMETRES, _(u"Définir hauteur et largeurs des cases"), _(u"Définir la hauteur des lignes et la largeur des cases"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_PNG))
@@ -1103,6 +1109,10 @@ class Dialog(wx.Dialog):
     def On_affiche_memo(self, event):
         grille = self.panel_grille.grille
         grille.SetAfficheColonneMemo(not grille.GetAfficheColonneMemo())
+
+    def On_masquer_unites_fermees(self, event):
+        grille = self.panel_grille.grille
+        grille.SetMasquerUnitesFermees(not grille.GetMasquerUnitesFermees())
 
     def On_affiche_transports(self, event):
         grille = self.panel_grille.grille

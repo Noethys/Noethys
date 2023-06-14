@@ -37,11 +37,18 @@ class Track(object):
         self.affichage = bool(donnees[5])
         self.affichage_date_debut = donnees[6]
         if isinstance(self.affichage_date_debut, str) or isinstance(self.affichage_date_debut, six.text_type) :
-            self.affichage_date_debut = datetime.datetime.strptime(self.affichage_date_debut, "%Y-%m-%d %H:%M:%S")
+            try:
+                self.affichage_date_debut = datetime.datetime.strptime(self.affichage_date_debut, "%Y-%m-%d %H:%M:%S")
+            except:
+                temp = datetime.datetime.strptime(self.affichage_date_debut, "%Y-%m-%d")
+                self.affichage_date_debut = datetime.datetime(year=temp.year, month=temp.month, day=temp.day, hour=0, minute=0)
         self.affichage_date_fin = donnees[7]
         if isinstance(self.affichage_date_fin, str) or isinstance(self.affichage_date_fin, six.text_type) :
-            self.affichage_date_fin = datetime.datetime.strptime(self.affichage_date_fin, "%Y-%m-%d %H:%M:%S")
-
+            try:
+                self.affichage_date_fin = datetime.datetime.strptime(self.affichage_date_fin, "%Y-%m-%d %H:%M:%S")
+            except:
+                temp = datetime.datetime.strptime(self.affichage_date_fin, "%Y-%m-%d")
+                self.affichage_date_fin = datetime.datetime(year=temp.year, month=temp.month, day=temp.day, hour=23, minute=59)
         if self.affichage == True :
             if self.affichage_date_debut == None :
                 self.affichage_periode = True #_(u"Toujours afficher")

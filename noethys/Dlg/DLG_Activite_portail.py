@@ -131,6 +131,48 @@ class Page_unites(wx.Panel):
         grid_sizer_base.AddGrowableCol(0)
 
 
+class CTRL_Date_limite(wx.Choice):
+    def __init__(self, parent):
+        wx.Choice.__init__(self, parent, -1, size=(-1, -1))
+        self.parent = parent
+        self.MAJ()
+
+    def MAJ(self):
+        self.liste_donnees = [
+            (1000, _(u"Lundi précédent")),
+            (1001, _(u"Mardi précédent")),
+            (1002, _(u"Mercredi précédent")),
+            (1003, _(u"Jeudi précédent")),
+            (1004, _(u"Vendredi précédent")),
+            (1005, _(u"Samedi précédent")),
+            (1006, _(u"Dimanche précédent")),
+            (2000, _(u"Lundi de la semaine précédente")),
+            (2001, _(u"Mardi de la semaine précédente")),
+            (2002, _(u"Mercredi de la semaine précédente")),
+            (2003, _(u"Jeudi de la semaine précédente")),
+            (2004, _(u"Vendredi de la semaine précédente")),
+            (2005, _(u"Samedi de la semaine précédente")),
+            (2006, _(u"Dimanche de la semaine précédente")),
+            (0, _(u"Jour J")),
+        ]
+        for x in range(1, 31):
+            self.liste_donnees.append((x, _(u"Jour J-%d") % x))
+
+        listeItems = []
+        for code, label in self.liste_donnees:
+            listeItems.append(label)
+        self.SetItems(listeItems)
+        self.SetValeur(0)
+
+    def SetValeur(self, valeur=None):
+        for index, (code, label) in enumerate(self.liste_donnees):
+            if code == valeur:
+                self.SetSelection(index)
+
+    def GetValeur(self):
+        index = self.GetSelection()
+        return self.liste_donnees[index][0]
+
 
 
 class Page_options(wx.Panel):
@@ -147,7 +189,7 @@ class Page_options(wx.Panel):
         # Date limite de modification
         self.staticbox_date_limite = wx.StaticBox(self, -1, _(u"Limite de modification"))
         self.check_date_limite = wx.CheckBox(self, -1, _(u"Une réservation peut être ajoutée, modifiée ou supprimée jusqu'à"))
-        self.ctrl_date_limite = wx.Choice(self, -1, choices=liste_jours)
+        self.ctrl_date_limite = CTRL_Date_limite(self)
         self.ctrl_heure_limite = CTRL_Saisie_heure.Heure(self)
         self.check_limite_weekends = wx.CheckBox(self, -1, _(u"Exclure les week-ends"))
         self.check_limite_feries = wx.CheckBox(self, -1, _(u"Exclure les jours fériés"))
@@ -199,7 +241,7 @@ class Page_options(wx.Panel):
         grid_sizer_base.AddGrowableCol(0)
 
         # Init
-        self.ctrl_date_limite.SetSelection(0)
+        self.ctrl_date_limite.SetValeur(0)
         self.ctrl_heure_limite.SetHeure("09:00")
         self.OnCheckDateLimite()
 
@@ -223,7 +265,7 @@ class Page_options(wx.Panel):
             options = limite[2]
         else :
             options = ""
-        self.ctrl_date_limite.SetSelection(int(date))
+        self.ctrl_date_limite.SetValeur(int(date))
         self.ctrl_heure_limite.SetHeure(heure)
         self.check_date_limite.SetValue(True)
         if "weekends" in options :
@@ -234,14 +276,12 @@ class Page_options(wx.Panel):
 
     def GetDateLimite(self):
         if self.check_date_limite.GetValue() == True :
-
             liste_options = []
             if self.check_limite_weekends.GetValue() == True :
                 liste_options.append("weekends")
             if self.check_limite_feries.GetValue() == True :
                 liste_options.append("feries")
-
-            return "%d#%s#%s" % (self.ctrl_date_limite.GetSelection(), self.ctrl_heure_limite.GetHeure(), ",".join(liste_options))
+            return "%d#%s#%s" % (self.ctrl_date_limite.GetValeur(), self.ctrl_heure_limite.GetHeure(), ",".join(liste_options))
         else :
             return None
 

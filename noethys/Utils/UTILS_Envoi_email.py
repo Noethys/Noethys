@@ -71,12 +71,13 @@ def EnvoiEmailFamille(parent=None, IDfamille=None, nomDoc="", categorie="", list
     for adresse in listeAdresses :
         listeDonnees.append({
             "adresse" : adresse, 
-            "pieces" : liste_pieces,
+            # "pieces" : liste_pieces,
             "champs" : dictChamps,
             })
     from Dlg import DLG_Mailer
     dlg = DLG_Mailer.Dialog(parent, categorie=categorie, afficher_confirmation_envoi=visible)
     dlg.SetDonnees(listeDonnees, modificationAutorisee=True)
+    dlg.SetPiecesJointes(liste_pieces)
     if IDmodele == None :
         dlg.ChargerModeleDefaut()
     else :
@@ -627,8 +628,13 @@ class SmtpV2(Base_messagerie):
 
     def Envoyer_lot(self, messages=[], dlg_progress=None, afficher_confirmation_envoi=True):
         """ Envoi des messages par lot """
+        # Si envoi par lot activé
+        nbre_mails_lot = self.dict_parametres.get("nbre_mails", None)
+        duree_pause = self.dict_parametres.get("duree_pause", None)
+
         # Envoi des mails
         index = 1
+        index_lot = 1
         listeAnomalies = []
         listeSucces = []
         ne_pas_signaler_erreurs = False
@@ -676,7 +682,7 @@ class SmtpV2(Base_messagerie):
                     else:
                         err = six.text_type(erreur)
                     listeAnomalies.append((message, err))
-                    print(("Erreur dans l'envoi d'un mail : %s...", err))
+                    print(("Erreur dans l'envoi d'un mail : %s..." % err))
 
                     if ne_pas_signaler_erreurs == False:
 
@@ -706,8 +712,17 @@ class SmtpV2(Base_messagerie):
                             return listeSucces
                 break
 
+            # Petit pause après chaque message
             if len(messages) > 1:
                 time.sleep(1)
+
+            # Envoi par lot
+            if nbre_mails_lot and len(messages) > 1:
+                if index_lot >= int(nbre_mails_lot):
+                    time.sleep(int(duree_pause))
+                    index_lot = 0
+                index_lot += 1
+
             index += 1
 
         # Fin de la gauge
@@ -937,6 +952,8 @@ class Mailjet(Base_messagerie):
             raise Exception(err)
 
         if resultat != u'success':
+            print("Erreur envoi avec Mailjet")
+            print(resultats.json())
             raise Exception(resultat)
 
         return resultat
@@ -974,7 +991,7 @@ class Mailjet(Base_messagerie):
                 except Exception as err:
                     err = str(err).decode("iso-8859-15")
                     listeAnomalies.append((message, err))
-                    print(("Erreur dans l'envoi d'un mail : %s...", err))
+                    print(("Erreur dans l'envoi d'un mail : %s..." % err))
                     traceback.print_exc(file=sys.stdout)
 
                     if ne_pas_signaler_erreurs == False:

@@ -21,6 +21,13 @@ import wx
 import platform
 import datetime
 import traceback
+import codecs
+
+# import ctypes
+# try:
+#     ctypes.windll.shcore.SetProcessDpiAwareness(True)
+# except:
+#     pass
 
 from time import sleep 
 
@@ -651,8 +658,8 @@ class MainFrame(wx.Frame):
                     "-",
                     {"code" : "convertir_fichier_reseau", "label" : _(u"Convertir en fichier réseau"), "infobulle" : _(u"Convertir le fichier en mode réseau"), "image" : "Images/16x16/Conversion_reseau.png", "action" : self.On_fichier_Convertir_reseau, "actif" : False},
                     {"code" : "convertir_fichier_local", "label" : _(u"Convertir en fichier local"), "infobulle" : _(u"Convertir le fichier en mode local"), "image" : "Images/16x16/Conversion_local.png", "action" : self.On_fichier_Convertir_local, "actif" : False},
-                    # "-",
-                    # {"code" : "export_noethysweb", "label": _(u"Exporter vers Noethysweb"), "infobulle": _(u"Convertir le fichier au format Noethysweb"), "image": "Images/16x16/Document_export.png", "action": self.On_fichier_export_noethysweb, "actif": True},
+                    "-",
+                    {"code" : "export_noethysweb", "label": _(u"Exporter vers Noethysweb"), "infobulle": _(u"Convertir le fichier au format Noethysweb"), "image": "Images/16x16/Document_export.png", "action": self.On_fichier_export_noethysweb, "actif": True},
                     "-",
                     {"code" : "quitter", "label" : _(u"Quitter"), "infobulle" : _(u"Quitter Noethys"), "image" : "Images/16x16/Quitter.png", "action" : self.On_fichier_Quitter},
                     ],
@@ -887,8 +894,11 @@ class MainFrame(wx.Frame):
                             "-",
                             {"code" : "appliquer_tva", "label" : _(u"Appliquer un taux de TVA à un lot de prestations"), "infobulle" : _(u"Appliquer un taux de TVA à un lot de prestations"), "image" : "Images/16x16/Outils.png", "action" : self.On_outils_appliquer_tva},
                             {"code" : "appliquer_code_comptable", "label" : _(u"Appliquer un code comptable à un lot de prestations"), "infobulle" : _(u"Appliquer un code comptable à des prestations"), "image" : "Images/16x16/Outils.png", "action" : self.On_outils_appliquer_code_comptable},
-                            {"code" : "conversion_rib_sepa", "label" : _(u"Convertir les RIB nationaux en mandats SEPA"), "infobulle" : _(u"Convertir les RIB nationaux en mandats SEPA"), "image" : "Images/16x16/Outils.png", "action" : self.On_outils_conversion_rib_sepa},
+                            {"code" : "appliquer_code_produit_local", "label": _( u"Appliquer un code produit local à un lot de prestations"), "infobulle": _(u"Appliquer un code produit local à des prestations"), "image": "Images/16x16/Outils.png", "action": self.On_outils_appliquer_code_produit_local},
+
+                        {"code" : "conversion_rib_sepa", "label" : _(u"Convertir les RIB nationaux en mandats SEPA"), "infobulle" : _(u"Convertir les RIB nationaux en mandats SEPA"), "image" : "Images/16x16/Outils.png", "action" : self.On_outils_conversion_rib_sepa},
                             {"code" : "creation_titulaires_helios", "label" : _(u"Création automatique des titulaires Hélios"), "infobulle" : _(u"Création automatique des titulaires Hélios"), "image" : "Images/16x16/Outils.png", "action" : self.On_outils_creation_titulaires_helios},
+                            {"code" : "creation_tiers_solidaires", "label" : _(u"Création automatique des tiers solidaires"), "infobulle" : _(u"Création automatique des tiers solidaires"), "image" : "Images/16x16/Outils.png", "action" : self.On_outils_creation_tiers_solidaires},
                             "-",
                             {"code" : "console_python", "label" : _(u"Console Python"), "infobulle" : _(u"Console Python"), "image" : "Images/16x16/Python.png", "action" : self.On_outils_console_python},
                             {"code" : "console_sql", "label" : _(u"Console SQL"), "infobulle" : _(u"Console SQL"), "image" : "Images/16x16/Sql.png", "action" : self.On_outils_console_sql},
@@ -902,8 +912,10 @@ class MainFrame(wx.Frame):
             {"code" : "menu_individus", "label" : _(u"Individus"), "items" : [
                     {"code" : "scolarite", "label" : _(u"Inscriptions scolaires"), "infobulle" : _(u"Inscriptions scolaires"), "image" : "Images/16x16/Classe.png", "action" : self.On_individus_scolarite},
                     "-",
-                    {"code" : "liste_inscriptions", "label" : _(u"Liste des inscriptions"), "infobulle" : _(u"Editer une liste des inscriptions"), "image" : "Images/16x16/Activite.png", "action" : self.On_individus_inscriptions},
+                    {"code" : "liste_inscriptions_detaillees", "label" : _(u"Liste des inscriptions"), "infobulle" : _(u"Editer une liste des inscriptions"), "image" : "Images/16x16/Activite.png", "action" : self.On_individus_inscriptions_detaillees},
+                    {"code" : "liste_inscriptions", "label" : _(u"Liste des inscriptions à une activité"), "infobulle" : _(u"Editer la liste des inscriptions à une activité"), "image" : "Images/16x16/Activite.png", "action" : self.On_individus_inscriptions},
                     {"code" : "saisir_lot_inscriptions", "label" : _(u"Saisir un lot d'inscriptions"), "infobulle" : _(u"Saisir un lot d'inscriptions"), "image" : "Images/16x16/Activite.png", "action" : self.On_individus_saisir_lot_inscriptions},
+                    {"code" : "desinscrire_individus", "label" : _(u"Désinscrire des individus"), "infobulle" : _(u"Désinscrire des individus par lot"), "image" : "Images/16x16/Activite.png", "action" : self.On_individus_desinscrire},
                     {"code": "inscription_attente", "label": _(u"Liste des inscriptions en attente"), "infobulle": _(u"Inscriptions en attente"), "image": "Images/16x16/Liste_attente.png", "action": self.On_inscriptions_attente},
                     {"code": "inscription_refus", "label": _(u"Liste des inscriptions refusées"), "infobulle": _(u"Inscriptions refusées"), "image": "Images/16x16/Places_refus.png", "action": self.On_inscriptions_refus},
                     {"code" : "inscriptions_email", "label": _(u"Transmettre des inscriptions par Email"), "infobulle": _(u"Transmettre des inscriptions par Email"), "image": "Images/16x16/Emails_exp.png", "action": self.On_inscriptions_email},
@@ -988,7 +1000,8 @@ class MainFrame(wx.Frame):
                     "-",
                     {"code" : "traitement_lot_conso", "label" : _(u"Traitement par lot"), "infobulle" : _(u"Traitement par lot"), "image" : "Images/16x16/Calendrier_modification.png", "action" : self.On_conso_traitement_lot},
                     "-",
-                    {"code" : "liste_attente", "label" : _(u"Liste d'attente"), "infobulle" : _(u"Liste d'attente"), "image" : "Images/16x16/Liste_attente.png", "action" : self.On_conso_attente},
+                {"code" : "liste_detail_consommations", "label": _(u"Liste détaillée des consommations"), "infobulle": _(u"Liste détaillée des consommations"), "image": "Images/16x16/Calendrier.png", "action": self.On_conso_liste_detail_conso},
+                {"code" : "liste_attente", "label" : _(u"Liste d'attente"), "infobulle" : _(u"Liste d'attente"), "image" : "Images/16x16/Liste_attente.png", "action" : self.On_conso_attente},
                     {"code" : "liste_refus", "label" : _(u"Liste des places refusées"), "infobulle" : _(u"Liste des places refusées"), "image" : "Images/16x16/Places_refus.png", "action" : self.On_conso_refus},
                     {"code" : "liste_absences", "label" : _(u"Liste des absences"), "infobulle" : _(u"Liste des absences"), "image" : "Images/16x16/absenti.png", "action" : self.On_conso_absences},
                     "-",
@@ -1007,13 +1020,13 @@ class MainFrame(wx.Frame):
                     {"code" : "menu_facturation_factures", "label" : _(u"Factures"), "items" : [
                             {"code" : "factures_generation", "label" : _(u"Génération"), "infobulle" : _(u"Génération des factures"), "image" : "Images/16x16/Generation.png", "action" : self.On_facturation_factures_generation},
                             "-",
-                            {"code" : "factures_helios", "label" : _(u"Export vers Hélios"), "infobulle" : _(u"Exporter les factures vers Hélios"), "image" : "Images/16x16/Helios.png", "action" : self.On_facturation_factures_helios},
+                            {"code" : "factures_helios", "label" : _(u"Export vers le Trésor Public"), "infobulle" : _(u"Exporter les factures vers le Trésor Public"), "image" : "Images/16x16/Helios.png", "action" : self.On_facturation_factures_helios},
                             {"code" : "factures_prelevement", "label" : _(u"Prélèvement automatique"), "infobulle" : _(u"Gestion du prélèvement automatique"), "image" : "Images/16x16/Prelevement.png", "action" : self.On_facturation_factures_prelevement},
                             {"code" : "factures_email", "label" : _(u"Transmettre par Email"), "infobulle" : _(u"Transmettre les factures par Email"), "image" : "Images/16x16/Emails_exp.png", "action" : self.On_facturation_factures_email},
                             {"code" : "factures_imprimer", "label" : _(u"Imprimer"), "infobulle" : _(u"Imprimer des factures"), "image" : "Images/16x16/Imprimante.png", "action" : self.On_facturation_factures_imprimer},
                             "-",
                             {"code" : "factures_liste", "label" : _(u"Liste des factures"), "infobulle" : _(u"Liste des factures générées"), "image" : "Images/16x16/Facture.png", "action" : self.On_facturation_factures_liste},
-                            ],
+                            {"code" : "factures_liste_detail", "label": _(u"Liste détaillée des factures"), "infobulle": _(u"Consulter la liste détaillée des factures"), "image": "Images/16x16/Facture.png", "action": self.On_facturation_factures_liste_detail}, ],
                     },
                     {"code" : "menu_facturation_rappels", "label" : _(u"Lettres de rappel"), "items" : [
                             {"code" : "rappels_generation", "label" : _(u"Génération"), "infobulle" : _(u"Génération des lettres de rappel"), "image" : "Images/16x16/Generation.png", "action" : self.On_facturation_rappels_generation},
@@ -1042,6 +1055,7 @@ class MainFrame(wx.Frame):
                     {"code" : "recalcul_prestations", "label" : _(u"Recalculer des prestations"), "infobulle" : _(u"Recalculer des prestations"), "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_recalculer_prestations},
                     {"code" : "verrou_prestations", "label": _(u"Verrouiller les prestations"), "infobulle": _(u"Verrouillage des prestations grâce aux périodes de gestion"), "image": "Images/16x16/Cadenas.png", "action": self.On_param_periodes_gestion},
                     "-",
+                    {"code" : "synthese_deductions", "label": _(u"Synthèse des déductions"), "infobulle": _(u"Synthèse des déductions"), "image": "Images/16x16/Diagramme.png", "action": self.On_facturation_synthese_deductions},
                     {"code" : "liste_deductions", "label" : _(u"Liste des déductions"), "infobulle" : _(u"Liste des déductions"), "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_liste_deductions},
                     {"code" : "saisir_lot_deductions", "label" : _(u"Saisir un lot de déductions"), "infobulle" : _(u"Saisir un lot de déductions"), "image" : "Images/16x16/Impayes.png", "action" : self.On_facturation_saisir_deductions},
                     "-",
@@ -1106,7 +1120,7 @@ class MainFrame(wx.Frame):
                     {"code" : "telechargements_communautaires", "label" : _(u"Télécharger des ressources communautaires"), "infobulle" : _(u"Télécharger des ressources communautaires"), "image" : "Images/16x16/Updater.png", "action" : self.On_aide_telechargements},
                     "-",
                     {"code" : "services", "label": _(u"L'offre de services de Noethys"), "infobulle": _(u"L'offre de services de Noethys"), "image": "Images/16x16/Assistance.png", "action": self.On_aide_services},
-                    {"code" : "email_auteur", "label" : _(u"Envoyer un Email à l'auteur"), "infobulle" : _(u"Envoyer un Email à l'auteur"), "image" : "Images/16x16/Mail.png", "action" : self.On_aide_auteur},
+                    #{"code" : "email_auteur", "label" : _(u"Envoyer un Email à l'auteur"), "infobulle" : _(u"Envoyer un Email à l'auteur"), "image" : "Images/16x16/Mail.png", "action" : self.On_aide_auteur},
                     ],
             },
 
@@ -2726,6 +2740,11 @@ class MainFrame(wx.Frame):
         from Utils import UTILS_Procedures
         UTILS_Procedures.A7650()
 
+    def On_outils_creation_tiers_solidaires(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("outils_utilitaires", "consulter") == False : return
+        from Utils import UTILS_Procedures
+        UTILS_Procedures.A9064()
+
     def On_outils_reinitialisation(self, event):
         """ Réinitialisation du fichier de configuration """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("outils_utilitaires", "consulter") == False : return
@@ -2771,6 +2790,11 @@ class MainFrame(wx.Frame):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("outils_utilitaires", "consulter") == False : return
         from Utils import UTILS_Appliquer_code_compta
         UTILS_Appliquer_code_compta.Appliquer()
+
+    def On_outils_appliquer_code_produit_local(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("outils_utilitaires", "consulter") == False : return
+        from Utils import UTILS_Appliquer_code_produit_local
+        UTILS_Appliquer_code_produit_local.Appliquer()
 
     def On_outils_conversion_rib_sepa(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("outils_utilitaires", "consulter") == False : return
@@ -2921,7 +2945,15 @@ class MainFrame(wx.Frame):
         dlg = DLG_Liste_factures.Dialog(self)
         dlg.ShowModal() 
         dlg.Destroy()
-        
+
+    def On_facturation_factures_liste_detail(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("facturation_factures", "consulter") == False: return
+        if self.VerificationVentilation() == False: return
+        from Dlg import DLG_Liste_factures_detail
+        dlg = DLG_Liste_factures_detail.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+
     def On_facturation_factures_prelevement(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("facturation_prelevements", "consulter") == False : return
         if self.VerificationVentilation() == False : return
@@ -3041,6 +3073,12 @@ class MainFrame(wx.Frame):
         from Dlg import DLG_Recalculer_prestations
         dlg = DLG_Recalculer_prestations.Dialog(self)
         dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_facturation_synthese_deductions(self, event):
+        from Dlg import DLG_Synthese_deductions
+        dlg = DLG_Synthese_deductions.Dialog(self)
+        dlg.ShowModal()
         dlg.Destroy()
 
     def On_facturation_liste_deductions(self, event):
@@ -3269,7 +3307,14 @@ class MainFrame(wx.Frame):
         dlg.ShowModal() 
         dlg.Destroy()
         self.ctrl_remplissage.MAJ()
-        
+
+    def On_conso_liste_detail_conso(self, event):
+        from Dlg import DLG_Liste_consommations
+        dlg = DLG_Liste_consommations.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+        self.ctrl_remplissage.MAJ()
+
     def On_conso_attente(self, event):
         self.ctrl_remplissage.OuvrirListeAttente() 
 
@@ -3331,10 +3376,22 @@ class MainFrame(wx.Frame):
         dlg.ShowModal() 
         dlg.Destroy()
 
+    def On_individus_inscriptions_detaillees(self, event):
+        from Dlg import DLG_Liste_detaillee_inscriptions
+        dlg = DLG_Liste_detaillee_inscriptions.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+
     def On_individus_saisir_lot_inscriptions(self, event):
         from Dlg import DLG_Saisie_lot_inscriptions
         dlg = DLG_Saisie_lot_inscriptions.Dialog(self)
         dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_individus_desinscrire(self, event):
+        from Dlg import DLG_Desinscriptions
+        dlg = DLG_Desinscriptions.Dialog(self)
+        dlg.ShowModal()
         dlg.Destroy()
 
     def On_inscriptions_imprimer(self, event):
@@ -3580,29 +3637,21 @@ class MainFrame(wx.Frame):
     def On_propos_versions(self, event):
         """ A propos : Notes de versions """
         # Lecture du fichier
-        txtLicence = open(FonctionsPerso.GetRepertoireProjet("Versions.txt"), "r")
-        msg = txtLicence.read()
-        txtLicence.close()
-        # Dlg
+        fichier = codecs.open(FonctionsPerso.GetRepertoireProjet("Versions.txt"), encoding='utf-8', mode='r')
+        msg = fichier.read()
+        fichier.close()
         from Dlg import DLG_Messagebox
-        if six.PY2:
-            msg = msg.decode("iso-8859-15")
         dlg = DLG_Messagebox.Dialog(self, titre=_(u"Notes de versions"), introduction=_("Liste des versions du logiciel :"), detail=msg, icone=wx.ICON_INFORMATION, boutons=[_(u"Fermer"),], defaut=0)
         dlg.ShowModal()
         dlg.Destroy()
-        # import  wx.lib.dialogs
-        # dlg = wx.lib.dialogs.ScrolledMessageDialog(self, msg.decode("iso-8859-15"), _(u"Notes de versions"), size=(500, 500))
-        # dlg.ShowModal()
-        
+
     def On_propos_licence(self, event):
         """ A propos : Licence """
-        import  wx.lib.dialogs
-        txtLicence = open(FonctionsPerso.GetRepertoireProjet("Licence.txt"), "r")
-        msg = txtLicence.read()
-        txtLicence.close()
-        if six.PY2:
-            msg = msg.decode("iso-8859-15")
-        dlg = wx.lib.dialogs.ScrolledMessageDialog(self, msg, _(u"A propos"), size=(500, 500))
+        import wx.lib.dialogs
+        fichier = codecs.open(FonctionsPerso.GetRepertoireProjet("Licence.txt"), encoding='utf-8', mode='r')
+        msg = fichier.read()
+        fichier.close()
+        dlg = wx.lib.dialogs.ScrolledMessageDialog(self, msg, _(u"Licence"), size=(500, 500))
         dlg.ShowModal()
 
     def On_propos_soutenir(self, event):
@@ -3788,8 +3837,11 @@ class MainFrame(wx.Frame):
         self.SetStatusText(_(u"Le fichier '%s' a été ouvert avec succès.") % nomFichier)  
         
         # Mémorise dans l'historique l'ouverture du fichier
-        UTILS_Historique.InsertActions([{"IDcategorie":1, "action":_(u"Ouverture du fichier %s") % nomFichier},])
-        
+        try:
+            UTILS_Historique.InsertActions([{"IDcategorie":1, "action":_(u"Ouverture du fichier %s") % nomFichier},])
+        except:
+            pass
+
         # Affiche les messages importants
         wx.CallLater(2000, self.AfficheMessagesOuverture)
 
@@ -4318,6 +4370,9 @@ Merci pour votre participation !
 # -----------------------------------------------------------------------------------------------------------------
 
 class MyApp(wx.App):
+    # def InitLocale(self):
+    #     self.ResetLocale()
+
     def OnInit(self):
         # Adaptation pour rétrocompatibilité wx2.8
         if wx.VERSION < (2, 9, 0, 0) :

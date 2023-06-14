@@ -285,7 +285,7 @@ class Depannage():
         self.LiensErrones() 
         self.VentilationExcessive()
         self.PrestationsFantomes()
-        # self.MySQL8()
+        self.MySQL8()
                 
         # Fermeture DB
         self.DB.Close()
@@ -370,8 +370,9 @@ class Depannage():
         listeDonnees = self.DB.ResultatReq()
         listeTemp = []
         for IDventilation, IDprestation, IDreglement, IDfamille in listeDonnees :
-            label = _(u"Ventilation ID%d pour la prestation ID%d et le règlement ID%d pour la famille ID%d") % (IDventilation, IDprestation, IDreglement, IDfamille)
-            listeTemp.append(VentilationsSansPrestations(label=label, IDventilation=IDventilation, IDprestation=IDprestation, IDreglement=IDreglement, IDfamille=IDfamille))
+            if IDventilation and IDprestation and IDreglement and IDfamille:
+                label = _(u"Ventilation ID%d pour la prestation ID%d et le règlement ID%d pour la famille ID%d") % (IDventilation, IDprestation, IDreglement, IDfamille)
+                listeTemp.append(VentilationsSansPrestations(label=label, IDventilation=IDventilation, IDprestation=IDprestation, IDreglement=IDreglement, IDfamille=IDfamille))
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def VentilationsSansReglements(self):
@@ -535,7 +536,7 @@ class Depannage():
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def LiensTronques(self):
-        labelProbleme = _(u"Liens sans individus associés")
+        labelProbleme = _(u"Liens sans familles ou sans individus associés")
         labelCorrection = _(u"Supprimer le lien dans la base")
 
         req = """SELECT IDlien, IDindividu_sujet
@@ -548,7 +549,8 @@ class Depannage():
         req = """SELECT IDlien, IDindividu_objet
         FROM liens 
         LEFT JOIN individus ON individus.IDindividu = liens.IDindividu_objet
-        WHERE individus.IDindividu IS NULL ;"""
+        LEFT JOIN familles ON familles.IDfamille = liens.IDfamille
+        WHERE individus.IDindividu IS NULL OR familles.IDfamille IS NULL;"""
         self.DB.ExecuterReq(req)
         listeObjets = self.DB.ResultatReq()
 

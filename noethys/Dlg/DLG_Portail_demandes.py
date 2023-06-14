@@ -13,7 +13,7 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-import time
+import time, codecs
 import GestionDB
 from Ctrl import CTRL_Bouton_image
 from Ctrl import CTRL_Bandeau
@@ -88,7 +88,7 @@ class CTRL_Log(wx.TextCtrl):
         dlg.Destroy()
         if nomFichier == None :
             return
-        fichier = open(nomFichier, "w")
+        fichier = codecs.open(nomFichier, encoding='utf-8', mode='w')
         fichier.write(self.GetValue())
         fichier.close()
 
@@ -116,6 +116,7 @@ class Dialog(wx.Dialog):
         self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_texte = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Texte2.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_excel = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Excel.png"), wx.BITMAP_TYPE_ANY))
+        self.bouton_configuration = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
 
         self.ctrl_recherche = OL_Portail_demandes.CTRL_Outils(self, listview=self.ctrl_demandes, afficherCocher=True)
         self.label_regroupement = wx.StaticText(self, -1, _(u"Regroupement :"))
@@ -143,6 +144,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.ctrl_demandes.Imprimer, self.bouton_imprimer)
         self.Bind(wx.EVT_BUTTON, self.ctrl_demandes.ExportTexte, self.bouton_texte)
         self.Bind(wx.EVT_BUTTON, self.ctrl_demandes.ExportExcel, self.bouton_excel)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_demandes.MenuConfigurerListe, self.bouton_configuration)
         self.Bind(wx.EVT_CHOICE, self.OnChoixRegroupement, self.ctrl_regroupement)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckCacherTraitees, self.check_cacher_traitees)
         self.Bind(wx.EVT_BUTTON, self.ctrl_log.Enregistrer, self.bouton_enregistrer)
@@ -163,6 +165,7 @@ class Dialog(wx.Dialog):
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
         self.bouton_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Texte")))
         self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
+        self.bouton_configuration.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour configurer la liste")))
         self.ctrl_regroupement.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner une colonne de regroupement")))
         self.check_cacher_traitees.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour cacher les demandes déjà traitées")))
         self.bouton_enregistrer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour enregistrer le contenu du journal dans un fichier")))
@@ -181,7 +184,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
         grid_sizer_demandes.Add(self.ctrl_demandes, 1, wx.EXPAND, 0)
         
-        grid_sizer_boutons_demandes = wx.FlexGridSizer(7, 1, 5, 5)
+        grid_sizer_boutons_demandes = wx.FlexGridSizer(9, 1, 5, 5)
         grid_sizer_boutons_demandes.Add(self.bouton_traiter, 0, 0, 0)
         grid_sizer_boutons_demandes.Add((20, 10), 0, wx.EXPAND, 0)
         grid_sizer_boutons_demandes.Add(self.bouton_apercu, 0, 0, 0)
@@ -189,6 +192,8 @@ class Dialog(wx.Dialog):
         grid_sizer_boutons_demandes.Add((20, 10), 0, wx.EXPAND, 0)
         grid_sizer_boutons_demandes.Add(self.bouton_texte, 0, 0, 0)
         grid_sizer_boutons_demandes.Add(self.bouton_excel, 0, 0, 0)
+        grid_sizer_boutons_demandes.Add((5, 5), 0, 0, 0)
+        grid_sizer_boutons_demandes.Add(self.bouton_configuration, 0, 0, 0)
         grid_sizer_demandes.Add(grid_sizer_boutons_demandes, 1, wx.EXPAND, 0)
         
         grid_sizer_recherche = wx.FlexGridSizer(2, 6, 5, 5)

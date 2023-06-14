@@ -124,8 +124,9 @@ class Choix_Piece_autre(wx.Choice):
         for dictPiece in self.listeDonnees :
             if dictPiece["IDfamille"] == IDfamille and dictPiece["IDtype_piece"] == IDtype_piece and dictPiece["IDindividu"] == IDindividu :
                 self.Select(index)
-                break
+                return True
             index += 1
+        return False
 
     def GetID(self):
         index = self.GetSelection()
@@ -165,9 +166,14 @@ class Dialog(wx.Dialog):
         self.listePiecesObligatoires = self.ctrl_pieces_obligatoires.GetlistePiecesObligatoires()
         
         # Types de pièces autres
-        self.radio_pieces_2 = wx.RadioButton(self, -1, _(u"Dans la liste des autres types de pièces :"))
+        self.radio_pieces_2 = wx.RadioButton(self, -1, _(u"Dans la liste des autres types de pièces prédéfinis :"))
         self.ctrl_pieces_autres = Choix_Piece_autre(self, self.listePiecesObligatoires, self.dictTypesPieces)
-        
+
+        # Un type de pièce libre
+        self.radio_pieces_3 = wx.RadioButton(self, -1, _(u"Un autre type de pièce :"))
+        self.label_titre_piece = wx.StaticText(self, -1, "Titre :")
+        self.ctrl_titre_piece = wx.TextCtrl(self, -1, "")
+
         # Date de début
         self.sizer_date_debut_staticbox = wx.StaticBox(self, -1, _(u"Date de début"))
         self.label_date_debut = wx.StaticText(self, -1, "Date :")
@@ -198,6 +204,7 @@ class Dialog(wx.Dialog):
 
         # Init contrôles
         self.ctrl_pieces_autres.Enable(False)
+        self.ctrl_titre_piece.Enable(False)
 
         # Si Modification -> importation des données
         if IDpiece == None :
@@ -210,6 +217,7 @@ class Dialog(wx.Dialog):
         # Binds
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioPieces, self.radio_pieces_1)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioPieces, self.radio_pieces_2)
+        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioPieces, self.radio_pieces_3)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioDateFin, self.radio_date_fin_1)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioDateFin, self.radio_date_fin_2)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
@@ -225,6 +233,8 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.radio_pieces_1.SetValue(1)
         self.radio_pieces_2.SetToolTip(wx.ToolTip(_(u"Cliquez ici si la pièce que vous souhaitez enregistrer n'est pas dans la liste des pièces obligatoires à fournir")))
+        self.radio_pieces_3.SetToolTip(wx.ToolTip(_(u"Cliquez ici si la pièce que vous souhaitez enregistrer n'est pas un type de pièce prédéfini")))
+        self.ctrl_titre_piece.SetToolTip(wx.ToolTip(_(u"Saisissez un titre pour cette pièce")))
         self.ctrl_pieces_obligatoires.SetToolTip(wx.ToolTip(_(u"Sélectionnez un type de pièce en cliquant sur son nom")))
         self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début de validité.\nRemarque : Il s'agit bien de la date d'emission de la pièce \n(par exemple, la date d'obtention d'un diplôme) et non la date à laquelle vous avez reçue la pièce")))
         self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date d'expiration de la pièce")))
@@ -245,11 +255,19 @@ class Dialog(wx.Dialog):
         grid_sizer_gauche = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         
         sizer_type = wx.StaticBoxSizer(self.sizer_type_staticbox, wx.VERTICAL)
-        grid_sizer_3 = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
+        grid_sizer_3 = wx.FlexGridSizer(rows=6, cols=1, vgap=10, hgap=10)
         grid_sizer_3.Add(self.radio_pieces_1, 0, 0, 0)
         grid_sizer_3.Add(self.ctrl_pieces_obligatoires, 1, wx.LEFT|wx.EXPAND, 17)
         grid_sizer_3.Add(self.radio_pieces_2, 0, 0, 0)
         grid_sizer_3.Add(self.ctrl_pieces_autres, 0, wx.LEFT|wx.EXPAND, 17)
+        grid_sizer_3.Add(self.radio_pieces_3, 0, 0, 0)
+
+        grid_sizer_titre = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+        grid_sizer_titre.Add(self.label_titre_piece, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_titre.Add(self.ctrl_titre_piece, 0, wx.EXPAND)
+        grid_sizer_titre.AddGrowableCol(1)
+        grid_sizer_3.Add(grid_sizer_titre, 0, wx.LEFT|wx.EXPAND, 17)
+
         grid_sizer_3.AddGrowableRow(1)
         grid_sizer_3.AddGrowableCol(0)
         sizer_type.Add(grid_sizer_3, 1, wx.ALL|wx.EXPAND, 10)
@@ -358,13 +376,11 @@ class Dialog(wx.Dialog):
         self.ctrl_pieces_obligatoires.Unselect() 
 
     def OnRadioPieces(self, event):
-        if self.radio_pieces_1.GetValue() == True:
-            self.ctrl_pieces_autres.Enable(False)
-            self.ctrl_pieces_obligatoires.Enable(True)
-        else:
-            self.ctrl_pieces_autres.Enable(True)
-            self.ctrl_pieces_obligatoires.Enable(False)
-            self.ctrl_pieces_obligatoires.Unselect() 
+        self.ctrl_pieces_autres.Enable(self.radio_pieces_2.GetValue())
+        self.ctrl_pieces_obligatoires.Enable(self.radio_pieces_1.GetValue())
+        self.ctrl_titre_piece.Enable(self.radio_pieces_3.GetValue())
+        if not self.radio_pieces_1.GetValue():
+            self.ctrl_pieces_obligatoires.Unselect()
 
     def OnRadioDateFin(self, event):
         if self.radio_date_fin_1.GetValue() == True:
@@ -388,7 +404,7 @@ class Dialog(wx.Dialog):
                 IDindividu = donnees["IDindividu"]
                 IDfamille = donnees["IDfamille"]
                 nomPiece = donnees["nomPiece"]
-        else:
+        elif self.radio_pieces_2.GetValue() == True:
             donnees = self.ctrl_pieces_autres.GetDonneesSelection() 
             if donnees == None :
                 return None
@@ -396,6 +412,11 @@ class Dialog(wx.Dialog):
             IDindividu = donnees["IDindividu"]
             IDfamille = donnees["IDfamille"]
             nomPiece = donnees["nomPiece"]
+        elif self.radio_pieces_3.GetValue() == True:
+            IDfamille = self.IDfamille
+            IDtype_piece = None
+            IDindividu = None
+            nomPiece = None
         return { "IDfamille":IDfamille, "IDtype_piece":IDtype_piece, "IDindividu":IDindividu, "nomPiece":nomPiece}
             
 
@@ -474,15 +495,13 @@ class Dialog(wx.Dialog):
             self.ctrl_date_fin.Enable(True)
             self.bouton_ok.SetFocus()
 
-        
-    
     def GetIDpiece(self):
         return self.IDpiece
 
     def Importation(self):
         """ Importation des donnees de la base """
         DB = GestionDB.DB()
-        req = """SELECT pieces.IDtype_piece, IDindividu, IDfamille, date_debut, date_fin, public
+        req = """SELECT pieces.IDtype_piece, IDindividu, IDfamille, date_debut, date_fin, public, titre
         FROM pieces 
         LEFT JOIN types_pieces ON types_pieces.IDtype_piece = pieces.IDtype_piece
         WHERE IDpiece=%d;""" % self.IDpiece
@@ -490,20 +509,11 @@ class Dialog(wx.Dialog):
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) == 0 : return
-        IDtype_piece, IDindividu, IDfamille, date_debut, date_fin, public = listeDonnees[0]
+        IDtype_piece, IDindividu, IDfamille, date_debut, date_fin, public, titre = listeDonnees[0]
         if public == "famille" : IDindividu = None
-        
-        # Sélection de la pièce dans les pièces obligatoires
-        resultat = self.ctrl_pieces_obligatoires.SelectPiece(IDfamille, IDtype_piece, IDindividu)
-        self.radio_pieces_1.SetValue(True)
-        
-        # Sélection de la pièce dans les pièces autres
-        if resultat == False :
-            self.ctrl_pieces_autres.SelectPiece(IDfamille, IDtype_piece, IDindividu)
-            self.radio_pieces_2.SetValue(True)
-        
-        self.OnRadioPieces(None) 
-        
+
+        self.SetValeurs(IDfamille, IDtype_piece, IDindividu, titre)
+
         # Insertion de la date de début
         self.ctrl_date_debut.SetDate(date_debut)
 
@@ -515,6 +525,24 @@ class Dialog(wx.Dialog):
             self.radio_date_fin_1.SetValue(True)
             self.ctrl_date_fin.Enable(True)
             self.ctrl_date_fin.SetDate(date_fin)
+
+    def SetValeurs(self, IDfamille=None, IDtype_piece=None, IDindividu=None, titre=None):
+        # Sélection de la pièce dans les pièces obligatoires
+        resultat = self.ctrl_pieces_obligatoires.SelectPiece(IDfamille, IDtype_piece, IDindividu)
+        self.radio_pieces_1.SetValue(True)
+
+        # Sélection de la pièce dans les pièces prédéfinies
+        if not resultat:
+            self.ctrl_pieces_autres.SelectPiece(IDfamille, IDtype_piece, IDindividu)
+            self.radio_pieces_2.SetValue(True)
+
+        # Si autre type de pièce
+        if not IDtype_piece:
+            self.radio_pieces_3.SetValue(True)
+            if titre:
+                self.ctrl_titre_piece.SetValue(titre)
+
+        self.OnRadioPieces(None)
 
     def Sauvegarde(self):
         # Vérification des données saisies
@@ -550,6 +578,17 @@ class Dialog(wx.Dialog):
                 self.ctrl_date_fin.SetFocus()
                 return False
 
+        # Vérifie que le titre a été saisi
+        titre = None
+        if self.radio_pieces_3.GetValue() == True:
+            titre = self.ctrl_titre_piece.GetValue()
+            if not titre:
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un titre pour cette pièce !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                self.ctrl_titre_piece.SetFocus()
+                return False
+
         # Sauvegarde
         IDtype_piece = selection["IDtype_piece"]
         IDindividu = selection["IDindividu"]
@@ -567,6 +606,7 @@ class Dialog(wx.Dialog):
             ("IDfamille", IDfamille),
             ("date_debut", date_debut),
             ("date_fin", date_fin),
+            ("titre", titre),
         ]
         if self.IDpiece == None:
             nouvellePiece = True
@@ -611,6 +651,7 @@ class Dialog(wx.Dialog):
 
         # Fermeture
         self.EndModal(wx.ID_OK)
+
 
 
 

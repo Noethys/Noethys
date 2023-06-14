@@ -23,6 +23,7 @@ from Utils import UTILS_Cotisations_manquantes
 from Utils import UTILS_Pieces_manquantes
 from Utils import UTILS_Questionnaires
 from Utils import UTILS_Fichiers
+from Utils import UTILS_Texte
 
 from Data.DATA_Liens import DICT_TYPES_LIENS, DICT_AUTORISATIONS
 from Data import DATA_Civilites as Civilites
@@ -59,8 +60,11 @@ def GetNomsChampsPossibles(mode="individu+famille"):
             (_(u"Code postal de la ville de naissance de l'individu"), u"29200", "{INDIVIDU_CP_NAISS}"), 
             (_(u"Ville de naissance de l'individu"), _(u"BREST"), "{INDIVIDU_VILLE_NAISS}"), 
             (_(u"Année de décès de l'individu"), u"2012", "{INDIVIDU_ANNEE_DECES}"),
-            (_(u"Rue de l'adresse de l'individu"), _(u"10 rue des oiseaux"), "{INDIVIDU_RUE}"), 
-            (_(u"Code postal de l'adresse de l'individu"), u"29870", "{INDIVIDU_CP}"), 
+            (_(u"Rue de l'adresse de l'individu"), _(u"10 rue des oiseaux"), "{INDIVIDU_RUE}"),
+            (_(u"N° de voie de l'adresse de l'individu"), _(u"10"), "{INDIVIDU_NUMERO_VOIE}"),
+            (_(u"Type de voie de l'adresse de l'individu"), _(u"rue"), "{INDIVIDU_TYPE_VOIE}"),
+            (_(u"Nom de voie de l'adresse de l'individu"), _(u"oiseaux"), "{INDIVIDU_NOM_VOIE}"),
+            (_(u"Code postal de l'adresse de l'individu"), u"29870", "{INDIVIDU_CP}"),
             (_(u"Ville de l'adresse de l'individu"), _(u"LANNILIS"), "{INDIVIDU_VILLE}"), 
             (_(u"Secteur de l'adresse de l'individu"), _(u"Quartier sud"), "{INDIVIDU_SECTEUR}"), 
             (_(u"Catégorie socio-professionnelle de l'individu"), _(u"Ouvrier"), "{INDIVIDU_CATEGORIE_TRAVAIL}"), 
@@ -142,6 +146,9 @@ def GetNomsChampsPossibles(mode="individu+famille"):
     listeChampsFamille = [
             (_(u"Noms des titulaires de la famille"), _(u"DUPOND Philippe et Marie"), "{FAMILLE_NOM}"),
             (_(u"Rue de l'adresse de la famille"), _(u"10 rue des oiseaux"), "{FAMILLE_RUE}"),
+            (_(u"N° de voie de l'adresse de la famille"), _(u"10"), "{FAMILLE_NUMERO_VOIE}"),
+            (_(u"Type de voie de l'adresse de la famille"), _(u"rue"), "{FAMILLE_TYPE_VOIE}"),
+            (_(u"Nom de voie de l'adresse de la famille"), _(u"oiseaux"), "{FAMILLE_NOM_VOIE}"),
             (_(u"Code postal de l'adresse de la famille"), u"29870", "{FAMILLE_CP}"),
             (_(u"Ville de l'adresse de la famille"), _(u"LANNILIS"), "{FAMILLE_VILLE}"),
             (_(u"Secteur de l'adresse de la famille"), _(u"Quartier sud"), "{FAMILLE_SECTEUR}"),
@@ -308,7 +315,7 @@ class Informations() :
     def GetListeChampsIndividus(self):
             return [
                 ("IDINDIVIDU" , "IDindividu"), ("individu_IDcivilite" , "IDcivilite"), ("INDIVIDU_NOM" , "individus.nom"), ("INDIVIDU_PRENOM" , "individus.prenom"), 
-                ("INDIVIDU_NUM_SECU" , "num_secu"), ("INDIVIDU_DATE_NAISS" , "date_naiss"), ("INDIVIDU_CP_NAISS" , "cp_naiss"), ("INDIVIDU_VILLE_NAISS" , "ville_naiss"), ("INDIVIDU_ANNEE_DECES", "annee_deces"),
+                ("INDIVIDU_NUM_SECU" , "num_secu"), ("INDIVIDU_DATE_NAISS" , "date_naiss"), ("INDIVIDU_CP_NAISS" , "cp_naiss"), ("INDIVIDU_VILLE_NAISS" , "ville_naiss"), ("INDIVIDU_ANNEE_DECES", "annee_deces"), ("INDIVIDU_DECEDE", "deces"),
                 ("individu_adresse_auto" , "adresse_auto"), ("INDIVIDU_RUE" , "individus.rue_resid"), ("INDIVIDU_CP" , "individus.cp_resid"), ("INDIVIDU_VILLE" , "individus.ville_resid"), ("INDIVIDU_SECTEUR" , "secteurs.nom"), 
                 ("INDIVIDU_CATEGORIE_TRAVAIL" , "categories_travail.nom"), ("INDIVIDU_PROFESSION" , "profession"), ("INDIVIDU_EMPLOYEUR" , "employeur"),
                 ("INDIVIDU_TEL_PRO" , "travail_tel"), ("INDIVIDU_FAX_PRO" , "travail_fax"), ("INDIVIDU_MAIL_PRO" , "travail_mail"), ("INDIVIDU_TEL_DOMICILE" , "tel_domicile"),
@@ -348,6 +355,10 @@ class Informations() :
                         dictTemp[IDindividu]["INDIVIDU_AGE"] = ""
                         dictTemp[IDindividu]["INDIVIDU_AGE_INT"] = ""
                     valeur = UTILS_Dates.DateEngFr(valeur)
+                if code == "INDIVIDU_DECEDE":
+                    if valeur == 1:
+                        dictTemp[IDindividu]["INDIVIDU_AGE"] = ""
+                        dictTemp[IDindividu]["INDIVIDU_AGE_INT"] = ""
                 if code == "INDIVIDU_DATE_CREATION" : valeur = UTILS_Dates.DateEngFr(valeur)
                 dictTemp[IDindividu][code] = valeur
                 index += 1
@@ -381,7 +392,15 @@ class Informations() :
                 dictIndividu["INDIVIDU_CP"] = dictTemp[adresse_auto]["INDIVIDU_CP"]
                 dictIndividu["INDIVIDU_VILLE"] = dictTemp[adresse_auto]["INDIVIDU_VILLE"]
                 dictIndividu["INDIVIDU_SECTEUR"] = dictTemp[adresse_auto]["INDIVIDU_SECTEUR"]
-            
+
+            if dictIndividu["INDIVIDU_RUE"]:
+                resultats_voie = UTILS_Texte.Parser_voie(dictIndividu["INDIVIDU_RUE"])
+            else:
+                resultats_voie = {}
+            dictIndividu["INDIVIDU_NUMERO_VOIE"] = resultats_voie.get("numero", "")
+            dictIndividu["INDIVIDU_TYPE_VOIE"] = resultats_voie.get("type", "")
+            dictIndividu["INDIVIDU_NOM_VOIE"] = resultats_voie.get("nom", "")
+
             # Autre champs
             dictIndividu["NBRE_ENFANTS"] = 0
             dictIndividu["NBRE_AUTRES_LIENS"] = 0
@@ -477,7 +496,7 @@ class Informations() :
                 # Recherche les détails du lien
                 if IDtype_lien != None :
                     sexe = self.dictIndividus[IDindividu_sujet]["INDIVIDU_SEXE"]
-                    if sexe in ("M", "F") :
+                    if sexe in ("M", "F") and IDtype_lien in DICT_TYPES_LIENS:
                         nomLien = DICT_TYPES_LIENS[IDtype_lien][sexe].capitalize()
                         typeLien = DICT_TYPES_LIENS[IDtype_lien]["type"]
                         texteLien = DICT_TYPES_LIENS[IDtype_lien]["texte"][sexe]
@@ -577,6 +596,13 @@ class Informations() :
                 "FAMILLE_NOM" : nomsTitulaires, "FAMILLE_RUE" : dictAdresse["rue"], "FAMILLE_CP" : dictAdresse["cp"], "FAMILLE_VILLE" : dictAdresse["ville"],
                 "FAMILLE_SECTEUR" : dictAdresse["nomSecteur"], "IDFAMILLE" : IDfamille,
                 }
+
+            # Voie
+            resultats_voie = UTILS_Texte.Parser_voie(dictAdresse["rue"])
+            dictFamilles[IDfamille]["FAMILLE_NUMERO_VOIE"] = resultats_voie.get("numero", "")
+            dictFamilles[IDfamille]["FAMILLE_TYPE_VOIE"] = resultats_voie.get("type", "")
+            dictFamilles[IDfamille]["FAMILLE_NOM_VOIE"] = resultats_voie.get("nom", "")
+
             # Autres champs
             dictFamilles[IDfamille]["liens"] = []
             dictFamilles[IDfamille]["NBRE_REPRESENTANTS_RATTACHES"] = 0

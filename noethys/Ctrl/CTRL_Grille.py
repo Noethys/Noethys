@@ -66,6 +66,7 @@ AFFICHE_NOM_GROUPE = True
 AFFICHE_COLONNE_MEMO = True
 AFFICHE_COLONNE_TRANSPORTS = True
 FORMAT_LABEL_LIGNE = "nom_prenom"
+MASQUER_UNITES_FERMEES = False
 
 # Colonnes unités
 HAUTEUR_LIGNE = 30
@@ -447,13 +448,15 @@ class Ligne():
             if (self.IDindividu, self.date) in self.grid.dictMemos :
                 texteMemo = self.grid.dictMemos[(self.IDindividu, self.date)]["texte"]
                 IDmemo = self.grid.dictMemos[(self.IDindividu, self.date)]["IDmemo"]
+                couleur = self.grid.dictMemos[(self.IDindividu, self.date)]["couleur"]
             else:
                 texteMemo = ""
                 IDmemo = None
+                couleur = None
             if self.estSeparation == True :
                 case = CTRL_Grille_cases.CaseSeparationDate(self, self.grid, self.numLigne, numColonne, couleurCase)
             else:
-                case = CTRL_Grille_cases.CaseMemo(self, self.grid, self.numLigne, numColonne, self.IDindividu, self.date, texteMemo, IDmemo)
+                case = CTRL_Grille_cases.CaseMemo(self, self.grid, self.numLigne, numColonne, self.IDindividu, self.date, texteMemo, IDmemo, couleur)
             self.dictCases[numColonne] = case
             numColonne += 1
 
@@ -643,7 +646,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.SetDefaultCellBackgroundColour(self.GetBackgroundColour())
         
         # Récupération des paramètres
-        global AFFICHE_COLONNE_MEMO, AFFICHE_COLONNE_TRANSPORTS, FORMAT_LABEL_LIGNE
+        global AFFICHE_COLONNE_MEMO, AFFICHE_COLONNE_TRANSPORTS, FORMAT_LABEL_LIGNE, MASQUER_UNITES_FERMEES
         
         parametresDefaut = {
             "affiche_colonne_memo" : AFFICHE_COLONNE_MEMO,
@@ -654,6 +657,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             "hauteur_lignes" : HAUTEUR_LIGNE,
             "largeur_colonne_memo" : LARGEUR_COLONNE_MEMO,
             "largeur_colonne_transports" : LARGEUR_COLONNE_TRANSPORTS,
+            "masquer_unites_fermees": MASQUER_UNITES_FERMEES,
             }
         dictParametres = UTILS_Parametres.ParametresCategorie(mode="get", categorie="parametres_grille_conso", dictParametres=parametresDefaut)
         
@@ -663,6 +667,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         FORMAT_LABEL_LIGNE = dictParametres["format_label_ligne"]
         self.blocageSiComplet = dictParametres["blocage_si_complet"]
         self.afficheSansPrestation = dictParametres["affiche_sans_prestation"]
+        MASQUER_UNITES_FERMEES = dictParametres["masquer_unites_fermees"]
 
         # Hauteur lignes et largeurs colonne
         self.dictParametres = { 
@@ -673,20 +678,6 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 "transports" : dictParametres["largeur_colonne_transports"],
             } }
 
-##        global AFFICHE_COLONNE_MEMO, AFFICHE_COLONNE_TRANSPORTS
-##        AFFICHE_COLONNE_MEMO = UTILS_Parametres.Parametres(mode="get", categorie="parametres_grille_conso", nom="affiche_colonne_memo", valeur=AFFICHE_COLONNE_MEMO)
-##        AFFICHE_COLONNE_TRANSPORTS = UTILS_Parametres.Parametres(mode="get", categorie="parametres_grille_conso", nom="affiche_colonne_transports", valeur=AFFICHE_COLONNE_TRANSPORTS)
-##        self.blocageSiComplet = UTILS_Parametres.Parametres(mode="get", categorie="parametres_grille_conso", nom="blocage_si_complet", valeur=True)
-##
-##        # Hauteur lignes et largeurs colonne
-##        self.dictParametres = { 
-##            "hauteur" : UTILS_Parametres.Parametres(mode="get", categorie="parametres_grille_conso", nom="hauteur_lignes", valeur=HAUTEUR_LIGNE), 
-##            "largeurs" : { 
-##                "unites" : {}, 
-##                "memo" : UTILS_Parametres.Parametres(mode="get", categorie="parametres_grille_conso", nom="largeur_colonne_memo", valeur=LARGEUR_COLONNE_MEMO), 
-##                "transports" : UTILS_Parametres.Parametres(mode="get", categorie="parametres_grille_conso", nom="largeur_colonne_transports", valeur=LARGEUR_COLONNE_TRANSPORTS)
-##            } }
-                
         # Binds
         self.barreMoving = None
         self.casesSurvolees = None
@@ -737,7 +728,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.prochainIDtransport = -1
         self.listeTransportsInitiale = []
         self.moveTo = None
-        self.GetGridWindow().SetToolTip(wx.ToolTip(""))
+        try:
+            self.GetGridWindow().SetToolTip(wx.ToolTip(""))
+        except:
+            pass
         self.caseSurvolee = None
         self.listeHistorique = []
         self.dictLignes = {}
@@ -793,8 +787,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     def MAJ_donnees(self):
         # Récupération des données
         self.DB = GestionDB.DB()
-        self.dictOuvertures, self.listeUnitesUtilisees = self.GetDictOuvertures(self.listeActivites, self.listePeriodes)
-        self.dictListeUnites, self.dictUnites = self.GetListeUnites(self.listeUnitesUtilisees)
+        self.dictOuvertures, self.listeUnitesOuvertes = self.GetDictOuvertures(self.listeActivites, self.listePeriodes)
+        self.dictListeUnites, self.dictUnites = self.GetListeUnites(self.listeUnitesOuvertes)
         self.listeTouchesRaccourcis = self.GetListeTouchesRaccourcis()
         self.listeVacances = self.GetListeVacances() 
         self.listeFeries = self.GetListeFeries() 
@@ -1193,7 +1187,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 listeTouchesRaccourcis.append( (touche_raccourci, IDunite) )
         return listeTouchesRaccourcis
         
-    def GetListeUnites(self, listeUnitesUtilisees=None):
+    def GetListeUnites(self, listeUnitesOuvertes=None):
         dates_extremes = self.GetDatesExtremes(self.listePeriodes)
         dictListeUnites = {}
         dictUnites = {}
@@ -1211,10 +1205,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             # Mémorisation des unités
             dictUnites[IDunite] = dictTemp
 
-            if date_fin == None or (date_debut <= str(dates_extremes[1]) and date_fin >= str(dates_extremes[0])):
-                if (IDactivite in dictListeUnites) == False :
-                    dictListeUnites[IDactivite] = []
-                dictListeUnites[IDactivite].append(dictTemp)
+            if IDunite in listeUnitesOuvertes or MASQUER_UNITES_FERMEES == False:
+                if date_fin == None or (date_debut <= str(dates_extremes[1]) and date_fin >= str(dates_extremes[0])):
+                    if (IDactivite in dictListeUnites) == False :
+                        dictListeUnites[IDactivite] = []
+                    dictListeUnites[IDactivite].append(dictTemp)
 
             # Mémorisation des largeurs
             if (IDunite in self.dictParametres["largeurs"]["unites"]) == False :
@@ -1239,7 +1234,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         
     def GetDictOuvertures(self, listeActivites=[], listePeriodes=[]):
         dictOuvertures = {}
-        listeUnitesUtilisees = []
+        listeUnitesOuvertes = []
         # Get Conditions
         conditions = self.GetSQLdates(listePeriodes)
         if len(conditions) > 0 :
@@ -1279,8 +1274,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.DB.ExecuterReq(req)
         listeDonnees = self.DB.ResultatReq()
         for IDouverture, IDunite, IDgroupe, date in listeDonnees :
-            if IDunite not in listeUnitesUtilisees :
-                listeUnitesUtilisees.append(IDunite)
+            if IDunite not in listeUnitesOuvertes :
+                listeUnitesOuvertes.append(IDunite)
             date = DateEngEnDateDD(date)
 
             key = (IDunite, IDgroupe, date)
@@ -1296,7 +1291,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 dictOuvertures[date][IDgroupe] = {}
             if (IDunite in dictOuvertures[date][IDgroupe]) == False :
                 dictOuvertures[date][IDgroupe][IDunite] = dictValeurs
-        return dictOuvertures, listeUnitesUtilisees
+        return dictOuvertures, listeUnitesOuvertes
 
     def GetDictRemplissage(self, listeActivites=[], listePeriodes=[], listeIndividus=[]):
         dictRemplissage = {}
@@ -1528,14 +1523,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         elif len(listeActivites) == 1 : conditionActivites = "(%d)" % listeActivites[0]
         else : conditionActivites = str(tuple(listeActivites))
         # Récupération des mémos
-        req = """SELECT IDmemo, IDindividu, date, texte
+        req = """SELECT IDmemo, IDindividu, date, texte, couleur
         FROM memo_journee; """ 
         self.DB.ExecuterReq(req)
         listeMemos = self.DB.ResultatReq()
-        for IDmemo, IDindividu, date, texte in listeMemos :
+        for IDmemo, IDindividu, date, texte, couleur in listeMemos :
             if date != None and date != "None" : date = DateEngEnDateDD(date)
             if ((IDindividu, date) in dictMemos) == False :
-                dictMemos[(IDindividu, date)] = {"texte" : texte, "IDmemo" : IDmemo, "statut" : None }
+                dictMemos[(IDindividu, date)] = {"texte" : texte, "IDmemo" : IDmemo, "statut" : None, "couleur": couleur}
         return dictMemos
     
     def GetSQLdates(self, listePeriodes=[]):
@@ -1553,7 +1548,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         for date_debut, date_fin in listePeriodes :
             listeTemp.append(date_debut)
             listeTemp.append(date_fin)
-        if len(listeTemp) > 0 :
+        if len(listeTemp) > 0 and listeTemp[0]:
             return min(listeTemp), max(listeTemp)
         else :
             return datetime.date(1970, 1, 1), datetime.date(1970, 1, 1)
@@ -1655,13 +1650,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         IDtarif, tarifs.IDactivite, tarifs.IDnom_tarif, nom, date_debut, date_fin, 
         condition_nbre_combi, condition_periode, condition_nbre_jours, condition_conso_facturees,
         condition_dates_continues, methode, categories_tarifs, groupes, etiquettes, type, forfait_duree, forfait_beneficiaire, cotisations, caisses, jours_scolaires, jours_vacances,
-        code_compta, tva, date_facturation, etats, IDtype_quotient, description, label_prestation, options, IDevenement
+        code_compta, code_produit_local, tva, date_facturation, etats, IDtype_quotient, description, label_prestation, options, IDevenement
         FROM tarifs
         LEFT JOIN noms_tarifs ON noms_tarifs.IDnom_tarif = tarifs.IDnom_tarif
         ORDER BY date_debut;"""
         self.DB.ExecuterReq(req)
         listeTarifs = self.DB.ResultatReq()      
-        for IDtarif, IDactivite, IDnom_tarif, nom, date_debut, date_fin, condition_nbre_combi, condition_periode, condition_nbre_jours, condition_conso_facturees, condition_dates_continues, methode, categories_tarifs, groupes, etiquettes, type, forfait_duree, forfait_beneficiaire, cotisations, caisses, jours_scolaires, jours_vacances, code_compta, tva, date_facturation, etats, IDtype_quotient, description, label_prestation, options, IDevenement in listeTarifs :
+        for IDtarif, IDactivite, IDnom_tarif, nom, date_debut, date_fin, condition_nbre_combi, condition_periode, condition_nbre_jours, condition_conso_facturees, condition_dates_continues, methode, categories_tarifs, groupes, etiquettes, type, forfait_duree, forfait_beneficiaire, cotisations, caisses, jours_scolaires, jours_vacances, code_compta, code_produit_local, tva, date_facturation, etats, IDtype_quotient, description, label_prestation, options, IDevenement in listeTarifs :
             if date_debut != None : date_debut = DateEngEnDateDD(date_debut)
             if date_fin != None : date_fin = DateEngEnDateDD(date_fin)
             if options == None : options=""
@@ -1685,7 +1680,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 "lignes_calcul" : [], "type":type, "forfait_duree":forfait_duree, "forfait_beneficiaire":forfait_beneficiaire, 
                 "cotisations" : listeCotisations, "filtres" : [], "caisses" : listeCaisses, 
                 "jours_scolaires" : jours_scolaires, "jours_vacances" : jours_vacances,
-                "code_compta" : code_compta, "tva" : tva, "date_facturation" : date_facturation,
+                "code_compta" : code_compta, "code_produit_local": code_produit_local, "tva" : tva, "date_facturation" : date_facturation,
                 "quantitesMax" : [], "etats" : listeEtats, "IDtype_quotient" : IDtype_quotient, "description_tarif" : description,
                 "label_prestation" : label_prestation, "options" : options, "IDevenement" : IDevenement,
                 }
@@ -1765,13 +1760,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # Importation des prestations
         req = """SELECT prestations.IDprestation, prestations.IDcompte_payeur, date, categorie, label, 
         prestations.montant_initial, prestations.montant, IDactivite, IDtarif, IDfacture, IDfamille, IDindividu, forfait, temps_facture, IDcategorie_tarif,
-        forfait_date_debut, forfait_date_fin, code_compta, tva
+        forfait_date_debut, forfait_date_fin, code_compta, code_produit_local, tva
         FROM prestations
         %s;""" % conditions
         self.DB.ExecuterReq(req)
         listeDonnees = self.DB.ResultatReq()
 
-        for IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, IDactivite, IDtarif, IDfacture, IDfamille, IDindividu, forfait, temps_facture, IDcategorie_tarif, forfait_date_debut, forfait_date_fin, code_compta, tva in listeDonnees:
+        for IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, IDactivite, IDtarif, IDfacture, IDfamille, IDindividu, forfait, temps_facture, IDcategorie_tarif, forfait_date_debut, forfait_date_fin, code_compta, code_produit_local, tva in listeDonnees:
             date = DateEngEnDateDD(date)
             forfait_date_debut = DateEngEnDateDD(forfait_date_debut)
             forfait_date_fin = DateEngEnDateDD(forfait_date_fin)
@@ -1792,6 +1787,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 "IDfamille": IDfamille, "IDindividu": IDindividu, "nomIndividu": nomIndividu, "forfait": forfait,
                 "montantVentilation": montantVentilation, "temps_facture": temps_facture, "IDcategorie_tarif": IDcategorie_tarif,
                 "forfait_date_debut": forfait_date_debut, "forfait_date_fin": forfait_date_fin, "code_compta": code_compta, "tva": tva,
+                "code_produit_local": code_produit_local,
             }
 
             if IDprestation not in self.listePrestationsSupprimees and IDprestation not in self.listePrestationsModifiees:
@@ -1828,7 +1824,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         
         req = """SELECT prestations.IDprestation, prestations.IDcompte_payeur, date, categorie, label, 
         prestations.montant_initial, prestations.montant, IDactivite, IDtarif, IDfacture, IDfamille, IDindividu, forfait, temps_facture, IDcategorie_tarif,
-        SUM(ventilation.montant), forfait_date_debut, forfait_date_fin, code_compta, tva
+        SUM(ventilation.montant), forfait_date_debut, forfait_date_fin, code_compta, code_produit_local, tva
         FROM prestations
         LEFT JOIN ventilation ON ventilation.IDprestation = prestations.IDprestation
         %s
@@ -1837,7 +1833,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         listeDonnees = self.DB.ResultatReq()     
         
         index = 0
-        for IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, IDactivite, IDtarif, IDfacture, IDfamille, IDindividu, forfait, temps_facture, IDcategorie_tarif, montantVentilation, forfait_date_debut, forfait_date_fin, code_compta, tva in listeDonnees :
+        for IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, IDactivite, IDtarif, IDfacture, IDfamille, IDindividu, forfait, temps_facture, IDcategorie_tarif, montantVentilation, forfait_date_debut, forfait_date_fin, code_compta, code_produit_local, tva in listeDonnees :
             date = DateEngEnDateDD(date)
             forfait_date_debut = DateEngEnDateDD(forfait_date_debut)
             forfait_date_fin = DateEngEnDateDD(forfait_date_fin)
@@ -1856,7 +1852,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 "IDfamille" : IDfamille, "IDindividu" : IDindividu, "nomIndividu" : nomIndividu, "forfait" : forfait,
                 "montantVentilation" : montantVentilation, "temps_facture":temps_facture, "IDcategorie_tarif":IDcategorie_tarif,
                 "forfait_date_debut":forfait_date_debut, "forfait_date_fin":forfait_date_fin, "couleur":couleur, "code_compta":code_compta, "tva":tva,
-                "dict_conso" : {},
+                "code_produit_local": code_produit_local, "dict_conso" : {},
                 }
             
             # Mémorisation dans le dict des forfaits
@@ -2763,7 +2759,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         for IDaide_montant, dictMontant in dictMontants.items() :
                             montant = dictMontant["montant"]
                             for IDaide_combi, combinaison in dictMontant["combinaisons"].items() :
-                                resultat = self.RechercheCombinaisonTuple(combinaisons_unites, combinaison) # listeUnitesUtilisees
+                                resultat = self.RechercheCombinaisonTuple(combinaisons_unites, combinaison)
 
                                 # Regarde si la combinaison est bonne
                                 combiAideTemp = combinaison
@@ -2990,7 +2986,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                             self.dictPrestations[IDprestation]["montant"] = montantFinal
                                             
                                             self.listePrestationsModifiees.append(IDprestation)
-                                            
+
                                             # Modifie le montant affiché dans le volet Facturation
                                             if self.mode == "individu" :
                                                 self.GetGrandParent().panel_facturation.ModifiePrestation(
@@ -3003,17 +2999,6 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
                                             index += 1
 
-##                                # Modifie le tarif aux autres individus de la famille
-##                                for IDprestation, dictValeurs in self.dictPrestations.iteritems() :
-##                                    if IDprestation != IDtarifPrestationSupprimee and dictValeurs["date"] == date and dictValeurs["IDtarif"] == IDtarifTmp and dictValeurs["IDindividu"] != IDindividu :
-##                                        montantInitial = self.dictPrestations[IDprestation]["montant_initial"]
-##                                        montantDeduction = montantInitial - self.dictPrestations[IDprestation]["montant"]
-##                                        montantFinal = montant_tarif_tmp - montantDeduction
-##                                        self.dictPrestations[IDprestation]["montant_initial"] = montant_tarif_tmp
-##                                        self.dictPrestations[IDprestation]["montant"] = montantFinal
-##                                        
-##                                        self.listePrestationsModifiees.append(IDprestation)
-                
         # 8 - Suppression des anciennes prestations
         for IDprestationAncienne, categorie in listeAnciennesPrestations :
             if (IDprestationAncienne in self.dictPrestations) == True :
@@ -3257,6 +3242,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 "forfait_date_debut" : forfait_date_debut,
                 "forfait_date_fin" : forfait_date_fin,
                 "code_compta" : dictTarif["code_compta"],
+                "code_produit_local": dictTarif["code_produit_local"],
                 "tva" : dictTarif["tva"],
                 "forfait" : None,
                 }
@@ -3974,7 +3960,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                             dictValeurs["forfait_date_fin"] < date))):
                     listeIndividusPresents.add(dictValeurs["IDindividu"])
             nbreIndividus = len(listeIndividusPresents) + 1
-            
+
             # Recherche le tarif à appliquer à chaque individu
             if "degr" in methode_calcul :
                 # Si tarif dégressif différent pour chaque individu
@@ -3995,7 +3981,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 if nbreIndividus == 4 and montant_enfant_4 != None and montant_enfant_4 != 0.0 : montant_tarif = montant_enfant_4
                 if nbreIndividus == 5 and montant_enfant_5 != None and montant_enfant_5 != 0.0 : montant_tarif = montant_enfant_5
                 if nbreIndividus >= 6 and montant_enfant_6 != None and montant_enfant_6 != 0.0 : montant_tarif = montant_enfant_6
-            
+
             # Modifie le tarif des autres individus de la famille
             index = 0
             for IDprestation, dictValeurs in self.dictPrestations.items() :
@@ -4011,13 +3997,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         except : pass
                     else:
                         montantTmp = montant_tarif
-                        
+
                     montantInitial = self.dictPrestations[IDprestation]["montant_initial"]
                     montantDeduction = montantInitial - self.dictPrestations[IDprestation]["montant"]
                     montantFinal = montantTmp - montantDeduction
                     self.dictPrestations[IDprestation]["montant_initial"] = montantTmp
                     self.dictPrestations[IDprestation]["montant"] = montantFinal
-                    
+
                     self.listePrestationsModifiees.append(IDprestation)
                     
                     # Modifie le montant affiché dans le volet Facturation
@@ -4032,7 +4018,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     
                     index += 1
             
-            
+
 
         # Recherche du montant du tarif : AU PRORATA DE LA DUREE (Montant unique + QF)
         if methode_calcul in ("duree_coeff_montant_unique", "duree_coeff_qf") :
@@ -4307,20 +4293,6 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         elif dictTarif1[key] > dictTarif2[key] : return 1
         else: return 0
 
-
-##    def TestCombinaisons(self, listeUnitesUtilisees, combinaison) :
-##        """ Recherche si des combinaisons d'unités sont identiques """
-##        if len(listeUnitesUtilisees) != len(combinaison) :
-##            return False
-##        for IDunite in listeUnitesUtilisees :
-##            if IDunite not in combinaison :
-##                return False
-##        return True
-    
-    
-
-
-
     def ModifierPrestation(self, IDprestation=None):
         print(IDprestation)
         
@@ -4403,13 +4375,15 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                         agrement = _(u" - n° agrément : %s") % agrement
                     
                                     # Mémorisation des données
-                                    if (IDindividu in dictDonnees) == False :
+                                    if IDindividu not in dictDonnees:
                                         dictDonnees[IDindividu] = { "nom":nom, "prenom":prenom, "date_naiss":date_naiss, "sexe":sexe, "activites":{}}
-                                    if (IDactivite in dictDonnees[IDindividu]["activites"]) == False :
+                                    if IDactivite not in dictDonnees[IDindividu]["activites"]:
                                         dictDonnees[IDindividu]["activites"][IDactivite] = {"nom":nomActivite, "agrement":agrement, "dates":{}}
-                                    if (date in dictDonnees[IDindividu]["activites"][IDactivite]["dates"]) == False :
-                                        dictDonnees[IDindividu]["activites"][IDactivite]["dates"][date] = {}
-                                        
+                                    if date not in dictDonnees[IDindividu]["activites"][IDactivite]["dates"]:
+                                        dictDonnees[IDindividu]["activites"][IDactivite]["dates"][date] = {"unites": {}}
+                                    if not IDunite in dictDonnees[IDindividu]["activites"][IDactivite]["dates"][date]["unites"]:
+                                        dictDonnees[IDindividu]["activites"][IDactivite]["dates"][date]["unites"][IDunite] = []
+
                                     # Récupération des consommations
                                     nomUnite = self.dictUnites[IDunite]["nom"]
                                     ordreUnite = self.dictUnites[IDunite]["ordre"]
@@ -4440,15 +4414,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                         "nomUnite":nomUnite, "ordreUnite":ordreUnite, "etat":etat, 
                                         "IDgroupe":IDgroupe, "IDprestation":IDprestation, "prestation":prestation,
                                         "type":typeUnite, "heure_debut":heure_debut, "heure_fin":heure_fin,
-                                        }
-                                    dictDonnees[IDindividu]["activites"][IDactivite]["dates"][date][IDunite] = dictTemp
-        
-        # if len(dictDonnees) == 0 :
-        #     dlg = wx.MessageDialog(self, _(u"Il n'y a aucune consommation à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_INFORMATION)
-        #     dlg.ShowModal()
-        #     dlg.Destroy()
-        #     return False
-        
+                                        "evenement": getattr(conso, "evenement", None),
+                                    }
+                                    dictDonnees[IDindividu]["activites"][IDactivite]["dates"][date]["unites"][IDunite].append(dictTemp)
+
         # Lancement de la création du PDF
         from Utils import UTILS_Impression_reservations
         dictChamps = UTILS_Impression_reservations.Impression(dictDonnees, nomDoc=nomDoc, afficherDoc=afficherDoc)
@@ -4544,7 +4513,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     def GetHistorique(self):
         return self.listeHistorique
     
-    def RecalculerToutesPrestations(self, modeSilencieux=True):
+    def RecalculerToutesPrestations(self, modeSilencieux=True, inclure_dates_fermees=False):
         """ Recalcule les prestations de toutes les cases """
         # Vérifie que la période sélectionnée n'est pas dans une période de gestion
         date_debut, date_fin = self.GetDatesExtremes(self.listePeriodes)
@@ -4553,7 +4522,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         listeDejaFactures = []
         for numLigne, ligne in self.dictLignes.items() :
             for numColonne, case in ligne.dictCases.items() :
-                if case.typeCase == "consommation" and case.ouvert == True :
+                if case.typeCase == "consommation" and (case.ouvert == True or inclure_dates_fermees == True) :
                     dejaFacture = False
                     verrouillee = False
                     for conso in case.GetListeConso() :
@@ -5304,6 +5273,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     ("forfait_date_debut", dictValeurs["forfait_date_debut"]),
                     ("forfait_date_fin", dictValeurs["forfait_date_fin"]),
                     ("code_compta", dictValeurs["code_compta"]),
+                    ("code_produit_local", dictValeurs["code_produit_local"]),
                     ("tva", dictValeurs["tva"]),
                     ("date_valeur", str(datetime.date.today())),
                     ]
@@ -5370,12 +5340,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 # Sauvegarde de la prestation
                 dictValeurs = self.dictPrestations[IDPrestationModif]                
                 # Version optimisée
-                listeModifications.append((dictValeurs["label"], dictValeurs["montant_initial"], dictValeurs["montant"], dictValeurs["forfait_date_debut"], dictValeurs["forfait_date_fin"], dictValeurs["code_compta"], dictValeurs["tva"], IDPrestationModif))
+                listeModifications.append((dictValeurs["label"], dictValeurs["montant_initial"], dictValeurs["montant"], dictValeurs["forfait_date_debut"], dictValeurs["forfait_date_fin"], dictValeurs["code_compta"], dictValeurs["code_produit_local"], dictValeurs["tva"], IDPrestationModif))
                 listeSuppressions.append(IDPrestationModif)
 
         # Modifications
         if len(listeModifications) > 0 :
-            DB.Executermany("UPDATE prestations SET label=?, montant_initial=?, montant=?, forfait_date_debut=?, forfait_date_fin=?, code_compta=?, tva=? WHERE IDprestation=?", listeModifications, commit=False)
+            DB.Executermany("UPDATE prestations SET label=?, montant_initial=?, montant=?, forfait_date_debut=?, forfait_date_fin=?, code_compta=?, code_produit_local=?, tva=? WHERE IDprestation=?", listeModifications, commit=False)
 
         # Suppression
         if len(listeSuppressions) > 0 :
@@ -5551,12 +5521,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             date = key[1]
             IDmemo = valeurs["IDmemo"]
             texte = valeurs["texte"]
+            couleur = valeurs["couleur"]
             statut = valeurs["statut"]
         
             listeDonnees = [
                     ("IDindividu", IDindividu), 
                     ("date", str(date)),
-                    ("texte", texte), 
+                    ("texte", texte),
+                    ("couleur", couleur),
                     ]
             # Ajout
             if statut == "ajout" :
@@ -5671,16 +5643,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             "hauteur_lignes" : self.dictParametres["hauteur"],
             "largeur_colonne_memo" : self.dictParametres["largeurs"]["memo"],
             "largeur_colonne_transports" : self.dictParametres["largeurs"]["transports"],
+            "masquer_unites_fermees": MASQUER_UNITES_FERMEES,
             }
         dictParametres = UTILS_Parametres.ParametresCategorie(mode="set", categorie="parametres_grille_conso", dictParametres=dictValeurs)
 
-##        UTILS_Parametres.Parametres(mode="set", categorie="parametres_grille_conso", nom="affiche_colonne_memo", valeur=AFFICHE_COLONNE_MEMO)
-##        UTILS_Parametres.Parametres(mode="set", categorie="parametres_grille_conso", nom="affiche_colonne_transports", valeur=AFFICHE_COLONNE_TRANSPORTS)
-##        UTILS_Parametres.Parametres(mode="set", categorie="parametres_grille_conso", nom="hauteur_lignes", valeur=self.dictParametres["hauteur"])
-##        UTILS_Parametres.Parametres(mode="set", categorie="parametres_grille_conso", nom="largeur_colonne_memo", valeur=self.dictParametres["largeurs"]["memo"])
-##        UTILS_Parametres.Parametres(mode="set", categorie="parametres_grille_conso", nom="largeur_colonne_transports", valeur=self.dictParametres["largeurs"]["transports"])
-##        UTILS_Parametres.Parametres(mode="set", categorie="parametres_grille_conso", nom="blocage_si_complet", valeur=self.blocageSiComplet)
-        
         # Largeurs colonnes
         listeDonnees = []
         for IDunite, largeur in self.dictParametres["largeurs"]["unites"].items() :
@@ -5744,7 +5710,15 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     def SetAfficheColonneMemo(self, etat=True):
         global AFFICHE_COLONNE_MEMO
         AFFICHE_COLONNE_MEMO = etat
-        self.MAJ_affichage() 
+        self.MAJ_affichage()
+
+    def GetMasquerUnitesFermees(self):
+        return MASQUER_UNITES_FERMEES
+
+    def SetMasquerUnitesFermees(self, etat=True):
+        global MASQUER_UNITES_FERMEES
+        MASQUER_UNITES_FERMEES = etat
+        self.MAJ()
 
     def GetFormatLabelLigne(self):
         return FORMAT_LABEL_LIGNE

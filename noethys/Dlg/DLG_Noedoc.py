@@ -564,6 +564,8 @@ class Famille():
             (_(u"Régime social de la famille"), _(u"Régime général"), "{FAMILLE_REGIME}"),
             (_(u"Caisse de la famille"), _(u"C.A.F."), "{FAMILLE_CAISSE}"),
             (_(u"Numéro d'allocataire de la famille"), u"0123456X", "{FAMILLE_NUMALLOC}"),
+            (_(u"Identifiant internet"), u"123456789", "{FAMILLE_INTERNET_IDENTIFIANT}"),
+            (_(u"Mot de passe internet"), u"123456789", "{FAMILLE_INTERNET_MDP}"),
 
             (_(u"Nom de l'organisateur"), _(u"Association Noethys"), "{ORGANISATEUR_NOM}"),
             (_(u"Rue de l'organisateur"), _(u"Avenue des Lilas"), "{ORGANISATEUR_RUE}"),

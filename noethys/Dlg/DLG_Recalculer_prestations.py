@@ -37,12 +37,13 @@ class Abort(Exception):
     pass 
 
 class Traitement(Thread): 
-    def __init__(self, parent, IDactivite=None, date_debut=None, date_fin=None, tracks=[]): 
+    def __init__(self, parent, IDactivite=None, date_debut=None, date_fin=None, tracks=[], inclure_dates_fermees=False):
         Thread.__init__(self) 
         self.parent = parent
         self.IDactivite = IDactivite
         self.date_debut = date_debut
         self.date_fin = date_fin
+        self.inclure_dates_fermees = inclure_dates_fermees
         self.tracks = tracks
         self.succes = False
         self.stop = False 
@@ -66,7 +67,7 @@ class Traitement(Thread):
                 time.sleep(0.2)
                 
                 # Recalcul des prestations
-                self.parent.ctrl_grille.RecalculerToutesPrestations() 
+                self.parent.ctrl_grille.grille.RecalculerToutesPrestations(inclure_dates_fermees=self.inclure_dates_fermees)
                 time.sleep(0.2)
                 
                 # Sauvegarde de la grille des conso + Ecrit log
@@ -181,6 +182,8 @@ class Dialog(wx.Dialog):
         self.ctrl_individus = self.listviewAvecFooter.GetListview()
         self.ctrl_recherche = OL_Recalculer_prestations.CTRL_Outils(self, listview=self.ctrl_individus, afficherCocher=True)
 
+        self.check_inclure_dates_fermees = wx.CheckBox(self, -1, _(u"Inclure les dates fermées"))
+
         # Grille des conso
         self.box_grille_staticbox = wx.StaticBox(self, -1, _(u"Journal"))
         self.ctrl_log = wx.TextCtrl(self, -1, style=wx.TE_MULTILINE|wx.TE_READONLY)
@@ -255,7 +258,8 @@ class Dialog(wx.Dialog):
         grid_sizer_options = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5)
         grid_sizer_options.Add(self.ctrl_recherche, 0, wx.EXPAND, 0)
         grid_sizer_options.AddGrowableCol(0)
-        grid_sizer_prestations.Add(grid_sizer_options, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 10)
+        grid_sizer_prestations.Add(grid_sizer_options, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
+        grid_sizer_prestations.Add(self.check_inclure_dates_fermees, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 10)
         grid_sizer_prestations.AddGrowableRow(1)
         grid_sizer_prestations.AddGrowableCol(0)
         box_prestations.Add(grid_sizer_prestations, 1, wx.EXPAND, 0)
@@ -397,7 +401,8 @@ class Dialog(wx.Dialog):
             IDactivite = self.ctrl_activite.GetID()
             date_debut = self.ctrl_date_debut.GetDate()
             date_fin = self.ctrl_date_fin.GetDate()
-            tracks = self.ctrl_individus.GetTracksCoches() 
+            tracks = self.ctrl_individus.GetTracksCoches()
+            inclure_dates_fermees = self.check_inclure_dates_fermees.GetValue()
 
             if len(tracks) == 0 :
                 dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins un individu dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
@@ -422,7 +427,7 @@ class Dialog(wx.Dialog):
             self.Layout()
             
             # Traitement
-            self.traitement = Traitement(self, IDactivite=IDactivite, date_debut=date_debut, date_fin=date_fin, tracks=tracks) 
+            self.traitement = Traitement(self, IDactivite=IDactivite, date_debut=date_debut, date_fin=date_fin, tracks=tracks, inclure_dates_fermees=inclure_dates_fermees)
             self.traitement.start()
         
         

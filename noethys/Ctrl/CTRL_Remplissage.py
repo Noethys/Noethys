@@ -194,11 +194,14 @@ class Evenement():
         return wx.WHITE
 
     def GetPlacesEvenement(self):
-        nbrePlacesRestantes, nbrePlacesPrises = None, None
+        try:
+            nbrePlacesPrises = self.case.grid.dictRemplissageEvenements[self.IDevenement]["reservation"] + self.case.grid.dictRemplissageEvenements[self.IDevenement]["present"]
+        except:
+            nbrePlacesPrises = None
 
+        nbrePlacesRestantes = None
         if self.capacite_max != None:
             if self.IDevenement in self.case.grid.dictRemplissageEvenements :
-                nbrePlacesPrises = self.case.grid.dictRemplissageEvenements[self.IDevenement]["reservation"] + self.case.grid.dictRemplissageEvenements[self.IDevenement]["present"]
                 nbrePlacesRestantes = self.capacite_max - nbrePlacesPrises
 
         if self.IDevenement in self.case.grid.dictRemplissageEvenements :
@@ -1031,9 +1034,9 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     def SetModeAffichage(self, mode):
         # "nbrePlacesInitial" , "nbrePlacesPrises", "nbrePlacesRestantes", "seuil_alerte", "nbreAttente"
         self.modeAffichage = mode
-            
+
     def MAJ(self):
-        self.Freeze() 
+        self.Freeze()
         self.MAJ_donnees()
         self.MAJ_affichage()
         self.Thaw()

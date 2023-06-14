@@ -46,7 +46,7 @@ class Barre(object):
         self.parent = parent
 
         liste_champs =["IDlocation", "IDfamille", "IDproduit", "observations",
-                       "date_debut", "date_fin", "quantite"]
+                       "date_debut", "date_fin", "quantite", "description"]
 
         for champ in liste_champs:
             if champ in donnees:
@@ -195,6 +195,8 @@ class Barre(object):
                     dc.SetTextForeground((0, 0, 0))
 
                     texte = self.nomTitulaires
+                    if self.description:
+                        texte += u" - %s" % self.description
 
                     texte_largeur_max = rect.width
                     padding_h = 3
@@ -452,6 +454,8 @@ class Colonne(object):
 
         dtmin = self.AssembleDateEtHeure(self.date, self.dict_options["heure_min"])
         dtmax = self.AssembleDateEtHeure(self.date, self.dict_options["heure_max"])
+        if dtmin > dtmax:
+            dtmax = dtmin
 
         listeGraduations = list(rrule.rrule(rrule.MINUTELY, byminute=(0, 15, 30, 45), dtstart=dtmin, until=dtmax))
         ecartGraduations = 1.0 * self.dict_options["case_largeur"] / len(listeGraduations)
@@ -636,7 +640,7 @@ class CTRL_Tableau(wx.Panel):
         if date_debut == None or date_fin == None :
             return
 
-        req = """SELECT locations.IDlocation, locations.IDfamille, locations.IDproduit, 
+        req = """SELECT locations.IDlocation, locations.IDfamille, locations.IDproduit, locations.description, 
         locations.observations, locations.date_debut, locations.date_fin, locations.quantite
         FROM locations
         LEFT JOIN produits ON produits.IDproduit = locations.IDproduit
@@ -648,9 +652,9 @@ class CTRL_Tableau(wx.Panel):
         DB.Close()
         self.liste_barres = []
 
-        for IDlocation, IDfamille, IDproduit, observations, date_debut, date_fin, quantite in listeDonnees :
+        for IDlocation, IDfamille, IDproduit, description, observations, date_debut, date_fin, quantite in listeDonnees :
             item = {"IDlocation" : IDlocation, "IDfamille" : IDfamille, "IDproduit" : IDproduit, "observations" : observations,
-                    "date_debut" : date_debut, "date_fin": date_fin, "quantite" : quantite}
+                    "date_debut" : date_debut, "date_fin": date_fin, "quantite" : quantite, "description": description}
 
             barre = Barre(self, donnees=item)
             self.liste_barres.append(barre)
@@ -1108,7 +1112,10 @@ class CTRL_Tableau(wx.Panel):
         for IDproduit, dict_souslignes in self.dict_lignes_barres.items():
             for num_sousligne, liste_barres in dict_souslignes.items():
                 for barre in liste_barres :
-                    barre.Draw(dc, num_sousligne, rect_cadre_central)
+                    try:
+                        barre.Draw(dc, num_sousligne, rect_cadre_central)
+                    except:
+                        pass
 
         dc.DestroyClippingRegion()
 
@@ -1272,7 +1279,8 @@ class CTRL_Tableau(wx.Panel):
         # Corps du message
         if barre != None:
             texte = u""
-            texte += u"Produit : %s" % self.dict_produits[barre.IDproduit]["nom"]
+            texte += u"Description : %s" % (barre.description or "")
+            texte += u"\nProduit : %s" % self.dict_produits[barre.IDproduit]["nom"]
             texte += u"\nCatégorie : %s" % self.dict_produits[barre.IDproduit]["nom_categorie"]
             texte += u"\n"
             texte += u"\nDébut : %s" % UTILS_Dates.DatetimeEnFr(barre.date_debut)
@@ -1324,7 +1332,7 @@ class CTRL_Tableau(wx.Panel):
         label_produit = u"%s (%s)" % (self.dict_produits[barre.IDproduit]["nom"], self.dict_produits[barre.IDproduit]["nom_categorie"])
         periode = _(u"%s - %s") % (barre.date_debut.strftime("%d/%m/%Y %H:%M:%S"), barre.date_fin.strftime("%d/%m/%Y %H:%M:%S") if (barre.date_fin and barre.date_fin.year != 2999) else _(u"Illimitée"))
         texte_historique = _(u"Modification de la location ID%d : %s %s") % (barre.IDlocation, label_produit, periode)
-        UTILS_Historique.InsertActions([{"IDfamille": barre.IDfamille, "IDcategorie": 38, "action": texte_historique, }], DB=DB)
+        UTILS_Historique.InsertActions([{"IDfamille": barre.IDfamille, "IDcategorie": 38, "action": texte_historique, "IDdonnee": barre.IDlocation}], DB=DB)
         DB.Close()
 
     def Imprimer(self, event):

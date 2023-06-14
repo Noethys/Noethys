@@ -302,6 +302,9 @@ class CaseMemo(GridCellRenderer):
         text = grid.GetCellValue(row, col)
         text = self.AdapteTailleTexte(dc, text, rect[2]-6)
         DrawBorder(grid, dc, rect)
+        dc.SetTextForeground(wx.BLACK)
+        if self.case.couleur:
+            dc.SetTextForeground(self.case.couleur)
         dc.DrawText(text, rect[0]+5, rect[1] + 6)
                     
     def MAJ(self):

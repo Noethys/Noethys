@@ -22,6 +22,8 @@ from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Grille_facturation
 from Dlg import DLG_Badgeage_grille
 from Dlg.DLG_Portail_demandes import CTRL_Log
+from Ctrl import CTRL_Grille_forfaits2 as CTRL_Grille_forfaits
+
 
 
 class CTRL_Html(html.HtmlWindow):
@@ -73,6 +75,12 @@ class Dialog(wx.Dialog):
         self.box_grille_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Grille des consommations"))
         self.ctrl_grille = DLG_Badgeage_grille.CTRL(self, panel_facturation=self.ctrl_facturation)
 
+        # Panel Forfait-crédits
+        if self.ctrl_grille.grille.tarifsForfaitsCreditsPresents:
+            self.box_forfaits_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Forfaits-crédits"))
+            self.panel_forfaits = CTRL_Grille_forfaits.CTRL(self, grille=self.ctrl_grille.grille)
+            self.panel_forfaits.SetMinSize((-1, 95))
+
         # Journal
         self.box_journal_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Journal d'évènements"))
         self.ctrl_log = CTRL_Log(self)
@@ -114,18 +122,25 @@ class Dialog(wx.Dialog):
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(4, 1, 10, 10)
         grid_sizer_base.Add(self.ctrl_bandeau, 1,wx.EXPAND, 0)
-
         grid_sizer_contenu = wx.FlexGridSizer(2, 1, 10, 10)
-
-        grid_sizer_haut = wx.FlexGridSizer(1, 2, 10, 10)
+        grid_sizer_haut = wx.FlexGridSizer(2, 2, 10, 10)
+        grid_sizer_gauche = wx.FlexGridSizer(2, 1, 10, 10)
+        grid_sizer_droit = wx.FlexGridSizer(2, 1, 10, 10)
 
         # Grille
         box_grille = wx.StaticBoxSizer(self.box_grille_staticbox, wx.VERTICAL)
         box_grille.Add(self.ctrl_grille, 1, wx.ALL | wx.EXPAND, 10)
+        grid_sizer_gauche.Add(box_grille, 1, wx.EXPAND, 10)
 
-        grid_sizer_haut.Add(box_grille, 1, wx.EXPAND, 10)
+        # Forfaits-crédits
+        if hasattr(self, "panel_forfaits"):
+            box_forfaits = wx.StaticBoxSizer(self.box_forfaits_staticbox, wx.VERTICAL)
+            box_forfaits.Add(self.panel_forfaits, 1, wx.ALL | wx.EXPAND, 10)
+            grid_sizer_gauche.Add(box_forfaits, 1, wx.EXPAND, 10)
 
-        grid_sizer_droit = wx.FlexGridSizer(2, 1, 10, 10)
+        grid_sizer_gauche.AddGrowableRow(0)
+        grid_sizer_gauche.AddGrowableCol(0)
+        grid_sizer_haut.Add(grid_sizer_gauche, 1, wx.EXPAND, 10)
 
         # Facturation
         box_facturation = wx.StaticBoxSizer(self.box_facturation_staticbox, wx.VERTICAL)

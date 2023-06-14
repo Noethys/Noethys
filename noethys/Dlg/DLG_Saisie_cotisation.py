@@ -668,20 +668,17 @@ class CTRL_Parametres(wx.Panel):
 
     def SetProchainIDcotisation(self):
         DB = GestionDB.DB()
-        req = """SELECT MAX(numero) FROM cotisations;"""
+        req = """SELECT numero, IDcotisation FROM cotisations;"""
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
+        prochainID = 1
         if len(listeDonnees) > 0:
-            if listeDonnees[0][0] == None:
-                prochainID = 1
-            else:
-                try:
-                    prochainID = int(listeDonnees[0][0]) + 1
-                except:
-                    return
-        else:
-            prochainID = 1
+            try:
+                liste_numeros = [int(numero) for numero, IDcotisation in listeDonnees if numero]
+                prochainID = max(liste_numeros) + 1
+            except:
+                return
         numero = u"%06d" % prochainID
         self.ctrl_numero.SetValue(numero)
 
@@ -1203,7 +1200,7 @@ class Dialog(wx.Dialog):
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, IDcotisation=1, IDfamille=4)
+    dialog_1 = Dialog(None, IDcotisation=None, IDfamille=4)
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()

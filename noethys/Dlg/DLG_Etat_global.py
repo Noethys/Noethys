@@ -917,6 +917,8 @@ class Dialog(wx.Dialog):
                         IDregime = dict_options["associer_regime_inconnu"]
 
                     # Mémoriser les régimes à afficher
+                    if not IDregime:
+                        IDregime = 0
                     if IDregime not in listeRegimesUtilises :
                         listeRegimesUtilises.append(IDregime)
 
@@ -1044,7 +1046,7 @@ class Dialog(wx.Dialog):
             elif regroupement_principal.startswith("qf") and type(regroupement) == tuple :
                 label_regroupement = u"%d-%d" % regroupement
             elif regroupement_principal == "age" :
-                label_regroupement = "%d ans" % regroupement
+                label_regroupement = "%s ans" % regroupement
             else :
                 label_regroupement = six.text_type(regroupement)
 

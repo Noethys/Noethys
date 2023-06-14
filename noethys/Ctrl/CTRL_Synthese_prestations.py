@@ -177,8 +177,9 @@ class CTRL(HTL.HyperTreeList):
             conditionFacturee = " AND prestations.IDfacture IS NULL"
         
         # Récupération de toutes les prestations de la période
-        req = """SELECT IDprestation, date, categorie, label, montant, prestations.IDactivite, prestations.IDcategorie_tarif, IDfamille, IDindividu
+        req = """SELECT IDprestation, prestations.date, categorie, label, montant, prestations.IDactivite, prestations.IDcategorie_tarif, prestations.IDfamille, IDindividu, prestations.IDfacture, factures.numero
         FROM prestations
+        LEFT JOIN factures ON factures.IDfacture = prestations.IDfacture
         WHERE date>='%s' AND date <='%s'
         AND %s AND (%s OR prestations.IDactivite IS NULL)
         %s
@@ -210,7 +211,7 @@ class CTRL(HTL.HyperTreeList):
         dictPrestations = {}
         listeRegroupements = []
         dictLabelsRegroupements = {}
-        for IDprestation, date, categorie, label, montant, IDactivite, IDcategorie_tarif, IDfamille, IDindividu in listePrestations :
+        for IDprestation, date, categorie, label, montant, IDactivite, IDcategorie_tarif, IDfamille, IDindividu, IDfacture, num_facture in listePrestations :
             date = UTILS_Dates.DateEngEnDateDD(date)
             annee = date.year
             mois = date.month
@@ -338,6 +339,21 @@ class CTRL(HTL.HyperTreeList):
                                     key_tri = key
                                     key_label = "%s - %s" % (min, max)
 
+                # Num facture
+                if key_code == "num_facture":
+                    key = num_facture
+                    key_tri = num_facture
+                    key_label = str(num_facture)
+
+                # Num facture + famille
+                if key_code == "num_facture_famille":
+                    if IDfamille == None or (IDfamille in self.dict_titulaires) == False:
+                        nom_famille = _(u"Famille inconnue")
+                    else:
+                        nom_famille = self.dict_titulaires[IDfamille]["titulairesSansCivilite"]
+                    key = u"%s - %s" % (num_facture or u"Non facturé", nom_famille)
+                    key_tri = key
+                    key_label = key
 
                 # Questionnaires
                 if key_code.startswith("question_") and "famille" in key_code:

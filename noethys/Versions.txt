@@ -1,4 +1,177 @@
-Version 1.2.8.0 (28/07/2020) :
+Version 1.3.2.4 (11/06/2023) :
+
+- Corrections de petits bugs
+
+Version 1.3.2.3 (03/06/2023) :
+
+- Ajout des questionnaires à la liste détaillée des consommations
+- Ajout de la liste détaillée des inscriptions
+- Ajout de la désinscription par lot
+- Correction GetFilteredObjects dans total impression
+- Correction du tri dans le ctrl de sélection des activités
+
+Version 1.3.2.2 (29/05/2023) :
+
+- Ajout du solde du compte famille dans Connecthys
+
+Version 1.3.2.1 (19/04/2023) :
+
+- Ajout des transports dans l'export Noethysweb
+
+Version 1.3.2.0 (06/04/2023) :
+
+- Ajout du téléchargement d'une pièce au format image
+- Correction du prélèvement dans l'export Corail
+
+Version 1.3.1.9 (05/03/2023) :
+
+- Ajout du filtre de liste spécial Cotisations
+- Ajout du code service dans le paramétrage de l'activité
+- Ajout d'un texte d'introduction dans la liste des infos médicales
+- Correction unicode dans synthèse des déductions
+- Correction group by dans la génération des rappels
+- Mise à jour de l'export Noethysweb
+- Correction de divers petits bugs
+
+Version 1.3.1.7 (02/02/2023) :
+
+- Ajout de la colonne personnalisée QF dans la liste des consommations
+- Ajout des codes compta famille génériques dans l'export vers Quadra
+- Ajout de la balise LibPieceJustificative dans l'export Corail
+- Ajout de la colonne personnalisée QF dans la liste des conso
+- Correction de divers petits bugs
+
+Version 1.3.1.6 (23/12/2022) :
+
+- Ajout de la liste détaillée des factures
+- Ajout du regroupement par facture dans la synthèse des prestations
+- Ajout du regroupement par activité dans la liste détaillée des règlements
+- Corrections sur l'export Noethysweb
+- Correction de l'export Cosoluce
+- Correction de divers petits bugs
+
+Version 1.3.1.5 (08/12/2022) :
+
+- Ajout du tiers solidaire dans la fiche famille
+- Ajout de la génération des tiers solidaires depuis le menu Utilitaires
+- Ajout de l'envoi d'emails par lots espacés de pauses
+- Ajout de l'export vers Corail de Cosoluce
+- Ajout des options dans la sauvegarde mysql
+- Correction du recalcul sur les dates fermées
+- Correction de la saisie des dates dans l'export vers le TP
+- Correction de divers petits bugs
+
+Version 1.3.1.2 (24/09/2022) :
+
+- Ajout de la procédure de création manuelle de table
+- Ajout du code comptable dans l'analyse croisée des règlements
+- Ajout de l'option d'affichage des soldes des factures dans Connecthys
+- Ajout d'une icône dans l'impression des conso pour les attentes
+- Ajout de la scolarité dans l'état nominatif
+- Ajout du champ SOLDE_FAMILLE dans l'email de réponse du portail
+- Ajout du lien Assistant familial dans la fiche individuelle
+- Ajout de la procédure de modification du type d'un champ
+- Correction de l'affichage des activités terminées dans Connecthys
+- Correction des prestations dans les locations avec récurrence
+- Correction des vignettes sans civilité
+- Correction de divers petits bugs
+
+Version 1.3.0.8 (30/03/2022) :
+
+- Correction du code produit local dans les tarifs
+
+Version 1.3.0.7 (26/03/2022) :
+
+- Actualisation de l'export Noethysweb
+
+Version 1.3.0.6 (25/03/2022) :
+
+- Ajout de la couleur aux mémos journaliers
+- Ajout du montant facturé dans les attestations fiscales
+- Correction sur l'import depuis Nomadhys
+- Correction sur l'export vers BL
+
+Version 1.3.0.5 (28/02/2022) :
+
+- Ajout du code produit local dans les tarifs
+- Ajout de l'outil Appliquer un code produit local à des prestations
+
+Version 1.3.0.4 (06/02/2022) :
+
+- Ajout de la configuration sur la liste des demandes
+
+Version 1.3.0.3 (06/02/2022) :
+
+- Changement de la date de prestation pour les locations récurrentes
+- Correction des adresses avec sauts à la ligne dans l'export vers Magnus
+- Correction du menu contextuel sur les événements
+- Correction de divers bugs
+
+Version 1.3.0.0 (15/10/2021) :
+
+- Ajout de l'affichage des autres loueurs sur le portail
+- Ajout du refus des demandes de locations depuis le portail
+- Correction de divers bugs
+
+Version 1.2.9.9 (10/06/2021) :
+
+- Ajout des dates pour chaque prestation en mode condensé sur la facture
+- Ajout de la classe de l'individu sur la facture
+- Ajout de l'option afficher les activités ouvertes dans la liste des activités
+- Ajout du parsage de la voie dans les adresses individuelles et familiales
+- Ajout de l'intégration des événements dans l'impression des conso
+- Ajout de la description dans les locations
+- Correction sur l'application de forfaits datés
+- Correction des espaces dans les noms et prénoms des individus
+- Correction de petits bugs
+
+Version 1.2.9.4 (17/04/2021) :
+
+- Ajout de la synthèse des déductions dans le menu facturation
+- Ajout de l'option inscriptions multiples dans le paramétrage de l'activité
+- Changement de source pour l'importation des périodes de vacances
+- Correction de petits bugs
+
+Version 1.2.9.0 (06/02/2021) :
+
+- Ajout des balises de la période dans l'export vers Magnus de Berger-Levrault
+- Correction de la balise MtHTaxe dans l'export vers Magnus de Berger-Levrault
+- Correction de l'affichage des colonnes sans régime dans l'état global
+
+Version 1.2.8.8 (22/01/2021) :
+
+- Ajout de l'export vers Magnus de Berger-Levrault
+- Ajout de l'export vers Millesime Online de JVS-Mairistem
+- Ajout du paiement en 3 fois par carte bancaire sur Connecthys
+- Ajout de l'envoi de SMS avec Mailjet
+- Amélioration de la suppression des locations récurrentes
+- Ajout du code produit local dans les prestations
+- Ajout du total de la TVA sur les factures
+- Intégration de la TVA dans les locations
+- Adaptations pour Linux
+- Adaptations pour python 3.9
+- Correction de la numérotation des cotisations
+- Correction des requêtes group by
+- Correction des sélections dans les devis
+- Correction de petits bugs
+
+Version 1.2.8.3 (05/11/2020) :
+
+- Ajout du captcha dans Connecthys
+- Ajout des événements dans la synthèse des consommations
+- Ajout de la liste détaillée des consommations dans le menu Consommations
+- Ajout de la ville de résidence dans la liste des demandes du portail
+- Ajout de nouveaux types de dates limites pour les réservations du portail
+- Intégration des forfaits-crédits dans les demandes du portail
+- Amélioration de l'affichage des forfaits crédits dans les factures
+- Déblocage des consommations associées à des forfaits crédits facturés
+- Correction de nombres décimaux dans les exports Excel [David Gabison]
+- Correction des places prises des événements dans le tableau de bord
+- Correction de l'IDtiers dans le XML pour Hélios
+- Correction des accents dans les prélèvements
+- Correction de petits bugs
+
+Version 1.2.8.0 (12/08/2020) :
 
 - Finalisation des datamatrix
 - Ajout des mentions dans les factures

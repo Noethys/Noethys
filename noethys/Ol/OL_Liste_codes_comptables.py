@@ -98,7 +98,7 @@ class ListView(FastObjectListView):
         LEFT JOIN caisses ON caisses.IDcaisse = familles.IDcaisse
         LEFT JOIN regimes ON regimes.IDregime = caisses.IDregime
         WHERE inscriptions.statut='ok' AND (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') %s
-        GROUP BY familles.IDfamille
+        GROUP BY inscriptions.IDfamille
         ;""" % (datetime.date.today(), conditionActivites)
         DB.ExecuterReq(req)
         listeFamilles = DB.ResultatReq()
@@ -179,7 +179,7 @@ class ListView(FastObjectListView):
         dictParametres = {
             "titre" : _(u"Liste des codes comptables"),
             "intro" : self.dict_parametres["label_parametres"],
-            "total" : _(u"> %s familles") % len(self.donnees),
+            "total" : _(u"> %s familles") % len(self.GetFilteredObjects()),
             "orientation" : wx.PORTRAIT,
             }
         return dictParametres

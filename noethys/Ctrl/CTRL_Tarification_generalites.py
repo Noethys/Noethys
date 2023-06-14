@@ -199,15 +199,17 @@ class Panel(wx.Panel):
         self.ctrl_label_prestation = CTRL_Label_prestation(self, listeChoix=listeChoix)
         self.ctrl_label_prestation.SetCodeSelection("nom_tarif")
 
+        # Code comptable
+        self.label_code_comptable = wx.StaticText(self, -1, _(u"Code compta :"))
+        self.ctrl_code_comptable = wx.TextCtrl(self, -1, u"") 
+        self.label_code_produit_local = wx.StaticText(self, -1, _(u"Code produit local :"))
+        self.ctrl_code_produit_local = wx.TextCtrl(self, -1, "")
+
         # TVA
         self.label_tva = wx.StaticText(self, -1, _(u"Taux TVA :"))
         self.ctrl_tva = FS.FloatSpin(self, -1, min_val=0, max_val=100, increment=0.1, agwStyle=FS.FS_RIGHT)
         self.ctrl_tva.SetFormat("%f")
         self.ctrl_tva.SetDigits(2)
-        
-        # Code comptable
-        self.label_code_comptable = wx.StaticText(self, -1, _(u"Code compta :"))
-        self.ctrl_code_comptable = wx.TextCtrl(self, -1, u"") 
 
         # Layout
         sizer_base = wx.BoxSizer(wx.VERTICAL)
@@ -234,11 +236,17 @@ class Panel(wx.Panel):
         grid_sizer_base.Add(self.label_label_prestation, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_base.Add(self.ctrl_label_prestation, 1, wx.EXPAND, 0)
 
+        grid_sizer_base.Add(self.label_code_comptable, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+
+        grid_sizer_codes = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5)
+        grid_sizer_codes.Add(self.ctrl_code_comptable, 1, 0, 0)
+        grid_sizer_codes.Add((10, 5), 1, 0, 0)
+        grid_sizer_codes.Add(self.label_code_produit_local, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_codes.Add(self.ctrl_code_produit_local, 1, 0, 0)
+        grid_sizer_base.Add(grid_sizer_codes, 1, wx.EXPAND|wx.ALL, 0)
+
         grid_sizer_base.Add(self.label_tva, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_base.Add(self.ctrl_tva, 1, 0, 0)
-
-        grid_sizer_base.Add(self.label_code_comptable, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_base.Add(self.ctrl_code_comptable, 1, 0, 0)
 
         grid_sizer_base.AddGrowableRow(3)
         grid_sizer_base.AddGrowableCol(1)
@@ -309,6 +317,10 @@ class Panel(wx.Panel):
         if code != None :
             self.ctrl_code_comptable.SetValue(code)        
 
+    def SetCPL(self, code=""):
+        if code != None :
+            self.ctrl_code_produit_local.SetValue(code)
+
     def GetDateDebut(self):
         return self.ctrl_date_debut.GetDate()
         
@@ -339,7 +351,10 @@ class Panel(wx.Panel):
     
     def GetCodeComptable(self):
         return self.ctrl_code_comptable.GetValue() 
-    
+
+    def GetCPL(self):
+        return self.ctrl_code_produit_local.GetValue()
+
     def Validation(self):
         # Vérification des dates de validité
         if not self.cacher_dates :

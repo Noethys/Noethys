@@ -179,7 +179,7 @@ class CTRL(HTL.HyperTreeList):
                         quantite = 1                    
                     
                     # Mémorisation des valeurs
-                    dictResultats[IDfamille]["individus"][IDindividu]["prestations"][label]["montant"] += montant
+                    dictResultats[IDfamille]["individus"][IDindividu]["prestations"][label]["montant"] += montant or 0.0
                     dictResultats[IDfamille]["individus"][IDindividu]["prestations"][label]["nombre"] += quantite
                     dictResultats[IDfamille]["individus"][IDindividu]["prestations"][label]["nomActivite"] = nomActivite
                     dictResultats[IDfamille]["montant"] += montant

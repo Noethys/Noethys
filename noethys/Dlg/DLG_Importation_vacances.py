@@ -18,7 +18,7 @@ from Ctrl import CTRL_Bandeau
 from Utils import UTILS_Parametres
 import datetime
 import GestionDB
-from Utils import UTILS_Icalendar
+from Utils import UTILS_Vacances
 import wx.lib.agw.hyperlink as Hyperlink
 
 
@@ -92,10 +92,7 @@ class ListView(FastObjectListView):
         if self.zone == None :
             return []
         
-        cal = UTILS_Icalendar.Calendrier(url="http://media.education.gouv.fr/ics/Calendrier_Scolaire_Zone_%s.ics" % self.zone)
-        titre = cal.GetTitre()
-        if titre == None :
-            return []
+        cal = UTILS_Vacances.Calendrier(zone=self.zone)
         listePeriodes = cal.GetVacances()
 
         listeListeView = []

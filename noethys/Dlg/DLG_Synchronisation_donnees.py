@@ -339,10 +339,12 @@ class Traitement(Thread):
             
             listeAnomalies = []
             for track in self.parent.listeTracks :
-                
+                if self.stop:
+                    raise Abort
+
                 # Affichage
                 texteIntro = u"[%d/%d] %s" % (self.index+1, len(self.parent.listeTracks), track.detail)
-                self.parent.label_intro.SetLabel(texteIntro) 
+                self.parent.label_intro.SetLabel(texteIntro)
                 self.parent.ctrl_gauge.SetValue(self.index+1)
 
                 if track.anomalie != False :
@@ -416,7 +418,8 @@ class Traitement(Thread):
                         self.parent.parent.SetStatut(track, "ok")
                         
                 # Arrête le traitement si bouton arrêter enfoncé
-                if self.stop: 
+                if self.stop:
+                    time.sleep(2)
                     raise Abort
                 
                 time.sleep(0.2)
@@ -425,20 +428,19 @@ class Traitement(Thread):
             # Si fin 
             self.succes = True
             raise Abort
-        
-        except Abort as KeyBoardInterrupt: 
+
+        except Abort as KeyBoardInterrupt:
             if self.succes == True :
                 self.parent.label_intro.SetLabel(_(u"Traitement terminé")) 
                 self.parent.parent.EcritLog(_(u"Traitement terminé")) 
                 self.parent.Fermer(forcer=True) 
             else:
-                #print "arrete a l'index", self.index
-                self.parent.label_intro.SetLabel(_(u"Traitement interrompu par l'utilisateur")) 
+                self.parent.label_intro.SetLabel(_(u"Traitement interrompu par l'utilisateur"))
                 self.parent.parent.EcritLog(_(u"Traitement interrompu par l'utilisateur")) 
-                self.parent.bouton_fermer.SetBitmap(wx.Bitmap(Chemins.GetStaticPath(u"Images/BoutonsImages/Fermer_L72.png"), wx.BITMAP_TYPE_ANY))
+                # self.parent.bouton_fermer.SetBitmap(wx.Bitmap(Chemins.GetStaticPath(u"Images/BoutonsImages/Fermer_L72.png"), wx.BITMAP_TYPE_ANY))
         except Exception as err : 
-            self.parent.parent.EcritLog("Erreur : " + str(err))
-            self.stop = True 
+            self.stop = True
+            time.sleep(2)
             raise 
         
         # Message de confirmation de fin de traitement
@@ -468,7 +470,8 @@ class Dialog_Traitement(wx.Dialog):
         self.label_intro = wx.StaticText(self, -1, _(u"Initialisation..."))
         self.ctrl_gauge = wx.Gauge(self, -1, style=wx.GA_SMOOTH)
         self.ctrl_gauge.SetRange(len(listeTracks))
-        self.ctrl_grille = DLG_Badgeage_grille.CTRL(self)
+        self.ctrl_gauge.SetMinSize((500, -1))
+        self.ctrl_grille = DLG_Badgeage_grille.CTRL(self, usage="nomadhys")
         if self.debug == False :
             self.ctrl_grille.Show(False) 
             

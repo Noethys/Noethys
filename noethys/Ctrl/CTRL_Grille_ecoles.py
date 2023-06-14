@@ -187,13 +187,12 @@ class CTRL(HTL.HyperTreeList):
         LEFT JOIN classes ON classes.IDclasse = scolarite.IDclasse
         WHERE scolarite.IDclasse IS NOT NULL
               AND scolarite.date_debut<='{0}' AND scolarite.date_fin>='{0}'
-        GROUP BY scolarite.IDclasse;""".format(self.date)
+        GROUP BY scolarite.IDclasse, ecoles.IDecole;""".format(self.date)
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
 
-        for (IDecole, nomEcole, IDclasse, nomClasse, niveaux,
-             date_debut, date_fin) in listeDonnees:
+        for (IDecole, nomEcole, IDclasse, nomClasse, niveaux, date_debut, date_fin) in listeDonnees:
             if date_debut is not None:
                 date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
             if date_fin is not None:

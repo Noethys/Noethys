@@ -246,7 +246,8 @@ class Panel(wx.Panel):
                 total = dictCompte["total"] 
                 regle = dictCompte["ventilation"] 
                 solde = total - regle
-                # Date échéance
+                # Dates
+                date_edition = dictCompte["date_edition"]
                 date_echeance = dictCompte["date_echeance"] 
                 # Liste des activités
                 texteActivites = ""
@@ -266,7 +267,7 @@ class Panel(wx.Panel):
                     ("IDprefixe", IDprefixe),
                     ("numero", numero),
                     ("IDcompte_payeur", IDcompte_payeur),
-                    ("date_edition", str(datetime.date.today())),
+                    ("date_edition", str(date_edition)),
                     ("date_echeance", date_echeance),
                     ("activites", texteActivites),
                     ("individus", texteIndividus),

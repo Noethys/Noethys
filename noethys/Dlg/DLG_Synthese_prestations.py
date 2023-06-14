@@ -64,6 +64,8 @@ class CTRL_Regroupement(wx.Choice):
             {"label": _(u"Caisse d'allocations"), "code": "caisse"},
             {"label": _(u"Quotient familial - Tranches tarifs"), "code": "qf_tarifs"},
             {"label": _(u"Quotient familial - Tranches de 100"), "code": "qf_100"},
+            {"label": _(u"Numéro de facture"), "code": "num_facture"},
+            {"label": _(u"Numéro de facture + famille"), "code": "num_facture_famille"},
         ]
 
         if option_aucun == True :

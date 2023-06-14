@@ -22,7 +22,7 @@ from six.moves.urllib.request import Request, urlopen, urlretrieve
 import os
 import six
 import zipfile
-import glob
+import glob, codecs
 
 from Ctrl import CTRL_Bandeau
 from Utils import UTILS_Fichiers
@@ -265,7 +265,7 @@ class Page_recherche(wx.Panel):
         
     def GetVersionLogiciel(self):
         """ Recherche du numéro de version du logiciel """
-        fichierVersion = open(Chemins.GetMainPath("Versions.txt"), "r")
+        fichierVersion = codecs.open(Chemins.GetMainPath("Versions.txt"), encoding='utf-8', mode='r')
         txtVersion = fichierVersion.readlines()[0]
         fichierVersion.close() 
         pos_debut_numVersion = txtVersion.find("n")

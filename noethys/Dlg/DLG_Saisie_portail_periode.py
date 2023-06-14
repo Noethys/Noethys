@@ -185,12 +185,12 @@ class Dialog(wx.Dialog):
 
         # Nom
         box_nom = wx.StaticBoxSizer(self.box_nom_staticbox, wx.VERTICAL)
-        box_nom.Add(self.ctrl_nom, 0, wx.ALL | wx.EXPAND | wx.ALIGN_CENTER_VERTICAL, 10)
+        box_nom.Add(self.ctrl_nom, 0, wx.ALL | wx.EXPAND, 10)
         grid_sizer_contenu.Add(box_nom, 1, wx.EXPAND, 0)
 
         # Introduction
         box_intro = wx.StaticBoxSizer(self.box_intro_staticbox, wx.VERTICAL)
-        box_intro.Add(self.ctrl_intro, 0, wx.ALL | wx.EXPAND | wx.ALIGN_CENTER_VERTICAL, 10)
+        box_intro.Add(self.ctrl_intro, 0, wx.ALL | wx.EXPAND, 10)
         grid_sizer_contenu.Add(box_intro, 1, wx.EXPAND, 0)
 
         # Période

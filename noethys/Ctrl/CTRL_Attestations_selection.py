@@ -36,7 +36,7 @@ from Utils import UTILS_Utilisateurs
 DICT_CIVILITES = Civilites.GetDictCivilites()
 
 from Utils import UTILS_Infos_individus
-
+from Utils import UTILS_Dates
 
 
 COULEUR_FOND_REGROUPEMENT = (200, 200, 200)
@@ -100,7 +100,7 @@ def Importation(liste_activites=[], date_debut=None, date_fin=None, date_edition
     label, prestations.montant_initial, prestations.montant, prestations.tva,
     prestations.IDactivite, activites.nom, activites.abrege,
     prestations.IDtarif, noms_tarifs.nom, categories_tarifs.nom, IDfacture, 
-    prestations.IDindividu, prestations.IDfamille
+    prestations.IDindividu, prestations.IDfamille, forfait_date_debut, forfait_date_fin
     FROM prestations
     LEFT JOIN activites ON prestations.IDactivite = activites.IDactivite
     LEFT JOIN tarifs ON prestations.IDtarif = tarifs.IDtarif
@@ -213,7 +213,7 @@ def Importation(liste_activites=[], date_debut=None, date_fin=None, date_edition
     infosIndividus = UTILS_Infos_individus.Informations() 
 
     dictComptes = {}
-    for IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, tva, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDfamille in listePrestationsTemp :
+    for IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, tva, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDfamille, forfait_date_debut, forfait_date_fin in listePrestationsTemp :
         montant_initial = FloatToDecimal(montant_initial) 
         montant = FloatToDecimal(montant)
         
@@ -368,7 +368,7 @@ def Importation(liste_activites=[], date_debut=None, date_fin=None, date_edition
                 "montant_initial" : montant_initial, "montant" : montant, "tva" : tva, 
                 "IDtarif" : IDtarif, "nomTarif" : nomTarif, "nomCategorieTarif" : nomCategorieTarif, 
                 "montant_ventilation" : montant_ventilation, "listeDatesConso" : listeDates,
-                "deductions" : deductions,
+                "deductions" : deductions, "forfait_date_debut": UTILS_Dates.DateEngEnDateDD(forfait_date_debut), "forfait_date_fin": UTILS_Dates.DateEngEnDateDD(forfait_date_fin),
                 }
 
             dictComptes[IDcompte_payeur]["individus"][IDindividu]["activites"][IDactivite]["presences"][date]["unites"].append(dictPrestation)

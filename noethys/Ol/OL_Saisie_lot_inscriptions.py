@@ -85,7 +85,7 @@ class ListView(FastObjectListView):
         LEFT JOIN rattachements ON rattachements.IDindividu = individus.IDindividu
         LEFT JOIN comptes_payeurs ON comptes_payeurs.IDfamille = rattachements.IDfamille
         WHERE IDcategorie IN (1, 2) AND rattachements.IDfamille IS NOT NULL
-        GROUP BY individus.IDindividu, rattachements.IDfamille;"""
+        GROUP BY individus.IDindividu, rattachements.IDfamille, comptes_payeurs.IDcompte_payeur;"""
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         

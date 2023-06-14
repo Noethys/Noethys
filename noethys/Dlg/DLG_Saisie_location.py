@@ -26,6 +26,7 @@ from Utils import UTILS_Historique
 from Dlg import DLG_Messagebox
 import GestionDB
 from Ol import OL_Locations_prestations
+from Ol import OL_Historique
 
 
 
@@ -123,6 +124,7 @@ class CTRL_Parametres(wx.Notebook):
         self.listePages = [
             {"code": "questionnaire", "ctrl": Page_Questionnaire(self, self.IDlocation), "label": _(u"Questionnaire"), "image": "Questionnaire.png"},
             {"code": "facturation", "ctrl": Page_Facturation(self, self.IDlocation), "label": _(u"Prestations"), "image": "Euro.png"},
+            {"code": "historique", "ctrl": Page_Historique(self, self.IDlocation), "label": _(u"Historique"), "image": "Historique.png"},
         ]
 
         # ImageList pour le NoteBook
@@ -273,6 +275,44 @@ class Page_Facturation(wx.Panel):
 
 
 
+
+class Page_Historique(wx.Panel):
+    def __init__(self, parent, IDlocation=None):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
+        self.parent = parent
+        self.IDlocation = IDlocation
+
+        if not IDlocation:
+            IDlocation = 0
+        self.ctrl_listview = OL_Historique.ListView(self, id=-1, IDdonnee=IDlocation, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.ctrl_listview.SetMinSize((50, 50))
+
+        # Layout
+        sizer_base = wx.BoxSizer(wx.VERTICAL)
+
+        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+        grid_sizer_base.Add(self.ctrl_listview, 0, wx.EXPAND, 0)
+        grid_sizer_base.AddGrowableCol(0)
+        grid_sizer_base.AddGrowableRow(0)
+
+        sizer_base.Add(grid_sizer_base, 1, wx.EXPAND | wx.ALL, 10)
+        self.SetSizer(sizer_base)
+        self.Layout()
+
+    def MAJ(self):
+        self.ctrl_listview.MAJ()
+
+    def Validation(self):
+        return True
+
+    def GetDonnees(self):
+        return {}
+
+    def SetDonnees(self, dictDonnees={}):
+        pass
+
+
+
 # -----------------------------------------------------------------------------------------------------------------
 
 class Dialog(wx.Dialog):
@@ -300,6 +340,9 @@ class Dialog(wx.Dialog):
         self.ctrl_produit = CTRL_Produit(self)
         self.ctrl_produit.SetFont(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, 'Arial'))
         self.bouton_produit = wx.Button(self, -1, _(u"Sélectionner"))
+
+        self.label_description = wx.StaticText(self, -1, _(u"Description :"))
+        self.ctrl_description = wx.TextCtrl(self, -1, u"")
 
         self.label_observations = wx.StaticText(self, -1, _(u"Notes :"))
         self.ctrl_observations = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
@@ -376,6 +419,7 @@ class Dialog(wx.Dialog):
             self.ctrl_produit.SetIDproduit(IDproduit)
 
         self.ctrl_parametres.GetPageAvecCode("questionnaire").ctrl_questionnaire.MAJ()
+        self.ctrl_parametres.GetPageAvecCode("historique").MAJ()
         self.OnCheckDateFin()
         self.OnCheckRecurrence()
 
@@ -384,6 +428,7 @@ class Dialog(wx.Dialog):
         self.ctrl_produit.SetToolTip(wx.ToolTip(_(u"Nom du produit")))
         self.bouton_loueur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner un loueur")))
         self.bouton_produit.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner un produit")))
+        self.ctrl_description.SetToolTip(wx.ToolTip(_(u"Saisissez ici une description pour cette location (Ex : Location de salle pour mariage...)")))
         self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez ici des observations éventuelles")))
         self.ctrl_partage.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour autoriser le partage entre plusieurs usagers")))
         self.ctrl_logo.SetToolTip(wx.ToolTip(_(u"Image du produit")))
@@ -409,7 +454,7 @@ class Dialog(wx.Dialog):
 
         # Généralités
         staticbox_generalites = wx.StaticBoxSizer(self.staticbox_generalites_staticbox, wx.VERTICAL)
-        grid_sizer_generalites = wx.FlexGridSizer(rows=4, cols=2, vgap=10, hgap=10)
+        grid_sizer_generalites = wx.FlexGridSizer(rows=5, cols=2, vgap=10, hgap=10)
 
         grid_sizer_generalites.Add(self.label_loueur, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
 
@@ -426,6 +471,9 @@ class Dialog(wx.Dialog):
         grid_sizer_produit.Add(self.bouton_produit, 0, 0, 0)
         grid_sizer_produit.AddGrowableCol(0)
         grid_sizer_generalites.Add(grid_sizer_produit, 1, wx.EXPAND, 0)
+
+        grid_sizer_generalites.Add(self.label_description, 0, wx.ALIGN_RIGHT| wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_generalites.Add(self.ctrl_description, 0, wx.EXPAND, 0)
 
         grid_sizer_generalites.Add(self.label_observations, 0, wx.ALIGN_RIGHT, 0)
         grid_sizer_generalites.Add(self.ctrl_observations, 0, wx.EXPAND, 0)
@@ -628,6 +676,9 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return
 
+        # Description
+        description = self.ctrl_description.GetValue()
+
         # Observations
         observations = self.ctrl_observations.GetValue()
 
@@ -690,8 +741,12 @@ class Dialog(wx.Dialog):
 
             liste_locations.append({"date_debut": date_debut, "date_fin": date_fin})
 
+        # Prestations
+        liste_prestations = self.ctrl_parametres.GetPageAvecCode("facturation").GetDonnees()["prestations"]
+
         # Récurrence
         num_serie = None
+        modifier_date_prestation = False
         if self.check_recurrence.GetValue() == True:
             num_serie = str(uuid.uuid4())
 
@@ -717,6 +772,12 @@ class Dialog(wx.Dialog):
             if reponse in (1, 2):
                 return False
 
+            # Demande si la date de prestation doit devenir la date de début de chaque location
+            if liste_prestations:
+                dlg = wx.MessageDialog(self, _(u"Souhaitez-vous que la date de chaque prestation soit la date de début de chaque location ?"), _(u"Question"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_QUESTION)
+                reponse = dlg.ShowModal()
+                dlg.Destroy()
+                modifier_date_prestation = reponse == wx.ID_YES
 
         liste_anomalies = []
         liste_valides = []
@@ -742,7 +803,6 @@ class Dialog(wx.Dialog):
                 valide = False
 
             # Périodes de gestion
-            liste_prestations = self.ctrl_parametres.GetPageAvecCode("facturation").GetDonnees()["prestations"]
             gestion = UTILS_Gestion.Gestion(None)
             for track_prestation in liste_prestations:
                 if gestion.Verification("prestations", track_prestation.date) == False:
@@ -787,6 +847,7 @@ class Dialog(wx.Dialog):
             listeDonnees = [
                 ("IDfamille", IDfamille),
                 ("IDproduit", IDproduit),
+                ("description", description),
                 ("observations", observations),
                 ("date_debut", date_debut),
                 ("date_fin", date_fin),
@@ -803,29 +864,29 @@ class Dialog(wx.Dialog):
                 listeDonnees.append(("date_saisie", datetime.date.today()))
                 IDlocation = DB.ReqInsert("locations", listeDonnees)
                 texte_historique = _(u"Saisie de la location ID%d : %s %s") % (IDlocation, nom_produit, periode)
-                UTILS_Historique.InsertActions([{"IDfamille": IDfamille, "IDcategorie": 37, "action": texte_historique,}], DB=DB)
+                UTILS_Historique.InsertActions([{"IDfamille": IDfamille, "IDcategorie": 37, "action": texte_historique, "IDdonnee": IDlocation}], DB=DB)
             else:
-
                 DB.ReqMAJ("locations", listeDonnees, "IDlocation", IDlocation)
                 texte_historique = _(u"Modification de la location ID%d : %s %s") % (IDlocation, nom_produit, periode)
-                UTILS_Historique.InsertActions([{"IDfamille": IDfamille, "IDcategorie": 38, "action": texte_historique,}], DB=DB)
+                UTILS_Historique.InsertActions([{"IDfamille": IDfamille, "IDcategorie": 38, "action": texte_historique, "IDdonnee": IDlocation}], DB=DB)
 
             # Sauvegarde des prestations
             listeID = []
             for track_prestation in liste_prestations :
                 IDprestation = track_prestation.IDprestation
+                date_prestation = dict_location["date_debut"].date() if modifier_date_prestation else track_prestation.date
 
                 listeDonnees = [
                     ("IDcompte_payeur", self.ctrl_loueur.GetIDcomptePayeur()),
-                    ("date", track_prestation.date),
+                    ("date", str(date_prestation)),
                     ("categorie", "location"),
                     ("label", track_prestation.label),
                     ("montant_initial", track_prestation.montant),
                     ("montant", track_prestation.montant),
                     ("IDfamille", self.ctrl_loueur.GetIDfamille()),
                     ("IDindividu", None),
-                    ("code_compta", None),
-                    ("tva", None),
+                    ("code_compta", track_prestation.code_compta),
+                    ("tva", track_prestation.tva),
                     ("IDdonnee", IDlocation),
                     ]
 
@@ -862,21 +923,22 @@ class Dialog(wx.Dialog):
         DB = GestionDB.DB()
 
         # Importation de la location
-        req = """SELECT IDfamille, IDproduit, observations, date_debut, date_fin, quantite, serie, partage
+        req = """SELECT IDfamille, IDproduit, description, observations, date_debut, date_fin, quantite, serie, partage
         FROM locations WHERE IDlocation=%d;""" % self.IDlocation
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         if len(listeDonnees) == 0 :
             DB.Close()
             return
-        IDfamille, IDproduit, observations, date_debut, date_fin, quantite, self.serie, partage = listeDonnees[0]
+        IDfamille, IDproduit, description, observations, date_debut, date_fin, quantite, self.serie, partage = listeDonnees[0]
 
         # Généralités
         self.ctrl_loueur.SetIDfamille(IDfamille)
         self.ctrl_produit.SetIDproduit(IDproduit)
-        if observations == None :
-            observations = ""
-        self.ctrl_observations.SetValue(observations)
+        if observations:
+            self.ctrl_observations.SetValue(observations)
+        if description:
+            self.ctrl_description.SetValue(description)
 
         # Date de début
         if date_debut != None:
@@ -898,7 +960,7 @@ class Dialog(wx.Dialog):
 
         # Importation des prestations
         req = """SELECT
-        IDprestation, date, label, montant, IDfacture
+        IDprestation, date, label, montant, IDfacture, tva
         FROM prestations 
         WHERE categorie="location" and IDdonnee=%d;""" % self.IDlocation
         DB.ExecuterReq(req)
@@ -906,11 +968,11 @@ class Dialog(wx.Dialog):
         DB.Close()
 
         liste_tracks_prestations = []
-        for IDprestation, date, label, montant, IDfacture in listePrestations :
+        for IDprestation, date, label, montant, IDfacture, tva in listePrestations :
             date = UTILS_Dates.DateEngEnDateDD(date)
             dictPrestation = {
                 "IDprestation" : IDprestation, "date" : date, "label" : label,
-                "montant": montant, "IDfacture" : IDfacture,
+                "montant": montant, "IDfacture" : IDfacture, "tva": tva,
                 }
             track_prestation = OL_Locations_prestations.Track_prestation(dictPrestation)
             liste_tracks_prestations.append(track_prestation)

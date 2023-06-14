@@ -635,7 +635,10 @@ class Dialog(wx.Dialog):
         self.ctrl_recu = wx.CheckBox(self, -1, u"")
         self.label_frais = wx.StaticText(self, -1, _(u"Frais de gestion :"))
         self.hyperlien_frais = CTRL_Frais(self, label=_(u"Aucun frais"), infobulle=_(u"Cliquez ici pour appliquer des frais de gestion"), URL="")
-        
+
+        self.label_recu.Hide()
+        self.ctrl_recu.Hide()
+
         # Encaissement
         self.staticbox_encaissement_staticbox = wx.StaticBox(self, -1, _(u"Encaissement"))
         self.label_compte = wx.StaticText(self, -1, _(u"Compte :"))
@@ -808,7 +811,7 @@ class Dialog(wx.Dialog):
         # Montant
         grid_sizer_generalites.Add(self.label_montant, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_generalites.Add(self.ctrl_montant, 0, 0, 0)
-        grid_sizer_generalites.Add(self.label_payeur, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_generalites.Add(self.label_payeur, 0, wx.ALIGN_RIGHT, 0)
         
         # Payeurs
         grid_sizer_payeur = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
@@ -828,7 +831,7 @@ class Dialog(wx.Dialog):
         # Options
         staticbox_options = wx.StaticBoxSizer(self.staticbox_options_staticbox, wx.VERTICAL)
         grid_sizer_options = wx.FlexGridSizer(rows=4, cols=2, vgap=5, hgap=5)
-        grid_sizer_options.Add(self.label_observations, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.Add(self.label_observations, 0, wx.ALIGN_RIGHT, 0)
         grid_sizer_options.Add(self.ctrl_observations, 0, wx.EXPAND, 0)
         grid_sizer_options.Add(self.label_quittancier, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_options.Add(self.ctrl_quittancier, 0, wx.EXPAND, 0)
@@ -1215,6 +1218,7 @@ class Dialog(wx.Dialog):
                             dlg1.Destroy()
                             #return False
 
+                        succes = False
                         try :
                             listeDonnees = [{"adresse" : adresse, "pieces" : [nomDoc,], "champs" : dictChamps,}]
                             from Dlg import DLG_Mailer
@@ -1224,8 +1228,6 @@ class Dialog(wx.Dialog):
                             dlg2.OnBoutonEnvoyer(None)
                             if len(dlg2.listeAnomalies) == 0 :
                                 succes = True
-                            else :
-                                succes = False
                             dlg2.Destroy()
                         except :
                             pass

@@ -381,7 +381,7 @@ class Export():
                     node.setAttribute("date", UTILS_Dates.DateEngFr(dictPrestation["date"]))
                     node.setAttribute("label", dictPrestation["label"])
                     node.setAttribute("devise", SYMBOLE)
-                    node.setAttribute("montant", u"%.2f" % dictPrestation["montant"])
+                    node.setAttribute("montant", u"%.2f" % dictPrestation["montant"] if dictPrestation["montant"] else 0)
                     node.setAttribute("numero_facture", str(dictPrestation["numero_facture"]))
                     node.setAttribute("activite", dictPrestation["activite"])
                     node.setAttribute("prenom", dictPrestation["prenom"])

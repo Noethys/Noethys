@@ -19,7 +19,7 @@ import os
 import six
 import webbrowser
 import shutil
-import random
+import random, codecs
 from Utils import UTILS_Fichiers
 
 
@@ -1007,7 +1007,7 @@ def GetRepertoireProjet(fichier=""):
 
 def GetVersionLogiciel():
     """ Recherche du numéro de version du logiciel """
-    fichierVersion = open(GetRepertoireProjet("Versions.txt"), "r")
+    fichierVersion = codecs.open(GetRepertoireProjet("Versions.txt"), encoding='utf-8', mode='r')
     txtVersion = fichierVersion.readlines()[0]
     fichierVersion.close() 
     pos_debut_numVersion = txtVersion.find("n")

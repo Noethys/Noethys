@@ -957,8 +957,13 @@ class CTRL(wx.Panel):
             self.validation = "addition"
             label = _(u"Vous devez encore ventiler %.2f %s !") % (creditAVentiler, SYMBOLE)
         elif creditAVentiler < FloatToDecimal(0.0) :
-            self.validation = "trop"
-            label = _(u"Vous avez ventilé %.2f %s en trop !") % (-creditAVentiler, SYMBOLE)
+            if self.montant_reglement >= FloatToDecimal(0.0):
+                self.validation = "trop"
+                label = _(u"Vous avez ventilé %.2f %s en trop !") % (-creditAVentiler, SYMBOLE)
+            else:
+                self.validation = "ok"
+                label = _(u"Le règlement est correctement ventilé.")
+
         # Affiche l'image
         if self.validation == "ok" : self.ctrl_image.SetBitmap(self.imgOk)
         if self.validation == "addition" : self.ctrl_image.SetBitmap(self.imgAddition)

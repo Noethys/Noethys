@@ -95,7 +95,7 @@ class CTRL_activites(wx.CheckListBox):
             
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent, dictDonnees = {}, afficheLargeurColonneUnite=True, afficheAbregeGroupes=True, totaux=True, abregeGroupes=False, affichePresents=1, afficheTotaux=True):
+    def __init__(self, parent, dictDonnees = {}, afficheLargeurColonneUnite=True, afficheAbregeGroupes=True, totaux=True, abregeGroupes=False, affichePresents=1, afficheTotaux=True, maj_auto_remplissage=0):
         wx.Dialog.__init__(self, parent, -1, name="parametres_remplissage", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.afficheLargeurColonneUnite = afficheLargeurColonneUnite
@@ -141,6 +141,22 @@ class Dialog(wx.Dialog):
         else:
             self.ctrl_afficheTotaux_non.SetValue(True)
 
+        self.label_maj_auto = wx.StaticText(self, -1, _(u"Mise à jour auto de l'affichage :"))
+        self.liste_choix_maj_auto = [
+            (0, _(u"Jamais")),
+            # (1000 * 60, _("Toutes les minutes")),
+            (1000 * 60 * 2, _(u"Toutes les 2 minutes")),
+            (1000 * 60 * 5, _(u"Toutes les 5 minutes")),
+            (1000 * 60 * 10, _(u"Toutes les 10 minutes")),
+            (1000 * 60 * 30, _(u"Toutes les 30 minutes")),
+            (1000 * 60 * 60, _(u"Toutes les heures")),
+        ]
+        self.ctrl_maj_auto = wx.Choice(self, -1, choices=[label for valeur, label in self.liste_choix_maj_auto])
+        try:
+            self.ctrl_maj_auto.Select([index for index, (valeur, label) in enumerate(self.liste_choix_maj_auto) if valeur == maj_auto_remplissage][0])
+        except:
+            pass
+
         if afficheAbregeGroupes == False :
             self.label_abregeGroupes.Show(False)
             self.ctrl_abregeGroupes_oui.Show(False)
@@ -157,6 +173,8 @@ class Dialog(wx.Dialog):
             self.ctrl_affichePresents_non.Show(False)
             self.staticbox_options_staticbox.Show(False)
 
+            self.label_maj_auto.Show(False)
+            self.ctrl_maj_auto.Show(False)
 
 
         # Boutons de commandes 
@@ -226,6 +244,11 @@ class Dialog(wx.Dialog):
         grid_sizer_afficheTotaux.Add(self.ctrl_afficheTotaux_non, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         staticbox_options.Add(grid_sizer_afficheTotaux, 0, wx.EXPAND|wx.LEFT|wx.RIGHT|wx.BOTTOM, 10)
 
+        grid_sizer_maj_auto = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
+        grid_sizer_maj_auto.Add(self.label_maj_auto, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_maj_auto.Add(self.ctrl_maj_auto, 0, wx.ALIGN_CENTER_VERTICAL |wx.EXPAND, 0)
+        staticbox_options.Add(grid_sizer_maj_auto, 0, wx.EXPAND|wx.LEFT|wx.RIGHT|wx.BOTTOM, 10)
+
         grid_sizer_droit.Add(staticbox_options, 1, wx.EXPAND, 0)
         
         grid_sizer_contenu.Add(grid_sizer_droit, 1, wx.EXPAND, 0)
@@ -274,6 +297,10 @@ class Dialog(wx.Dialog):
 
     def GetAfficheTotaux(self):
         return int(self.ctrl_afficheTotaux_oui.GetValue())
+
+    def GetMAJautoRemplissage(self):
+        index = self.ctrl_maj_auto.GetSelection()
+        return self.liste_choix_maj_auto[index][0]
 
     def OnBoutonOk(self, event):
         # Mémorisation paramètres

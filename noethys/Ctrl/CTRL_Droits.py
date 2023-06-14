@@ -151,7 +151,7 @@ LISTE_CATEGORIES = [
     { "label" : _(u"Rappels"), "code" : "facturation_rappels", "actions" : ["consulter", "creer", "supprimer"], "restriction" : True },
     { "label" : _(u"Attestations"), "code" : "facturation_attestations", "actions" : ["consulter", "creer", "supprimer"], "restriction" : True },
     { "label" : _(u"Prélèvements auto."), "code" : "facturation_prelevements", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : _(u"Export Hélios"), "code" : "facturation_helios", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Export Trésor Public"), "code" : "facturation_helios", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
     { "label" : _(u"Solder impayés"), "code" : "facturation_solder_impayes", "actions" : ["creer",], "restriction" : False },
 
     _(u"Gestion des cotisations"),

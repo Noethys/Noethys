@@ -21,7 +21,7 @@ from Dlg import DLG_Noedoc
 
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
-
+from Utils import UTILS_Dates
 from reportlab.platypus.doctemplate import PageTemplate, BaseDocTemplate, NextPageTemplate
 from reportlab.platypus import Paragraph, Spacer, Table, TableStyle, PageBreak
 from reportlab.platypus.flowables import ParagraphAndImage, Image
@@ -90,9 +90,9 @@ class MyPageTemplate(PageTemplate):
         x, y, l, h = doc.modeleDoc.GetCoordsObjet(cadre_principal)
         global CADRE_CONTENU
         CADRE_CONTENU = (x, y, l, h)
-        
+
         frame1 = Frame(x, y, l, h, id='F1', leftPadding=0, topPadding=0, rightPadding=0, bottomPadding=0)
-        PageTemplate.__init__(self, id, [frame1], Template) 
+        PageTemplate.__init__(self, id, [frame1], Template)
 
     def afterDrawPage(self, canvas, doc):
         IDcompte_payeur = doc._nameSpace["IDcompte_payeur"]
@@ -342,6 +342,7 @@ class Impression():
                         listeIndexActivites = []
                         montantPeriode += dictIndividus["total"]
                         montantVentilation += dictIndividus["ventilation"]
+                        total_montantHT = 0.0
                         
                         # Initialisation des largeurs de tableau
                         largeurColonneDate = dictOptions["largeur_colonne_date"]
@@ -360,7 +361,15 @@ class Impression():
                             else :
                                 largeurColonneIntitule = CADRE_CONTENU[2] - largeurColonneDate - largeurColonneMontantTTC
                                 largeursColonnes = [ largeurColonneDate, largeurColonneIntitule, largeurColonneMontantTTC]
-                        
+
+                        # Recherche de la classe de l'individu
+                        nom_classe = ""
+                        if "scolarites" in dictIndividus and dictIndividus["scolarites"]:
+                            for dict_scolarite in dictIndividus["scolarites"]:
+                                if dict_scolarite["date_fin"] >= dictValeur["date_debut"] and dict_scolarite["date_debut"] <= dictValeur["date_fin"]:
+                                    nom_classe = u"<font size=7> (%s - %s)</font>" % (dict_scolarite["nom_classe"], dict_scolarite["nom_ecole"])
+                                    break
+
                         # Insertion du nom de l'individu
                         paraStyle = ParagraphStyle(name="individu",
                                               fontName="Helvetica",
@@ -369,7 +378,7 @@ class Impression():
                                               spaceBefore=0,
                                               spaceafter=0,
                                             )
-                        texteIndividu = Paragraph(dictIndividus["texte"], paraStyle)
+                        texteIndividu = Paragraph(dictIndividus["texte"] + nom_classe, paraStyle)
                         dataTableau = []
                         dataTableau.append([texteIndividu,])
                         tableau = Table(dataTableau, [CADRE_CONTENU[2],])
@@ -437,9 +446,9 @@ class Impression():
                                         montant = dictPrestation["montant"]
                                         deductions = dictPrestation["deductions"]
                                         tva = dictPrestation["tva"]
-                                        
-                                        if detail == 1 : labelkey = label
-                                        if detail == 2 : labelkey = label + " P.U. " + "%.2f %s" % (montant, SYMBOLE)
+
+                                        if detail in (1, 3): labelkey = label
+                                        if detail in (2, 4): labelkey = label + " P.U. " + "%.2f %s" % (montant, SYMBOLE)
 
                                         # Si c'est une prestation antérieure
                                         if date < str(dictValeur["date_debut"]) :
@@ -448,25 +457,28 @@ class Impression():
                                             label += u"*"
 
                                         if (labelkey in dictRegroupement) == False :
-                                            dictRegroupement[labelkey] = {"labelpresta" : label, "total" : 0, "nbre" : 0, "base" : 0, "dates_forfait" : None}
+                                            dictRegroupement[labelkey] = {"labelpresta" : label, "total" : 0, "nbre" : 0, "base" : 0, "dates_forfait" : None, "dates": []}
                                             dictRegroupement[labelkey]["base"] = montant
                                         
                                         dictRegroupement[labelkey]["total"] += montant
                                         dictRegroupement[labelkey]["nbre"] += 1
+                                        dictRegroupement[labelkey]["dates"] += listeDatesUnite
                                         
-                                        if detail == 1 :
+                                        if detail in (1, 3):
                                             dictRegroupement[labelkey]["base"] = dictRegroupement[labelkey]["total"] / dictRegroupement[labelkey]["nbre"]
- 
-                                        if len(listeDatesUnite) > 1 :
+
+                                        if dictPrestation.get("forfait_date_debut"):
+                                            dictRegroupement[labelkey]["dates_forfait"] = _(u"<font size=5>Du %s au %s</font>") % (UTILS_Dates.DateDDEnFr(dictPrestation["forfait_date_debut"]), UTILS_Dates.DateDDEnFr(dictPrestation["forfait_date_fin"]))
+                                        elif len(listeDatesUnite) > 1 :
                                             listeDatesUnite.sort()
                                             date_debut = listeDatesUnite[0]
                                             date_fin = listeDatesUnite[-1]
                                             nbreDates = len(listeDatesUnite)
                                             dictRegroupement[labelkey]["dates_forfait"] = _(u"<BR/><font size=5>Du %s au %s soit %d jours</font>") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)), nbreDates)
-        
+
                                 # Insertion des prestations regroupées
                                 listeLabels = list(dictRegroupement.keys()) 
-                                listeLabels.sort() 
+                                listeLabels.sort()
 
                                 dataTableau = [(
                                     Paragraph(_(u"<para align='center'>Quantité</para>"), paraLabelsColonnes), 
@@ -481,12 +493,17 @@ class Impression():
                                     total = dictRegroupement[labelkey]["total"]
                                     base = dictRegroupement[labelkey]["base"]
 
+                                    # Ajout des dates
+                                    if detail in (3, 4) and dictRegroupement[labelkey]["dates"]:
+                                        dictRegroupement[labelkey]["dates"].sort()
+                                        label += u"<br/><font size=5>(%s)</font>" % ", ".join([UTILS_Dates.DateDDEnFr(date) for date in dictRegroupement[labelkey]["dates"]])
+
                                     # recherche d'un commentaire
                                     if "dictCommentaires" in dictOptions :
                                         key = (label, IDactivite)
                                         if key in dictOptions["dictCommentaires"] :
                                             commentaire = dictOptions["dictCommentaires"][key]
-                                            label = "%s <i><font color='#939393'>%s</font></i>" % (label, commentaire)
+                                            label = u"%s <i><font color='#939393'>%s</font></i>" % (label, commentaire)
                                             
                                     # Formatage du label
                                     intitule = Paragraph(label, paraStyle)
@@ -548,7 +565,7 @@ class Impression():
                                     listeDictPrestations = []
                                     for dictPrestation in prestations :
                                         listeDictPrestations.append((dictPrestation["label"], dictPrestation))
-                                    listeDictPrestations.sort() 
+                                    listeDictPrestations.sort(key=lambda e: e[0])
                                     
                                     for labelTemp, dictPrestation in listeDictPrestations :
                                         label = dictPrestation["label"]
@@ -578,18 +595,24 @@ class Impression():
                                         listeIntitules.append(Paragraph(label, paraStyle)) 
                                         
                                         # Recherche si c'est un forfait
-                                        if len(listeDatesUnite) > 1 :
+                                        if dictPrestation.get("forfait_date_debut"):
+                                            label = _(u"<font size=5>Du %s au %s</font>") % (UTILS_Dates.DateDDEnFr(dictPrestation["forfait_date_debut"]), UTILS_Dates.DateDDEnFr(dictPrestation["forfait_date_fin"]))
+                                            listeIntitules.append(Paragraph(label, paraStyle))
+                                            listeMontantsTTC.append(Paragraph("&nbsp;", paraStyle))
+                                        elif len(listeDatesUnite) > 1 :
                                             listeDatesUnite.sort()
                                             date_debut = listeDatesUnite[0]
                                             date_fin = listeDatesUnite[-1]
                                             nbreDates = len(listeDatesUnite)
-                                            label = _(u"<BR/><font size=5>Du %s au %s soit %d jours</font>") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)), nbreDates)
-                                            listeIntitules.append(Paragraph(label, paraStyle)) 
+                                            label = _(u"<font size=5>Du %s au %s soit %d jours</font>") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)), nbreDates)
+                                            listeIntitules.append(Paragraph(label, paraStyle))
+                                            listeMontantsTTC.append(Paragraph("&nbsp;", paraStyle))
                                                                                 
                                         # TVA
                                         if activeTVA == True :
                                             if tva == None : tva = 0.0
                                             montantHT = (100.0 * float(montant)) / (100 + float(tva)) #montant - montant * 1.0 * float(tva) / 100
+                                            total_montantHT += montantHT
                                             listeMontantsHT.append(Paragraph(u"<para align='center'>%.02f %s</para>" % (montantHT, SYMBOLE), paraStyle))
                                             listeTVA.append(Paragraph(u"<para align='center'>%.02f %%</para>" % tva, paraStyle))
                                         else :
@@ -651,7 +674,7 @@ class Impression():
                         # Insertion des totaux
                         dataTableau = []
                         if activeTVA == True and detail == 0 :
-                            dataTableau.append([texte_prestations_anterieures, "", "", "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
+                            dataTableau.append([texte_prestations_anterieures, "", Paragraph("<para align='center'>%.02f %s</para>" % (total_montantHT, SYMBOLE), paraStyle), "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE), paraStyle)])
                         else :
                             if detail != 0 :
                                 dataTableau.append([texte_prestations_anterieures, "", "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
@@ -666,9 +689,13 @@ class Impression():
                                 ('BACKGROUND', (-1, -1), (-1, -1), couleurFond), 
                                 ('TOPPADDING', (0, 0), (-1, -1), 1), 
                                 ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
-                                ('SPAN', (0, -1), (-2, -1)), # Fusion de la dernière ligne pour le texte_prestations_anterieures
+                                ('SPAN', (0, -1), (1, -1)), # Fusion de la dernière ligne pour le texte_prestations_anterieures
                                 ('FONT', (0, -1), (0, -1), "Helvetica", dictOptions["taille_texte_prestations_anterieures"]),
                             ]
+
+                        if activeTVA == True and detail == 0:
+                            listeStyles.append(('BACKGROUND', (-3, -1), (-3, -1), couleurFond))
+                            listeStyles.append(('GRID', (-3, -1), (-3, -1), 0.25, colors.black))
                             
                         # Création du tableau
                         tableau = Table(dataTableau, largeursColonnes)

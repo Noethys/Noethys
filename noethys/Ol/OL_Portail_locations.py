@@ -48,6 +48,7 @@ class Track(object):
         self.etat = donnees[6]
         self.resultat = donnees[7]
         self.nom_produit = donnees[8]
+        self.description = donnees[9]
         self.quantite = 1
         self.action_possible = False
         self.date_debut_txt = self.date_debut.strftime("%d/%m/%Y-%H:%M")
@@ -105,6 +106,12 @@ class Track(object):
             if self.etat == "modifier": self.statut = _(u"Modification effectuée")
             if self.etat == "supprimer": self.statut = _(u"Suppression effectuée")
 
+        if self.resultat == "refus":
+            self.action_possible = True
+            if self.etat == "ajouter": self.statut = _(u"Ajout refusé")
+            if self.etat == "modifier": self.statut = _(u"Modification refusée")
+            if self.etat == "supprimer": self.statut = _(u"Suppression refusée")
+
 
 
 class ListView(FastObjectListView):
@@ -121,7 +128,7 @@ class ListView(FastObjectListView):
     def GetTracks(self):
         """ Récupération des données """
         DB = GestionDB.DB()
-        req = """SELECT IDreservation, date_debut, date_fin, partage, IDlocation, portail_reservations_locations.IDproduit, etat, resultat, produits.nom
+        req = """SELECT IDreservation, date_debut, date_fin, partage, IDlocation, portail_reservations_locations.IDproduit, etat, resultat, produits.nom, description
         FROM portail_reservations_locations
         LEFT JOIN produits ON produits.IDproduit = portail_reservations_locations.IDproduit
         WHERE IDaction=%d ORDER BY date_debut;""" % self.track_demande.IDaction
@@ -188,10 +195,10 @@ class ListView(FastObjectListView):
 
         def GetImageStatut(track):
             if track.resultat == "ok":
-                return None
-            if track.action_possible == True:
                 return "ok"
-            return "pasok"
+            if track.resultat == "refus":
+                return "pasok"
+            return None
 
         def FormateEtat(etat):
             if etat == "ajouter":
@@ -214,23 +221,38 @@ class ListView(FastObjectListView):
             # ColumnDefn(_(u"Produit"), 'left', 150, "nom_produit", typeDonnee="texte"),
             # ColumnDefn(_(u"Début"), 'centre', 110, "date_debut", typeDonnee="date", stringConverter=FormateDateDT),
             # ColumnDefn(_(u"Fin"), 'centre', 110, "date_fin", typeDonnee="date", stringConverter=FormateDateDT),
-            ColumnDefn(_(u"Statut"), 'left', 300, "statut", typeDonnee="texte", imageGetter=GetImageStatut),
+            ColumnDefn(_(u"Statut"), 'left', 280, "statut", typeDonnee="texte", imageGetter=GetImageStatut),
             ]
-        
+
         self.SetColumns(liste_Colonnes)
+        self.CreateCheckStateColumn(0)
         self.SetEmptyListMsg(_(u"Aucune action"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
-       
+
     def MAJ(self, track_demande=None):
         if track_demande:
             self.track_demande = track_demande
         self.InitModel()
         self.InitObjectListView()
+        self.CocheTout()
 
     def Selection(self):
         return self.GetSelectedObjects()
+
+    def CocheTout(self, event=None):
+        for track in self.donnees:
+            self.Check(track)
+            self.RefreshObject(track)
+
+    def CocheRien(self, event=None):
+        for track in self.donnees:
+            self.Uncheck(track)
+            self.RefreshObject(track)
+
+    def GetTracksCoches(self):
+        return self.GetCheckedObjects()
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """

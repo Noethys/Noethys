@@ -72,58 +72,35 @@ DICT_COULEURS = {
 
 
 def InsertActions(listeActions=[], DB=None):
-    """ dictAction = { IDutilisateur : None, IDfamille : None, IDindividu : None, IDcategorie : None, action : u"" } """
+    """ dictAction = { IDutilisateur : None, IDfamille : None, IDindividu : None, IDcategorie : None, action : u"", IDdonnee: None } """
     date = str(datetime.date.today())
     heure = "%02d:%02d:%02d" % (datetime.datetime.now().hour, datetime.datetime.now().minute, datetime.datetime.now().second)
     
     # Traitement des actions
     listeAjouts = []
     for dictAction in listeActions :
-        if "IDutilisateur" in dictAction : 
-            IDutilisateur = dictAction["IDutilisateur"]
-        else : 
-            IDutilisateur = UTILS_Identification.GetIDutilisateur()
-        if "IDfamille" in dictAction : 
-            IDfamille = dictAction["IDfamille"]
-        else : 
-            IDfamille = None
-        if "IDindividu" in dictAction : 
-            IDindividu = dictAction["IDindividu"]
-        else : 
-            IDindividu = None
-        if "IDcategorie" in dictAction : 
-            IDcategorie = dictAction["IDcategorie"]
-        else : 
-            IDcategorie = None
-        if "action" in dictAction : 
-            action = dictAction["action"]
-        else : 
-            action = u""
+        IDutilisateur = dictAction.get("IDutilisateur", UTILS_Identification.GetIDutilisateur())
+        IDfamille = dictAction.get("IDfamille", None)
+        IDindividu = dictAction.get("IDindividu", None)
+        IDcategorie = dictAction.get("IDcategorie", None)
+        action = dictAction.get("action", u"")
         if len(action) >= 500 :
             action = action[:495] + "..." # Texte limité à 499 caractères
-        
-        listeAjouts.append((date, heure, IDutilisateur, IDfamille, IDindividu, IDcategorie, action))
+        IDdonnee = dictAction.get("IDdonnee", None)
+        listeAjouts.append((date, heure, IDutilisateur, IDfamille, IDindividu, IDcategorie, action, IDdonnee))
     
     # Enregistrement dans la base
     if len(listeAjouts) > 0 :
-        req = u"INSERT INTO historique (date, heure, IDutilisateur, IDfamille, IDindividu, IDcategorie, action) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        req = u"INSERT INTO historique (date, heure, IDutilisateur, IDfamille, IDindividu, IDcategorie, action, IDdonnee) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
         if DB == None :
             DB = GestionDB.DB()
-            DB.Executermany(req, listeAjouts, commit=False)
+            try:
+                DB.Executermany(req, listeAjouts, commit=False)
+            except:
+                req = u"INSERT INTO historique (date, heure, IDutilisateur, IDfamille, IDindividu, IDcategorie, action) VALUES (?, ?, ?, ?, ?, ?, ?)"
+                DB.Executermany(req, listeAjouts[:-1], commit=False)
             DB.Commit()
             DB.Close()
         else :
             DB.Executermany(req, listeAjouts, commit=False)
             DB.Commit()
-
-
-
-
-
-
-
-
-            
-            
-##if __name__ == '__main__':
-##    Start()

@@ -241,7 +241,7 @@ class Installer():
                         # Permission spéciale
                         if self.dict_parametres["serveur_type"] == 1 and name == self.dict_parametres["serveur_cgi_file"] :
                             try :
-                                ftp.chmod(os.path.join(destpath, name), mode=0755)
+                                ftp.chmod(os.path.join(destpath, name), mode=0o755)
                             except Exception as err :
                                 print("CHMOD 0755 sur %s impossible :" % self.dict_parametres["serveur_cgi_file"], err)
 

@@ -193,7 +193,7 @@ class Dialog(wx.Dialog):
             return False
 
         taille = UTILS_Parametres.Parametres(mode="get", categorie="comptes_internet", nom="taille_passwords", valeur=8)
-        internet_mdp = UTILS_Internet.CreationMDP(nbreCaract=taille)
+        internet_mdp = UTILS_Internet.CreationMDP(nbreCaract=taille, cryptage=False)
         self.ctrl_mdp.SetValue(internet_mdp)
 
     def Importation(self):
@@ -224,10 +224,11 @@ class Dialog(wx.Dialog):
         if self.dictDonneesInitiales["internet_identifiant"] != None :
             self.ctrl_identifiant.SetValue(self.dictDonneesInitiales["internet_identifiant"])
         if self.dictDonneesInitiales["internet_mdp"] != None :
-            if self.dictDonneesInitiales["internet_mdp"].startswith("custom"):
+            internet_mdp = self.dictDonneesInitiales["internet_mdp"]
+            if internet_mdp.startswith("custom"):
                 internet_mdp = "********"
-            else :
-                internet_mdp = self.dictDonneesInitiales["internet_mdp"]
+            if internet_mdp.startswith("#@#"):
+                internet_mdp = UTILS_Internet.DecrypteMDP(internet_mdp)
             self.ctrl_mdp.SetValue(internet_mdp)
 
     def OnBoutonOk(self, event):
@@ -276,13 +277,18 @@ class Dialog(wx.Dialog):
                 dlg.Destroy()
                 return False
 
+        # Cryptage du mot de passe
+        internet_mdp = dictDonnees["internet_mdp"]
+        # if not internet_mdp.startswith("custom") and not internet_mdp.startswith("#@#"):
+        #     internet_mdp = UTILS_Internet.CrypteMDP(internet_mdp)
+
         # Sauvegarde
         if self.mode_virtuel == False :
             DB = GestionDB.DB()
             listeDonnees = [
                 ("internet_actif", dictDonnees["internet_actif"]),
                 ("internet_identifiant", dictDonnees["internet_identifiant"]),
-                ("internet_mdp", dictDonnees["internet_mdp"]),
+                ("internet_mdp", internet_mdp),
             ]
 
             if self.IDfamille != None :

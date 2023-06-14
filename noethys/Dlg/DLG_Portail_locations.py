@@ -23,7 +23,33 @@ from Ctrl import CTRL_Bouton_image
 from Ctrl import CTRL_Bandeau
 from Dlg.DLG_Portail_demandes import CTRL_Log
 from Ol import OL_Portail_locations
+import wx.lib.agw.hyperlink as Hyperlink
 
+
+class Hyperlien(Hyperlink.HyperLinkCtrl):
+    def __init__(self, parent, id=-1, label="", infobulle="", URL="", size=(-1, -1), pos=(0, 0)):
+        Hyperlink.HyperLinkCtrl.__init__(self, parent, id, label, URL=URL, size=size, pos=pos)
+        self.parent = parent
+        self.URL = URL
+        self.AutoBrowse(False)
+        self.SetColours("BLUE", "BLUE", "BLUE")
+        self.SetUnderlines(False, False, True)
+        self.SetBold(False)
+        self.EnableRollover(True)
+        self.SetToolTip(wx.ToolTip(infobulle))
+        self.UpdateLink()
+        self.DoPopup(False)
+        self.Bind(Hyperlink.EVT_HYPERLINK_LEFT, self.OnLeftLink)
+
+    def OnLeftLink(self, event):
+        if self.URL == "tout":
+            self.parent.ctrl_locations.CocheTout()
+        if self.URL == "rien":
+            self.parent.ctrl_locations.CocheRien()
+        self.UpdateLink()
+
+
+# ---------------------------------------------------------------------------------------------------------------------------------------
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, track=None):
@@ -37,7 +63,7 @@ class Dialog(wx.Dialog):
         self.reponse = ""
 
         # Bandeau
-        intro = _(u"Vous pouvez gérer ici la demande de façon manuelle. Commencez par cliquer sur le bouton 'Appliquer la demande' pour voir apparaître les modifications demandées sur le portail. Vous pouvez alors effectuer manuellement d'éventuelles modifications avant de valider.")
+        intro = _(u"Vous pouvez gérer ici la demande de façon manuelle. Commencez par cliquer sur le bouton 'Appliquer la demande' pour voir apparaître les modifications demandées sur le portail. Vous pouvez alors effectuer manuellement d'éventuelles modifications avant de valider. Décochez les actions à refuser.")
         titre = _(u"Traitement manuel des locations")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Location.png")
@@ -45,6 +71,9 @@ class Dialog(wx.Dialog):
         # Locations
         self.box_locations_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Détail de la demande"))
         self.ctrl_locations = OL_Portail_locations.ListView(self, -1, style=wx.LC_REPORT|wx.LC_HRULES|wx.LC_VRULES|wx.LC_SINGLE_SEL|wx.SUNKEN_BORDER)
+        self.hyper_select_tout = Hyperlien(self, label=_(u"Tout cocher"), infobulle=_(u"Cliquez ici pour tout cocher"), URL="tout")
+        self.label_separation = wx.StaticText(self, -1, "|")
+        self.hyper_selection_rien = Hyperlien(self, label=_(u"Tout décocher"), infobulle=_(u"Cliquez ici pour tout décocher"), URL="rien")
 
         # Journal
         self.box_journal_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Journal d'évènements"))
@@ -81,7 +110,21 @@ class Dialog(wx.Dialog):
 
         # Locations
         box_grille = wx.StaticBoxSizer(self.box_locations_staticbox, wx.VERTICAL)
-        box_grille.Add(self.ctrl_locations, 1, wx.ALL | wx.EXPAND, 10)
+        grid_sizer_locations = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
+        grid_sizer_locations.Add(self.ctrl_locations, 1, wx.EXPAND, 0)
+
+        grid_sizer_options = wx.FlexGridSizer(rows=1, cols=6, vgap=5, hgap=5)
+        grid_sizer_options.Add((10, 10), 0, wx.EXPAND, 0)
+        grid_sizer_options.Add(self.hyper_select_tout, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.Add(self.label_separation, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.Add(self.hyper_selection_rien, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.AddGrowableCol(0)
+        grid_sizer_locations.Add(grid_sizer_options, 1, wx.EXPAND, 0)
+
+        grid_sizer_locations.AddGrowableRow(0)
+        grid_sizer_locations.AddGrowableCol(0)
+        box_grille.Add(grid_sizer_locations, 1, wx.ALL|wx.EXPAND, 10)
+
         grid_sizer_contenu.Add(box_grille, 1, wx.EXPAND, 10)
 
         # Journal
@@ -126,9 +169,10 @@ class Dialog(wx.Dialog):
         self.parent.EcritLog(_(u"Application de la demande de locations"), self.ctrl_log)
 
         resultats = {"ajouter": {True: 0, False: 0}, "modifier": {True: 0, False: 0}, "supprimer": {True: 0, False: 0}}
+        refus = []
 
         DB = GestionDB.DB()
-        for track in self.ctrl_locations.donnees:
+        for track in self.ctrl_locations.GetObjects():
             listeDonnees = [
                 ("IDfamille", self.track.IDfamille),
                 ("IDproduit", track.IDproduit),
@@ -136,49 +180,58 @@ class Dialog(wx.Dialog):
                 ("date_fin", track.date_fin),
                 ("quantite", track.quantite),
                 ("partage", track.partage),
+                ("description", track.description),
             ]
 
             if track.resultat != "ok":
-                if track.etat == "ajouter":
-                    if track.action_possible == True:
-                        listeDonnees.append(("date_saisie", datetime.date.today()))
-                        listeDonnees.append(("IDlocation_portail", track.IDlocation))
-                        IDlocation = DB.ReqInsert("locations", listeDonnees)
-                        resultat = _(u"Ajout de la location %s du %s") % (track.nom_produit, track.date_debut_txt)
-                        DB.ReqMAJ("portail_reservations_locations", [("resultat", "ok")], "IDreservation", track.IDreservation)
-                        UTILS_Historique.InsertActions([{"IDfamille": self.track.IDfamille, "IDcategorie": 37, "action": resultat, }], DB=DB)
-                    else:
-                        resultat = _(u"%s du %s : %s") % (track.nom_produit, track.date_debut_txt, track.statut)
-                    self.parent.EcritLog(resultat, self.ctrl_log)
 
-                if track.etat == "modifier":
-                    if track.action_possible == True:
-                        if "-" in track.IDlocation:
-                            DB.ReqMAJ("locations", listeDonnees, "IDlocation_portail", track.IDlocation, IDestChaine=True)
+                if self.ctrl_locations.IsChecked(track):
+                    if track.etat == "ajouter":
+                        if track.action_possible == True:
+                            listeDonnees.append(("date_saisie", datetime.date.today()))
+                            listeDonnees.append(("IDlocation_portail", track.IDlocation))
+                            IDlocation = DB.ReqInsert("locations", listeDonnees)
+                            resultat = _(u"Ajout de la location %s du %s") % (track.nom_produit, track.date_debut_txt)
+                            DB.ReqMAJ("portail_reservations_locations", [("resultat", "ok")], "IDreservation", track.IDreservation)
+                            UTILS_Historique.InsertActions([{"IDfamille": self.track.IDfamille, "IDcategorie": 37, "action": resultat, }], DB=DB)
                         else:
-                            DB.ReqMAJ("locations", listeDonnees, "IDlocation", int(track.IDlocation))
-                        resultat = _(u"Modification de la location %s du %s") % (track.nom_produit, track.date_debut_txt)
-                        DB.ReqMAJ("portail_reservations_locations", [("resultat", "ok")], "IDreservation", track.IDreservation)
-                        UTILS_Historique.InsertActions([{"IDfamille": self.track.IDfamille, "IDcategorie": 38, "action": resultat, }], DB=DB)
-                    else:
-                        resultat = _(u"%s du %s : %s") % (track.nom_produit, track.date_debut_txt, track.statut)
-                    self.parent.EcritLog(resultat, self.ctrl_log)
+                            resultat = _(u"%s du %s : %s") % (track.nom_produit, track.date_debut_txt, track.statut)
+                        self.parent.EcritLog(resultat, self.ctrl_log)
 
-                if track.etat == "supprimer":
-                    if track.action_possible == True:
-                        if "-" in track.IDlocation:
-                            DB.ReqDEL("locations", "IDlocation_portail", track.IDlocation, IDestChaine=True)
+                    if track.etat == "modifier":
+                        if track.action_possible == True:
+                            if "-" in track.IDlocation:
+                                DB.ReqMAJ("locations", listeDonnees, "IDlocation_portail", track.IDlocation, IDestChaine=True)
+                            else:
+                                DB.ReqMAJ("locations", listeDonnees, "IDlocation", int(track.IDlocation))
+                            resultat = _(u"Modification de la location %s du %s") % (track.nom_produit, track.date_debut_txt)
+                            DB.ReqMAJ("portail_reservations_locations", [("resultat", "ok")], "IDreservation", track.IDreservation)
+                            UTILS_Historique.InsertActions([{"IDfamille": self.track.IDfamille, "IDcategorie": 38, "action": resultat, }], DB=DB)
                         else:
-                            DB.ReqDEL("locations", "IDlocation", int(track.IDlocation))
-                        resultat = _(u"Suppression de la location %s du %s") % (track.nom_produit, track.date_debut_txt)
-                        DB.ReqMAJ("portail_reservations_locations", [("resultat", "ok")], "IDreservation", track.IDreservation)
-                        UTILS_Historique.InsertActions([{"IDfamille": self.track.IDfamille, "IDcategorie": 39, "action": resultat, }], DB=DB)
-                    else:
-                        resultat = _(u"%s du %s : %s") % (track.nom_produit, track.date_debut_txt, track.statut)
-                    self.parent.EcritLog(resultat, self.ctrl_log)
+                            resultat = _(u"%s du %s : %s") % (track.nom_produit, track.date_debut_txt, track.statut)
+                        self.parent.EcritLog(resultat, self.ctrl_log)
 
-                # Mémorisation pour réponse
-                resultats[track.etat][track.action_possible] += 1
+                    if track.etat == "supprimer":
+                        if track.action_possible == True:
+                            if "-" in track.IDlocation:
+                                DB.ReqDEL("locations", "IDlocation_portail", track.IDlocation, IDestChaine=True)
+                            else:
+                                DB.ReqDEL("locations", "IDlocation", int(track.IDlocation))
+                            resultat = _(u"Suppression de la location %s du %s") % (track.nom_produit, track.date_debut_txt)
+                            DB.ReqMAJ("portail_reservations_locations", [("resultat", "ok")], "IDreservation", track.IDreservation)
+                            UTILS_Historique.InsertActions([{"IDfamille": self.track.IDfamille, "IDcategorie": 39, "action": resultat, }], DB=DB)
+                        else:
+                            resultat = _(u"%s du %s : %s") % (track.nom_produit, track.date_debut_txt, track.statut)
+                        self.parent.EcritLog(resultat, self.ctrl_log)
+
+                    # Mémorisation pour réponse
+                    resultats[track.etat][track.action_possible] += 1
+
+                # Action refusée
+                if not self.ctrl_locations.IsChecked(track):
+                    DB.ReqMAJ("portail_reservations_locations", [("resultat", "refus")], "IDreservation", track.IDreservation)
+                    self.parent.EcritLog(_(u"Refus de l'action : %s." % track.action), self.ctrl_log)
+                    refus.append(track)
 
         DB.Close()
 
@@ -199,6 +252,9 @@ class Dialog(wx.Dialog):
                     if etat == "ajouter": liste_resultats.append(u"%d ajout%s %s%s" % (quantite, pluriel, txt_validation, pluriel))
                     if etat == "modifier": liste_resultats.append(u"%d modification%s %se%s" % (quantite, pluriel, txt_validation, pluriel))
                     if etat == "supprimer": liste_resultats.append(u"%d suppression%s %se%s" % (quantite, pluriel, txt_validation, pluriel))
+
+        if refus:
+            liste_resultats.append(u"%d refus" % len(refus))
 
         if liste_resultats:
             self.reponse = UTILS_Texte.ConvertListeToPhrase(liste_resultats) + "."

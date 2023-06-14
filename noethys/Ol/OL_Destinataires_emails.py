@@ -29,9 +29,9 @@ LISTE_EXTENSIONS = ["bmp", "doc", "docx", "gif", "jpeg", "jpg", "pdf", "png", "t
 class Track(object):
     def __init__(self, parent, dictDonnees={}):
         self.parent = parent
-        self.adresse = dictDonnees["adresse"]
-        self.pieces = dictDonnees["pieces"]
-        self.champs = dictDonnees["champs"]
+        self.adresse = dictDonnees.get("adresse", "")
+        self.pieces = dictDonnees.get("pieces", [])
+        self.champs = dictDonnees.get("champs", {})
         
         if "IDfamille" in dictDonnees :
             self.IDfamille = dictDonnees["IDfamille"]

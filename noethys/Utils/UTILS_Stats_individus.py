@@ -493,7 +493,7 @@ def GetListeNiveauxScolaires(DB, dictParametres) :
         WHERE date>='%s' AND date<='%s' 
         AND consommations.etat IN ('reservation', 'present')
         AND IDactivite IN %s
-        GROUP BY scolarite.IDecole, consommations.IDindividu
+        GROUP BY scolarite.IDecole, consommations.IDindividu, scolarite.IDniveau
         ;""" % (date_debut, date_debut, date_debut, date_fin, conditionsActivites)
     else :
         return []
@@ -505,8 +505,8 @@ def GetListeNiveauxScolaires(DB, dictParametres) :
     
     dictNiveaux = {}
     for IDniveau, ordre, nomNiveau, IDindividu in listeDonnees :
-        if nomNiveau == None :
-            nomNiveau = _(u"Niveau inconnu")
+        if nomNiveau == None : nomNiveau = _(u"Niveau inconnu")
+        if ordre == None: ordre = 0
         if (IDniveau in dictNiveaux) == False :
             dictNiveaux[IDniveau] = {"nom" : nomNiveau, "nbre" : 0, "ordre": ordre}
         dictNiveaux[IDniveau]["nbre"] += 1
@@ -549,10 +549,10 @@ class Texte_nombre_individus(MODELES.Texte):
             WHERE inscriptions.statut='ok' AND IDactivite IN %s
             GROUP BY IDindividu
             ;""" % conditionsActivites
-        
+
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
-        
+
         if dictParametres["mode"] == "presents" :
             mot = _(u"présent")
         else:
@@ -595,7 +595,20 @@ class Tableau_nombre_individus(MODELES.Tableau):
             WHERE inscriptions.statut='ok' AND IDactivite IN %s
             GROUP BY IDactivite, IDindividu
             ;""" % conditionsActivites
-            
+
+        # req = """
+        # SELECT IDactivite, COUNT(IDindividu)
+        # FROM consommations
+        # WHERE date>='%s' AND date<='%s' AND etat IN ('reservation', 'present') AND IDactivite IN %s
+        # GROUP BY IDactivite, IDindividu
+        # UNION
+        # SELECT inscriptions.IDactivite, COUNT(inscriptions.IDindividu)
+        # FROM inscriptions
+        # LEFT JOIN activites ON activites.IDactivite = inscriptions.IDactivite
+        # WHERE activites.date_debut<='%s' AND activites.date_fin>='%s' AND inscriptions.statut='ok' AND inscriptions.IDactivite IN %s
+        # GROUP BY inscriptions.IDactivite, inscriptions.IDindividu
+        # ;""" % (date_debut, date_fin, conditionsActivites, date_fin, date_debut, conditionsActivites)
+
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         if len(listeDonnees) == 0 : 
@@ -1443,7 +1456,7 @@ if __name__ == '__main__':
         "listeActivites" : [1, 2, 3, 4, 5], 
         "dictActivites" : {1 : _(u"Centre de Loisirs"), 2 : _(u"Action 10-14 ans"), 3 : _(u"Camp 4-6 ans"), 4 : _(u"Camp 6-9 ans"), 5 : _(u"Camp 10-14 ans"), 6 : _(u"Art floral"), 7 : _(u"Yoga")}, 
         }
-    frame_1 = MODELES.FrameTest(objet=Graphe_repartition_ages(), dictParametres=dictParametres)
+    frame_1 = MODELES.FrameTest(objet=Tableau_nombre_individus(), dictParametres=dictParametres)
     frame_1.SetSize((600, 400))
     app.SetTopWindow(frame_1)
     frame_1.Show()

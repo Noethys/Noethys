@@ -45,7 +45,7 @@ def GetSecretKey():
     return code
 
 LISTE_THEMES = [("blue", u"Bleu"), ("black", u"Noir"), ("green", u"Vert"), ("purple", u"Violet"), ("red", u"Rouge"), ("yellow", u"Jaune")]
-LISTE_DELAIS_SYNCHRO = [(30, u"Toutes les 30 minutes"), (60, u"Toutes les heures"), (120, u"Toutes les 2 heures"), (180, u"Toutes les 3 heures"), (240, u"Toutes les 4 heures"), (300, u"Toutes les 5 heures"), (360, u"Toutes les 6 heures")]
+LISTE_DELAIS_SYNCHRO = [(60, u"Toutes les heures"), (120, u"Toutes les 2 heures"), (180, u"Toutes les 3 heures"), (240, u"Toutes les 4 heures"), (300, u"Toutes les 5 heures"), (360, u"Toutes les 6 heures"), (420, u"Toutes les 7 heures")]
 LISTE_AFFICHAGE_HISTORIQUE = [(30, u"1 mois"), (60, u"2 mois"), (90, u"3 mois"), (120, u"4 mois"), (150, u"5 mois"), (180, u"6 mois")]
 LISTE_SELECTION_FACTURES = [(0, u"Toutes les factures"), (3, u"Datant de moins de 3 mois"), (6, u"Datant de moins de 6 mois"), (12, u"Datant de moins de 1 an"), (24, u"Datant de moins de 2 ans"), (36, u"Datant de moins de 3 ans"), (60, u"Datant de moins de 5 ans")]
 LISTE_SELECTION_REGLEMENTS = [(0, u"Tous les règlements"), (3, u"Datant de moins de 3 mois"), (6, u"Datant de moins de 6 mois"), (12, u"Datant de moins de 1 an"), (24, u"Datant de moins de 2 ans"), (36, u"Datant de moins de 3 ans"), (60, u"Datant de moins de 5 ans")]
@@ -53,6 +53,7 @@ LISTE_SELECTION_COTISATIONS = [(0, u"Toutes les cotisations"), (3, u"Datant de m
 LISTE_SELECTION_RENSEIGNEMENTS = [("masquer", u"Ne pas afficher"), ("consultation", u"Consultation uniquement"), ("modification", u"Consultation et modification autorisées")]
 LISTE_SELECTION_LOCATIONS = [(0, u"Toutes les locations"), (3, u"Datant de moins de 3 mois"), (6, u"Datant de moins de 6 mois"), (12, u"Datant de moins de 1 an"), (24, u"Datant de moins de 2 ans"), (36, u"Datant de moins de 3 ans"), (60, u"Datant de moins de 5 ans")]
 LISTE_SAISIE_LOCATIONS = [(0, u"Jamais"), (2, u"2 mois avant"), (3, u"3 mois avant"), (4, u"4 mois avant"), (5, u"5 mois avant"),(6, u"6 mois avant"), (12, u"1 an avant"), (24, u"2 ans avant"), (36, u"3 ans avant"), (60, u"5 ans avant")]
+HEURES = [("%02d:00" % x, "%02d:00" % x) for x in range(0, 25)]
 
 
 VALEURS_DEFAUT = {
@@ -89,6 +90,7 @@ VALEURS_DEFAUT = {
     "secret_key" : GetSecretKey(),
     "mode_debug" : False,
     "talisman": True,
+    "captcha": 1,
     "crypter_transferts" : True,
     "image_identification" : "",
     "theme" : 0,
@@ -118,6 +120,7 @@ VALEURS_DEFAUT = {
     "payzen_mode" : "TEST",
     "payzen_certificat_test" : "",
     "payzen_certificat_production" : "",
+    "payzen_echelonnement" : False,
     "paiement_off_si_prelevement": False,
     "accueil_titre" : u"Le <strong>Portail</strong> Famille",
     "accueil_bienvenue" : _(u"Bienvenue sur le portail Famille"),
@@ -146,6 +149,9 @@ VALEURS_DEFAUT = {
     "factures_selection" : 0,
     "factures_demande_facture" : True,
     "factures_prefacturation" : True,
+    "factures_afficher_solde_total" : True,
+    "factures_afficher_solde_detail" : True,
+    "factures_afficher_solde_famille" : False,
     "reglements_afficher" : True,
     "reglements_intro" : _(u"Vous pouvez consulter ici la liste des règlements et demander des reçus."),
     "reglements_selection" : 0,
@@ -153,6 +159,7 @@ VALEURS_DEFAUT = {
     "pieces_afficher" : True,
     "pieces_intro" : _(u"Vous pouvez consulter ici la liste des pièces à fournir."),
     "pieces_autoriser_telechargement" : True,
+    "pieces_autoriser_upload" : False,
     "cotisations_afficher" : True,
     "cotisations_intro" : _(u"Vous pouvez consulter ici la liste des cotisations."),
     "cotisations_selection" : 0,
@@ -161,6 +168,9 @@ VALEURS_DEFAUT = {
     "locations_selection": 3,
     "locations_periode_saisie": 6,
     "planning_locations_intro" : _(u"Saisissez des réservations avec la souris directement dans le calendrier avant de valider l'envoi des demandes."),
+    "locations_heure_min": "00:00",
+    "locations_heure_max": "24:00",
+    "locations_afficher_autres_loueurs": False,
     "historique_afficher" : True,
     "historique_intro" : _(u"Vous pouvez consulter ici l'historique de vos demandes."),
     "historique_delai" : 0,
@@ -224,6 +234,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
             ("payzen_mode", "p('paiement_ligne_systeme') == 3"),
             ("payzen_certificat_test", "p('paiement_ligne_systeme') == 3"),
             ("payzen_certificat_production", "p('paiement_ligne_systeme') == 3"),
+            ("payzen_echelonnement", "p('paiement_ligne_systeme') == 3"),
 
             ("paiement_ligne_tipi_saisie", "p('paiement_ligne_systeme') == 1"),
         ]
@@ -349,6 +360,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete = wxpg.StringProperty(label=_(u"Mot de passe"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Saisissez le mot de passe FTP"))
         self.Append(propriete)
+        propriete.SetAttribute("Password", True)
 
         # Répertoire FTP
         nom = "ftp_repertoire"
@@ -385,6 +397,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete = wxpg.StringProperty(label=_(u"Mot de passe"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Saisissez le mot de passe de l utilisateur SSH"))
         self.Append(propriete)
+        propriete.SetAttribute("Password", True)
 
         # Répertoire SSH
         nom = "ssh_repertoire"
@@ -444,6 +457,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetHelpString(_(u"Saisissez le mot de passe"))
         propriete.SetAttribute("obligatoire", False)
         self.Append(propriete)
+        propriete.SetAttribute("Password", True)
 
         # Nom de la base
         nom = "db_nom"
@@ -475,7 +489,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetHelpString(_(u"Saisissez le mot de passe pour accéder aux statistiques [Uniquement pour les abonnés à Connecthys Easy]"))
         propriete.SetAttribute("obligatoire", False)
         self.Append(propriete)
-
+        propriete.SetAttribute("Password", True)
 
         # Catégorie
         self.Append( wxpg.PropertyCategory(_(u"Sécurité")) )
@@ -506,6 +520,13 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete = wxpg.BoolProperty(label=_(u"Sécurité avancée"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Cochez cette case pour activer les paramètres de sécurité avancés"))
         propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Captcha
+        nom = "captcha"
+        # propriete = wxpg.EnumProperty(label=_(u"Captcha"), labels=[_(u"Aucun"), _(u"Captcha par défaut"), _(u"Google Recaptcha")], values=[0, 1, 2], name=nom, value=VALEURS_DEFAUT[nom])
+        propriete = wxpg.EnumProperty(label=_(u"Captcha"), labels=[_(u"Aucun"), _(u"Captcha par défaut")], values=[0, 1], name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Choisissez un captcha pour la page de connexion afin de réduire l'impact des attaques automatisées de robots"))
         self.Append(propriete)
 
         # Gestion des mots de passe
@@ -597,7 +618,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetHelpString(_(u"Saisissez le mot de passe s'il s'agit d'une connexion authentifiée"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
-
+        propriete.SetAttribute("Password", True)
 
         # Catégorie
         self.Append( wxpg.PropertyCategory(_(u"Affichage")) )
@@ -734,6 +755,13 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         nom = "payzen_certificat_production"
         propriete = wxpg.StringProperty(label=_(u"Certificat de production"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Saisissez le certificat de production attribué par Payzen"))
+        self.Append(propriete)
+
+        # Paiement échelonné
+        nom = "payzen_echelonnement"
+        propriete = wxpg.BoolProperty(label=_(u"Proposer le paiement en 3 fois"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour activer le paiement en 3 fois. Cette option doit également être activée sur votre compte Payzen (Contacter service client Payzen)."))
+        propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
         # Désactiver le paiement en ligne pour les familles abonnées au prélèvement automatique
@@ -948,6 +976,26 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
+        # Afficher le solde total des factures
+        nom = "factures_afficher_solde_total"
+        propriete = wxpg.BoolProperty(label=_(u"Afficher le solde total à régler"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour afficher le solde total à régler"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Afficher le solde pour chaque facture
+        nom = "factures_afficher_solde_detail"
+        propriete = wxpg.BoolProperty(label=_(u"Afficher le solde à régler pour chaque facture"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour afficher le solde à régler pour chaque facture"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Afficher le solde de la famille
+        nom = "factures_afficher_solde_famille"
+        propriete = wxpg.BoolProperty(label=_(u"Afficher le solde de la famille"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour afficher le solde total de la famille"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
 
         # Catégorie
         self.Append( wxpg.PropertyCategory(_(u"Page 'Règlements'")) )
@@ -1003,6 +1051,12 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
+        # Envoi de pièces
+        nom = "pieces_autoriser_upload"
+        propriete = wxpg.BoolProperty(label=_(u"Autoriser l'envoi de pièces"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour autoriser les familles à envoyer des pièces par le portail"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
 
         # Catégorie
         self.Append( wxpg.PropertyCategory(_(u"Page 'Cotisations'")) )
@@ -1061,6 +1115,27 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         nom = "planning_locations_intro"
         propriete = wxpg.LongStringProperty(label=_(u"Texte d'introduction du calendrier des locations"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Saisissez un texte d'introduction pour le calendrier des locations"))
+        self.Append(propriete)
+
+        # Heure affichée min
+        nom = "locations_heure_min"
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Heure affichée minimale"), name=nom, liste_choix=HEURES, valeur=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Sélectionnez l'heure minimale affichée dans le planning des locations"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        # Heure affichée max
+        nom = "locations_heure_max"
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Heure affichée maximale"), name=nom, liste_choix=HEURES, valeur=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Sélectionnez l'heure maximale affichée dans le planning des locations"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        # Afficher
+        nom = "locations_afficher_autres_loueurs"
+        propriete = wxpg.BoolProperty(label=_(u"Afficher le nom des autres loueurs"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour afficher le nom des autres loueurs dans le planning des locations"))
+        propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
         # Catégorie

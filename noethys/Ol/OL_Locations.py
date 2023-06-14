@@ -23,8 +23,124 @@ from Utils import UTILS_Questionnaires
 from Utils import UTILS_Dates
 from Utils import UTILS_Gestion
 from Utils import UTILS_Historique
+from Ctrl import CTRL_Bouton_image
+from Ctrl import CTRL_Saisie_date
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 from Dlg import DLG_Messagebox
+
+
+class DLG_Supprimer_occurences(wx.Dialog):
+    def __init__(self, parent, nbre_occurences=0):
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE)
+        self.parent = parent
+
+        # Intro
+        self.label_intro = wx.StaticText(self, -1, _(u"Cette location fait partie d'une série de %d occurences.\n\nQue souhaitez-vous supprimer ?") % nbre_occurences)
+
+        # Options
+        self.radio_selection = wx.RadioButton(self, -1, _(u"Uniquement l'occurence sélectionnée"), style=wx.RB_GROUP)
+        self.radio_toutes = wx.RadioButton(self, -1, _(u"Toutes les occurences de la série"))
+        self.radio_periode = wx.RadioButton(self, -1, _(u"Les occurences de la série du"))
+        self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
+        self.label_date_fin = wx.StaticText(self, -1, " au")
+        self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
+
+        # Boutons
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
+
+        self.__set_properties()
+        self.__do_layout()
+
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
+        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioOption, self.radio_selection)
+        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioOption, self.radio_toutes)
+        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioOption, self.radio_periode)
+        self.radio_selection.SetValue(True)
+        self.OnRadioOption()
+
+    def __set_properties(self):
+        self.SetTitle(_(u"Supprimer des locations"))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
+
+    def __do_layout(self):
+        grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
+        grid_sizer_contenu = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
+
+        # Intro
+        grid_sizer_contenu.Add(self.label_intro, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 0)
+
+        # Options
+        grid_sizer_contenu.Add(self.radio_selection, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_contenu.Add(self.radio_toutes, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+
+        grid_sizer_periode = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=5)
+        grid_sizer_periode.Add(self.radio_periode, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_periode.Add(self.ctrl_date_debut, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_periode.Add(self.label_date_fin, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_periode.Add(self.ctrl_date_fin, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_contenu.Add(grid_sizer_periode, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_base.Add(grid_sizer_contenu, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
+
+        # Boutons
+        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=3, vgap=10, hgap=10)
+        grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
+        grid_sizer_boutons.Add(self.bouton_ok, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_annuler, 0, 0, 0)
+        grid_sizer_boutons.AddGrowableCol(0)
+        grid_sizer_base.Add(grid_sizer_boutons, 1, wx.ALL|wx.EXPAND, 10)
+        self.SetSizer(grid_sizer_base)
+        grid_sizer_base.Fit(self)
+        grid_sizer_base.AddGrowableRow(1)
+        grid_sizer_base.AddGrowableCol(0)
+        self.SetMinSize((self.GetSize()))
+        self.Layout()
+        self.CenterOnScreen()
+
+    def OnRadioOption(self, event=None):
+        self.ctrl_date_debut.Enable(self.radio_periode.GetValue())
+        self.ctrl_date_fin.Enable(self.radio_periode.GetValue())
+
+    def GetDonnees(self):
+        if self.radio_selection.GetValue() == True:
+            return {"mode": "selection"}
+        if self.radio_toutes.GetValue() == True:
+            return {"mode": "toutes"}
+        if self.radio_periode.GetValue() == True:
+            date_debut = self.ctrl_date_debut.GetDate()
+            date_fin = self.ctrl_date_fin.GetDate()
+            return {
+                "mode": "periode",
+                "date_debut": datetime.datetime(date_debut.year, date_debut.month, date_debut.day, 0, 0),
+                "date_fin": datetime.datetime(date_fin.year, date_fin.month, date_fin.day, 23, 59),
+            }
+
+    def OnBoutonOk(self, event):
+        if self.radio_periode.GetValue() == True:
+            # Validation de la période
+            date_debut = self.ctrl_date_debut.GetDate()
+            if self.ctrl_date_debut.FonctionValiderDate() == False or date_debut == None:
+                dlg = wx.MessageDialog(self, _(u"La date de début de période semble incorrecte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+
+            date_fin = self.ctrl_date_fin.GetDate()
+            if self.ctrl_date_fin.FonctionValiderDate() == False or date_fin == None:
+                dlg = wx.MessageDialog(self, _(u"La date de fin de période semble incorrecte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+
+            if date_fin < date_debut:
+                dlg = wx.MessageDialog(self, _(u"La date de début de période est supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+
+        self.EndModal(wx.ID_OK)
+
 
 
 def Supprimer_location(parent, IDlocation=None):
@@ -63,16 +179,21 @@ def Supprimer_location(parent, IDlocation=None):
         num_serie = liste_locations[0]["serie"]
         liste_locations_serie = GetLocations(condition="serie='%s'" % num_serie)
 
-        introduction = _(u"Cette location fait partie d'une série de %d occurences.") % len(liste_locations_serie)
-        conclusion = _(u"Que souhaitez-vous supprimer ?")
-        dlg = DLG_Messagebox.Dialog(None, titre=_(u"Confirmation"), introduction=introduction, conclusion=conclusion,
-                                    icone=wx.ICON_QUESTION, boutons=[_(u"L'occurence sélectionnée"), _(u"Toutes les occurences de la série"), _(u"Annuler")])
-        reponse = dlg.ShowModal()
-        dlg.Destroy()
-        if reponse == 2:
-            return False
-        if reponse == 1:
+        dlg = DLG_Supprimer_occurences(None, nbre_occurences=len(liste_locations_serie))
+        if dlg.ShowModal() == wx.ID_OK:
+            dict_donnees = dlg.GetDonnees()
+            dlg.Destroy()
+        else:
+            dlg.Destroy()
+            return
+
+        if dict_donnees["mode"] == "toutes":
             liste_locations = liste_locations_serie
+        if dict_donnees["mode"] == "periode":
+            liste_locations = []
+            for dict_location in liste_locations_serie:
+                if dict_location["date_debut"] <= dict_donnees["date_fin"] and dict_location["date_fin"] >= dict_donnees["date_debut"]:
+                    liste_locations.append(dict_location)
 
     # Vérifie si les prestations de cette location sont déjà facturées
     liste_anomalies = []
@@ -160,7 +281,7 @@ def Supprimer_location(parent, IDlocation=None):
             DB.ReqDEL("ventilation", "IDprestation", IDprestation)
         # Historique
         texte_historique = _(u"Suppression de la location ID%d : %s %s") % (dict_location["IDlocation"], dict_location["label_produit"], dict_location["periode"])
-        UTILS_Historique.InsertActions([{"IDfamille": dict_location["IDfamille"], "IDcategorie": 39, "action": texte_historique, }], DB=DB)
+        UTILS_Historique.InsertActions([{"IDfamille": dict_location["IDfamille"], "IDcategorie": 39, "action": texte_historique, "IDdonnee": dict_location["IDlocation"]}], DB=DB)
     DB.Close()
 
     return True
