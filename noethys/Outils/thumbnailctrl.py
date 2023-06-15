@@ -1717,9 +1717,9 @@ class ScrolledThumbnail(wx.ScrolledWindow):
             factor = 1.5
             img = self._imageHandler.HighlightImage(img.ConvertToImage(), factor).ConvertToBitmap()
         
-        imgRect = wx.Rect(x + (self._tWidth - img.GetWidth())/2,
-                          y + (self._tHeight - img.GetHeight())/2,
-                          img.GetWidth(), img.GetHeight())
+        imgRect = wx.Rect(int(x + (self._tWidth - img.GetWidth())/2),
+                          int(y + (self._tHeight - img.GetHeight())/2),
+                          int(img.GetWidth()), int(img.GetHeight()))
 
         if not thumb._alpha:
             dc.Blit(imgRect.x+5, imgRect.y+5, imgRect.width, imgRect.height, self.shadow, 500-ww, 500-hh)        
@@ -1755,14 +1755,14 @@ class ScrolledThumbnail(wx.ScrolledWindow):
             else:
                 ty = y + hh + (self._tHeight-hh)/2 + (self._tTextHeight - sh)/2 + 3
 
-            dc.DrawText(mycaption, tx, ty)
+            dc.DrawText(mycaption, int(tx), int(ty))
             
         # outline
         if self._tOutline != THUMB_OUTLINE_NONE and (self._tOutlineNotSelected or self.IsSelected(index)):
 
             dotrect = wx.Rect()
-            dotrect.x = x - 2
-            dotrect.y = y - 2
+            dotrect.x = int(x) - 2
+            dotrect.y = int(y) - 2
             dotrect.width = bmp.GetWidth() - self._tBorder + 4
             dotrect.height = bmp.GetHeight() - self._tBorder + 4
         
@@ -1850,7 +1850,7 @@ class ScrolledThumbnail(wx.ScrolledWindow):
             tw = self._tWidth + self._tBorder
             th = self._tHeight + self.GetCaptionHeight(row) + self._tBorder
             # visible?
-            if not paintRect.Intersects(wx.Rect(tx, ty, tw, th)):
+            if not paintRect.Intersects(wx.Rect(int(tx), int(ty), int(tw), int(th))):
                 continue
 
             if 'phoenix' in wx.PlatformInfo:
