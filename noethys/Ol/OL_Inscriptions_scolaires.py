@@ -89,7 +89,7 @@ def GetListe(IDclasse=None, IDindividu=None):
         dictTemp["civiliteAbrege"] = dictCivilites[dictTemp["IDcivilite"]]["civiliteAbrege"] 
         dictTemp["nomImage"] = dictCivilites[dictTemp["IDcivilite"]]["nomImage"] 
         
-        if dictTemp["date_naiss"] == None :
+        if not dictTemp["date_naiss"]:
             dictTemp["age"] = None
         else:
             datenaissDD = datetime.date(year=int(dictTemp["date_naiss"][:4]), month=int(dictTemp["date_naiss"][5:7]), day=int(dictTemp["date_naiss"][8:10]))
