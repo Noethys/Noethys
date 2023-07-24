@@ -36,7 +36,7 @@ class Options(wx.Panel):
         self.parent = parent
         
         self.check_concernes = wx.CheckBox(self, -1, _(u"Ne pas afficher les dossiers complets"))
-        
+        self.check_concernes.SetValue(True)
         self.radio_inscrits = wx.RadioButton(self, -1, _(u"Tous les inscrits"), style=wx.RB_GROUP)
         self.radio_presents = wx.RadioButton(self, -1, _(u"Uniquement les présents"))
         self.label_date_debut = wx.StaticText(self, -1, u"Du")
