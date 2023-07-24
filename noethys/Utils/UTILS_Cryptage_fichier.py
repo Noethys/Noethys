@@ -8,12 +8,8 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
-try :
-    from Cryptodome.Cipher import AES
-    from Crypto import Random
-    CRYPTO_IMPORT = True
-except :
-    CRYPTO_IMPORT = False
+from Cryptodome.Cipher import AES
+from Cryptodome import Random
 
 import hashlib
 import pickle
