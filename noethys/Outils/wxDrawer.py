@@ -389,7 +389,7 @@ class HeaderDrawerDCMixin(object):
 ##		else:
 ##			self.context.SetBrush( wx.Brush( SCHEDULER_BACKGROUND_BRUSH ) )
 
-		self.context.DrawRectangle( x, y, w, textH * 1.5 )
+		self.context.DrawRectangle(int(x), int(y), int(w), int(textH * 1.5))
 
 		self.context.SetTextForeground( wx.BLACK )
 
