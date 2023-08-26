@@ -674,7 +674,11 @@ class Synchro():
                             prelevement_auto = 0
                         liste_parametres.append("prelevement_auto==%d" % prelevement_auto)
                         # Solde de la famille
-                        liste_parametres.append("solde==%s" % (dictReglements.get(IDfamille, 0.0) - dictPrestations.get(IDfamille, 0.0)))
+                        try:
+                            solde = dictReglements.get(IDfamille, 0.0) - dictPrestations.get(IDfamille, 0.0)
+                        except:
+                            solde = 0
+                        liste_parametres.append("solde==%s" % solde)
                     parametres = "##".join(liste_parametres)
 
                     # Si famille archivée ou effacée
