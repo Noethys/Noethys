@@ -213,6 +213,8 @@ class Export_all(Export):
 
         self.Ajouter(categorie=None, table=Table(self, nom_table="categories_travail", nouveau_nom_table="core.CategorieTravail"))
 
+        self.Ajouter(categorie=None, table=Table(self, nom_table="perceptions", nouveau_nom_table="core.Perception"))
+
         self.Ajouter(categorie="facturation", table=Table(self, nom_table="lots_factures", nouveau_nom_table="core.LotFactures"))
 
         self.Ajouter(categorie="facturation", table=Table(self, nom_table="lots_rappels", nouveau_nom_table="core.LotRappels"))
@@ -466,6 +468,16 @@ class Export_all(Export):
                                             nouveaux_noms_champs={"IDindividu": "individu", "IDcompagnie": "compagnie", "IDligne": "ligne", "depart_IDarret": "depart_arret",
                                                                   "depart_IDlieu": "depart_lieu", "arrivee_IDarret": "arrivee_arret", "arrivee_IDlieu": "arrivee_lieu"}))
 
+        self.Ajouter(categorie="prelevements", table=Table_prelevements(self, nom_table="prelevements", nouveau_nom_table="core.Prelevements", nouveaux_champs=["reglement",],
+                                            nouveaux_noms_champs={"IDlot": "lot", "IDfamille": "famille", "IDfacture": "facture", "IDmandat": "mandat"},
+                                            exclure_champs=["prelevement_etab", "prelevement_guichet", "prelevement_numero", "prelevement_banque", "prelevement_cle", "prelevement_iban", "prelevement_bic", "prelevement_reference_mandat", "prelevement_date_mandat", "titulaire", "libelle"]))
+
+        self.Ajouter(categorie="prelevements", table=Table_modeles_prelevements(self))
+
+        self.Ajouter(categorie="prelevements", table=Table_lots_prelevements(self, nom_table="lots_prelevements", nouveau_nom_table="core.PrelevementsLot",
+                                            nouveaux_champs=["modele", "numero_sequence"],
+                                            exclure_champs=["IDlot", "verrouillage", "IDcompte", "IDmode", "reglement_auto", "type", "format", "encodage", "IDperception", "identifiant_service", "poste_comptable"]))
+
         self.DB.Close()
         self.Finaliser()
 
@@ -486,12 +498,22 @@ class Table_pieces(Table):
         for IDindividu, nom in self.parent.DB.ResultatReq():
             self.liste_individus.append(IDindividu)
 
+        # Récupération des familles
+        req = """SELECT IDfamille, date_creation FROM familles;"""
+        self.parent.DB.ExecuterReq(req)
+        self.liste_familles = []
+        for IDfamille, date_creation in self.parent.DB.ResultatReq():
+            self.liste_familles.append(IDfamille)
+
         Table.__init__(self, parent, **kwds)
         del self.liste_individus
+        del self.liste_familles
 
     def valide_ligne(self, data={}):
         """ Incorpore la ligne uniquement le IDindividu existe"""
         if data["fields"]["individu"] and data["fields"]["individu"] not in self.liste_individus:
+            return False
+        if data["fields"]["famille"] and data["fields"]["famille"] not in self.liste_familles:
             return False
         return True
 
@@ -587,7 +609,7 @@ class Table_unites(Table):
 class Table_unites_remplissage(Table):
     def unites(self, data={}):
         """ Champ ManyToMany"""
-        req = """SELECT IDunite_remplissage, IDunite FROM unites_remplissage_unites WHERE IDunite=%d;""" % data["pk"]
+        req = """SELECT IDunite_remplissage, IDunite FROM unites_remplissage_unites WHERE IDunite_remplissage=%d;""" % data["pk"]
         self.parent.DB.ExecuterReq(req)
         return [IDunite for IDunite_remplissage, IDunite in self.parent.DB.ResultatReq()]
 
@@ -1290,6 +1312,28 @@ class Table_reponses(Table):
 
 
 class Table_payeurs(Table):
+    def __init__(self, parent, **kwds):
+        self.parent = parent
+
+        # Récupération des familles
+        req = """select IDpayeur, familles.IDfamille FROM payeurs
+        LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = payeurs.IDcompte_payeur
+        LEFT JOIN familles ON familles.IDfamille = comptes_payeurs.IDfamille;"""
+        self.parent.DB.ExecuterReq(req)
+        self.dict_familles = {}
+        for IDpayeur, IDfamille in self.parent.DB.ResultatReq():
+            self.dict_familles[IDpayeur] = IDfamille
+
+        Table.__init__(self, parent, **kwds)
+        del self.dict_familles
+
+    def valide_ligne(self, data={}):
+        """ Incorpore la ligne uniquement le IDfamille existe"""
+        valide = True
+        if not self.dict_familles.get(data["pk"], None):
+            valide = False
+        return valide
+
     def famille(self, data={}):
         return self.parent.dictComptesPayeurs[data["IDcompte_payeur"]]
 
@@ -1576,6 +1620,55 @@ class Table_transports(Table):
         if valeur and valeur in self.liste_transports_prog:
             return valeur
         return None
+
+
+class Table_prelevements(Table):
+    def __init__(self, parent, **kwds):
+        self.parent = parent
+        # Importation de la table des règlements
+        req = "SELECT IDreglement, IDprelevement FROM reglements;"
+        self.parent.DB.ExecuterReq(req)
+        self.reglements = {}
+        for IDreglement, IDprelevement in self.parent.DB.ResultatReq():
+            self.reglements[IDprelevement] = IDreglement
+
+        Table.__init__(self, parent, **kwds)
+        del self.reglements
+
+    def reglement(self, data={}):
+        return self.reglements.get(data["IDprelevement"], None)
+
+
+class Table_modeles_prelevements(Table):
+    def Get_data(self):
+        # Génération de modèles pour les lots de prélèvements
+        req = "SELECT IDlot, format, IDcompte, IDmode, reglement_auto, encodage, IDperception, identifiant_service, poste_comptable FROM lots_prelevements;"
+        self.parent.DB.ExecuterReq(req)
+        liste_modeles = []
+        self.parent.dict_modeles_prelevements = {}
+        for IDlot, format, IDcompte, IDmode, reglement_auto, encodage, IDperception, identifiant_service, poste_comptable in self.parent.DB.ResultatReq():
+            dict_modele = {"format": format, "compte": IDcompte, "mode": IDmode, "reglement_auto": reglement_auto, "encodage": encodage,
+                           "perception": IDperception, "identifiant_service": identifiant_service, "poste_comptable": poste_comptable}
+            if dict_modele in liste_modeles:
+                IDmodele = liste_modeles.index(dict_modele) + 1
+            else:
+                liste_modeles.append(dict_modele)
+                IDmodele = len(liste_modeles)
+            self.parent.dict_modeles_prelevements[IDlot] = IDmodele
+
+        liste_xml = []
+        for index, dict_modele in enumerate(liste_modeles, start=1):
+            dict_modele["nom"] = u"Modèle %d" % index
+            liste_xml.append({"model": "core.PrelevementsModele", "pk": index, "fields": dict_modele})
+        return liste_xml
+
+
+class Table_lots_prelevements(Table):
+    def modele(self, data={}):
+        return self.parent.dict_modeles_prelevements[data["IDlot"]]
+
+    def numero_sequence(self, data={}):
+        return 1
 
 
 def Verifications(parent=None):
