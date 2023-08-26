@@ -77,6 +77,8 @@ DICT_PROCEDURES = {
     "A9068" : _(u"Désinscription de plusieurs individus"),
     "A9070" : _(u"Conversion d'une unité multihoraires en unité standard"),
     "A9072" : _(u"Statistiques du tarif à un euro"),
+    "A9274" : _(u"Custom SMDH - Suppression activites"),
+    "A9277" : _(u"Ajout du champ code_service"),
 }
 
 
@@ -1616,8 +1618,37 @@ def A9072():
     return
 
 
+def A9074():
+    """ Custom SMDH - Suppression activites """
+    liste_activites = (49, 47, 40, 20, 32, 70, 33, 46, 34, 85, 84, 75, 74, 71, 68, 67, 29, 56, 37, 63, 59, 57)
+
+    DB = GestionDB.DB()
+    DB.ExecuterReq("""DELETE FROM consommations WHERE IDactivite IN %s;""" % str(liste_activites))
+    DB.ExecuterReq("""DELETE FROM inscriptions WHERE IDactivite IN %s;""" % str(liste_activites))
+    DB.ExecuterReq("""DELETE FROM unites WHERE IDactivite IN %s;""" % str(liste_activites))
+    DB.ExecuterReq("""DELETE FROM unites_remplissage WHERE IDactivite IN %s;""" % str(liste_activites))
+    DB.ExecuterReq("""DELETE FROM activites WHERE IDactivite IN %s;""" % str(liste_activites))
+    DB.ExecuterReq("""DELETE FROM categories_tarifs WHERE IDactivite IN %s;""" % str(liste_activites))
+    DB.ExecuterReq("""DELETE FROM responsables_activite WHERE IDactivite IN %s;""" % str(liste_activites))
+    DB.ExecuterReq("""DELETE FROM groupes WHERE IDactivite IN %s;""" % str(liste_activites))
+    DB.ExecuterReq("""DELETE FROM unites_remplissage WHERE IDactivite IN %s;""" % str(liste_activites))
+    DB.ExecuterReq("""DELETE FROM ouvertures WHERE IDactivite IN %s;""" % str(liste_activites))
+    DB.ExecuterReq("""DELETE FROM remplissage WHERE IDactivite IN %s;""" % str(liste_activites))
+    DB.Commit()
+    DB.Close()
+
+
+def A9077():
+    """ Ajout du champ code_service à la table activites """
+    DB = GestionDB.DB()
+    DB.ExecuterReq("ALTER TABLE activites ADD COLUMN code_service VARCHAR(200)")
+    DB.Commit()
+    DB.Close()
+
+
+
 if __name__ == u"__main__":
     app = wx.App(0)
     # TEST D'UNE PROCEDURE :
-    A9072()
+    A9074()
     app.MainLoop()

@@ -280,6 +280,7 @@ DB_DATA = {
                                     ("regie", "INTEGER", u"ID de la régie associée"),
                                     ("code_produit_local", "VARCHAR(200)", u"Code produit local pour export compta"),
                                     ("inscriptions_multiples", "INTEGER", u"Autoriser les inscriptions multiples (0/1)"),
+                                    ("code_service", "VARCHAR(200)", u"Code service"),
                                     ], # Activités
 
     "agrements":[            ("IDagrement", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Agrément"),
