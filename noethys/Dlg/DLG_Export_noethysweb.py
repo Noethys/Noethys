@@ -35,6 +35,7 @@ class CTRL_Options(wx.CheckListBox):
             ("inscriptions", _(u"Inscriptions")),
             ("consommations", _(u"Consommations et prestations")),
             ("facturation", _(u"Facturation : factures, attestations, devis...")),
+            ("prelevements", _(u"Prélèvements")),
             ("transports", _(u"Transports")),
         ]
         self.MAJ()

@@ -304,7 +304,7 @@ class ListView(FastObjectListView):
                     "email_factures" : email_factures, "nomPayeur" : nomPayeur, "prenomPayeur" : prenomPayeur, "titulaire_helios" : titulaire_helios,
                     "tiers_solidaire": tiers_solidaire,
                     }
-        
+
         DB.Close() 
                 
         listeResultats = []
