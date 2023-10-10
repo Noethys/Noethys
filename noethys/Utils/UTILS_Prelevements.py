@@ -179,7 +179,7 @@ def ControleIBAN(iban=""):
     try :
         iban = iban.replace('-', '').replace(' ', '')
         iban = replaceAll(iban[4:]+iban[0:4], IBAN_CHAR_MAP)
-        res = int(iban) % 97    
+        res = int(iban) % 97
         return res == 1
     except :
         return False
