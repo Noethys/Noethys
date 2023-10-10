@@ -12,7 +12,7 @@
 import Chemins
 from Utils.UTILS_Traduction import _
 import wx
-import datetime
+import datetime, decimal
 import GestionDB
 import six
 
@@ -79,6 +79,7 @@ DICT_PROCEDURES = {
     "A9072" : _(u"Statistiques du tarif à un euro"),
     "A9274" : _(u"Custom SMDH - Suppression activites"),
     "A9277" : _(u"Ajout du champ code_service"),
+    "A9279" : _(u"Recherche les factures avec ventilation supérieure au montant de la facture"),
 }
 
 
@@ -1638,7 +1639,7 @@ def A9074():
     DB.Close()
 
 
-def A9077():
+def A9277():
     """ Ajout du champ code_service à la table activites """
     DB = GestionDB.DB()
     DB.ExecuterReq("ALTER TABLE activites ADD COLUMN code_service VARCHAR(200)")
@@ -1646,9 +1647,48 @@ def A9077():
     DB.Close()
 
 
+def A9279():
+    """ Recherche les factures avec ventilation supérieure au montant de la facture """
+    print("Recherche des prestations des factures...")
+    DB = GestionDB.DB()
+    req = """
+    SELECT prestations.IDfacture, SUM(prestations.montant)
+    FROM prestations
+    LEFT JOIN factures ON factures.IDfacture = prestations.IDfacture
+    GROUP BY prestations.IDfacture;"""
+    DB.ExecuterReq(req)
+    listePrestations = DB.ResultatReq()
+
+    print("Recherche des ventilations")
+    req = """SELECT prestations.IDfacture, SUM(ventilation.montant)
+    FROM ventilation
+    LEFT JOIN prestations ON prestations.IDprestation = ventilation.IDprestation
+    LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = prestations.IDcompte_payeur
+    LEFT JOIN factures ON factures.IDfacture = prestations.IDfacture
+    GROUP BY prestations.IDfacture;"""
+    DB.ExecuterReq(req)
+    listeVentilations = DB.ResultatReq()
+    dict_ventilations = {}
+    for IDfacture, montant_ventilation in listeVentilations:
+        dict_ventilations[IDfacture] = montant_ventilation
+
+    DB.Close()
+
+    print("Analyse des factures...")
+    liste_anomalies = []
+    for IDfacture, montant_facture in listePrestations:
+        montant_facture = decimal.Decimal(montant_facture)
+        ventilation = decimal.Decimal(dict_ventilations.get(IDfacture, 0.0))
+
+        if ventilation > montant_facture:
+            liste_anomalies.append(IDfacture)
+            print("Anomalie sur facture ID%d : total facture = %.2f | Ventilation = %.2f" % (IDfacture, float(montant_facture), float(ventilation)))
+
+    print("Anomalies = %d" % len(liste_anomalies))
+
 
 if __name__ == u"__main__":
     app = wx.App(0)
     # TEST D'UNE PROCEDURE :
-    A9074()
+    A9279()
     app.MainLoop()
