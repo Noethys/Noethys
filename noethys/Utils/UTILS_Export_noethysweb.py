@@ -259,7 +259,7 @@ class Export_all(Export):
 
         self.Ajouter(categorie="individus", table=Table_classes(self, nom_table="classes", nouveau_nom_table="core.Classe", nouveaux_noms_champs={"IDecole": "ecole"}))
 
-        self.Ajouter(categorie="cotisations", table=Table(self, nom_table="types_cotisations", nouveau_nom_table="core.TypeCotisation", dict_types_champs={"carte": bool, "defaut": bool}))
+        self.Ajouter(categorie="cotisations", table=Table(self, nom_table="types_cotisations", nouveau_nom_table="core.TypeCotisation", dict_types_champs={"carte": bool, "defaut": bool}, exclure_champs=["code_analytique"]))
 
         self.Ajouter(categorie="cotisations", table=Table(self, nom_table="unites_cotisations", nouveau_nom_table="core.UniteCotisation", nouveaux_noms_champs={"IDtype_cotisation": "type_cotisation"}, dict_types_champs={"defaut": bool}))
 
@@ -280,7 +280,7 @@ class Export_all(Export):
 
         self.Ajouter(categorie="activites", table=Table_activites(self, nom_table="activites", nouveau_nom_table="core.Activite",
                            exclure_champs=["public", "psu_activation", "psu_unite_prevision", "psu_unite_presence", "psu_tarif_forfait", "psu_etiquette_rtt", "portail_unites_multiples",
-                                           "portail_reservations_absenti"],
+                                           "portail_reservations_absenti", "code_service", "code_analytique"],
                            dict_types_champs={"coords_org": bool, "logo_org": bool, "vaccins_obligatoires": bool, "portail_inscriptions_affichage": bool,
                                               "portail_reservations_affichage": bool, "portail_unites_multiples": bool, "inscriptions_multiples": bool},
                            nouveaux_champs=["pieces", "groupes_activites", "cotisations", "structure"], champs_images=["logo"]))
@@ -337,7 +337,7 @@ class Export_all(Export):
                             nouveaux_champs=["email_factures_adresses", "email_recus_adresses", "email_depots_adresses"],
                            dict_types_champs={"autorisation_cafpro": bool, "internet_actif": bool}))
 
-        self.Ajouter(categorie="activites", table=Table(self, nom_table="evenements", nouveau_nom_table="core.Evenement", nouveaux_noms_champs={"IDactivite": "activite", "IDgroupe": "groupe", "IDunite": "unite"}))
+        self.Ajouter(categorie="activites", table=Table_evenements(self, nom_table="evenements", nouveau_nom_table="core.Evenement", nouveaux_noms_champs={"IDactivite": "activite", "IDgroupe": "groupe", "IDunite": "unite"}))
 
         self.Ajouter(categorie="inscriptions", table=Table(self, nom_table="inscriptions",
                            nouveau_nom_table="core.Inscription",
@@ -367,12 +367,12 @@ class Export_all(Export):
         self.Ajouter(categorie="pieces", table=Table_pieces(self, nom_table="pieces", nouveau_nom_table="core.Piece", nouveaux_noms_champs={"IDindividu": "individu", "IDfamille": "famille", "IDtype_piece": "type_piece"}))
 
         self.Ajouter(categorie="facturation", table=Table_factures(self, nom_table="factures", nouveau_nom_table="core.Facture", nouveaux_noms_champs={"IDfamille": "famille", "IDregie": "regie", "IDlot": "lot", "IDprefixe": "prefixe"},
-                            exclure_champs=["IDcompte_payeur", "IDutilisateur", "etat", "mention1", "mention2", "mention3"],
+                            exclure_champs=["IDcompte_payeur", "IDutilisateur", "mention1", "mention2", "mention3"],
                             nouveaux_champs=["famille"]))
 
         self.Ajouter(categorie="consommations", table=Table_prestations(self, nom_table="prestations", nouveau_nom_table="core.Prestation", nouveaux_noms_champs={"IDactivite": "activite", "IDtarif": "tarif", "IDfacture": "facture", "IDfamille": "famille",
                            "IDindividu": "individu", "IDcategorie_tarif": "categorie_tarif", "code_comptable": "code_compta"},
-                           exclure_champs=["IDcompte_payeur", "reglement_frais", "IDcontrat", "IDdonnee"]))
+                           exclure_champs=["IDcompte_payeur", "reglement_frais", "IDcontrat", "IDdonnee", "code_analytique"]))
 
         self.Ajouter(categorie="cotisations", table=Table(self, nom_table="depots_cotisations", nouveau_nom_table="core.DepotCotisations", dict_types_champs={"verrouillage": bool}, nouveaux_noms_champs={"IDdepot_cotisation": "iddepot"})),
 
@@ -452,7 +452,7 @@ class Export_all(Export):
 
         self.Ajouter(categorie="individus", table=Table(self, nom_table="contacts", nouveau_nom_table="core.Contact"))
 
-        self.Ajouter(categorie="individus", table=Table(self, nom_table="mandats", nouveau_nom_table="core.Mandat", dict_types_champs={"actif": bool},
+        self.Ajouter(categorie="individus", table=Table_mandats(self, nom_table="mandats", nouveau_nom_table="core.Mandat", dict_types_champs={"actif": bool},
                                             nouveaux_noms_champs={"IDfamille": "famille", "IDindividu": "individu"},
                                             exclure_champs=["IDbanque"]))
 
@@ -919,6 +919,25 @@ class Table_consommations(Table):
 
     def quantite(self, valeur=None, objet=None):
         return valeur or 1
+
+
+class Table_evenements(Table):
+    def __init__(self, parent, **kwds):
+        # Importe les unités de conso
+        req = """SELECT IDunite, nom FROM unites;"""
+        parent.DB.ExecuterReq(req)
+        self.dictUnites = {}
+        for IDunite, nom in parent.DB.ResultatReq():
+            self.dictUnites[IDunite] = nom
+        Table.__init__(self, parent, **kwds)
+        del self.dictUnites
+
+    def valide_ligne(self, data={}):
+        """ Incorpore la ligne uniquement l'unité associée existe"""
+        if data["fields"]["unite"] not in self.dictUnites:
+            print("Table evenements : l'unite n'existe pas pour l'evenement ID%d" % data["pk"])
+            return False
+        return True
 
 
 class Table_cotisations(Table):
@@ -1508,6 +1527,13 @@ class Table_modeles_emails(Table):
                 html = html.replace(balise, "")
             html = re.sub('<font.*?>', '', html)
         return html
+
+
+class Table_mandats(Table):
+    def sequence(self, valeur=None, objet=None):
+        if valeur == "auto":
+            return "RCUR"
+        return valeur
 
 
 class Table_transports(Table):
