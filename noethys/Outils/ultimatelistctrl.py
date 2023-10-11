@@ -5128,7 +5128,7 @@ class UltimateListHeaderWindow(wx.PyControl):
             # draw the text clipping it so that it doesn't overwrite the column
             # boundary
             dc.SetClippingRegion(x, HEADER_OFFSET_Y, cw, h - 4)
-            self.DrawTextFormatted(dc, text, wx.Rect(xAligned+EXTRA_WIDTH, HEADER_OFFSET_Y, cw-EXTRA_WIDTH, h-4))
+            self.DrawTextFormatted(dc, text, wx.Rect(int(xAligned+EXTRA_WIDTH), int(HEADER_OFFSET_Y), int(cw-EXTRA_WIDTH), int(h-4)))
             
             x += wCol
             dc.DestroyClippingRegion()

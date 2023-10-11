@@ -412,7 +412,7 @@ class RendererCaseMontant(GridCellRenderer):
         largeur, hauteur = dc.GetTextExtent(texte)
         x = rect[0] + rect[2] - largeur - 2
         y = rect[1] + ((rect[3] - hauteur) / 2.0)
-        dc.DrawText(texte, x, y)
+        dc.DrawText(texte, int(x), int(y))
         
     def GetBestSize(self, grid, attr, dc, row, col):
         text = grid.GetCellValue(row, col)
