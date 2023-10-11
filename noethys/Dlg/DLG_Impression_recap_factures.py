@@ -494,10 +494,10 @@ class Dialog(wx.Dialog):
                 dictTotaux[IDactivite][label] = {"quantite" : 0, "montant" : 0.0}
             
             dictTotaux[IDactivite][label]["quantite"] += 1
-            dictTotaux[IDactivite][label]["montant"] += montant
+            dictTotaux[IDactivite][label]["montant"] += montant or 0.0
 
             dictPrestations[IDfacture][IDindividu][label]["quantite"] += 1
-            dictPrestations[IDfacture][IDindividu][label]["montant"] += montant
+            dictPrestations[IDfacture][IDindividu][label]["montant"] += montant or 0.0
 
         # Création du PDF
         from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak

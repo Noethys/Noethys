@@ -492,7 +492,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
         f = open(cheminFichier, "w")
         try:
             if six.PY2:
-                f.write(doc.toxml(encoding="UTF-8"))
+                f.write(doc.toxml(encoding="utf-8"))
             else:
                 #f.write(doc.toprettyxml(indent="  "))
                 f.write(doc.toxml())

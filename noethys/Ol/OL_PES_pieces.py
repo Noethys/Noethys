@@ -161,9 +161,9 @@ class Track(object):
             else :
                 self.tiersSolidaireNomComplet = u"%s %s %s" % (self.tiersSolidaireCivilite, self.tiersSolidaireNom, self.tiersSolidairePrenom)
             self.tiersSolidaireNomPrenom = u"%s %s" % (self.tiersSolidaireNom, self.tiersSolidairePrenom)
-            self.tiersSolidaireRue = self.dictIndividus[self.tiers_solidaire]["rue"]
-            self.tiersSolidaireCP = self.dictIndividus[self.tiers_solidaire]["cp"]
-            self.tiersSolidaireVille = self.dictIndividus[self.tiers_solidaire]["ville"]
+            self.tiersSolidaireRue = self.dictIndividus[self.tiers_solidaire]["rue"] or ""
+            self.tiersSolidaireCP = self.dictIndividus[self.tiers_solidaire]["cp"] or ""
+            self.tiersSolidaireVille = self.dictIndividus[self.tiers_solidaire]["ville"] or ""
             self.tiersSolidaireAdresse = u"%s %s %s" % (self.tiersSolidaireRue, self.tiersSolidaireCP, self.tiersSolidaireVille)
         else :
             self.tiersSolidaireCivilite = ""
@@ -1032,7 +1032,8 @@ class ListView(FastObjectListView):
             montant = decimal.Decimal(montant)
             ventilation = decimal.Decimal(ventilation)
             aventiler = montant - ventilation
-            if aventiler > decimal.Decimal(0.0) :
+
+            if aventiler != decimal.Decimal(0.0) :
 
                 # Mémorisation des prestations à ventiler
                 if (IDfacture in dictFactures) == False :
