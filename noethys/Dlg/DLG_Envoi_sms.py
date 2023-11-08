@@ -430,6 +430,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
             ("cleversms", _(u"Clever SMS")),
             ("clevermultimedias", _(u"Clever Multimedias")),
             ("mailjet", _(u"Mailjet")),
+            ("ovh", _(u"OVH")),
             ]
 
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Plateforme"), name="plateforme", liste_choix=liste_choix, valeur=None)
@@ -476,6 +477,26 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
         propriete.SetHelpString(_(u"Saisissez le nom de l'expéditeur. Exemples : 'MJC', 'ALSH', 'MAIRIE'..."))
         self.Append(propriete)
 
+        # Nom exp OVH
+        propriete = wxpg.StringProperty(label=_(u"Nom de l'expéditeur"), name="ovh_nom_exp", value="")
+        propriete.SetHelpString(_(u"Saisissez le nom de l'expéditeur. Exemples : 'MJC', 'ALSH', 'MAIRIE'..."))
+        self.Append(propriete)
+
+        # Nom du compte
+        propriete = wxpg.StringProperty(label=_(u"Nom du compte"), name="ovh_nom_compte", value="")
+        propriete.SetHelpString(_(u"Saisissez le nom du compte"))
+        self.Append(propriete)
+
+        # Identifiant
+        propriete = wxpg.StringProperty(label=_(u"Identifiant"), name="ovh_identifiant", value="")
+        propriete.SetHelpString(_(u"Saisissez l'identifiant"))
+        self.Append(propriete)
+
+        # Mot de passe
+        propriete = wxpg.StringProperty(label=_(u"Mot de passe"), name="ovh_mot_passe", value="")
+        propriete.SetHelpString(_(u"Saisissez le mot de passe"))
+        self.Append(propriete)
+
         # Nbre caractères max
         propriete = wxpg.IntProperty(label=_(u"Nombre maximal de caractères du message"), name="nbre_caracteres_max", value=160)
         propriete.SetHelpString(_(u"Nombre maximal de caractères du message"))
@@ -510,6 +531,13 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
                 "mailjet": [
                     {"propriete": "token_sms_mailjet", "obligatoire": True},
                     {"propriete": "sender_sms_mailjet", "obligatoire": True},
+                    {"propriete": "nbre_caracteres_max", "obligatoire": True},
+                ],
+                "ovh": [
+                    {"propriete": "ovh_nom_exp", "obligatoire": True},
+                    {"propriete": "ovh_nom_compte", "obligatoire": True},
+                    {"propriete": "ovh_identifiant", "obligatoire": True},
+                    {"propriete": "ovh_mot_passe", "obligatoire": True},
                     {"propriete": "nbre_caracteres_max", "obligatoire": True},
                 ],
             }
@@ -973,6 +1001,40 @@ class Dialog(wx.Dialog, Base):
                     print("Erreur envoi SMS :", reponse.text)
                     dict_erreur = json.loads(reponse.text)
                     texte_erreur = u"Code erreur : %s. Erreur : %s" % (dict_erreur["ErrorCode"], dict_erreur["ErrorMessage"])
+                    dlg = DLG_Messagebox.Dialog(self, titre=_(u"Envoi de SMS"), introduction=_(u"L'envoi du SMS vers le numéro %s a rencontré une erreur :") % numero,
+                                                detail=texte_erreur, conclusion=_(u"Que souhaitez-vous faire ?"),
+                                                icone=wx.ICON_ERROR, boutons=[_(u"Continuer l'envoi"), _(u"Arrêter")])
+                    reponse = dlg.ShowModal()
+                    dlg.Destroy()
+                    if reponse == 1:
+                        return False
+
+        # Confirmation d'envoi
+        dlg = wx.MessageDialog(self, _(u"Envoi des SMS terminé."), _(u"Confirmation"), wx.OK | wx.ICON_INFORMATION)
+        dlg.ShowModal()
+        dlg.Destroy()
+
+        # --------------------- OVH ---------------------
+        if self.dictDonnees["plateforme"] == "ovh":
+
+            # Envoi des SMS
+            message = self.dictDonnees["message"].replace("\n", "")
+            nbre_envois_reussis = 0
+            for numero in self.dictDonnees["liste_telephones"]:
+                numero = numero.replace(".", "")
+                numero = "+33" + numero[1:]
+
+                # Création du message JSON
+                params = {"account": self.dictDonnees["ovh_nom_compte"], "login": self.dictDonnees["ovh_identifiant"],
+                          "password": self.dictDonnees["ovh_mot_passe"], "from": self.dictDonnees["ovh_nom_exp"], "to": numero,
+                          "message": message, "noStop": 1, "contentType": "text/json"}
+                r = requests.get("https://www.ovh.com/cgi-bin/sms/http2sms.cgi", params=params)
+                reponse = r.json()
+                if reponse["status"] == 100:
+                    nbre_envois_reussis += 1
+                else:
+                    print("Erreur envoi SMS :", reponse["message"])
+                    texte_erreur = u"Erreur SMS : %s" % reponse["message"]
                     dlg = DLG_Messagebox.Dialog(self, titre=_(u"Envoi de SMS"), introduction=_(u"L'envoi du SMS vers le numéro %s a rencontré une erreur :") % numero,
                                                 detail=texte_erreur, conclusion=_(u"Que souhaitez-vous faire ?"),
                                                 icone=wx.ICON_ERROR, boutons=[_(u"Continuer l'envoi"), _(u"Arrêter")])
