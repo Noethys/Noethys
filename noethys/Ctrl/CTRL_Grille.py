@@ -378,11 +378,13 @@ class Ligne():
                 
             # Vérifie s'il faut verrouiller la ligne            
             IDfamilleConso = None
+            dict_idfamille_activite = {}
             if self.IDindividu in self.grid.dictConsoIndividus :
                 if self.date in self.grid.dictConsoIndividus[self.IDindividu] :
                     for IDunite, listeConso in self.grid.dictConsoIndividus[self.IDindividu][self.date].items() :
                         for conso in listeConso :
                             IDfamilleConso = conso.IDfamille
+                            dict_idfamille_activite[conso.IDactivite] = conso.IDfamille
                             break
                         
             # Création des cases unités
@@ -412,11 +414,17 @@ class Ligne():
                                     verrouillage = 1
 
                         # S'il y a des conso rattachées à une autre famille, on verrouille la ligne
-                        if IDfamilleConso != None :
-                            if IDfamille != IDfamilleConso :
-                                verrouillage = 1
-                                IDfamille = IDfamilleConso
-                        
+                        # if IDfamilleConso != None :
+                        #     if IDfamille != IDfamilleConso :
+                        #         verrouillage = 1
+                        #         IDfamille = IDfamilleConso
+
+                        # Nouvelle version du verrouillage famille rattachée
+                        IDfamilleConso = dict_idfamille_activite.get(IDactivite, None)
+                        if IDfamilleConso and IDfamille != IDfamilleConso:
+                            verrouillage = 1
+                            IDfamille = IDfamilleConso
+
                         # Création de la case
                         if typeUnite in ("Unitaire", "Horaire", "Quantite") :
                             case = CTRL_Grille_cases.CaseStandard(self, self.grid, self.numLigne, numColonne, self.IDindividu, IDfamille, self.date, IDunite, IDactivite, verrouillage)
