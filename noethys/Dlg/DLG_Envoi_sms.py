@@ -431,6 +431,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
             ("clevermultimedias", _(u"Clever Multimedias")),
             ("mailjet", _(u"Mailjet")),
             ("ovh", _(u"OVH")),
+            ("brevo", _(u"BREVO")),
             ]
 
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Plateforme"), name="plateforme", liste_choix=liste_choix, valeur=None)
@@ -497,6 +498,16 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
         propriete.SetHelpString(_(u"Saisissez le mot de passe"))
         self.Append(propriete)
 
+        # Token BREVO
+        propriete = wxpg.StringProperty(label=_(u"Token Brevo"), name="token_sms_brevo", value="")
+        propriete.SetHelpString(_(u"Saisissez le token que vous avez généré sur votre compte Brevo"))
+        self.Append(propriete)
+
+        # Sender BREVO
+        propriete = wxpg.StringProperty(label=_(u"Nom de l'expéditeur"), name="sender_sms_brevo", value="")
+        propriete.SetHelpString(_(u"Saisissez le nom de l'expéditeur. Exemples : 'MJC', 'ALSH', 'MAIRIE'..."))
+        self.Append(propriete)
+
         # Nbre caractères max
         propriete = wxpg.IntProperty(label=_(u"Nombre maximal de caractères du message"), name="nbre_caracteres_max", value=160)
         propriete.SetHelpString(_(u"Nombre maximal de caractères du message"))
@@ -538,6 +549,11 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
                     {"propriete": "ovh_nom_compte", "obligatoire": True},
                     {"propriete": "ovh_identifiant", "obligatoire": True},
                     {"propriete": "ovh_mot_passe", "obligatoire": True},
+                    {"propriete": "nbre_caracteres_max", "obligatoire": True},
+                ],
+                "brevo": [
+                    {"propriete": "token_sms_brevo", "obligatoire": True},
+                    {"propriete": "sender_sms_brevo", "obligatoire": True},
                     {"propriete": "nbre_caracteres_max", "obligatoire": True},
                 ],
             }
@@ -1038,6 +1054,33 @@ class Dialog(wx.Dialog, Base):
                     dlg = DLG_Messagebox.Dialog(self, titre=_(u"Envoi de SMS"), introduction=_(u"L'envoi du SMS vers le numéro %s a rencontré une erreur :") % numero,
                                                 detail=texte_erreur, conclusion=_(u"Que souhaitez-vous faire ?"),
                                                 icone=wx.ICON_ERROR, boutons=[_(u"Continuer l'envoi"), _(u"Arrêter")])
+                    reponse = dlg.ShowModal()
+                    dlg.Destroy()
+                    if reponse == 1:
+                        return False
+
+        # --------------------- BREVO ---------------------
+        if self.dictDonnees["plateforme"] == "brevo":
+
+            # Envoi des SMS
+            message = self.dictDonnees["message"].replace("\n", "")
+            nbre_envois_reussis = 0
+            for numero in self.dictDonnees["liste_telephones"]:
+                numero = numero.replace(".", "")
+                numero = "+33" + numero[1:]
+
+                # Création du message
+                headers = {"accept": "application/json", "api-key": self.dictDonnees["token_sms_brevo"], "Content-Type": "application/json"}
+                data = {"sender": self.dictDonnees["sender_sms_brevo"], "recipient": numero, "content": message, "type": "transactional"}
+                reponse = requests.post("https://api.brevo.com/v3/transactionalSMS/sms", headers=headers, json=data)
+                dict_reponse = reponse.json()
+                if reponse.status_code == 201:
+                    nbre_envois_reussis += 1
+                else:
+                    print("Erreur envoi SMS :", dict_reponse["message"])
+                    texte_erreur = "%s : %s" % (dict_reponse["code"], dict_reponse["message"])
+                    dlg = DLG_Messagebox.Dialog(self, titre=_(u"Envoi de SMS"), introduction=_(u"L'envoi du SMS vers le numéro %s a rencontré une erreur :") % numero,
+                                                detail=texte_erreur, conclusion=_(u"Que souhaitez-vous faire ?"), icone=wx.ICON_ERROR, boutons=[_(u"Continuer l'envoi"), _(u"Arrêter")])
                     reponse = dlg.ShowModal()
                     dlg.Destroy()
                     if reponse == 1:
