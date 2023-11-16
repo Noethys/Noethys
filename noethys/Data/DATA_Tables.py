@@ -1794,8 +1794,8 @@ DB_DATA = {
                                     ("date_debut", "DATETIME", u"Date et heure de début"),
                                     ("date_fin", "DATETIME", u"Date et heure de fin"),
                                     ("parametres", "VARCHAR(5000)", u"Paramètres divers"),
-                                    ("texte_xml", "VARCHAR(5000)", u"Contenu du texte version XML"),
-                                    ("texte_html", "VARCHAR(5000)", u"Contenu du texte version HTML"),
+                                    ("texte_xml", "VARCHAR(25000)", u"Contenu du texte version XML"),
+                                    ("texte_html", "VARCHAR(25000)", u"Contenu du texte version HTML"),
                                     ],  # Elements pour les pages du portail
 
     "menus":                        [("IDmenu", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDmenu"),

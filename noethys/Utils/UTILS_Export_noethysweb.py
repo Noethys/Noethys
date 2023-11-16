@@ -850,7 +850,7 @@ class Table_prestations(Table):
     def date(self, valeur=None, objet=None):
         if isinstance(valeur, datetime.datetime):
             return valeur.date()
-        if isinstance(valeur, unicode) and ":" in valeur:
+        if isinstance(valeur, six.string_types) and ":" in valeur:
             return valeur[:10]
         return valeur
 
@@ -1326,7 +1326,10 @@ class Table_reponses(Table):
                     liste_reponse.append(self.dict_choix[IDchoix])
                 else:
                     liste_reponse.append(IDchoix)
-            valeur = ";".join([unicode(reponse) for reponse in liste_reponse])
+            if six.PY3:
+                valeur = ";".join([str(reponse) for reponse in liste_reponse])
+            else:
+                valeur = ";".join([unicode(reponse) for reponse in liste_reponse])
         return valeur
 
 
