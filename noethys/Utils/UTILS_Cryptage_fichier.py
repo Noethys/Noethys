@@ -1,19 +1,15 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
-try :
-    from Crypto.Cipher import AES
-    from Crypto import Random
-    CRYPTO_IMPORT = True
-except :
-    CRYPTO_IMPORT = False
+from Cryptodome.Cipher import AES
+from Cryptodome import Random
 
 import hashlib
 import pickle
@@ -100,7 +96,7 @@ def cryptFile(filename_in, filename_out, key):
 
 
 # --------------------------------------------------------------------------
-# 2ème version qui évite l'utilisation de Pickle pour une compatibilité py3
+# 2Ã¨me version qui Ã©vite l'utilisation de Pickle pour une compatibilitÃ© py3
 # --------------------------------------------------------------------------
 
 def pad(s):
@@ -172,7 +168,7 @@ def DecrypterFichier(fichierCrypte="", fichierDecrypte="", motdepasse=""):
 				contenu2 = pickle.load(fo, encoding="bytes")
 			dec = decrypt(contenu2, motdepasse)
 
-	# Enregistrement du fichier décrypté
+	# Enregistrement du fichier dÃ©cryptÃ©
 	with open(fichierDecrypte, 'wb') as fr:
 		fr.write(dec)
 
@@ -241,6 +237,6 @@ class AESCipher(object):
 
 if (__name__ == '__main__'):
     cryptage = AESCipher("motdepasse", bs=32, prefixe="#x#")
-    data = cryptage.encrypt(u"Ceci est le texte codé")
+    data = cryptage.encrypt(u"Ceci est le texte codÃ©")
     print(len(data), data)
     print(cryptage.decrypt(data))

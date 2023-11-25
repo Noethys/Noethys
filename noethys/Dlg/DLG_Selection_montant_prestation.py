@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -19,7 +19,7 @@ from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Saisie_euros
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
@@ -70,10 +70,10 @@ class ListView(FastObjectListView):
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
         
-        # Préparation de la listeImages
+        # PrÃ©paration de la listeImages
         imgImportant = self.AddNamedImages("attention", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Attention.png"), wx.BITMAP_TYPE_PNG))
         
-        # Formatage des données
+        # Formatage des donnÃ©es
         def FormateMontant(montant):
             if montant == None or montant == "" : return ""
             return u"%.2f %s" % (montant, SYMBOLE)
@@ -105,7 +105,7 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = _(u"Vous pouvez ici sélectionner dans la liste un montant et un label pour la prestation qui va être créée. Vous pouvez également double-cliquer dans la liste pour valider aussitôt.")
+        intro = _(u"Vous pouvez ici sÃ©lectionner dans la liste un montant et un label pour la prestation qui va Ãªtre crÃ©Ã©e. Vous pouvez Ã©galement double-cliquer dans la liste pour valider aussitÃ´t.")
         titreDefaut = _(u"Tarif au choix")
         if titre == None :
             titre = titreDefaut
@@ -116,8 +116,8 @@ class Dialog(wx.Dialog):
         self.ctrl_choix = ListView(self, -1, lignes_calcul=lignes_calcul, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_choix.MAJ() 
         
-        # Détail prestation
-        self.box_prestation_staticbox = wx.StaticBox(self, -1, _(u"Détail de la prestation"))
+        # DÃ©tail prestation
+        self.box_prestation_staticbox = wx.StaticBox(self, -1, _(u"DÃ©tail de la prestation"))
         self.label_label = wx.StaticText(self, -1, _(u"Label :"))
         self.ctrl_label = wx.TextCtrl(self, -1, label)
         self.label_montant = wx.StaticText(self, -1, _(u"Montant :"))
@@ -141,8 +141,8 @@ class Dialog(wx.Dialog):
         self.bouton_annuler.Show(False)
 
     def __set_properties(self):
-        self.ctrl_label.SetToolTip(wx.ToolTip(_(u"Vous pouvez modifier ici un label personnalisé pour la prestation")))
-        self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez ici le montant de la prestation et tapez sur la touche Entrée pour valider rapidement")))
+        self.ctrl_label.SetToolTip(wx.ToolTip(_(u"Vous pouvez modifier ici un label personnalisÃ© pour la prestation")))
+        self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez ici le montant de la prestation et tapez sur la touche EntrÃ©e pour valider rapidement")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -206,7 +206,7 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             self.ctrl_label.SetFocus()
             return
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
     
     def GetMontant(self):

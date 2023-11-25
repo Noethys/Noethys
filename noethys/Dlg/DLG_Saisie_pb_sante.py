@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -25,11 +25,11 @@ import GestionDB
 # LISTE_TYPES = [
 #     (1, _(u"Maladie"), "Medical.png"),
 #     (2, _(u"Alimentation"), "Medical.png"),
-#     (3, _(u"Médicamentation"), "Medicament.png"),
+#     (3, _(u"MÃ©dicamentation"), "Medicament.png"),
 #     (4, _(u"Allergie"), "Medical.png"),
 #     (5, _(u"Accident"), "Pansement.png"),
 #     (6, _(u"Hospitalisation"), "Hopital.png"),
-#     (7, _(u"Opération"), "Stethoscope.png"),
+#     (7, _(u"OpÃ©ration"), "Stethoscope.png"),
 #     (8, _(u"Autre"), "Medical.png"),
 #     ]
 
@@ -49,7 +49,7 @@ import GestionDB
 #             self.Append(texte, img, texte)
 #             self.dictID[index] = ID
 #             index += 1
-#         # Sélection par défaut
+#         # SÃ©lection par dÃ©faut
 #         self.Select(0)
 #
 #     def GetIDselection(self):
@@ -117,19 +117,19 @@ class Dialog(wx.Dialog):
         self.IDindividu = IDindividu
         self.IDprobleme = IDprobleme
                 
-        # Caractéristiques
-        self.staticbox_gauche_staticbox = wx.StaticBox(self, -1, _(u"Caractéristiques"))
-        self.label_categorie = wx.StaticText(self, -1, _(u"Catégorie :"))
+        # CaractÃ©ristiques
+        self.staticbox_gauche_staticbox = wx.StaticBox(self, -1, _(u"CaractÃ©ristiques"))
+        self.label_categorie = wx.StaticText(self, -1, _(u"CatÃ©gorie :"))
         self.ctrl_categorie = CTRL_Categorie(self)
         self.bouton_categories = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
 
         #self.ctrl_categorie = MyBitmapComboBox(self)
         #self.ctrl_categorie.Remplissage(LISTE_TYPES)
 
-        self.label_intitule = wx.StaticText(self, -1, _(u"Intitulé :"))
+        self.label_intitule = wx.StaticText(self, -1, _(u"IntitulÃ© :"))
         self.ctrl_intitule = wx.TextCtrl(self, -1, u"")
-        self.label_periode = wx.StaticText(self, -1, _(u"Période :"))
-        self.radio_indefinie = wx.RadioButton(self, -1, _(u"Indéfinie"), style = wx.RB_GROUP)
+        self.label_periode = wx.StaticText(self, -1, _(u"PÃ©riode :"))
+        self.radio_indefinie = wx.RadioButton(self, -1, _(u"IndÃ©finie"), style = wx.RB_GROUP)
         self.radio_definie = wx.RadioButton(self, -1, u"")
         self.label_periode_du = wx.StaticText(self, -1, u"Du")
         self.ctrl_periode_debut = CTRL_Saisie_date.Date(self)
@@ -139,8 +139,8 @@ class Dialog(wx.Dialog):
         self.ctrl_description = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
         
         # Traitement
-        self.staticbox_traitement_staticbox = wx.StaticBox(self, -1, _(u"Traitement médical"))
-        self.ctrl_coche_traitement = wx.CheckBox(self, -1, _(u"Traitement médical"))
+        self.staticbox_traitement_staticbox = wx.StaticBox(self, -1, _(u"Traitement mÃ©dical"))
+        self.ctrl_coche_traitement = wx.CheckBox(self, -1, _(u"Traitement mÃ©dical"))
         self.ctrl_description_traitement = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
         self.ctrl_description_traitement.SetMinSize((-1, 60))
         self.label_traitement_du = wx.StaticText(self, -1, u"Du")
@@ -149,8 +149,8 @@ class Dialog(wx.Dialog):
         self.ctrl_traitement_fin = CTRL_Saisie_date.Date(self)
         
         # Eviction
-        self.staticbox_eviction_staticbox = wx.StaticBox(self, -1, _(u"Eviction de l'activité"))
-        self.ctrl_coche_eviction = wx.CheckBox(self, -1, _(u"Eviction de l'activité"))
+        self.staticbox_eviction_staticbox = wx.StaticBox(self, -1, _(u"Eviction de l'activitÃ©"))
+        self.ctrl_coche_eviction = wx.CheckBox(self, -1, _(u"Eviction de l'activitÃ©"))
         self.label_eviction_du = wx.StaticText(self, -1, u"Du")
         self.ctrl_eviction_debut = CTRL_Saisie_date.Date(self)
         self.label_eviction_au = wx.StaticText(self, -1, _(u"au"))
@@ -158,11 +158,11 @@ class Dialog(wx.Dialog):
         
         # Diffusion de l'info
         self.staticbox_diffusion_staticbox = wx.StaticBox(self, -1, _(u"Diffusion de l'information"))
-        self.ctrl_listing_enfants = wx.CheckBox(self, -1, _(u"Afficher sur le listing des informations médicales"))
+        self.ctrl_listing_enfants = wx.CheckBox(self, -1, _(u"Afficher sur le listing des informations mÃ©dicales"))
         self.ctrl_listing_presences = wx.CheckBox(self, -1, _(u"Afficher sur le listing des consommations"))
         self.ctrl_listing_repas = wx.CheckBox(self, -1, _(u"Afficher sur la commande des repas"))
         
-        # Commandes générales
+        # Commandes gÃ©nÃ©rales
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
@@ -179,11 +179,11 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonCategories, self.bouton_categories)
 
-        # Importation des données
+        # Importation des donnÃ©es
         if self.IDprobleme != None :
             self.Importation() 
             
-        # Initialisation des contrôles
+        # Initialisation des contrÃ´les
         self.OnRadio_periode(None)
         self.OnCheck_traitement(None)
         self.OnCheck_eviction(None)
@@ -191,23 +191,23 @@ class Dialog(wx.Dialog):
         self.ctrl_intitule.SetFocus() 
 
     def __set_properties(self):
-        self.SetTitle(_(u"Saisie d'une information médicale"))
-        self.ctrl_categorie.SetToolTip(wx.ToolTip(_(u"Selectionnez une catégorie médicale")))
-        self.bouton_categories.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder au paramétrage des catégories médicales")))
+        self.SetTitle(_(u"Saisie d'une information mÃ©dicale"))
+        self.ctrl_categorie.SetToolTip(wx.ToolTip(_(u"Selectionnez une catÃ©gorie mÃ©dicale")))
+        self.bouton_categories.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der au paramÃ©trage des catÃ©gories mÃ©dicales")))
         self.ctrl_intitule.SetFont(wx.Font(10, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, u""))
         self.ctrl_intitule.SetToolTip(wx.ToolTip(_(u"Saisissez l'intitule de l'information")))
-        self.radio_indefinie.SetToolTip(wx.ToolTip(_(u"Sans période définie")))
-        self.radio_definie.SetToolTip(wx.ToolTip(_(u"Définir une période")))
-        self.ctrl_periode_debut.SetToolTip(wx.ToolTip(_(u"Saisissez une date de début")))
+        self.radio_indefinie.SetToolTip(wx.ToolTip(_(u"Sans pÃ©riode dÃ©finie")))
+        self.radio_definie.SetToolTip(wx.ToolTip(_(u"DÃ©finir une pÃ©riode")))
+        self.ctrl_periode_debut.SetToolTip(wx.ToolTip(_(u"Saisissez une date de dÃ©but")))
         self.ctrl_periode_fin.SetToolTip(wx.ToolTip(_(u"Saisissez une date de fin")))
-        self.ctrl_description.SetToolTip(wx.ToolTip(_(u"Saisissez une description pour le problème de santé")))
-        self.ctrl_coche_traitement.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour saisir un traitement médical")))
-        self.ctrl_description_traitement.SetToolTip(wx.ToolTip(_(u"Saisissez ici le détail du traitement médical")))
+        self.ctrl_description.SetToolTip(wx.ToolTip(_(u"Saisissez une description pour le problÃ¨me de santÃ©")))
+        self.ctrl_coche_traitement.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour saisir un traitement mÃ©dical")))
+        self.ctrl_description_traitement.SetToolTip(wx.ToolTip(_(u"Saisissez ici le dÃ©tail du traitement mÃ©dical")))
         self.ctrl_traitement_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de debut du traitement")))
         self.ctrl_traitement_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de traitement")))
-        self.ctrl_coche_eviction.SetToolTip(wx.ToolTip(_(u"Cochez cette case si cette information médicale nécessite une éviction de l'activité")))
-        self.ctrl_eviction_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de début de l'éviction")))
-        self.ctrl_eviction_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de la periode d'éviction")))
+        self.ctrl_coche_eviction.SetToolTip(wx.ToolTip(_(u"Cochez cette case si cette information mÃ©dicale nÃ©cessite une Ã©viction de l'activitÃ©")))
+        self.ctrl_eviction_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de dÃ©but de l'Ã©viction")))
+        self.ctrl_eviction_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de la periode d'Ã©viction")))
         self.ctrl_listing_enfants.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour diffuser l'information sur le listing enfants")))
         self.ctrl_listing_presences.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour diffuser l'information sur le listing des consommations")))
         self.ctrl_listing_repas.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour diffuser l'information sur la commande des repas")))
@@ -341,7 +341,7 @@ class Dialog(wx.Dialog):
         if etat == False :
             return
         
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
     
     def GetIDprobleme(self):
@@ -370,7 +370,7 @@ class Dialog(wx.Dialog):
                 dictDonnees[listeChamps[index]] = valeur
                 index += 1
         
-        # Caractéristiques
+        # CaractÃ©ristiques
         self.ctrl_categorie.SetID(dictDonnees["IDtype"])
         self.ctrl_intitule.SetValue(dictDonnees["intitule"])
         if dictDonnees["date_debut"] == "1900-01-01" and dictDonnees["date_fin"] == "2999-01-01" :
@@ -402,7 +402,7 @@ class Dialog(wx.Dialog):
             
         
     def Sauvegarde(self):
-        # Caractéristiques
+        # CaractÃ©ristiques
         IDtype = self.ctrl_categorie.GetID()
         intitule = self.ctrl_intitule.GetValue()
         if self.radio_indefinie.GetValue() == True :
@@ -414,14 +414,14 @@ class Dialog(wx.Dialog):
         description = self.ctrl_description.GetValue()
         
         if intitule == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un intitulé"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un intitulÃ©"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_intitule.SetFocus()
             return False
         if self.radio_definie.GetValue() == True : 
             if date_debut == None :
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de dÃ©but"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_periode_debut.SetFocus()
@@ -446,13 +446,13 @@ class Dialog(wx.Dialog):
         
         if description_traitement == 1 : 
             if description_traitement == "" :
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir le détail du traitement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir le dÃ©tail du traitement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_description_traitement.SetFocus()
                 return False
             if date_debut_traitement == None :
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début pour le traitement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de dÃ©but pour le traitement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_traitement_debut.SetFocus()
@@ -475,13 +475,13 @@ class Dialog(wx.Dialog):
         
         if eviction == 1 : 
             if date_debut_eviction == None :
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début pour l'éviction !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de dÃ©but pour l'Ã©viction !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_eviction_debut.SetFocus()
                 return False
             if date_fin_eviction == None :
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin pour l'éviction !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin pour l'Ã©viction !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_eviction_fin.SetFocus()

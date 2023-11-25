@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -64,7 +64,7 @@ class ListBox_Messages(wx.ListBox):
     def Modifier(self, event=None):
         message = self.GetSelectionMessage()
         if message == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun message à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun message Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -78,7 +78,7 @@ class ListBox_Messages(wx.ListBox):
     def Supprimer(self, event=None):
         message = self.GetSelectionMessage()
         if message == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun message à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun message Ã  supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -115,9 +115,9 @@ class CTRL(wx.Panel):
 
     def __set_properties(self):
         self.ctrl_messages.SetToolTip(wx.ToolTip(_(u"Saisissez ou ou plusieurs messages qui apparaitront sur la page d'accueil du portail")))
-        self.bouton_ajouter_message.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un message qui apparaîtra sur la page d'accueil du portail")))
-        self.bouton_modifier_message.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le message sélectionné dans la liste")))
-        self.bouton_supprimer_message.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le message sélectionné dans la liste")))
+        self.bouton_ajouter_message.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un message qui apparaÃ®tra sur la page d'accueil du portail")))
+        self.bouton_modifier_message.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le message sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer_message.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le message sÃ©lectionnÃ© dans la liste")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)

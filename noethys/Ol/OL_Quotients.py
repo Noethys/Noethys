@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -18,7 +18,7 @@ import datetime
 import GestionDB
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 from Dlg import DLG_Saisie_quotient
 
@@ -34,9 +34,9 @@ def DateEngFr(textDate):
     return text
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -71,7 +71,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.IDfamille = kwds.pop("IDfamille", None)
         self.selectionID = None
         self.selectionTrack = None
@@ -93,7 +93,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeID = None
         db = GestionDB.DB()
         req = """
@@ -148,7 +148,7 @@ class ListView(FastObjectListView):
             
         liste_Colonnes = [
             ColumnDefn(u"", "left", 22, "IDquotient", typeDonnee="entier", imageGetter=GetImage),
-            ColumnDefn(_(u"Date de début"), 'left', 165, "date_debut", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(_(u"Date de dÃ©but"), 'left', 165, "date_debut", typeDonnee="date", stringConverter=FormateDate),
             ColumnDefn(_(u"Date de fin"), 'left', 165, "date_fin", typeDonnee="date", stringConverter=FormateDate),
             ColumnDefn(_(u"Type de quotient"), 'left', 120, "nom_type_quotient", typeDonnee="texte"),
             ColumnDefn(_(u"Quotient familial"), 'center', 110, "quotient", typeDonnee="entier"),
@@ -172,7 +172,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -189,7 +189,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDquotient
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -220,7 +220,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -258,7 +258,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_quotients", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun quotient/revenu à modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun quotient/revenu Ã  modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -271,7 +271,7 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_quotients", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun quotient familial/revenu à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun quotient familial/revenu Ã  supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

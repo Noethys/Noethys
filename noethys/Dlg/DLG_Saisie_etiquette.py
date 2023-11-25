@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -27,10 +27,10 @@ class Dialog(wx.Dialog):
         self.parent = parent      
         self.listeActivites = listeActivites
         
-        self.SetTitle(_(u"Saisie d'une étiquette"))
+        self.SetTitle(_(u"Saisie d'une Ã©tiquette"))
         
         # Label
-        self.staticbox_label_staticbox = wx.StaticBox(self, -1, _(u"Label de l'étiquette"))
+        self.staticbox_label_staticbox = wx.StaticBox(self, -1, _(u"Label de l'Ã©tiquette"))
         self.ctrl_label = wx.TextCtrl(self, -1, "")
 
         # Couleur
@@ -38,7 +38,7 @@ class Dialog(wx.Dialog):
         self.ctrl_couleur = csel.ColourSelect(self, -1, "", (255, 255, 255), size = (40, 22))
 
         # Parent
-        self.staticbox_parent_staticbox = wx.StaticBox(self, -1, _(u"Sélection du parent"))
+        self.staticbox_parent_staticbox = wx.StaticBox(self, -1, _(u"SÃ©lection du parent"))
         self.ctrl_parent = CTRL_Etiquettes.CTRL(self, listeActivites=listeActivites, nomActivite=nomActivite, activeMenu=False)
         self.ctrl_parent.MAJ() 
         self.ctrl_parent.SetID(None)
@@ -62,9 +62,9 @@ class Dialog(wx.Dialog):
         wx.CallLater(1, self.ctrl_label.SetFocus)
 
     def __set_properties(self):
-        self.ctrl_label.SetToolTip(wx.ToolTip(_(u"Saisissez un label pour cette étiquette")))
-        self.ctrl_couleur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner une couleur pour cette étiquette")))
-        self.ctrl_active.SetToolTip(wx.ToolTip(_(u"Décochez cette case pour empêcher l'utilisateur de sélectionner cette étiquette. Cette option peut par exemple servir pour créer une étiquette de regroupement pour des sous-étiquettes ou pour désactiver une étiquette obsolète.")))
+        self.ctrl_label.SetToolTip(wx.ToolTip(_(u"Saisissez un label pour cette Ã©tiquette")))
+        self.ctrl_couleur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner une couleur pour cette Ã©tiquette")))
+        self.ctrl_active.SetToolTip(wx.ToolTip(_(u"DÃ©cochez cette case pour empÃªcher l'utilisateur de sÃ©lectionner cette Ã©tiquette. Cette option peut par exemple servir pour crÃ©er une Ã©tiquette de regroupement pour des sous-Ã©tiquettes ou pour dÃ©sactiver une Ã©tiquette obsolÃ¨te.")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -120,29 +120,29 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Etiquettes")
 
     def OnBoutonOk(self, event): 
-        # Vérification des données
+        # VÃ©rification des donnÃ©es
         if len(self.ctrl_label.GetValue()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un label pour cette étiquette !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un label pour cette Ã©tiquette !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_label.SetFocus()
             return
 
 ##        if self.GetCouleur() == "(255, 255, 255)" :
-##            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une couleur en cliquant sur le bouton couleur."), "Information", wx.OK | wx.ICON_INFORMATION)
+##            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une couleur en cliquant sur le bouton couleur."), "Information", wx.OK | wx.ICON_INFORMATION)
 ##            dlg.ShowModal()
 ##            dlg.Destroy()
 ##            self.ctrl_couleur.SetFocus()
 ##            return
                 
         if self.GetIDparent() == (None, None) :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une étiquette parente !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une Ã©tiquette parente !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_parent.SetFocus()
             return
         
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def GetLabel(self):
@@ -163,7 +163,7 @@ class Dialog(wx.Dialog):
         return self.ctrl_parent.GetID() 
     
     def SetLabel(self, texte=""):
-        self.SetTitle(_(u"Modification d'une étiquette"))
+        self.SetTitle(_(u"Modification d'une Ã©tiquette"))
         if texte != None :
             self.ctrl_label.SetValue(texte)
     

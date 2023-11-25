@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -83,7 +83,7 @@ class CTRL(wx.TreeCtrl):
         self.listePiecesObligatoires = []
         self.dictItems = {}
 
-        # Création des colonnes
+        # CrÃ©ation des colonnes
 ##        self.AddColumn(_(u"Informations"))
 ##        self.SetColumnWidth(0, 270)
 ##        self.SetColumnAlignment(0, wx.ALIGN_LEFT)
@@ -118,7 +118,7 @@ class CTRL(wx.TreeCtrl):
             if dataItem["type"] == "message" :
                 noSelection = False
 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         item = wx.MenuItem(menuPop, 10, _(u"Ajouter un message"))
@@ -165,29 +165,29 @@ class CTRL(wx.TreeCtrl):
             self.GetParent().OnBoutonSupprimer(event)
         
     def MAJ(self):
-        """ Met à jour (redessine) tout le contrôle """
+        """ Met Ã  jour (redessine) tout le contrÃ´le """
         self.DeleteAllItems()
         self.Remplissage()
 
     def Remplissage(self):
-        # Création de la racine
+        # CrÃ©ation de la racine
         self.root = self.AddRoot("Racine")
         
         self.DB = GestionDB.DB()
         
-        # Création des branches Messages
+        # CrÃ©ation des branches Messages
         self.Branches_messages(self.root)
         
-        # Création des branches Pièces
+        # CrÃ©ation des branches PiÃ¨ces
         self.Branches_pieces(self.root)
         
-        # Création des branches Cotisations
+        # CrÃ©ation des branches Cotisations
         self.Branches_cotisations(self.root)
         
-        # Création des branches Renseignements
+        # CrÃ©ation des branches Renseignements
         self.Branches_renseignements(self.root)
         
-        # Création des branches Vaccinations
+        # CrÃ©ation des branches Vaccinations
         self.Branches_vaccinations(self.root)
         
         self.DB.Close() 
@@ -195,12 +195,12 @@ class CTRL(wx.TreeCtrl):
         self.ExpandAllChildren(self.root)
 
     def Branches_messages(self, niveauParent=None):
-        # Création des branches
+        # CrÃ©ation des branches
         self.listeMessages = self.GetMessages()
         nbreMessages = len(self.listeMessages)
         if nbreMessages > 0 : 
             
-            # Label de la catégorie d'info
+            # Label de la catÃ©gorie d'info
             if nbreMessages == 1 :
                 labelBranche = _(u"1 message")
             else:
@@ -225,15 +225,15 @@ class CTRL(wx.TreeCtrl):
 
 
     def Branches_cotisations(self, niveauParent=None):
-        # Création des branches
+        # CrÃ©ation des branches
         dictCotisations, nbreCotisations, nbreFamilles = self.GetCotisations() 
         if nbreCotisations > 0 :
             
-            # Label de la catégorie d'info
+            # Label de la catÃ©gorie d'info
             if nbreCotisations == 1 :
-                labelBranche = _(u"1 cotisation à faire")
+                labelBranche = _(u"1 cotisation Ã  faire")
             else:
-                labelBranche = _(u"%d cotisations à faire") % nbreCotisations
+                labelBranche = _(u"%d cotisations Ã  faire") % nbreCotisations
             niveauCategorie = self.AppendItem(niveauParent, labelBranche)
             if 'phoenix' in wx.PlatformInfo:
                 self.SetItemData(niveauCategorie, {"type":"categorie"} )
@@ -248,7 +248,7 @@ class CTRL(wx.TreeCtrl):
                 # Niveau 1 : Titulaires des familles
                 if nbreFamilles > 1 :
                     if IDfamille == None :
-                        label = _(u"Cotisations indépendantes")
+                        label = _(u"Cotisations indÃ©pendantes")
                     else:
                         if self.dictFamillesRattachees != None and len(self.dictFamillesRattachees) > 0 :
                             label = self.dictFamillesRattachees[IDfamille]["nomsTitulaires"]
@@ -280,16 +280,16 @@ class CTRL(wx.TreeCtrl):
 
 
     def Branches_vaccinations(self, niveauParent=None):
-        # Création des branches
+        # CrÃ©ation des branches
         listeMaladies = self.GetVaccinations() 
         nbreMaladies = len(listeMaladies)
         if nbreMaladies > 0 : 
             
-            # Label de la catégorie d'info
+            # Label de la catÃ©gorie d'info
             if nbreMaladies == 1 :
-                labelBranche = _(u"1 vaccination à réaliser")
+                labelBranche = _(u"1 vaccination Ã  rÃ©aliser")
             else:
-                labelBranche = _(u"%d vaccinations à réaliser") % nbreMaladies
+                labelBranche = _(u"%d vaccinations Ã  rÃ©aliser") % nbreMaladies
             niveauCategorie = self.AppendItem(niveauParent, labelBranche)
             if 'phoenix' in wx.PlatformInfo:
                 self.SetItemData(niveauCategorie, {"type":"categorie"} )
@@ -312,17 +312,17 @@ class CTRL(wx.TreeCtrl):
                     self.SetPyData(niveau1, {"type":"vaccination", "IDindividu":IDindividu, "IDtype_maladie":IDtype_maladie})
 
     def Branches_renseignements(self, niveauParent=None):
-        # Création des branches
+        # CrÃ©ation des branches
         try :
             listeRenseignementsManquants = self.GetRenseignements() 
         except Exception as err:
             listeRenseignementsManquants = []
-            print("Erreur dans la recherche des renseignements à fournir : ", err)
+            print("Erreur dans la recherche des renseignements Ã  fournir : ", err)
             
         nbreRenseignementsManquants = len(listeRenseignementsManquants)
         if nbreRenseignementsManquants > 0 : 
             
-            # Label de la catégorie d'info
+            # Label de la catÃ©gorie d'info
             if nbreRenseignementsManquants == 1 :
                 labelBranche = _(u"1 renseignement manquant")
             else:
@@ -359,16 +359,16 @@ class CTRL(wx.TreeCtrl):
 
 
     def Branches_pieces(self, niveauParent=None):
-        # Création des branches
+        # CrÃ©ation des branches
         dictPieces, nbrePieces, nbreFamilles = self.GetPieces() 
         
         if nbrePieces > 0 :
             
-            # Label de la catégorie d'info
+            # Label de la catÃ©gorie d'info
             if nbrePieces == 1 :
-                labelBranche = _(u"1 pièce à fournir")
+                labelBranche = _(u"1 piÃ¨ce Ã  fournir")
             else:
-                labelBranche = _(u"%d pièces à fournir") % nbrePieces
+                labelBranche = _(u"%d piÃ¨ces Ã  fournir") % nbrePieces
             niveauCategorie = self.AppendItem(niveauParent, labelBranche)
             data = {"type":"categorie"}
             if 'phoenix' in wx.PlatformInfo:
@@ -384,7 +384,7 @@ class CTRL(wx.TreeCtrl):
                 # Niveau 1 : Titulaires des familles
                 if nbreFamilles > 1 :
                     if IDfamille == None :
-                        label = _(u"Pièces indépendantes")
+                        label = _(u"PiÃ¨ces indÃ©pendantes")
                     else:
                         if self.dictFamillesRattachees != None and len(self.dictFamillesRattachees) > 0 :
                             if IDfamille in self.dictFamillesRattachees:
@@ -399,7 +399,7 @@ class CTRL(wx.TreeCtrl):
                 else:
                     niveau1 = niveauParent
                 
-                # Niveau 2 : Nom des pièces
+                # Niveau 2 : Nom des piÃ¨ces
                 for IDfamille, IDtype_piece, nomPiece, publicPiece, prenom, IDindividu, valide in valeurs :
                     if nomPiece == None :
                         nomPiece = "?"
@@ -422,10 +422,10 @@ class CTRL(wx.TreeCtrl):
         
         
     def GetMessages(self):
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         listeMessages = []
         
-        # Création des conditions
+        # CrÃ©ation des conditions
         condition = ""
         # Si pour fiche FAMILLE :
         if self.IDfamille != None :
@@ -434,7 +434,7 @@ class CTRL(wx.TreeCtrl):
         if self.IDindividu != None :
             condition = "WHERE IDindividu=%d " % self.IDindividu
         
-        # Récupération des pièces à fournir pour la famille ou l'individu
+        # RÃ©cupÃ©ration des piÃ¨ces Ã  fournir pour la famille ou l'individu
         req = """
         SELECT IDmessage, type, IDcategorie, date_saisie, IDutilisateur, date_parution, priorite,
         afficher_accueil, afficher_liste, IDfamille, IDindividu, texte, rappel_famille
@@ -452,11 +452,11 @@ class CTRL(wx.TreeCtrl):
 
 
     def GetPieces(self):
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         self.listePiecesObligatoires = []
         self.dictItems = {}
         
-        # Création des conditions
+        # CrÃ©ation des conditions
         condition = ""
         # Si pour fiche FAMILLE :
         if self.IDfamille != None :
@@ -465,7 +465,7 @@ class CTRL(wx.TreeCtrl):
         if self.IDindividu != None :
             condition = "AND inscriptions.IDindividu=%d " % self.IDindividu
         
-        # Récupération des pièces à fournir pour la famille ou l'individu
+        # RÃ©cupÃ©ration des piÃ¨ces Ã  fournir pour la famille ou l'individu
         req = """
         SELECT 
         inscriptions.IDfamille, pieces_activites.IDtype_piece, types_pieces.nom, types_pieces.public, types_pieces.valide_rattachement, individus.prenom, individus.IDindividu
@@ -480,7 +480,7 @@ class CTRL(wx.TreeCtrl):
         self.DB.ExecuterReq(req)
         listePiecesObligatoires = self.DB.ResultatReq()
         
-        # Récupération des pièces de la famille
+        # RÃ©cupÃ©ration des piÃ¨ces de la famille
         dateDuJour = datetime.date.today()
         
         if self.IDindividu != None :
@@ -532,24 +532,24 @@ class CTRL(wx.TreeCtrl):
         listePiecesFournies = self.DB.ResultatReq()
         dictPiecesFournies = {}
         for IDpiece, IDtype_piece, IDindividu, IDfamille, date_debut, date_fin, publicPiece in listePiecesFournies :
-            # Pour les pièces familiales :
+            # Pour les piÃ¨ces familiales :
             if publicPiece == "famille" : IDindividu = None
             
             date_debut = DateEngEnDateDD(date_debut)
             date_fin = DateEngEnDateDD(date_fin)
             dictPiecesFournies[ (IDfamille, IDtype_piece, IDindividu) ] = (date_debut, date_fin)
         
-        # Comparaison de la liste des pièces à fournir et la liste des pièces fournies
+        # Comparaison de la liste des piÃ¨ces Ã  fournir et la liste des piÃ¨ces fournies
         dictDonnees = {}
         for IDfamille, IDtype_piece, nomPiece, publicPiece, rattachementPiece, prenom, IDindividu in listePiecesObligatoires :
             
-            # Pour les pièces familiales :
+            # Pour les piÃ¨ces familiales :
             if publicPiece == "famille" : IDindividu = None
-            # Pour les pièces qui sont indépendantes de la famille
+            # Pour les piÃ¨ces qui sont indÃ©pendantes de la famille
             if rattachementPiece == 1 :
                 IDfamille = None
             
-            # Mémorise pour la fenêtre de saisie d'une pièce
+            # MÃ©morise pour la fenÃªtre de saisie d'une piÃ¨ce
             self.listePiecesObligatoires.append((IDfamille, IDtype_piece, IDindividu))
             
             if (IDfamille, IDtype_piece, IDindividu) in dictPiecesFournies :
@@ -565,7 +565,7 @@ class CTRL(wx.TreeCtrl):
             if valide == "attention" or valide == "pasok" :
                 dictDonnees[(IDfamille, IDtype_piece, IDindividu)] = (IDfamille, IDtype_piece, nomPiece, publicPiece, prenom, IDindividu, valide)
         
-        # Répartition par famille
+        # RÃ©partition par famille
         dictPieces = {}
         nbreFamilles = 0
         nbrePieces = len(dictDonnees)
@@ -582,8 +582,8 @@ class CTRL(wx.TreeCtrl):
 
 
     def GetRenseignements(self):
-        """ Renseignements à fournir """
-        # Création des conditions
+        """ Renseignements Ã  fournir """
+        # CrÃ©ation des conditions
         condition = ""
         # Si pour fiche FAMILLE :
         if self.IDfamille != None :
@@ -592,7 +592,7 @@ class CTRL(wx.TreeCtrl):
         if self.IDindividu != None :
             condition = "AND inscriptions.IDindividu=%d " % self.IDindividu
 
-        # Récupération des renseignements à fournir pour la famille ou l'individu
+        # RÃ©cupÃ©ration des renseignements Ã  fournir pour la famille ou l'individu
         req = """
         SELECT 
         inscriptions.IDfamille, individus.IDindividu, IDtype_renseignement, individus.prenom
@@ -606,7 +606,7 @@ class CTRL(wx.TreeCtrl):
         self.DB.ExecuterReq(req)
         listeRenseignementsObligatoires = self.DB.ResultatReq()
     
-        # Récupération des données de la famille
+        # RÃ©cupÃ©ration des donnÃ©es de la famille
         if self.IDfamille != None :
             req = """SELECT IDcaisse, num_allocataire, allocataire, titulaire_helios, code_comptable
             FROM familles WHERE IDfamille=%d""" % self.IDfamille
@@ -614,14 +614,14 @@ class CTRL(wx.TreeCtrl):
             IDcaisse, num_allocataire, allocataire, titulaire_helios, code_comptable = self.DB.ResultatReq()[0]
             dictDonneesFamille = {"IDcaisse":IDcaisse, "num_allocataire":num_allocataire, "allocataire":allocataire, "titulaire_helios":titulaire_helios, "code_comptable":code_comptable}
 
-        # Récupère la liste des ID individus concernés
+        # RÃ©cupÃ¨re la liste des ID individus concernÃ©s
         listeIDindividus = []
         for valeurs in listeRenseignementsObligatoires :
             IDindividu = valeurs[1]
             if IDindividu not in listeIDindividus and IDindividu != None :
                 listeIDindividus.append(IDindividu)
         
-        # Récupère les données individus
+        # RÃ©cupÃ¨re les donnÃ©es individus
         if len(listeIDindividus) == 0 : conditionIDindividu = "()"
         if len(listeIDindividus) == 1 : conditionIDindividu = "(%d)" % listeIDindividus[0]
         else : conditionIDindividu = str(tuple(listeIDindividus))
@@ -674,7 +674,7 @@ class CTRL(wx.TreeCtrl):
                 if valeur == None :
                     listeRenseignementsManquants.append(dictTemp)
             
-            # Numéro de sécu
+            # NumÃ©ro de sÃ©cu
             if IDtype_renseignement == 3 and IDindividu in dictDonneesIndividus :
                 valeur = dictDonneesIndividus[IDindividu]["num_secu"]
                 if self.IDindividu != None and self.GetGrandParent().GetName() == "notebook_individu" :
@@ -684,7 +684,7 @@ class CTRL(wx.TreeCtrl):
                 if valeur == "" :
                     listeRenseignementsManquants.append(dictTemp)
             
-##            # Adresse de résidence
+##            # Adresse de rÃ©sidence
 ##            if IDtype_renseignement == 5 :
 ##                adresse_auto = dictDonneesIndividus[IDindividu]["adresse_auto"]
 ##                if adresse_auto == None :
@@ -696,7 +696,7 @@ class CTRL(wx.TreeCtrl):
 ##                if valeur == "" :
 ##                    listeRenseignementsManquants.append(dictTemp)
 
-            # Médecin traitant
+            # MÃ©decin traitant
             if IDtype_renseignement == 6 and IDindividu in dictDonneesIndividus :
                 valeur = dictDonneesIndividus[IDindividu]["IDmedecin"]
 ##                if self.IDindividu != None and self.GetGrandParent().GetName() == "notebook_individu" :
@@ -713,7 +713,7 @@ class CTRL(wx.TreeCtrl):
                     listeRenseignementsManquants.append(dictTemp)
                     listeRenseignementsTemp.append(IDtype_renseignement)
 
-            # Numéro d'allocataire
+            # NumÃ©ro d'allocataire
             if IDtype_renseignement == 8 and self.IDfamille != None and IDtype_renseignement not in listeRenseignementsTemp :
                 if dictDonneesFamille["num_allocataire"] in (None, "") :
                     dictTemp["prenom"] = _(u"la famille")
@@ -727,7 +727,7 @@ class CTRL(wx.TreeCtrl):
                     listeRenseignementsManquants.append(dictTemp)
                     listeRenseignementsTemp.append(IDtype_renseignement)
 
-            # Titulaire Hélios
+            # Titulaire HÃ©lios
             if IDtype_renseignement == 10 and self.IDfamille != None and IDtype_renseignement not in listeRenseignementsTemp :
                 if dictDonneesFamille["titulaire_helios"] == None :
                     dictTemp["prenom"] = _(u"la famille")
@@ -762,11 +762,11 @@ class CTRL(wx.TreeCtrl):
         dateJour, dateMois, dateAnnee = date_vaccin.day, date_vaccin.month, date_vaccin.year
         
         if jours==0 and mois==0 and annees==0:
-            # Si illimité
+            # Si illimitÃ©
             dateFin = datetime.date(2999, 1, 1)
             return str(dateFin), None
         else:
-            # Limité
+            # LimitÃ©
             dateFin = date_vaccin
             if jours != 0 : dateFin = dateFin + relativedelta.relativedelta(days=+jours)
             if mois != 0 : dateFin = dateFin + relativedelta.relativedelta(months=+mois)
@@ -780,7 +780,7 @@ class CTRL(wx.TreeCtrl):
 
     def GetVaccinations(self):
         
-        # Création des conditions
+        # CrÃ©ation des conditions
         condition = ""
         # Si pour fiche FAMILLE :
         if self.IDfamille != None :
@@ -789,7 +789,7 @@ class CTRL(wx.TreeCtrl):
         if self.IDindividu != None :
             condition = "AND inscriptions.IDindividu=%d " % self.IDindividu
         
-        # Récupère la liste des individus pour lesquels les vaccinations à jour sont obligatoires
+        # RÃ©cupÃ¨re la liste des individus pour lesquels les vaccinations Ã  jour sont obligatoires
         req = """
         SELECT inscriptions.IDindividu, prenom
         FROM activites
@@ -814,7 +814,7 @@ class CTRL(wx.TreeCtrl):
         if len(listeIDindividus) == 1 : conditionIDindividu = "(%d)" % listeIDindividus[0]
         else : conditionIDindividu = str(tuple(listeIDindividus))
         
-        # Récupère la liste des maladies dont le vaccin est obligatoire
+        # RÃ©cupÃ¨re la liste des maladies dont le vaccin est obligatoire
         req = """
         SELECT nom, IDtype_maladie
         FROM types_maladies
@@ -823,7 +823,7 @@ class CTRL(wx.TreeCtrl):
         self.DB.ExecuterReq(req)
         listeMaladies = self.DB.ResultatReq()
         
-        # Récupère la liste des vaccins de l'individu
+        # RÃ©cupÃ¨re la liste des vaccins de l'individu
         req = """
         SELECT 
         vaccins.IDindividu, vaccins.IDvaccin, vaccins.IDtype_vaccin, vaccins.date, vaccins_maladies.IDtype_maladie, 
@@ -862,7 +862,7 @@ class CTRL(wx.TreeCtrl):
                             etat = "attention"
                         else:
                             etat = "ok"
-                # Ajout à la liste finale
+                # Ajout Ã  la liste finale
                 if etat != "ok" :
                     listeMaladiesFinal.append((IDindividu, prenom, labelMaladie, IDtype_maladie, etat))
         listeMaladiesFinal.sort() 
@@ -871,12 +871,12 @@ class CTRL(wx.TreeCtrl):
 
 
     def GetCotisations(self):
-        """ Vérifie si l'individu ou la famille doit fournir une ou plusieurs cotisations """
-        # Récupération des données
+        """ VÃ©rifie si l'individu ou la famille doit fournir une ou plusieurs cotisations """
+        # RÃ©cupÃ©ration des donnÃ©es
         self.listeCotisationsObligatoires = []
         self.dictItems = {}
         
-        # Création des conditions
+        # CrÃ©ation des conditions
         condition = ""
         # Si pour fiche FAMILLE :
         if self.IDfamille != None :
@@ -886,7 +886,7 @@ class CTRL(wx.TreeCtrl):
             condition = "AND inscriptions.IDindividu=%d " % self.IDindividu
         
         
-        # Récupération des cotisations à fournir pour la famille ou l'individu
+        # RÃ©cupÃ©ration des cotisations Ã  fournir pour la famille ou l'individu
         req = """
         SELECT 
         inscriptions.IDfamille, cotisations_activites.IDactivite, cotisations_activites.IDtype_cotisation, types_cotisations.nom, types_cotisations.type, individus.prenom, individus.IDindividu
@@ -907,7 +907,7 @@ class CTRL(wx.TreeCtrl):
                 dictCotisationObligatoires[IDactivite] = []
             dictCotisationObligatoires[IDactivite].append((IDfamille, IDtype_cotisation, nomCotisation, typeCotisation, prenom, IDindividu))
         
-        # Récupération des pièces de la famille
+        # RÃ©cupÃ©ration des piÃ¨ces de la famille
         dateDuJour = datetime.date.today()
         
         if self.IDindividu != None :
@@ -967,7 +967,7 @@ class CTRL(wx.TreeCtrl):
             date_fin = DateEngEnDateDD(date_fin)
             dictCotisationsFournies[ (IDfamille, IDtype_cotisation, IDindividu) ] = (date_debut, date_fin)
         
-        # Comparaison de la liste des cotisations à fournir et la liste des cotisations fournies
+        # Comparaison de la liste des cotisations Ã  fournir et la liste des cotisations fournies
         dictDonnees = {}
         for IDactivite, listeCotisationsActivite in dictCotisationObligatoires.items() :
             activiteValide = False
@@ -979,10 +979,10 @@ class CTRL(wx.TreeCtrl):
                 if typeCotisation == "famille" : 
                     IDindividu = None
                 else:
-                    # Pour les cotisations qui sont indépendantes de la famille
+                    # Pour les cotisations qui sont indÃ©pendantes de la famille
                     IDfamille = None
                 
-                # Mémorise pour la fenêtre de saisie d'une cotisation
+                # MÃ©morise pour la fenÃªtre de saisie d'une cotisation
                 self.listeCotisationsObligatoires.append((IDfamille, IDtype_cotisation, IDindividu))
                 
                 if (IDfamille, IDtype_cotisation, IDindividu) in dictCotisationsFournies :
@@ -1001,12 +1001,12 @@ class CTRL(wx.TreeCtrl):
                 if valide == "attention" or valide == "pasok" :
                     listeTemp.append((IDfamille, IDtype_cotisation, nomCotisation, typeCotisation, prenom, IDindividu, valide))
                 
-            # Mémorisation
+            # MÃ©morisation
             if activiteValide == False :
                 for IDfamille, IDtype_cotisation, nomCotisation, typeCotisation, prenom, IDindividu, valide in listeTemp :
                     dictDonnees[(IDfamille, IDtype_cotisation, IDindividu)] = (IDfamille, IDtype_cotisation, nomCotisation, typeCotisation, prenom, IDindividu, valide)
         
-        # Répartition par famille
+        # RÃ©partition par famille
         dictCotisations = {}
         nbreFamilles = 0
         nbreCotisations = len(dictDonnees)

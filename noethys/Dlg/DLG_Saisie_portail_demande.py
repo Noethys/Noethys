@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -27,7 +27,7 @@ from Dlg import DLG_Badgeage_grille
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 from Utils import UTILS_Config
 from Utils import UTILS_Parametres
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 if 'phoenix' in wx.PlatformInfo:
     from wx.adv import DatePickerCtrl, DP_DROPDOWN, EVT_DATE_CHANGED
@@ -35,8 +35,8 @@ else :
     from wx import DatePickerCtrl, DP_DROPDOWN, EVT_DATE_CHANGED
 
 
-DICT_RENSEIGNEMENTS = {"nom" : u"Nom", "prenom" : u"Prénom", "date_naiss" : u"Date de naissance", "cp_naiss" : u"CP de naissance", "ville_naiss" : u"Ville de naissance", "rue_resid" : u"Adresse - Rue", "cp_resid" : u"Adresse - CP", "ville_resid" : u"Adresse - Ville",
-                    "tel_domicile" : u"Tél. Domicile", "tel_mobile" : u"Tél. Mobile", "mail" : u"Email", "profession" : u"Profession", "employeur" : u"Employeur", "travail_tel" : u"Tél. Pro.", "travail_mail" : u"Email Pro."}
+DICT_RENSEIGNEMENTS = {"nom" : u"Nom", "prenom" : u"PrÃ©nom", "date_naiss" : u"Date de naissance", "cp_naiss" : u"CP de naissance", "ville_naiss" : u"Ville de naissance", "rue_resid" : u"Adresse - Rue", "cp_resid" : u"Adresse - CP", "ville_resid" : u"Adresse - Ville",
+                    "tel_domicile" : u"TÃ©l. Domicile", "tel_mobile" : u"TÃ©l. Mobile", "mail" : u"Email", "profession" : u"Profession", "employeur" : u"Employeur", "travail_tel" : u"TÃ©l. Pro.", "travail_mail" : u"Email Pro."}
 
 
 
@@ -71,7 +71,7 @@ class MyDatePickerCtrl(DatePickerCtrl):
         self.Bind(wx.EVT_CHILD_FOCUS, self.OnFocus)
 
     def OnFocus(self,event):
-        event.Skip(False)       #évite la propagation vers le 'PySwigObject' object
+        event.Skip(False)       #Ã©vite la propagation vers le 'PySwigObject' object
 
     def SetDate(self, dateDD=None):
         jour = dateDD.day
@@ -114,11 +114,11 @@ class CTRL_Choix_modele(wx.Choice):
         #else:
         #    self.Enable(True)
         self.SetItems(listeItems)
-        # Re-sélection après MAJ
+        # Re-sÃ©lection aprÃ¨s MAJ
         if selectionActuelle != None :
             self.SetID(selectionActuelle)
         else:
-            # Sélection par défaut
+            # SÃ©lection par dÃ©faut
             self.SetID(self.defaut)
 
     def GetListeDonnees(self):
@@ -185,7 +185,7 @@ class CTRL_Solde(wx.TextCtrl):
                 dictReglements[IDfamille] = FloatToDecimal(0.0)
                 dictReglements[IDfamille] += FloatToDecimal(montant)
 
-        # Récupération des prestations
+        # RÃ©cupÃ©ration des prestations
         req = """SELECT IDfamille, SUM(montant)
         FROM prestations
         WHERE IDfamille=%d
@@ -239,12 +239,12 @@ class Dialog(wx.Dialog):
         self.track = track
         self.tracks = tracks
 
-        # Bandeau spécial
+        # Bandeau spÃ©cial
         self.panel_bandeau = wx.Panel(self, -1)
         self.panel_bandeau.SetBackgroundColour(wx.Colour(255, 255, 255))
 
         self.ctrl_image = wx.StaticBitmap(self.panel_bandeau, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/32x32/Calendrier_modifier.png"), wx.BITMAP_TYPE_ANY))
-        self.label_action = wx.StaticText(self.panel_bandeau, -1, _(u"Réservation de dates"))
+        self.label_action = wx.StaticText(self.panel_bandeau, -1, _(u"RÃ©servation de dates"))
         self.label_action.SetFont(wx.Font(11, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))
         self.ligne1 = wx.StaticLine(self.panel_bandeau, -1)
         self.label_horodatage = wx.StaticText(self.panel_bandeau, -1, _(u"Mardi 26 juillet a 14h10"))
@@ -291,13 +291,13 @@ class Dialog(wx.Dialog):
 
         self.label_etat = wx.StaticText(self, -1, _(u"Etat :"), style=wx.ALIGN_RIGHT)
         self.radio_attente = wx.RadioButton(self, -1, _(u"En attente"), style=wx.RB_GROUP)
-        self.radio_validation = wx.RadioButton(self, -1, _(u"Traité le"))
+        self.radio_validation = wx.RadioButton(self, -1, _(u"TraitÃ© le"))
         self.ctrl_date_validation = MyDatePickerCtrl(self)
 
         self.image_email_reponse = wx.StaticBitmap(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Emails_exp.png"), wx.BITMAP_TYPE_ANY))
         self.label_email_reponse = wx.StaticText(self, -1, "")
 
-        self.label_reponse = wx.StaticText(self, -1, _(u"Réponse :"))
+        self.label_reponse = wx.StaticText(self, -1, _(u"RÃ©ponse :"))
         self.ctrl_reponse = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE)
         self.ctrl_reponse.SetMinSize((-1, 60))
 
@@ -305,7 +305,7 @@ class Dialog(wx.Dialog):
         self.label_email = wx.StaticText(self, -1, _(u"Email :"))
         self.bouton_envoyer = CTRL_Bouton_image.CTRL(self, texte=_(u"Envoyer"), cheminImage="Images/32x32/Emails_exp.png")
         self.bouton_editeur = CTRL_Bouton_image.CTRL(self, texte=_(u"Editeur d'Emails"), cheminImage="Images/32x32/Editeur_email.png")
-        self.label_modele = wx.StaticText(self, -1, _(u"Modèle :"))
+        self.label_modele = wx.StaticText(self, -1, _(u"ModÃ¨le :"))
         self.ctrl_modele_email = CTRL_Choix_modele(self, categorie=None)
         self.ctrl_modele_email.SetMinSize((280, -1))
         self.bouton_gestion_modeles = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
@@ -346,23 +346,23 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Traitement des demandes"))
-        self.bouton_premier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la première demande de la liste")))
-        self.bouton_precedent.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la demande précédente dans la liste")))
-        self.bouton_suivant.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la demande suivante dans la liste")))
-        self.bouton_dernier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la dernière demande de la liste")))
+        self.bouton_premier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la premiÃ¨re demande de la liste")))
+        self.bouton_precedent.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la demande prÃ©cÃ©dente dans la liste")))
+        self.bouton_suivant.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la demande suivante dans la liste")))
+        self.bouton_dernier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la derniÃ¨re demande de la liste")))
         self.bouton_famille.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la fiche famille")))
         self.radio_attente.SetToolTip(wx.ToolTip(_(u"Demande en attente")))
-        self.radio_validation.SetToolTip(wx.ToolTip(_(u"Demande traitée")))
+        self.radio_validation.SetToolTip(wx.ToolTip(_(u"Demande traitÃ©e")))
         self.ctrl_date_validation.SetToolTip(wx.ToolTip(_(u"Date de traitement de la demande")))
-        self.ctrl_reponse.SetToolTip(wx.ToolTip(_(u"Cette réponse apparaîtra sur le portail et dans l'email de confirmation (si vous utilisez le mot-clé {DEMANDE_REPONSE} dans l'email). Cette réponse est générée automatiquement par Noethys mais vous pouvez la modifier librement.")))
-        self.bouton_envoyer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer directement un email de réponse à la famille sans passer par l'éditeur d'Emails.")))
-        self.bouton_editeur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir l'éditeur d'Email afin d'envoyer un email de réponse à la famille")))
-        self.ctrl_modele_email.SetToolTip(wx.ToolTip(_(u"Sélectionnez un modèle d'email")))
-        self.bouton_gestion_modeles.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des modèles d'emails")))
+        self.ctrl_reponse.SetToolTip(wx.ToolTip(_(u"Cette rÃ©ponse apparaÃ®tra sur le portail et dans l'email de confirmation (si vous utilisez le mot-clÃ© {DEMANDE_REPONSE} dans l'email). Cette rÃ©ponse est gÃ©nÃ©rÃ©e automatiquement par Noethys mais vous pouvez la modifier librement.")))
+        self.bouton_envoyer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer directement un email de rÃ©ponse Ã  la famille sans passer par l'Ã©diteur d'Emails.")))
+        self.bouton_editeur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir l'Ã©diteur d'Email afin d'envoyer un email de rÃ©ponse Ã  la famille")))
+        self.ctrl_modele_email.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un modÃ¨le d'email")))
+        self.bouton_gestion_modeles.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la gestion des modÃ¨les d'emails")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_automatique.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lancer le traitement automatique de cette demande")))
         self.bouton_manuel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lancer le traitement manuel de cette demande")))
-        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer la fenêtre")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer la fenÃªtre")))
         self.SetMinSize((800, 670))
 
     def __do_layout(self):
@@ -452,7 +452,7 @@ class Dialog(wx.Dialog):
         self.grid_sizer_etat.AddGrowableCol(3)
         grid_sizer_traitement.Add(self.grid_sizer_etat, 1, wx.EXPAND, 0)
 
-        # Réponse
+        # RÃ©ponse
         grid_sizer_traitement.Add(self.label_reponse, 0, wx.ALIGN_RIGHT, 0)
         grid_sizer_traitement.Add(self.ctrl_reponse, 0, wx.EXPAND, 0)
 
@@ -502,7 +502,7 @@ class Dialog(wx.Dialog):
     def Importation(self):
         DB = GestionDB.DB()
 
-        # Récupération des unités de réservations
+        # RÃ©cupÃ©ration des unitÃ©s de rÃ©servations
         req = """SELECT IDunite, IDactivite, nom, unites_principales, unites_secondaires, ordre
         FROM portail_unites;"""
         DB.ExecuterReq(req)
@@ -516,7 +516,7 @@ class Dialog(wx.Dialog):
                 "unites_secondaires" : unites_secondaires, "ordre" : ordre,
                 }
 
-        # Récupération des activités
+        # RÃ©cupÃ©ration des activitÃ©s
         req = """SELECT IDactivite, nom, portail_reservations_limite, portail_reservations_absenti
         FROM activites;"""
         DB.ExecuterReq(req)
@@ -623,10 +623,10 @@ class Dialog(wx.Dialog):
         if self.track == None :
             return
 
-        # Catégorie de l'action
+        # CatÃ©gorie de l'action
         self.label_action.SetLabel(self.track.categorie_label)
 
-        # Image de la catégorie
+        # Image de la catÃ©gorie
         dict_images = {
             "reglements" : "Reglement.png",
             "factures" : "Facture.png",
@@ -653,7 +653,7 @@ class Dialog(wx.Dialog):
 
         if self.track.categorie == "reservations" :
 
-            # Recherche si d'autres réservations existent pour le même individu et la même période
+            # Recherche si d'autres rÃ©servations existent pour le mÃªme individu et la mÃªme pÃ©riode
             liste_demandes_avant = []
             liste_demandes_apres = []
             for track in self.tracks :
@@ -674,15 +674,15 @@ class Dialog(wx.Dialog):
                 affiche_s_apres = ""
 
             if len(liste_demandes_avant) > 0 and len(liste_demandes_apres) == 0 :
-                texte_autres_demandes = _(u"\n(Remarque : Il existe pour la même période %d réservation%s plus ancienne%s)") % (len(liste_demandes_avant), affiche_s_avant, affiche_s_avant)
+                texte_autres_demandes = _(u"\n(Remarque : Il existe pour la mÃªme pÃ©riode %d rÃ©servation%s plus ancienne%s)") % (len(liste_demandes_avant), affiche_s_avant, affiche_s_avant)
             elif len(liste_demandes_avant) == 0 and len(liste_demandes_apres) > 0 :
-                texte_autres_demandes = _(u"\n(Remarque : Il existe pour la même période %d réservation%s plus récente%s)") % (len(liste_demandes_apres), affiche_s_apres, affiche_s_apres)
+                texte_autres_demandes = _(u"\n(Remarque : Il existe pour la mÃªme pÃ©riode %d rÃ©servation%s plus rÃ©cente%s)") % (len(liste_demandes_apres), affiche_s_apres, affiche_s_apres)
             elif len(liste_demandes_avant) > 0 and len(liste_demandes_apres) > 0 :
-                texte_autres_demandes = _(u"\n(Remarque : Il existe pour la même période %d réservation%s plus ancienne%s et %d plus récente%s)") % (len(liste_demandes_avant), affiche_s_avant, affiche_s_avant, len(liste_demandes_apres), affiche_s_apres)
+                texte_autres_demandes = _(u"\n(Remarque : Il existe pour la mÃªme pÃ©riode %d rÃ©servation%s plus ancienne%s et %d plus rÃ©cente%s)") % (len(liste_demandes_avant), affiche_s_avant, affiche_s_avant, len(liste_demandes_apres), affiche_s_apres)
             else :
                 texte_autres_demandes = ""
 
-            # Recherche le détail des réservations associées
+            # Recherche le dÃ©tail des rÃ©servations associÃ©es
             DB = GestionDB.DB()
             req = """SELECT IDreservation, date, IDinscription, portail_reservations.IDunite, etat, portail_unites.nom
             FROM portail_reservations
@@ -707,13 +707,13 @@ class Dialog(wx.Dialog):
             if len(texte_autres_demandes) > 0 :
                 description += u"<br><FONT SIZE=2 COLOR='red'>%s</FONT>" % texte_autres_demandes
 
-            # Rajout du détail des réservations
+            # Rajout du dÃ©tail des rÃ©servations
             description += u"<p><ul>%s</ul></p>" % "".join(liste_lignes)
 
 
         if self.track.categorie == "renseignements" :
 
-            # Recherche le détail des renseignements associés
+            # Recherche le dÃ©tail des renseignements associÃ©s
             DB = GestionDB.DB()
             req = """SELECT champ, valeur
             FROM portail_renseignements
@@ -739,19 +739,19 @@ class Dialog(wx.Dialog):
                         prenom = listeIndividus[0][1]
                     else :
                         prenom = "?"
-                    label = _(u"<li>Adresse associée à celle de %s</li>") % prenom
+                    label = _(u"<li>Adresse associÃ©e Ã  celle de %s</li>") % prenom
 
                 if label != None:
                     liste_lignes.append(label)
 
             description += u" :"
 
-            # Rajout du détail des renseignements
+            # Rajout du dÃ©tail des renseignements
             description += u"<p><ul>%s</ul></p>" % "".join(liste_lignes)
 
         if self.track.categorie == "locations" :
 
-            # Recherche le détail des réservations associées
+            # Recherche le dÃ©tail des rÃ©servations associÃ©es
             DB = GestionDB.DB()
             req = """SELECT IDreservation, date_debut, date_fin, partage, IDlocation, portail_reservations_locations.IDproduit, etat, produits.nom
             FROM portail_reservations_locations
@@ -771,13 +771,13 @@ class Dialog(wx.Dialog):
                 else :
                     action = _(u"Suppression")
                 if partage:
-                    nom_produit += u" - Partage autorisé"
+                    nom_produit += u" - Partage autorisÃ©"
                 ligne = _(u"<li>%s du %s au %s (%s)</li>") % (action, date_debut.strftime("%d/%m/%Y %H:%M"), date_fin.strftime("%d/%m/%Y %H:%M"), nom_produit)
                 liste_lignes.append(ligne)
 
             description += u" :"
 
-            # Rajout du détail des réservations
+            # Rajout du dÃ©tail des rÃ©servations
             description += u"<p><ul>%s</ul></p>" % "".join(liste_lignes)
 
         self.ctrl_description.SetTexte(description)
@@ -792,7 +792,7 @@ class Dialog(wx.Dialog):
         # Etat
         self.SetEtat(self.track.etat, self.track.traitement_date)
 
-        # Réponse
+        # RÃ©ponse
         if self.track.reponse != None :
             reponse = self.track.reponse
         else :
@@ -812,7 +812,7 @@ class Dialog(wx.Dialog):
 
         self.MAJ_email_date()
 
-        # Sélection du modèle attribué à la période
+        # SÃ©lection du modÃ¨le attribuÃ© Ã  la pÃ©riode
         if self.track.categorie == "reservations" and self.track.periode_IDmodele != None :
             self.ctrl_modele_email.SetID(self.track.periode_IDmodele)
 
@@ -823,10 +823,10 @@ class Dialog(wx.Dialog):
         self.bouton_suivant.Enable(index < len(self.tracks)-1)
         self.bouton_dernier.Enable(index < len(self.tracks)-1)
 
-        # Titre de la fenêtre
+        # Titre de la fenÃªtre
         self.SetTitle(_(u"Traitement des demandes [%d/%d]") % (index+1, len(self.tracks)))
 
-        # Sélection du track dans le listview
+        # SÃ©lection du track dans le listview
         self.Freeze()
         self.track.Select()
         self.Thaw()
@@ -835,7 +835,7 @@ class Dialog(wx.Dialog):
         if self.track.email_date != None :
             self.image_email_reponse.Show(True)
             self.label_email_reponse.Show(True)
-            self.label_email_reponse.SetLabel(_(u"Email de réponse envoyé le %s") % UTILS_Dates.DateDDEnFr(self.track.email_date))
+            self.label_email_reponse.SetLabel(_(u"Email de rÃ©ponse envoyÃ© le %s") % UTILS_Dates.DateDDEnFr(self.track.email_date))
         else :
             self.image_email_reponse.Show(False)
             self.label_email_reponse.Show(False)
@@ -844,15 +844,15 @@ class Dialog(wx.Dialog):
     def MAJ_informations(self):
         texte = ""
 
-        # Affiche le solde pour la période de la réservation
+        # Affiche le solde pour la pÃ©riode de la rÃ©servation
         if self.track.categorie == "reservations":
-            # Calcule le solde actuel de la période de réservations
+            # Calcule le solde actuel de la pÃ©riode de rÃ©servations
             traitement = Traitement(parent=self, track=self.track)
             montants = traitement.Get_montants_reservations()
             texte_solde = u"%.2f %s" % (montants["solde"], SYMBOLE)
             if montants["solde"] > FloatToDecimal(0.0):
                 texte_solde = u"<FONT COLOR='red'>%s</FONT>" % texte_solde
-            texte = _(u"Total pour la période : %.2f %s | Réglé : %.2f %s | Solde à régler : %s") % (montants["total"], SYMBOLE, montants["regle"], SYMBOLE, texte_solde)
+            texte = _(u"Total pour la pÃ©riode : %.2f %s | RÃ©glÃ© : %.2f %s | Solde Ã  rÃ©gler : %s") % (montants["total"], SYMBOLE, montants["regle"], SYMBOLE, texte_solde)
 
         # Affiche la ventilation du paiement en ligne
         if self.track.categorie == "reglements" and self.track.action == "paiement_en_ligne":
@@ -866,7 +866,7 @@ class Dialog(wx.Dialog):
 
             DB = GestionDB.DB()
 
-            # Importation des périodes
+            # Importation des pÃ©riodes
             if len(dict_paiements["periode"]) > 0:
                 req = """SELECT IDperiode, portail_periodes.nom, activites.nom
                 FROM portail_periodes
@@ -886,7 +886,7 @@ class Dialog(wx.Dialog):
                 listeFactures = DB.ResultatReq()
                 dict_factures = {}
                 for IDfacture, numero, date_debut, date_fin in listeFactures :
-                    dict_factures[IDfacture] = _(u"Facture n°%s du %s au %s") % (numero, UTILS_Dates.DateEngFr(date_debut), UTILS_Dates.DateEngFr(date_fin))
+                    dict_factures[IDfacture] = _(u"Facture nÂ°%s du %s au %s") % (numero, UTILS_Dates.DateEngFr(date_debut), UTILS_Dates.DateEngFr(date_fin))
 
             DB.Close()
 
@@ -898,7 +898,7 @@ class Dialog(wx.Dialog):
                         if ID in dict_periodes:
                             texte = dict_periodes[ID]
                         else:
-                            texte = _(u"Période inconnue")
+                            texte = _(u"PÃ©riode inconnue")
                     if type_impaye == "facture":
                         if ID in dict_factures:
                             texte = dict_factures[ID]
@@ -906,7 +906,7 @@ class Dialog(wx.Dialog):
                             texte = _(u"Facture inconnue")
                     texte += u" (%.2f %s)" % (montant, SYMBOLE)
                     liste_textes.append(texte)
-            texte = _(u"En règlement de : %s") % u", ".join(liste_textes)
+            texte = _(u"En rÃ¨glement de : %s") % u", ".join(liste_textes)
 
 
         self.ctrl_informations.SetTexte(texte)
@@ -920,7 +920,7 @@ class Dialog(wx.Dialog):
             # Premier
             self.track = self.tracks[0]
         elif ID == 20 :
-            # Précédent
+            # PrÃ©cÃ©dent
             self.track = self.tracks[index-1]
         elif ID == 30 :
             # Suivant
@@ -949,28 +949,28 @@ class Dialog(wx.Dialog):
         traitement = Traitement(parent=self, track=self.track, mode=mode)
         resultat = traitement.Traiter()
 
-        # Sauvegarde de l'état
+        # Sauvegarde de l'Ã©tat
         if resultat != False :
             if resultat["etat"] == True :
 
-                # La demande a été validée
+                # La demande a Ã©tÃ© validÃ©e
                 self.SetEtat(etat="valide", traitement_date=datetime.date.today())
 
-                # Mémorisation de la réponse
+                # MÃ©morisation de la rÃ©ponse
                 if "reponse" in resultat and resultat["reponse"] not in (None, "") :
                     self.ctrl_reponse.SetValue(resultat["reponse"])
 
                 # Enregistrement de la demande
                 self.Sauvegarde()
 
-        # Réactualise le solde
+        # RÃ©actualise le solde
         self.ctrl_solde.MAJ(IDfamille=self.track.IDfamille)
         self.MAJ_informations()
 
         # Automatique : Tout traiter
         # index = self.tracks.index(self.track)
         # if index < len(self.tracks) - 1:
-        #     # Passage à la demande suivante
+        #     # Passage Ã  la demande suivante
         #     self.track = self.tracks[index + 1]
         #     self.MAJ()
         #     # Traitement automatique de la demande
@@ -987,9 +987,9 @@ class Dialog(wx.Dialog):
         self.Envoyer(visible=True)
 
     def Envoyer(self, visible=True):
-        """ Envoyer la réponse par email """
+        """ Envoyer la rÃ©ponse par email """
         if self.ctrl_reponse.GetValue() == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucune réponse.\n\nSouhaitez-vous tout de même envoyer l'email ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucune rÃ©ponse.\n\nSouhaitez-vous tout de mÃªme envoyer l'email ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -997,7 +997,7 @@ class Dialog(wx.Dialog):
 
         IDmodele = self.ctrl_modele_email.GetID()
         if IDmodele == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner un modèle d'Email dans la liste proposée !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner un modÃ¨le d'Email dans la liste proposÃ©e !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -1010,15 +1010,15 @@ class Dialog(wx.Dialog):
 
         resultat = UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.track.IDfamille, nomDoc=nomDoc, categorie=self.categorie_email, listeAdresses=[], visible=visible, log=self.track, CreationPDF=self.CreationPDF, IDmodele=IDmodele)
 
-        # Mémorise la date de l'envoi de l'email
+        # MÃ©morise la date de l'envoi de l'email
         if resultat == True :
             self.track.email_date = datetime.date.today()
             self.MAJ_email_date()
 
     def CreationPDF(self, nomDoc="", afficherDoc=True):
-        """ Création du PDF pour Email """
+        """ CrÃ©ation du PDF pour Email """
 
-        # Génération des champs de fusion de la demande
+        # GÃ©nÃ©ration des champs de fusion de la demande
         dict_champs = {}
         dict_champs["{DEMANDE_HORODATAGE}"] = UTILS_Dates.DateEngEnDateDDT(self.track.horodatage).strftime("%d/%m/%Y %Hh%M")
         dict_champs["{DEMANDE_DESCRIPTION}"] = self.track.description
@@ -1026,19 +1026,19 @@ class Dialog(wx.Dialog):
         dict_champs["{DEMANDE_TRAITEMENT_DATE}"] = UTILS_Dates.DateDDEnFr(self.ctrl_date_validation.GetDate())
         dict_champs["{DEMANDE_REPONSE}"] = self.ctrl_reponse.GetValue()
 
-        # Génération des autres champs de fusion
+        # GÃ©nÃ©ration des autres champs de fusion
         if self.track.categorie == "reservations" :
             dict_champs["{PERIODE_NOM}"] = self.track.periode_nom
             dict_champs["{PERIODE_DATE_DEBUT}"] = UTILS_Dates.DateDDEnFr(self.track.periode_date_debut)
             dict_champs["{PERIODE_DATE_FIN}"] = UTILS_Dates.DateDDEnFr(self.track.periode_date_fin)
 
-            # Génération du PDF des réservations
+            # GÃ©nÃ©ration du PDF des rÃ©servations
             traitement = Traitement(parent=self, track=self.track)
             traitement.Init_grille(ctrl_grille=self.ctrl_grille)
             dict_champs_reservations = self.ctrl_grille.grille.CreationPDF(nomDoc=nomDoc, afficherDoc=afficherDoc)
             dict_champs.update(dict_champs_reservations)
 
-            # Calcule le solde actuel de la période de réservations
+            # Calcule le solde actuel de la pÃ©riode de rÃ©servations
             traitement = Traitement(parent=self, track=self.track)
             montants = traitement.Get_montants_reservations()
             dict_champs["{TOTAL}"] = u"%.2f %s" % (montants["total"], SYMBOLE)
@@ -1058,7 +1058,7 @@ class Traitement():
         self.track = track
         self.mode = mode
 
-        # Récupération des paramètres de l'action
+        # RÃ©cupÃ©ration des paramÃ¨tres de l'action
         self.dict_parametres = self.GetParametres()
 
     def EcritLog(self, message="", log_jumeau=None):
@@ -1067,7 +1067,7 @@ class Traitement():
             log_jumeau.EcritLog(message)
 
     def GetParametres(self):
-        """ Récupération des paramètres de l'action """
+        """ RÃ©cupÃ©ration des paramÃ¨tres de l'action """
         dict_parametres = {}
         if self.track.parametres and len(self.track.parametres) > 0 :
             for donnee in self.track.parametres.split("#") :
@@ -1078,11 +1078,11 @@ class Traitement():
         return dict_parametres
 
     def Traiter(self):
-        """ Traitement des actions en fonction de la catégorie """
+        """ Traitement des actions en fonction de la catÃ©gorie """
         self.EcritLog(_(u"Lancement du traitement de la demande..."))
         resultat = False
 
-        # Traitement des reçus de règlements
+        # Traitement des reÃ§us de rÃ¨glements
         if self.track.categorie == "reglements" and self.track.action == "recevoir":
             resultat = self.Traitement_recus()
 
@@ -1099,7 +1099,7 @@ class Traitement():
             resultat = self.Traitement_inscriptions()
             self.Verifier_ventilation()
 
-        # Traitement des réservations
+        # Traitement des rÃ©servations
         if self.track.categorie == "reservations" :
             resultat = self.Traitement_reservations()
             self.Verifier_ventilation()
@@ -1112,7 +1112,7 @@ class Traitement():
         if self.track.categorie == "locations" :
             resultat = self.Traitement_locations()
 
-        # Traitement des pièces
+        # Traitement des piÃ¨ces
         if self.track.categorie == "pieces" :
             resultat = self.Traitement_pieces()
 
@@ -1122,29 +1122,29 @@ class Traitement():
 
         self.EcritLog(_(u"Fin du traitement."))
 
-        # Sélection de l'état 'Traité'
+        # SÃ©lection de l'Ã©tat 'TraitÃ©'
         return resultat
 
     def Traitement_recus(self):
-        # Récupération des paramètres
+        # RÃ©cupÃ©ration des paramÃ¨tres
         IDreglement = int(self.dict_parametres["IDreglement"])
 
-        # Ouverture de la fenêtre d'édition d'un reçu
+        # Ouverture de la fenÃªtre d'Ã©dition d'un reÃ§u
         from Dlg import DLG_Impression_recu
         dlg_impression = DLG_Impression_recu.Dialog(self.parent, IDreglement=IDreglement)
 
         # Traitement manuel
         if self.mode == "manuel" :
-            self.EcritLog(_(u"Ouverture de la fenêtre d'édition d'un reçu."))
+            self.EcritLog(_(u"Ouverture de la fenÃªtre d'Ã©dition d'un reÃ§u."))
             if self.dict_parametres["methode_envoi"] == "email" :
-                self.EcritLog(_(u"Veuillez envoyer ce reçu de règlement par Email."))
-                reponse = _(u"Reçu de règlement envoyé par Email.")
+                self.EcritLog(_(u"Veuillez envoyer ce reÃ§u de rÃ¨glement par Email."))
+                reponse = _(u"ReÃ§u de rÃ¨glement envoyÃ© par Email.")
             elif self.dict_parametres["methode_envoi"] == "courrier" :
-                self.EcritLog(_(u"Veuillez imprimer le reçu de règlement pour un envoi par courrier."))
-                reponse = _(u"Reçu de règlement envoyé par courrier.")
+                self.EcritLog(_(u"Veuillez imprimer le reÃ§u de rÃ¨glement pour un envoi par courrier."))
+                reponse = _(u"ReÃ§u de rÃ¨glement envoyÃ© par courrier.")
             else :
-                self.EcritLog(_(u"Veuillez imprimer le reçu de règlement pour un retrait sur site."))
-                reponse = _(u"Reçu de règlement disponible au retrait.")
+                self.EcritLog(_(u"Veuillez imprimer le reÃ§u de rÃ¨glement pour un retrait sur site."))
+                reponse = _(u"ReÃ§u de rÃ¨glement disponible au retrait.")
             dlg_impression.ShowModal()
             dlg_impression.Destroy()
 
@@ -1157,12 +1157,12 @@ class Traitement():
 
             # Affichage du PDF pour envoi par courrier ou retrait sur site
             if self.dict_parametres["methode_envoi"] != "email" :
-                message = _(u"Le reçu de règlement va être généré au format PDF et ouvert dans votre lecteur de PDF.\n\n")
+                message = _(u"Le reÃ§u de rÃ¨glement va Ãªtre gÃ©nÃ©rÃ© au format PDF et ouvert dans votre lecteur de PDF.\n\n")
                 if self.dict_parametres["methode_envoi"] == "courrier" :
                     message += _(u"Veuillez l'imprimer et l'envoyer par courrier.")
                 else :
                     message += _(u"Veuillez l'imprimer et le conserver pour un retrait sur site.")
-                dlg = wx.MessageDialog(self.parent, message, _(u"Impression d'un reçu"), wx.OK|wx.OK_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+                dlg = wx.MessageDialog(self.parent, message, _(u"Impression d'un reÃ§u"), wx.OK|wx.OK_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
                 reponse = dlg.ShowModal()
                 dlg.Destroy()
                 if reponse == wx.ID_CANCEL :
@@ -1172,23 +1172,23 @@ class Traitement():
                 dictChamps = dlg_impression.CreationPDF(nomDoc=nomDoc, afficherDoc=True)
                 if dictChamps == False :
                     dlg_impression.Destroy()
-                    self.EcritLog(_(u"[ERREUR] La génération du reçu au format PDF a rencontré une erreur."))
+                    self.EcritLog(_(u"[ERREUR] La gÃ©nÃ©ration du reÃ§u au format PDF a rencontrÃ© une erreur."))
                     return False
 
-                self.EcritLog(_(u"La génération du reçu est terminée."))
+                self.EcritLog(_(u"La gÃ©nÃ©ration du reÃ§u est terminÃ©e."))
                 if self.dict_parametres["methode_envoi"] == "courrier" :
-                    self.EcritLog(_(u"Veuillez imprimer le reçu de règlement pour un envoi par courrier."))
-                    reponse = _(u"Reçu de règlement envoyé par courrier.")
+                    self.EcritLog(_(u"Veuillez imprimer le reÃ§u de rÃ¨glement pour un envoi par courrier."))
+                    reponse = _(u"ReÃ§u de rÃ¨glement envoyÃ© par courrier.")
                 else :
-                    self.EcritLog(_(u"Veuillez imprimer le reçu de règlement pour un retrait sur site."))
-                    reponse = _(u"Reçu de règlement disponible au retrait.")
+                    self.EcritLog(_(u"Veuillez imprimer le reÃ§u de rÃ¨glement pour un retrait sur site."))
+                    reponse = _(u"ReÃ§u de rÃ¨glement disponible au retrait.")
 
             # Envoi par Email
             if self.dict_parametres["methode_envoi"] == "email" :
                 resultat = UTILS_Envoi_email.EnvoiEmailFamille(parent=dlg_impression, IDfamille=self.track.IDfamille, nomDoc=nomDoc, categorie=categorie, visible=False, log=self.track)
-                reponse = _(u"Reçu de règlement envoyé par Email.")
+                reponse = _(u"ReÃ§u de rÃ¨glement envoyÃ© par Email.")
 
-            # Mémorisation de l'édition du reçu
+            # MÃ©morisation de l'Ã©dition du reÃ§u
             dlg_impression.Sauvegarder(demander=False)
             dlg_impression.Destroy()
 
@@ -1196,10 +1196,10 @@ class Traitement():
 
 
     def Traitement_paiement_en_ligne(self):
-        # Récupération des paramètres
+        # RÃ©cupÃ©ration des paramÃ¨tres
         IDmode_reglement = int(UTILS_Parametres.Parametres(mode="get", categorie="portail", nom="paiement_ligne_mode_reglement", valeur=None))
         if IDmode_reglement in (None, 0):
-            dlg = wx.MessageDialog(self.parent, _(u"Vous devez obligatoirement commencer par renseigner un mode de règlement dans la configuration de Connecthys (Menu Outils > Connecthys > Rubrique Paiement en ligne) !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self.parent, _(u"Vous devez obligatoirement commencer par renseigner un mode de rÃ¨glement dans la configuration de Connecthys (Menu Outils > Connecthys > Rubrique Paiement en ligne) !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -1208,7 +1208,7 @@ class Traitement():
         IDcompte_payeur = self.track.IDcompte_payeur
         IDpaiement = self.track.IDpaiement
         #factures_ID = self.dict_parametres["factures_ID"]
-        systeme_paiement = self.dict_parametres.get("systeme_paiement", u"Système inconnu")
+        systeme_paiement = self.dict_parametres.get("systeme_paiement", u"SystÃ¨me inconnu")
         IDtransaction = self.dict_parametres["IDtransaction"].split("_")[1] if "_" in self.dict_parametres["IDtransaction"] else self.dict_parametres["IDtransaction"]
         montant_reglement = float(self.dict_parametres["montant"])
         ventilation = self.track.ventilation
@@ -1223,7 +1223,7 @@ class Traitement():
 
         DB = GestionDB.DB()
 
-        # Importation des périodes
+        # Importation des pÃ©riodes
         req = """SELECT IDperiode, IDactivite, date_debut, date_fin
         FROM portail_periodes
         WHERE IDperiode IN %s;""" % GestionDB.ConvertConditionChaine(list(dict_paiements["periode"].keys()))
@@ -1235,7 +1235,7 @@ class Traitement():
             date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
             dict_periodes[IDperiode] = {"IDactivite": IDactivite, "date_debut": date_debut, "date_fin":date_fin}
 
-        # On récupère l'ID du compte bancaire de la régie si la facture est liée a une régie
+        # On rÃ©cupÃ¨re l'ID du compte bancaire de la rÃ©gie si la facture est liÃ©e a une rÃ©gie
         IDcompte_bancaire = None
         num_piece = ""
         liste_paiements = [(montant_reglement, datetime.date.today())]
@@ -1260,7 +1260,7 @@ class Traitement():
         DB.Close()
 
         if len(liste_paiements) > 1:
-            dlg = wx.MessageDialog(None, _(u"Il s'agit d'un paiement en %d fois. Noethys va donc vous demander de saisir successivement %d règlements.") % (len(liste_paiements), len(liste_paiements)), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(None, _(u"Il s'agit d'un paiement en %d fois. Noethys va donc vous demander de saisir successivement %d rÃ¨glements.") % (len(liste_paiements), len(liste_paiements)), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
 
@@ -1274,14 +1274,14 @@ class Traitement():
                 dlg.ctrl_numero.SetValue(num_piece)
                 dlg.ctrl_mode.SetID(IDmode_reglement)
                 dlg.OnChoixMode(None)
-                observations = _(u"Transaction n°%s sur %s (IDpaiement %d).") % (IDtransaction, systeme_paiement, IDpaiement)
+                observations = _(u"Transaction nÂ°%s sur %s (IDpaiement %d).") % (IDtransaction, systeme_paiement, IDpaiement)
                 if len(liste_paiements) > 1:
                     observations += _(u" Paiement en %d fois du %s (%d/%d).") % (len(liste_paiements), UTILS_Dates.DateDDEnFr(datetime.date.today()), index, len(liste_paiements))
                 dlg.ctrl_observations.SetValue(observations)
                 if IDcompte_bancaire not in (0, None):
                     dlg.ctrl_compte.SetID(IDcompte_bancaire)
 
-                # Coche les prestations à ventiler
+                # Coche les prestations Ã  ventiler
                 resteVentilation = FloatToDecimal(montant_paiement)
                 for ligne_prestation in dlg.ctrl_ventilation.ctrl_ventilation.listeLignesPrestations:
                     valide = False
@@ -1311,14 +1311,14 @@ class Traitement():
             reponse = ""
             return {"etat" : True, "reponse" : reponse}
 
-        # Traitement automatique (desactivé par choix dans Dialog.OnRadioEtat)
+        # Traitement automatique (desactivÃ© par choix dans Dialog.OnRadioEtat)
         if self.mode == "automatique" :
             reponse = ""
             return {"etat" : False, "reponse" : reponse}
 
 
     def Traitement_factures(self):
-        # Récupération des paramètres
+        # RÃ©cupÃ©ration des paramÃ¨tres
         IDfacture = int(self.dict_parametres["IDfacture"])
         edition = Edition_facture(parent=self.parent, IDfacture=IDfacture, IDfamille=self.track.IDfamille)
 
@@ -1329,14 +1329,14 @@ class Traitement():
 
                 resultat = edition.EnvoyerEmail(visible=True)
                 if resultat == False :
-                    self.EcritLog(_(u"La facture n'a pas été envoyée par Email."))
+                    self.EcritLog(_(u"La facture n'a pas Ã©tÃ© envoyÃ©e par Email."))
                     return False
 
-                reponse = _(u"Facture envoyée par Email.")
+                reponse = _(u"Facture envoyÃ©e par Email.")
 
             elif self.dict_parametres["methode_envoi"] == "courrier" :
                 self.EcritLog(_(u"Veuillez imprimer la facture pour un envoi par courrier."))
-                reponse = _(u"Facture envoyée par courrier.")
+                reponse = _(u"Facture envoyÃ©e par courrier.")
                 edition.Reedition()
             else :
                 self.EcritLog(_(u"Veuillez imprimer la facture pour un retrait sur site."))
@@ -1350,7 +1350,7 @@ class Traitement():
 
             # Affichage du PDF pour envoi par courrier ou retrait sur site
             if self.dict_parametres["methode_envoi"] != "email" :
-                message = _(u"La facture va être générée au format PDF et ouverte dans votre lecteur de PDF.\n\n")
+                message = _(u"La facture va Ãªtre gÃ©nÃ©rÃ©e au format PDF et ouverte dans votre lecteur de PDF.\n\n")
                 if self.dict_parametres["methode_envoi"] == "courrier" :
                     message += _(u"Veuillez l'imprimer et l'envoyer par courrier.")
                 else :
@@ -1364,10 +1364,10 @@ class Traitement():
 
                 edition.Reedition(afficherOptions=False)
 
-                self.EcritLog(_(u"La génération de la facture est terminée."))
+                self.EcritLog(_(u"La gÃ©nÃ©ration de la facture est terminÃ©e."))
                 if self.dict_parametres["methode_envoi"] == "courrier" :
                     self.EcritLog(_(u"Veuillez imprimer la facture pour un envoi par courrier."))
-                    reponse = _(u"Facture envoyée par courrier.")
+                    reponse = _(u"Facture envoyÃ©e par courrier.")
                 else :
                     self.EcritLog(_(u"Veuillez imprimer la facture pour un retrait sur site."))
                     reponse = _(u"Facture disponible au retrait.")
@@ -1375,28 +1375,28 @@ class Traitement():
             # Envoi par Email
             if self.dict_parametres["methode_envoi"] == "email" :
                 # if len(listeAdresses) == 0 :
-                #     self.EcritLog(_(u"Aucune adresse Email n'a été sélectionnée."))
+                #     self.EcritLog(_(u"Aucune adresse Email n'a Ã©tÃ© sÃ©lectionnÃ©e."))
                 #     return False
 
                 resultat = edition.EnvoyerEmail(visible=False)
                 if resultat == False :
-                    self.EcritLog(_(u"La facture n'a pas été envoyée par Email."))
+                    self.EcritLog(_(u"La facture n'a pas Ã©tÃ© envoyÃ©e par Email."))
                     return False
 
-                reponse = _(u"Facture envoyée par Email.")
+                reponse = _(u"Facture envoyÃ©e par Email.")
 
             return {"etat" : True, "reponse" : reponse}
 
 
     def Traitement_inscriptions(self):
-        # Récupération des paramètres
+        # RÃ©cupÃ©ration des paramÃ¨tres
         IDactivite = int(self.dict_parametres["IDactivite"])
         IDgroupe = int(self.dict_parametres["IDgroupe"])
 
         # Traitement manuel ou automatique
         if self.mode == "manuel" or self.mode == "automatique" :
 
-            # Création du texte d'intro
+            # CrÃ©ation du texte d'intro
             DB = GestionDB.DB()
             req = """SELECT nom, prenom, date_naiss FROM individus WHERE IDindividu=%d;""" % self.track.IDindividu
             DB.ExecuterReq(req)
@@ -1409,12 +1409,12 @@ class Traitement():
                     today = datetime.date.today()
                     age = _(u"%d ans") % ((today.year - date_naiss.year) - int((today.month, today.day) < (date_naiss.month, date_naiss.day)))
                 else :
-                    age = _(u"Âge inconnu")
+                    age = _(u"Ã‚ge inconnu")
             else:
-                self.EcritLog(_(u"L'individu ID%s n'existe pas dans la base de données.") % self.track.IDindividu)
+                self.EcritLog(_(u"L'individu ID%s n'existe pas dans la base de donnÃ©es.") % self.track.IDindividu)
                 return False
 
-            intro = _(u"Confirmez l'inscription de %s (%s) à l'activité sélectionnée et sur le groupe demandé par la famille." % (prenom, age))
+            intro = _(u"Confirmez l'inscription de %s (%s) Ã  l'activitÃ© sÃ©lectionnÃ©e et sur le groupe demandÃ© par la famille." % (prenom, age))
 
             from Dlg import DLG_Inscription
             dlg = DLG_Inscription.Dialog(self.parent, mode="saisie", IDindividu=self.track.IDindividu, IDfamille=self.track.IDfamille, intro=intro)
@@ -1426,16 +1426,16 @@ class Traitement():
             statut = dlg.GetStatut()
             dlg.Destroy()
             if reponse == wx.ID_OK :
-                self.EcritLog(_(u"Inscription de %s enregistrée.") % prenom)
+                self.EcritLog(_(u"Inscription de %s enregistrÃ©e.") % prenom)
                 if statut == "attente" :
                     reponse = _(u"Inscription de %s mise en attente.") % prenom
                 elif statut == "refus" :
-                    reponse = _(u"Inscription de %s refusée.") % prenom
+                    reponse = _(u"Inscription de %s refusÃ©e.") % prenom
                 else :
-                    reponse = _(u"Inscription de %s validée.") % prenom
+                    reponse = _(u"Inscription de %s validÃ©e.") % prenom
                 return {"etat" : True, "reponse" : reponse}
             else :
-                self.EcritLog(_(u"Inscription de %s annulée.") % prenom)
+                self.EcritLog(_(u"Inscription de %s annulÃ©e.") % prenom)
                 return False
 
     def Traitement_reservations(self):
@@ -1453,7 +1453,7 @@ class Traitement():
                 else :
                     return {"etat" : True, "reponse" : reponse}
             else :
-                self.EcritLog(_(u"Traitement annulé par l'utilisateur"))
+                self.EcritLog(_(u"Traitement annulÃ© par l'utilisateur"))
                 return {"etat" : False}
 
         if self.mode == "automatique" :
@@ -1481,7 +1481,7 @@ class Traitement():
                 else :
                     return {"etat" : True, "reponse" : reponse}
             else :
-                self.EcritLog(_(u"Traitement annulé par l'utilisateur"))
+                self.EcritLog(_(u"Traitement annulÃ© par l'utilisateur"))
                 return {"etat" : False}
 
         if self.mode == "automatique" :
@@ -1499,7 +1499,7 @@ class Traitement():
                     else :
                         return {"etat" : True, "reponse" : reponse}
                 else :
-                    self.EcritLog(_(u"Traitement annulé par l'utilisateur"))
+                    self.EcritLog(_(u"Traitement annulÃ© par l'utilisateur"))
                     return {"etat" : False}
 
             else :
@@ -1520,7 +1520,7 @@ class Traitement():
                 else :
                     return {"etat": True, "reponse": reponse}
             else :
-                self.EcritLog(_(u"Traitement annulé par l'utilisateur"))
+                self.EcritLog(_(u"Traitement annulÃ© par l'utilisateur"))
                 return {"etat": False}
 
         if self.mode == "automatique":
@@ -1538,11 +1538,11 @@ class Traitement():
     def Traitement_pieces(self):
         chemin = self.dict_parametres.get("chemin", "")
         IDtype_piece = int(self.dict_parametres.get("IDtype_piece", 0))
-        titre_piece = self.track.description.replace(u"Envoi de la pièce ", u"")
+        titre_piece = self.track.description.replace(u"Envoi de la piÃ¨ce ", u"")
 
-        # Téléchargement du fichier
+        # TÃ©lÃ©chargement du fichier
         from Utils import UTILS_Portail_synchro
-        dlgAttente = wx.BusyInfo(_(u"Téléchargement de la pièce en cours..."), None)
+        dlgAttente = wx.BusyInfo(_(u"TÃ©lÃ©chargement de la piÃ¨ce en cours..."), None)
         if 'phoenix' not in wx.PlatformInfo:
             wx.Yield()
         else:
@@ -1552,12 +1552,12 @@ class Traitement():
         del dlgAttente
 
         if chemin_fichier == False:
-            dlg = wx.MessageDialog(self.parent, _(u"Le fichier ne peut pas être téléchargé !\n\nIl n'est pas accessible ou a été supprimé du serveur."), "Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self.parent, _(u"Le fichier ne peut pas Ãªtre tÃ©lÃ©chargÃ© !\n\nIl n'est pas accessible ou a Ã©tÃ© supprimÃ© du serveur."), "Erreur", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return {"etat": False}
 
-        # Décryptage du fichier
+        # DÃ©cryptage du fichier
         from Utils import UTILS_Cryptage_fichier
         cryptage_mdp = synchro.dict_parametres["secret_key"][:10]
         UTILS_Cryptage_fichier.DecrypterFichier(chemin_fichier, chemin_fichier, cryptage_mdp)
@@ -1573,20 +1573,20 @@ class Traitement():
             if dlg.ShowModal() == wx.ID_OK:
                 IDpiece = dlg.GetIDpiece()
                 dlg.Destroy()
-                self.EcritLog(_(u"Enregistrement manuel de la pièce ID%d") % IDpiece)
-                return {"etat": True, "reponse": _(u"La pièce %s a bien été enregistrée") % titre_piece}
+                self.EcritLog(_(u"Enregistrement manuel de la piÃ¨ce ID%d") % IDpiece)
+                return {"etat": True, "reponse": _(u"La piÃ¨ce %s a bien Ã©tÃ© enregistrÃ©e") % titre_piece}
 
         if self.mode == "automatique":
             if dlg.Sauvegarde() == True:
                 IDpiece = dlg.GetIDpiece()
                 dlg.Destroy()
-                self.EcritLog(_(u"Enregistrement automatique de la pièce ID%d") % IDpiece)
-                return {"etat": True, "reponse": _(u"La pièce %s a bien été enregistrée") % titre_piece}
+                self.EcritLog(_(u"Enregistrement automatique de la piÃ¨ce ID%d") % IDpiece)
+                return {"etat": True, "reponse": _(u"La piÃ¨ce %s a bien Ã©tÃ© enregistrÃ©e") % titre_piece}
             else:
                 if dlg.ShowModal() == wx.ID_OK:
                     IDpiece = dlg.GetIDpiece()
-                    self.EcritLog(_(u"Enregistrement manuel de la pièce ID%d") % IDpiece)
-                    return {"etat": True, "reponse": _(u"La pièce %s a bien été enregistrée") % titre_piece}
+                    self.EcritLog(_(u"Enregistrement manuel de la piÃ¨ce ID%d") % IDpiece)
+                    return {"etat": True, "reponse": _(u"La piÃ¨ce %s a bien Ã©tÃ© enregistrÃ©e") % titre_piece}
                 dlg.Destroy()
 
         return {"etat": False}
@@ -1596,13 +1596,13 @@ class Traitement():
         if self.mode == "manuel" or self.mode == "automatique" :
 
             if self.mode == "manuel" :
-                dlg = wx.MessageDialog(None, _(u"Confirmez-vous l'enregistrement du nouveau mot de passe personnalisé de %s ?") % self.track.nom, _(u"Mise à jour du mot de passe"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+                dlg = wx.MessageDialog(None, _(u"Confirmez-vous l'enregistrement du nouveau mot de passe personnalisÃ© de %s ?") % self.track.nom, _(u"Mise Ã  jour du mot de passe"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
                 reponse = dlg.ShowModal()
                 dlg.Destroy()
                 if reponse != wx.ID_YES :
                     return False
 
-            # Mise à jour de mot de passe
+            # Mise Ã  jour de mot de passe
             if self.track.action == "maj_password" :
                 DB = GestionDB.DB()
 
@@ -1616,13 +1616,13 @@ class Traitement():
 
                 DB.Close()
 
-                self.EcritLog(_(u"Mise à jour du mot de passe de %s") % self.track.nom)
+                self.EcritLog(_(u"Mise Ã  jour du mot de passe de %s") % self.track.nom)
                 return {"etat" : True, "reponse" : ""}
 
         return False
 
     def Init_grille(self, ctrl_grille=None):
-        # Récupération des paramètres
+        # RÃ©cupÃ©ration des paramÃ¨tres
         IDactivite = int(self.dict_parametres["IDactivite"])
         date_debut_periode = UTILS_Dates.DateEngEnDateDD(self.dict_parametres["date_debut_periode"])
         date_fin_periode = UTILS_Dates.DateEngEnDateDD(self.dict_parametres["date_fin_periode"])
@@ -1635,15 +1635,15 @@ class Traitement():
         ctrl_grille.Sauvegarde()
 
     def Appliquer_reservations(self, ctrl_grille=None, log_jumeau=None):
-        """ Appliquer la saisie ou suppression des réservations """
-        # Récupération des paramètres
+        """ Appliquer la saisie ou suppression des rÃ©servations """
+        # RÃ©cupÃ©ration des paramÃ¨tres
         IDactivite = int(self.dict_parametres["IDactivite"])
         date_debut_periode = UTILS_Dates.DateEngEnDateDD(self.dict_parametres["date_debut_periode"])
         date_fin_periode = UTILS_Dates.DateEngEnDateDD(self.dict_parametres["date_fin_periode"])
 
-        self.EcritLog(_(u"Traitement des réservations de %s sur la période du %s au %s") % (ctrl_grille.ctrl_titre.GetNom(), UTILS_Dates.DateDDEnFr(date_debut_periode), UTILS_Dates.DateDDEnFr(date_fin_periode)), log_jumeau)
+        self.EcritLog(_(u"Traitement des rÃ©servations de %s sur la pÃ©riode du %s au %s") % (ctrl_grille.ctrl_titre.GetNom(), UTILS_Dates.DateDDEnFr(date_debut_periode), UTILS_Dates.DateDDEnFr(date_fin_periode)), log_jumeau)
 
-        # Lecture des réservations
+        # Lecture des rÃ©servations
         DB = GestionDB.DB()
         req = """SELECT IDreservation, date, IDinscription, portail_reservations.IDunite, etat, portail_unites.nom
         FROM portail_reservations
@@ -1659,7 +1659,7 @@ class Traitement():
             date = UTILS_Dates.DateEngEnDateDD(date)
             listeReservations.append({"IDreservation" : IDreservation, "date" : date, "IDinscription" : IDinscription, "IDunite" : IDunite, "etat" : etat, "nom_unite_reservation" : nom_unite_reservation})
 
-        # Traitement des réservations
+        # Traitement des rÃ©servations
         liste_resultats = []
         dict_reponses = {"suppression" : 0, "reservation" : 0, "attente" : 0}
 
@@ -1671,16 +1671,16 @@ class Traitement():
             liste_unites_conso = dict_unite_resa["unites_principales"] + dict_unite_resa["unites_secondaires"]
             nom_unite_reservation = reservation["nom_unite_reservation"]
 
-            # Suppression de la réservation
+            # Suppression de la rÃ©servation
             if reservation["etat"] == 0 :
 
                 for IDunite in liste_unites_conso :
 
                     # Ecrit suppression dans log
                     nomUnite = ctrl_grille.grille.dictUnites[IDunite]["nom"]
-                    self.EcritLog(_(u"Suppression de l'unité %s du %s") % (nomUnite, UTILS_Dates.DateDDEnFr(date)), log_jumeau)
+                    self.EcritLog(_(u"Suppression de l'unitÃ© %s du %s") % (nomUnite, UTILS_Dates.DateDDEnFr(date)), log_jumeau)
 
-                    # Vérifie s'il faut appliquer l'état Absence Injustifiée
+                    # VÃ©rifie s'il faut appliquer l'Ã©tat Absence InjustifiÃ©e
                     portail_reservations_absenti = self.parent.dictActivites[IDactivite]["portail_reservations_absenti"]
                     absenti = False
                     if portail_reservations_absenti != None :
@@ -1698,20 +1698,20 @@ class Traitement():
                 dict_reponses["suppression"] += 1
 
 
-            # Ajout de la réservation
+            # Ajout de la rÃ©servation
             if reservation["etat"] == 1 :
 
-                # Vérifie s'il y a de la place sur chaque unité de conso associée à l'unité de réservation
+                # VÃ©rifie s'il y a de la place sur chaque unitÃ© de conso associÃ©e Ã  l'unitÃ© de rÃ©servation
                 hasPlaces = True
                 for IDunite in liste_unites_conso :
                     if ctrl_grille.IsOuvert(IDunite=IDunite, date=date) :
                         if ctrl_grille.GetCase(IDunite, date) != None and ctrl_grille.HasPlacesDisponibles(IDunite=IDunite, date=date) == False :
                             hasPlaces = False
 
-                # Si plus de places, met les unités de conso en mode "attente"
+                # Si plus de places, met les unitÃ©s de conso en mode "attente"
                 if hasPlaces == True :
                     mode = "reservation"
-                    mode_label = _(u"réservation")
+                    mode_label = _(u"rÃ©servation")
                 else :
                     mode = "attente"
                     mode_label = _(u"attente")
@@ -1722,11 +1722,11 @@ class Traitement():
 
                         if IDunite in ctrl_grille.grille.dictUnites:
                             nomUnite = ctrl_grille.grille.dictUnites[IDunite]["nom"]
-                            texte = _(u"Saisie de l'unité %s du %s en mode %s") % (nomUnite, UTILS_Dates.DateDDEnFr(date), mode_label)
+                            texte = _(u"Saisie de l'unitÃ© %s du %s en mode %s") % (nomUnite, UTILS_Dates.DateDDEnFr(date), mode_label)
                             self.EcritLog(texte, log_jumeau)
                             resultat = ctrl_grille.SaisieConso(IDunite=IDunite, date=date, mode=mode)
                         else :
-                            resultat = _(u"L'unité ID%d est inconnue. Vérifiez le paramétrage des unités de réservation." % IDunite)
+                            resultat = _(u"L'unitÃ© ID%d est inconnue. VÃ©rifiez le paramÃ©trage des unitÃ©s de rÃ©servation." % IDunite)
 
                         if resultat != True :
                             self.EcritLog(_(u"[ERREUR] %s") % resultat, log_jumeau)
@@ -1739,15 +1739,15 @@ class Traitement():
                     dict_reponses["attente"] += 1
 
 
-        # Création de la réponse
+        # CrÃ©ation de la rÃ©ponse
         if len(liste_erreurs) > 0 :
 
             # Si erreurs
             from Dlg import DLG_Messagebox
             if len(liste_erreurs) == 1 :
-                introduction = _(u"Une anomalie a été détectée durant l'application de la demande :")
+                introduction = _(u"Une anomalie a Ã©tÃ© dÃ©tectÃ©e durant l'application de la demande :")
             else :
-                introduction = _(u"%s anomalies ont été détectées durant l'application de la demande :") % len(liste_erreurs)
+                introduction = _(u"%s anomalies ont Ã©tÃ© dÃ©tectÃ©es durant l'application de la demande :") % len(liste_erreurs)
             detail = "\n".join(liste_erreurs)
             dlg = DLG_Messagebox.Dialog(None, titre=_(u"Avertissement"), introduction=introduction, detail=detail, icone=wx.ICON_EXCLAMATION, boutons=[_(u"Ok"), ])
             dlg.ShowModal()
@@ -1760,23 +1760,23 @@ class Traitement():
 
             nbre_suppressions = dict_reponses["suppression"]
             if nbre_suppressions == 1 :
-                reponse_temp.append(_(u"1 suppression effectuée"))
+                reponse_temp.append(_(u"1 suppression effectuÃ©e"))
             if nbre_suppressions > 1 :
-                reponse_temp.append(_(u"%d suppressions effectuées") % nbre_suppressions)
+                reponse_temp.append(_(u"%d suppressions effectuÃ©es") % nbre_suppressions)
 
             nbre_reservations = dict_reponses["reservation"]
             if nbre_reservations == 1 :
-                reponse_temp.append(_(u"1 réservation validée"))
+                reponse_temp.append(_(u"1 rÃ©servation validÃ©e"))
             if nbre_reservations > 1 :
-                reponse_temp.append(_(u"%d réservations validées") % nbre_reservations)
+                reponse_temp.append(_(u"%d rÃ©servations validÃ©es") % nbre_reservations)
 
             nbre_attentes = dict_reponses["attente"]
             if nbre_attentes == 1 :
-                reponse_temp.append(_(u"1 réservation en attente"))
+                reponse_temp.append(_(u"1 rÃ©servation en attente"))
             if nbre_attentes > 1 :
-                reponse_temp.append(_(u"%d réservations en attente") % nbre_attentes)
+                reponse_temp.append(_(u"%d rÃ©servations en attente") % nbre_attentes)
 
-            # Formatage de la réponse
+            # Formatage de la rÃ©ponse
             if len(reponse_temp) == 0 :
                 reponse = _(u"Aucune modification.")
             elif len(reponse_temp) == 1 :
@@ -1786,14 +1786,14 @@ class Traitement():
             else :
                 reponse = _(u"%s et %s.") % (u", ".join(reponse_temp[:-1]), reponse_temp[-1])
 
-            self.EcritLog(_(u"Réponse : %s") % reponse, log_jumeau)
+            self.EcritLog(_(u"RÃ©ponse : %s") % reponse, log_jumeau)
             return reponse
 
     def Verifier_ventilation(self):
         from Dlg import DLG_Verification_ventilation
         tracks = DLG_Verification_ventilation.Verification(self.track.IDcompte_payeur)
         if len(tracks) > 0 :
-            dlg = wx.MessageDialog(None, _(u"Un ou plusieurs règlements peuvent être ventilés.\n\nSouhaitez-vous le faire maintenant (conseillé) ?"), _(u"Ventilation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Un ou plusieurs rÃ¨glements peuvent Ãªtre ventilÃ©s.\n\nSouhaitez-vous le faire maintenant (conseillÃ©) ?"), _(u"Ventilation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse == wx.ID_YES :
@@ -1805,14 +1805,14 @@ class Traitement():
         return True
 
     def Get_montants_reservations(self):
-        # Récupération des variables
+        # RÃ©cupÃ©ration des variables
         IDactivite = int(self.dict_parametres["IDactivite"])
         date_debut = UTILS_Dates.DateEngEnDateDD(self.dict_parametres["date_debut_periode"])
         date_fin = UTILS_Dates.DateEngEnDateDD(self.dict_parametres["date_fin_periode"])
         IDindividu = self.track.IDindividu
         IDfamille = self.track.IDfamille
 
-        # Récupère les prestations
+        # RÃ©cupÃ¨re les prestations
         DB = GestionDB.DB()
         req = """SELECT IDprestation, montant
         FROM prestations
@@ -1826,7 +1826,7 @@ class Traitement():
             liste_IDprestation.append(IDprestation)
             total_prestations += FloatToDecimal(montant)
 
-        # Récupère la ventilation
+        # RÃ©cupÃ¨re la ventilation
         req = """SELECT SUM(ventilation.montant)
         FROM ventilation
         LEFT JOIN prestations ON prestations.IDprestation = ventilation.IDprestation
@@ -1846,7 +1846,7 @@ class Traitement():
 
 
 class Edition_facture():
-    """ Classe spéciale pour l'édition des factures """
+    """ Classe spÃ©ciale pour l'Ã©dition des factures """
     def __init__(self, parent=None, IDfacture=None, IDfamille=None):
         self.parent = parent
         self.IDfacture = IDfacture
@@ -1863,7 +1863,7 @@ class Edition_facture():
         return resultat
 
     def CreationPDF(self, nomDoc="", afficherDoc=True):
-        """ Création du PDF pour Email """
+        """ CrÃ©ation du PDF pour Email """
         facturation = UTILS_Facturation.Facturation()
         resultat = facturation.Impression(listeFactures=[self.IDfacture,], nomDoc=nomDoc, afficherDoc=afficherDoc, afficherOptions=self.afficherOptions)
         if resultat == False :

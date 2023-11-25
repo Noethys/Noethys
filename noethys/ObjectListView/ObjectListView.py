@@ -396,7 +396,7 @@ class ObjectListView(wx.ListCtrl):
             self.InsertColumnInfo(len(self.columns) - 1, info)
 
         # Under Linux, the width doesn't take effect without this call
-        self.SetColumnWidth(len(self.columns) - 1, defn.width)
+        self.SetColumnWidth(len(self.columns) - 1, int(defn.width))
 
         # The first checkbox column becomes the check state column for the
         # control
@@ -624,13 +624,13 @@ class ObjectListView(wx.ListCtrl):
         """
         for (iCol, col) in enumerate(self.columns):
             if col.width == wx.LIST_AUTOSIZE:
-                self.SetColumnWidth(iCol, wx.LIST_AUTOSIZE)
+                self.SetColumnWidth(iCol, int(wx.LIST_AUTOSIZE))
 
                 # The new width must be within our minimum and maximum
                 colWidth = self.GetColumnWidth(iCol)
                 boundedWidth = col.CalcBoundedWidth(colWidth)
                 if colWidth != boundedWidth:
-                    self.SetColumnWidth(iCol, boundedWidth)
+                    self.SetColumnWidth(iCol, int(boundedWidth))
 
         self._ResizeSpaceFillingColumns()
 
@@ -954,7 +954,7 @@ class ObjectListView(wx.ListCtrl):
                     freeSpace -= boundedWidth
                     totalProportion -= col.freeSpaceProportion
                     if self.GetColumnWidth(i) != boundedWidth:
-                        self.SetColumnWidth(i, boundedWidth)
+                        self.SetColumnWidth(i, int(boundedWidth))
 
         # Finally, give each remaining space filling column a proportion of the
         # free space
@@ -962,7 +962,7 @@ class ObjectListView(wx.ListCtrl):
             newWidth = freeSpace * col.freeSpaceProportion / totalProportion
             boundedWidth = col.CalcBoundedWidth(newWidth)
             if self.GetColumnWidth(i) != boundedWidth:
-                self.SetColumnWidth(i, boundedWidth)
+                self.SetColumnWidth(i, int(boundedWidth))
 
     def SetCheckState(self, modelObject, state):
         """
@@ -980,7 +980,7 @@ class ObjectListView(wx.ListCtrl):
         Make the given column to be fixed width
         """
         if 0 <= colIndex < self.GetColumnCount():
-            self.SetColumnWidth(colIndex, width)
+            self.SetColumnWidth(colIndex, int(width))
             self.columns[colIndex].SetFixedWidth(width)
 
     def SetEmptyListMsg(self, msg):
@@ -1679,7 +1679,7 @@ class ObjectListView(wx.ListCtrl):
                 wx.CallAfter(self._ResizeSpaceFillingColumns)
 
     def _SetColumnWidthAndResize(self, colIndex, newWidth):
-        self.SetColumnWidth(colIndex, newWidth)
+        self.SetColumnWidth(colIndex, int(newWidth))
         self._ResizeSpaceFillingColumns()
 
     def _HandleLeftDown(self, evt):

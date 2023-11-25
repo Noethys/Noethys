@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -32,10 +32,10 @@ def DateEngFr(textDate):
     return text
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complËte : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date compl√®te : Ex : lundi 15 janvier 2008 """
     if dateDD == None : return u""
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"fÈvrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"ao˚t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÈcembre"))
+    listeMois = (_(u"janvier"), _(u"f√©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"ao√ªt"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"d√©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -59,17 +59,17 @@ class Track(object):
         else:
             self.detail = _(u"%d cotisations") % self.nbre
    
-##        # DÈtails
+##        # D√©tails
 ##        if DICT_DETAILS_DEPOTS.has_key(self.IDdepot_cotisation) :
 ##            dictDetails = DICT_DETAILS_DEPOTS[self.IDdepot_cotisation]
-##            # Totaux du dÈpÙt
+##            # Totaux du d√©p√¥t
 ##            self.nbre = dictDetails["nbre"]
 ##            self.total = dictDetails["montant"]
-##            # CrÈation du texte du dÈtail
+##            # Cr√©ation du texte du d√©tail
 ##            texte = u""
 ##            for IDmode, dictDetail in dictDetails.iteritems() :
 ##                if IDmode != "nbre" and IDmode != "montant" :
-##                    texteDetail = u"%d %s (%.2f §), " % (dictDetail["nbre"], dictDetail["nom"], dictDetail["montant"])
+##                    texteDetail = u"%d %s (%.2f ‚Ç¨), " % (dictDetail["nbre"], dictDetail["nom"], dictDetail["montant"])
 ##                    texte += texteDetail
 ##            if len(dictDetails) > 2 :
 ##                texte = texte[:-2]
@@ -82,7 +82,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -131,7 +131,7 @@ class ListView(FastObjectListView):
 ##                DICT_DETAILS_DEPOTS[IDdepot]["montant"] += montant
                 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT 
@@ -186,7 +186,7 @@ class ListView(FastObjectListView):
 
         def FormateMontant(montant):
             if montant == None : return u""
-            return u"%.2f §" % montant
+            return u"%.2f ‚Ç¨" % montant
 
         liste_Colonnes = [
             ColumnDefn(_(u"ID"), "left", 42, "IDdepot_cotisation", typeDonnee="entier", imageGetter=GetImageVerrouillage),
@@ -195,11 +195,11 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Observations"), 'left', 250, "observations", typeDonnee="texte"),
             ColumnDefn(_(u"Nbre cotisations"), 'centre', 100, "nbre", typeDonnee="entier"),
 ##            ColumnDefn(_(u"Total"), 'right', 65, "total", stringConverter=FormateMontant),
-##            ColumnDefn(_(u"DÈtail"), 'left', 210, "detail"),
+##            ColumnDefn(_(u"D√©tail"), 'left', 210, "detail"),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucun dÈpÙt de cotisations"))
+        self.SetEmptyListMsg(_(u"Aucun d√©p√¥t de cotisations"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -213,7 +213,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -232,7 +232,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDdepot_cotisation
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -263,7 +263,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -297,21 +297,21 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des dÈpÙts de cotisations"), format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des d√©p√¥ts de cotisations"), format="A", orientation=wx.LANDSCAPE)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des dÈpÙts de cotisations"), format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des d√©p√¥ts de cotisations"), format="A", orientation=wx.LANDSCAPE)
         prt.Print()
 
     def ExportTexte(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Liste des dÈpÙts de cotisations"))
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des d√©p√¥ts de cotisations"))
         
     def ExportExcel(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Liste des dÈpÙts de cotisations"))
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des d√©p√¥ts de cotisations"))
 
     def Ajouter(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("cotisations_depots", "creer") == False : return
@@ -326,7 +326,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("cotisations_depots", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun dÈpÙt de cotisations ‡ modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun d√©p√¥t de cotisations √† modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -341,18 +341,18 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("cotisations_depots", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun dÈpÙt de cotisations ‡ supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun d√©p√¥t de cotisations √† supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDdepot_cotisation = self.Selection()[0].IDdepot_cotisation
         nbre_cotisations = self.Selection()[0].nbre
         if nbre_cotisations > 0 :
-            dlg = wx.MessageDialog(self, _(u"Des cotisations sont dÈj‡ associÈes ‡ ce dÈpÙt. Vous ne pouvez donc pas le supprimer !"), _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Des cotisations sont d√©j√† associ√©es √† ce d√©p√¥t. Vous ne pouvez donc pas le supprimer !"), _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce dÈpÙt de cotisations ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce d√©p√¥t de cotisations ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("depots_cotisations", "IDdepot_cotisation", IDdepot_cotisation)
@@ -379,7 +379,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(_(u"Rechercher un dÈpÙt de cotisations..."))
+        self.SetDescriptiveText(_(u"Rechercher un d√©p√¥t de cotisations..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_depots
@@ -417,7 +417,7 @@ class BarreRecherche(wx.SearchCtrl):
 class ListviewAvecFooter(PanelAvecFooter):
     def __init__(self, parent, kwargs={}):
         dictColonnes = {
-            "nom" : {"mode" : "nombre", "singulier" : _(u"dÈpÙt"), "pluriel" : _(u"dÈpÙts"), "alignement" : wx.ALIGN_CENTER},
+            "nom" : {"mode" : "nombre", "singulier" : _(u"d√©p√¥t"), "pluriel" : _(u"d√©p√¥ts"), "alignement" : wx.ALIGN_CENTER},
             "nbre" : {"mode" : "total"},
             }
         PanelAvecFooter.__init__(self, parent, ListView, kwargs, dictColonnes)

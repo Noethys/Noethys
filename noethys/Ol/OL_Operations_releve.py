@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -20,7 +20,7 @@ from Dlg import DLG_Saisie_virement
 import datetime
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 from Utils import UTILS_Interface
@@ -60,7 +60,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.IDcompte_bancaire = kwds.pop("IDcompte_bancaire", None)
         self.IDreleve = kwds.pop("IDreleve", None)
         self.ctrl_soldes = None
@@ -80,7 +80,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         if self.IDcompte_bancaire == None :
             return []
         
@@ -129,7 +129,7 @@ class ListView(FastObjectListView):
             listeListeView.append(track)
         
 ##        self.ctrl_soldes.label_solde_jour.SetLabel(_(u"Solde du jour : %.2f %s") % (soldeJour, SYMBOLE))
-##        self.ctrl_soldes.label_solde_pointe.SetLabel(_(u"Solde pointé : %.2f %s") % (soldePointe, SYMBOLE))
+##        self.ctrl_soldes.label_solde_pointe.SetLabel(_(u"Solde pointÃ© : %.2f %s") % (soldePointe, SYMBOLE))
 ##        self.ctrl_soldes.label_solde.SetLabel(_(u"Solde final : %.2f %s") % (solde, SYMBOLE))
 ##        self.ctrl_soldes.Layout() 
         
@@ -155,18 +155,18 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(u"", "left", 0, "IDoperation", typeDonnee="entier"),
             ColumnDefn(_(u"Date"), 'left', 80, "date", typeDonnee="date", stringConverter=FormateDate),
-            ColumnDefn(_(u"Libellé"), 'left', 180, "libelle", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(_(u"LibellÃ©"), 'left', 180, "libelle", typeDonnee="texte", isSpaceFilling=True),
             ColumnDefn(_(u"Tiers"), 'left', 130, "nomTiers", typeDonnee="texte"),
             ColumnDefn(_(u"Mode"), 'left', 90, "nomMode", typeDonnee="texte"),
-            ColumnDefn(_(u"N° Chèque"), 'left', 80, "num_piece", typeDonnee="texte"),
-            ColumnDefn(_(u"Débit"), "right", 80, "debit", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(_(u"Crédit"), "right", 80, "credit", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"NÂ° ChÃ¨que"), 'left', 80, "num_piece", typeDonnee="texte"),
+            ColumnDefn(_(u"DÃ©bit"), "right", 80, "debit", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"CrÃ©dit"), "right", 80, "credit", typeDonnee="montant", stringConverter=FormateMontant),
             ]
 
         self.rowFormatter = rowFormatter
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(0)
-        self.SetEmptyListMsg(_(u"Aucune opération"))
+        self.SetEmptyListMsg(_(u"Aucune opÃ©ration"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[2])
         self.SetObjects(self.donnees)
@@ -187,7 +187,7 @@ class ListView(FastObjectListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Tout cocher
@@ -197,8 +197,8 @@ class ListView(FastObjectListView):
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheTout, id=70)
 
-        # Item Tout décocher
-        item = wx.MenuItem(menuPop, 80, _(u"Tout décocher"))
+        # Item Tout dÃ©cocher
+        item = wx.MenuItem(menuPop, 80, _(u"Tout dÃ©cocher"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Decocher.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -207,7 +207,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -241,21 +241,21 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des opérations"), format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des opÃ©rations"), format="A", orientation=wx.LANDSCAPE)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des opérations"), format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des opÃ©rations"), format="A", orientation=wx.LANDSCAPE)
         prt.Print()
 
     def ExportTexte(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Liste des opérations"))
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des opÃ©rations"))
         
     def ExportExcel(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Liste des opérations"))
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des opÃ©rations"))
 
     def CocheTout(self, event=None):
         if self.GetFilter() != None :
@@ -306,34 +306,34 @@ class ListView(FastObjectListView):
                 dictDonnees["modes"][track.IDmode]["nbre"] += 1
                 dictDonnees["modes"][track.IDmode]["total"] += track.montant
 
-        # Nbre opérations rapprochées
+        # Nbre opÃ©rations rapprochÃ©es
         if dictDonnees["nbreOperationsRapprochees"] == 0 :
-            texte = _(u"Aucune opération rapprochée")
+            texte = _(u"Aucune opÃ©ration rapprochÃ©e")
         elif dictDonnees["nbreOperationsRapprochees"] == 1 :
-            texte = _(u"1 opération rapprochée")
+            texte = _(u"1 opÃ©ration rapprochÃ©e")
         else :
-            texte = _(u"%d opérations rapprochées") % dictDonnees["nbreOperationsRapprochees"]
+            texte = _(u"%d opÃ©rations rapprochÃ©es") % dictDonnees["nbreOperationsRapprochees"]
         
-        # Opérations au débit
+        # OpÃ©rations au dÃ©bit
         if dictDonnees["nbreOperationsDebit"] > 0 :
             if dictDonnees["nbreOperationsDebit"] == 1 :
-                texte += _(u"<BR>1 opération au débit : %.2f %s") % (dictDonnees["totalOperationsDebit"], SYMBOLE)
+                texte += _(u"<BR>1 opÃ©ration au dÃ©bit : %.2f %s") % (dictDonnees["totalOperationsDebit"], SYMBOLE)
             else :
-                texte += _(u"<BR>%d opérations au débit : %.2f %s") % (dictDonnees["nbreOperationsDebit"], dictDonnees["totalOperationsDebit"], SYMBOLE)
+                texte += _(u"<BR>%d opÃ©rations au dÃ©bit : %.2f %s") % (dictDonnees["nbreOperationsDebit"], dictDonnees["totalOperationsDebit"], SYMBOLE)
                 
-        # Opérations au crédit
+        # OpÃ©rations au crÃ©dit
         if dictDonnees["nbreOperationsCredit"] > 0 :
             if dictDonnees["nbreOperationsCredit"] == 1 :
-                texte += _(u"<BR>1 opération au crédit : %.2f %s") % (dictDonnees["totalOperationsCredit"], SYMBOLE)
+                texte += _(u"<BR>1 opÃ©ration au crÃ©dit : %.2f %s") % (dictDonnees["totalOperationsCredit"], SYMBOLE)
             else :
-                texte += _(u"<BR>%d opérations au crédit : %.2f %s") % (dictDonnees["nbreOperationsCredit"], dictDonnees["totalOperationsCredit"], SYMBOLE)
+                texte += _(u"<BR>%d opÃ©rations au crÃ©dit : %.2f %s") % (dictDonnees["nbreOperationsCredit"], dictDonnees["totalOperationsCredit"], SYMBOLE)
         
         # Modes
         for IDmode, donnees in dictDonnees["modes"].items() :
             if donnees["nbre"] == 1 :
-                texte += _(u"<BR>1 opération de type '%s' : %.2f %s") % (donnees["nom"], donnees["total"], SYMBOLE)
+                texte += _(u"<BR>1 opÃ©ration de type '%s' : %.2f %s") % (donnees["nom"], donnees["total"], SYMBOLE)
             else :
-                texte += _(u"<BR>%d opérations de type '%s' : %.2f %s") % (donnees["nbre"], donnees["nom"], donnees["total"], SYMBOLE)
+                texte += _(u"<BR>%d opÃ©rations de type '%s' : %.2f %s") % (donnees["nbre"], donnees["nom"], donnees["total"], SYMBOLE)
         
         try :
             self.GetParent().SetInformations(texte) 
@@ -389,8 +389,8 @@ class BarreRecherche(wx.SearchCtrl):
 ##class ListviewAvecFooter(PanelAvecFooter):
 ##    def __init__(self, parent, kwargs={}):
 ##        dictColonnes = {
-##            "nomTiers" : {"mode" : "nombre", "singulier" : _(u"opération"), "pluriel" : _(u"opérations"), "alignement" : wx.ALIGN_CENTER},
-##            "libelle" : {"mode" : "texte", "texte" : _(u"Solde du jour : 10000.00 ¤"), "alignement" : wx.ALIGN_CENTER},
+##            "nomTiers" : {"mode" : "nombre", "singulier" : _(u"opÃ©ration"), "pluriel" : _(u"opÃ©rations"), "alignement" : wx.ALIGN_CENTER},
+##            "libelle" : {"mode" : "texte", "texte" : _(u"Solde du jour : 10000.00 â‚¬"), "alignement" : wx.ALIGN_CENTER},
 ##            "solde" : {"mode" : "total"},
 ##            }
 ##        PanelAvecFooter.__init__(self, parent, ListView, kwargs, dictColonnes)
@@ -401,9 +401,9 @@ class BarreSoldes(wx.Panel):
     def __init__(self, parent, listview=None):
         wx.Panel.__init__(self, parent, -1, style=wx.TAB_TRAVERSAL)
         self.barreRecherche = BarreRecherche(self, listview)
-        self.label_solde_jour = wx.StaticText(self, wx.ID_ANY, _(u"Solde du jour : 0.00 ¤"))
-        self.label_solde_pointe = wx.StaticText(self, wx.ID_ANY, _(u"Solde pointé : 0.00 ¤"))
-        self.label_solde = wx.StaticText(self, wx.ID_ANY, _(u"Solde final : 0.00 ¤"))
+        self.label_solde_jour = wx.StaticText(self, wx.ID_ANY, _(u"Solde du jour : 0.00 â‚¬"))
+        self.label_solde_pointe = wx.StaticText(self, wx.ID_ANY, _(u"Solde pointÃ© : 0.00 â‚¬"))
+        self.label_solde = wx.StaticText(self, wx.ID_ANY, _(u"Solde final : 0.00 â‚¬"))
 
         grid_sizer_1 = wx.FlexGridSizer(1, 4, 0, 0)
         grid_sizer_1.Add(self.barreRecherche, 0, wx.EXPAND | wx.RIGHT, 40)

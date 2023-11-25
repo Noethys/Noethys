@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -24,7 +24,7 @@ from Utils import UTILS_Organisateur
 from Utils import UTILS_Divers
 from Utils import UTILS_Dates
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"§")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"‚Ç¨")
 
 import GestionDB
 
@@ -33,7 +33,7 @@ import wx.propgrid as wxpg
 
 
 def PeriodeComplete(mois, annee):
-    listeMois = (_(u"Jan"), _(u"FÈv"), _(u"Mars"), _(u"Avr"), _(u"Mai"), _(u"Juin"), _(u"Juil"), _(u"Ao˚t"), _(u"Sept"), _(u"Oct"), _(u"Nov"), _(u"DÈc"))
+    listeMois = (_(u"Jan"), _(u"F√©v"), _(u"Mars"), _(u"Avr"), _(u"Mai"), _(u"Juin"), _(u"Juil"), _(u"Ao√ªt"), _(u"Sept"), _(u"Oct"), _(u"Nov"), _(u"D√©c"))
     periodeComplete = u"%s %d" % (listeMois[mois-1], annee)
     return periodeComplete
 
@@ -50,20 +50,20 @@ class CTRL_Parametres(DLG_Options_impression_pdf.CTRL_Parametres):
         self.Append( wxpg.PropertyCategory(_(u"Couleurs de fond")) )
 
         # Couleur 3
-        propriete = wxpg.ColourProperty(label=_(u"Fond ligne entÍtes"), name="couleur_fond_entetes", value=wx.Colour(204, 204, 255))
-        propriete.SetHelpString(_(u"SÈlectionnez une couleur"))
+        propriete = wxpg.ColourProperty(label=_(u"Fond ligne ent√™tes"), name="couleur_fond_entetes", value=wx.Colour(204, 204, 255))
+        propriete.SetHelpString(_(u"S√©lectionnez une couleur"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Couleur 1
-        propriete = wxpg.ColourProperty(label=_(u"Fond ligne dÈpÙt"), name="couleur_fond_depot", value=wx.Colour(230, 230, 255))
-        propriete.SetHelpString(_(u"SÈlectionnez une couleur"))
+        propriete = wxpg.ColourProperty(label=_(u"Fond ligne d√©p√¥t"), name="couleur_fond_depot", value=wx.Colour(230, 230, 255))
+        propriete.SetHelpString(_(u"S√©lectionnez une couleur"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Couleur 2
         propriete = wxpg.ColourProperty(label=_(u"Fond ligne total"), name="couleur_fond_total", value=wx.Colour(204, 204, 255))
-        propriete.SetHelpString(_(u"SÈlectionnez une couleur"))
+        propriete.SetHelpString(_(u"S√©lectionnez une couleur"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -72,7 +72,7 @@ class CTRL_Parametres(DLG_Options_impression_pdf.CTRL_Parametres):
 
         # Taille police
         propriete = wxpg.IntProperty(label=_(u"Taille de texte"), name="taille_texte", value=7)
-        propriete.SetHelpString(_(u"Saisissez une taille de texte (7 par dÈfaut)"))
+        propriete.SetHelpString(_(u"Saisissez une taille de texte (7 par d√©faut)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte", "SpinCtrl")
@@ -82,14 +82,14 @@ class CTRL_Parametres(DLG_Options_impression_pdf.CTRL_Parametres):
 
         # Largeur colonne labels
         propriete = wxpg.IntProperty(label=_(u"Largeur colonne label"), name="largeur_colonne_labels", value=170)
-        propriete.SetHelpString(_(u"Saisissez la largeur pour la colonne label (170 par dÈfaut)"))
+        propriete.SetHelpString(_(u"Saisissez la largeur pour la colonne label (170 par d√©faut)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("largeur_colonne_labels", "SpinCtrl")
 
         # Largeur colonne valeurs
         propriete = wxpg.IntProperty(label=_(u"Largeur colonne valeur"), name="largeur_colonne_valeurs", value=45)
-        propriete.SetHelpString(_(u"Saisissez la largeur pour la colonne valeur (45 par dÈfaut)"))
+        propriete.SetHelpString(_(u"Saisissez la largeur pour la colonne valeur (45 par d√©faut)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("largeur_colonne_valeurs", "SpinCtrl")
@@ -102,7 +102,7 @@ class CTRL(HTL.HyperTreeList):
         self.parent = parent
         self.dictImpression = {}
         
-        # ParamËtres
+        # Param√®tres
         self.mode_affichage = "mois" # "mois", "annee"
         self.affichage_details = True
         self.affichage_code_compta = False
@@ -112,7 +112,7 @@ class CTRL(HTL.HyperTreeList):
         self.listeActivites = []
         self.listeDepots = []
         
-##        # CrÈation de l'ImageList
+##        # Cr√©ation de l'ImageList
 ##        il = wx.ImageList(16, 16)
 ##        self.img_ok = il.Add(wx.Bitmap(Chemins.GetStaticPath('Images/16x16/Ok.png'), wx.BITMAP_TYPE_PNG))
 ##        self.img_pasok = il.Add(wx.Bitmap(Chemins.GetStaticPath('Images/16x16/Interdit.png'), wx.BITMAP_TYPE_PNG))
@@ -149,7 +149,7 @@ class CTRL(HTL.HyperTreeList):
         self.type = "vide"
 
     def Importation_depots(self):
-        """ Importation des donnÈes """
+        """ Importation des donn√©es """
         DB = GestionDB.DB()
         
         if len(self.listeDepots) == 0 : conditionDepots = "()"
@@ -176,11 +176,11 @@ class CTRL(HTL.HyperTreeList):
         return dictDepots
 
     def Importation_ventilation(self):
-        """ Importation des donnÈes """
+        """ Importation des donn√©es """
         DB = GestionDB.DB()
         
         if self.type == "depots" :
-            # Type DÈpÙts
+            # Type D√©p√¥ts
             if len(self.listeDepots) == 0 : condition = "depots.IDdepot IN ()"
             elif len(self.listeDepots) == 1 : condition = "depots.IDdepot IN (%d)" % self.listeDepots[0]
             else : condition = "depots.IDdepot IN %s" % str(tuple(self.listeDepots))
@@ -191,7 +191,7 @@ class CTRL(HTL.HyperTreeList):
             else : conditionActivites = "AND prestations.IDactivite IN %s" % str(tuple(self.listeActivites))
             condition = "prestations.date>='%s' AND prestations.date<='%s' %s" % (self.date_debut, self.date_fin, conditionActivites)
                             
-        # RÈcupËration de la ventilation des prestations des dÈpÙts
+        # R√©cup√®ration de la ventilation des prestations des d√©p√¥ts
         req = """SELECT 
         ventilation.IDventilation, ventilation.IDreglement, ventilation.IDprestation, ventilation.montant,
         reglements.date, reglements.date_saisie, depots.IDdepot, depots.date,
@@ -216,13 +216,13 @@ class CTRL(HTL.HyperTreeList):
             dateDepotReglement = UTILS_Dates.DateEngEnDateDD(dateDepotReglement)
             datePrestation = UTILS_Dates.DateEngEnDateDD(datePrestation)
             
-            # Compte le nombre de rËglements dans chaque dÈpÙt
+            # Compte le nombre de r√®glements dans chaque d√©p√¥t
             if (IDdepot in dictIDreglements) == False :
                 dictIDreglements[IDdepot] = []
             if IDreglement not in dictIDreglements[IDdepot] :
                 dictIDreglements[IDdepot].append(IDreglement)
             
-            # Rajoute le nom de l'activitÈ dans le label de la prestation
+            # Rajoute le nom de l'activit√© dans le label de la prestation
             if nomActivite != None :
                 labelPrestation = u"%s - %s" % (nomActivite, labelPrestation)
 
@@ -231,7 +231,7 @@ class CTRL(HTL.HyperTreeList):
             if self.affichage_code_compta and code_compta:
                 labelPrestation += u" - %s" % code_compta
             
-            # Retient la pÈriode de ventilation
+            # Retient la p√©riode de ventilation
             if datePrestation != None :
                 annee = datePrestation.year
                 mois = datePrestation.month
@@ -257,13 +257,13 @@ class CTRL(HTL.HyperTreeList):
         return dictVentilation, listePeriodes, dictIDreglements
     
     def CreationColonnes(self, listePeriodes=[]):
-        """ CrÈation des colonnes """
-        # CrÈation de la premiËre colonne
-        self.AddColumn(_(u"DÈpÙts"))
+        """ Cr√©ation des colonnes """
+        # Cr√©ation de la premi√®re colonne
+        self.AddColumn(_(u"D√©p√¥ts"))
         self.SetColumnWidth(0, 270)
         self.SetColumnAlignment(0, wx.ALIGN_LEFT)
         
-        # CrÈation des colonnes pÈriodes
+        # Cr√©ation des colonnes p√©riodes
         numColonne = 1
         if self.mode_affichage == "mois" :
             # Mode affichage MOIS
@@ -280,14 +280,14 @@ class CTRL(HTL.HyperTreeList):
                 self.SetColumnAlignment(numColonne, wx.ALIGN_CENTRE)
                 numColonne += 1
 
-        # CrÈation de la colonne Non VentilÈ
+        # Cr√©ation de la colonne Non Ventil√©
         if self.type == "depots" :
-            self.AddColumn(_(u"Non ventilÈ"))
+            self.AddColumn(_(u"Non ventil√©"))
             self.SetColumnWidth(numColonne, 65)
             self.SetColumnAlignment(numColonne, wx.ALIGN_CENTRE)
             numColonne += 1
 
-        # CrÈation de la colonne Total
+        # Cr√©ation de la colonne Total
         self.AddColumn(_(u"Total"))
         self.SetColumnWidth(numColonne, 75)
         self.SetColumnAlignment(numColonne, wx.ALIGN_CENTRE)
@@ -298,23 +298,23 @@ class CTRL(HTL.HyperTreeList):
             self.RAZ()
             return
 
-        # Importation des donnÈes
+        # Importation des donn√©es
         dictVentilation, listePeriodes, dictIDreglements = self.Importation_ventilation() 
         if self.type == "prestations" :
             self.listeDepots = list(dictVentilation.keys())
             if None in self.listeDepots : self.listeDepots.remove(None)
         dictDepots = self.Importation_depots()
         
-        # Si on est en type PRESTATIONS, on crÈe un dÈpÙt virtuel pour les rËglements non dÈposÈes
+        # Si on est en type PRESTATIONS, on cr√©e un d√©p√¥t virtuel pour les r√®glements non d√©pos√©es
         if self.type == "prestations" and None in dictVentilation :
-            dictDepots[None] = {"date":datetime.date(1977, 1, 1), "nom":_(u"----- %d rËglements non dÈposÈs -----") % len(dictIDreglements[None]), "verrouillage":False, "IDcompte":None, "montantTotal":0.0}
+            dictDepots[None] = {"date":datetime.date(1977, 1, 1), "nom":_(u"----- %d r√®glements non d√©pos√©s -----") % len(dictIDreglements[None]), "verrouillage":False, "IDcompte":None, "montantTotal":0.0}
         
         self.dictImpression = { "entete" : [], "contenu" : [], "total" : [], "coloration" : [] }
         
-        # MÈmorisation des colonnes
+        # M√©morisation des colonnes
         dictColonnes = {}
         index = 1
-        self.dictImpression["entete"].append(_(u"DÈpÙts"))
+        self.dictImpression["entete"].append(_(u"D√©p√¥ts"))
         for periode in listePeriodes :
             dictColonnes[periode] = index
             if self.mode_affichage == "mois" :
@@ -325,7 +325,7 @@ class CTRL(HTL.HyperTreeList):
             index += 1
         if self.type == "depots" :
             dictColonnes["sansVentilation"] = index
-            self.dictImpression["entete"].append(_(u"Non ventilÈ"))
+            self.dictImpression["entete"].append(_(u"Non ventil√©"))
             index += 1
         dictColonnes["total"] = index
         self.dictImpression["entete"].append(_(u"Total"))
@@ -335,11 +335,11 @@ class CTRL(HTL.HyperTreeList):
         self.CreationColonnes(listePeriodes) 
         self.root = self.AddRoot(_(u"Racine"))
     
-        # CrÈation des branches
+        # Cr√©ation des branches
         
         # ------------------ Branches DEPOTS -----------------
         
-        # Tri des dÈpÙts par date de dÈpÙt
+        # Tri des d√©p√¥ts par date de d√©p√¥t
         listeDepotsTemp = []
         for IDdepot, dictDepot in dictDepots.items() :
             if dictDepot["date"] == None :
@@ -354,7 +354,7 @@ class CTRL(HTL.HyperTreeList):
         
         for dateDepot, IDdepot, dictDepot in listeDepotsTemp :
             if dateDepot == datetime.date(1977, 1, 1) : 
-                dateStr = _(u"Sans date de dÈpÙt")
+                dateStr = _(u"Sans date de d√©p√¥t")
             else:
                 dateStr = u"%02d/%02d/%04d" % (dateDepot.day, dateDepot.month, dateDepot.year)
             label = u"%s (%s - %.2f %s)" % (dictDepot["nom"], dateStr, dictDepot["montantTotal"], SYMBOLE)
@@ -365,7 +365,7 @@ class CTRL(HTL.HyperTreeList):
             if self.affichage_details == True :
                 self.dictImpression["coloration"].append(len(self.dictImpression["contenu"]))
                         
-            # Colonnes pÈriodes
+            # Colonnes p√©riodes
             totalLigne = 0.0
             for periode in listePeriodes :
                 if IDdepot in dictVentilation and periode in dictVentilation[IDdepot] :
@@ -417,7 +417,7 @@ class CTRL(HTL.HyperTreeList):
                     self.SetItemTextColour(niveauPrestation, wx.Colour(160, 160, 160) )
                     impressionLigne = [labelPrestation,] 
                 
-                # Colonnes pÈriodes
+                # Colonnes p√©riodes
                 totalLigne = 0.0
                 for periode in listePeriodes :
                     texte = None
@@ -437,7 +437,7 @@ class CTRL(HTL.HyperTreeList):
                                     impressionLigne.append(texte)
                     if texte == None and self.affichage_details == True : impressionLigne.append("")
                 
-                # Colonne Non ventilÈ
+                # Colonne Non ventil√©
                 if self.type == "depots" and self.affichage_details == True :
                     impressionLigne.append(u"")
                 
@@ -512,7 +512,7 @@ class CTRL(HTL.HyperTreeList):
                             impressionLigne.append(texte)
                     if texte == None : impressionLigne.append(u"")
                 
-                # Colonne None ventilÈ
+                # Colonne None ventil√©
                 if self.type == "depots" :
                     impressionLigne.append(u"")
                 
@@ -552,7 +552,7 @@ class CTRL(HTL.HyperTreeList):
             dlg.Destroy()
             return
 
-        # CrÈation du PDF
+        # Cr√©ation du PDF
         from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
         from reportlab.lib.pagesizes import A4
         from reportlab.lib import colors
@@ -567,12 +567,12 @@ class CTRL(HTL.HyperTreeList):
         doc = SimpleDocTemplate(nomDoc, pagesize=(largeur_page, hauteur_page), topMargin=30, bottomMargin=30)
         story = []
         
-        # CrÈation du titre du document
+        # Cr√©ation du titre du document
         def Header():
             dataTableau = []
             largeursColonnes = ( (largeur_page-175, 100) )
             dateDuJour = UTILS_Dates.DateEngFr(str(datetime.date.today()))
-            dataTableau.append( (_(u"Analyse croisÈe ventilation/dÈpÙts"), _(u"%s\nEditÈ le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
+            dataTableau.append( (_(u"Analyse crois√©e ventilation/d√©p√¥ts"), _(u"%s\nEdit√© le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
             style = TableStyle([
                     ('BOX', (0,0), (-1,-1), 0.25, colors.black), 
                     ('VALIGN', (0,0), (-1,-1), 'TOP'), 
@@ -586,7 +586,7 @@ class CTRL(HTL.HyperTreeList):
             story.append(tableau)
             story.append(Spacer(0,20))       
         
-        # InsËre un header
+        # Ins√®re un header
         Header() 
         
         # Tableau
@@ -612,7 +612,7 @@ class CTRL(HTL.HyperTreeList):
                 indexColonne = 0
                 for texte in ligne :
 
-                    # Aligne ‡ droite les montants
+                    # Aligne √† droite les montants
                     if indexColonne > 0 :
                         texte = _(u"<para align='right'>%s</para>") % texte
 
@@ -632,17 +632,17 @@ class CTRL(HTL.HyperTreeList):
         listeStyles = [
             ('VALIGN', (0,0), (-1,-1), 'MIDDLE'), # Centre verticalement toutes les cases
             ('FONT',(0,0),(-1,-1), "Helvetica", dictOptions["taille_texte"]), # Donne la police de caract. + taille de police
-            ('GRID', (0,0), (-1,-1), 0.25, colors.black), # CrÈe la bordure noire pour tout le tableau
+            ('GRID', (0,0), (-1,-1), 0.25, colors.black), # Cr√©e la bordure noire pour tout le tableau
             ('ALIGN', (0,0), (-1,-1), 'CENTRE'), # Centre les cases
             ('BACKGROUND', (0,0), (-1,0), UTILS_Divers.ConvertCouleurWXpourPDF(dictOptions["couleur_fond_entetes"]) ), # Donne la couleur de fond du label
             ('BACKGROUND', (0, positionLigneTotal), (-1, positionLigneTotal), UTILS_Divers.ConvertCouleurWXpourPDF(dictOptions["couleur_fond_total"]) ), # Donne la couleur de fond du label
             ]
 
-        # Formatage des lignes "ActivitÈs"
+        # Formatage des lignes "Activit√©s"
         for indexColoration in self.dictImpression["coloration"] :
             listeStyles.append( ('BACKGROUND', (0, indexColoration+1), (-1, indexColoration+1), UTILS_Divers.ConvertCouleurWXpourPDF(dictOptions["couleur_fond_depot"])))
                 
-        # CrÈation du tableau
+        # Cr√©ation du tableau
         tableau = Table(dataTableau, largeursColonnes)
         tableau.setStyle(TableStyle(listeStyles))
         story.append(tableau)
@@ -656,16 +656,16 @@ class CTRL(HTL.HyperTreeList):
     
     def ExportExcel(self):
         """ Export Excel """
-        titre = _(u"SynthËse des prestations")
+        titre = _(u"Synth√®se des prestations")
         
-        # Demande ‡ l'utilisateur le nom de fichier et le rÈpertoire de destination
+        # Demande √† l'utilisateur le nom de fichier et le r√©pertoire de destination
         nomFichier = "ExportExcel_%s.xlsx" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
         wildcard = "Fichier Excel (*.xlsx)|*.xlsx|" \
                         "All files (*.*)|*.*"
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
         dlg = wx.FileDialog(
-            None, message = _(u"Veuillez sÈlectionner le rÈpertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, 
+            None, message = _(u"Veuillez s√©lectionner le r√©pertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, 
             defaultFile = nomFichier, 
             wildcard = wildcard, 
             style = wx.FD_SAVE
@@ -678,9 +678,9 @@ class CTRL(HTL.HyperTreeList):
             dlg.Destroy()
             return
         
-        # Le fichier de destination existe dÈj‡ :
+        # Le fichier de destination existe d√©j√† :
         if os.path.isfile(cheminFichier) == True :
-            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe dÈj‡. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe d√©j√†. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
             if dlg.ShowModal() == wx.ID_NO :
                 return False
                 dlg.Destroy()
@@ -696,7 +696,7 @@ class CTRL(HTL.HyperTreeList):
         format_money_titre = classeur.add_format({'num_format': '# ##0.00', 'bold': True, 'bg_color': '#E7EAED'})
         format_titre = classeur.add_format({'align': 'center', 'bold': True, 'bg_color': '#E7EAED'})
 
-        # CrÈation des labels de colonnes
+        # Cr√©ation des labels de colonnes
         x = 0
         y = 0
         for valeur in self.dictImpression["entete"] :
@@ -793,8 +793,8 @@ class CTRL(HTL.HyperTreeList):
         # Finalisation du fichier xlsx
         classeur.close()
         
-        # Confirmation de crÈation du fichier et demande d'ouverture directe dans Excel
-        txtMessage = _(u"Le fichier Excel a ÈtÈ crÈÈ avec succËs. Souhaitez-vous l'ouvrir dËs maintenant ?")
+        # Confirmation de cr√©ation du fichier et demande d'ouverture directe dans Excel
+        txtMessage = _(u"Le fichier Excel a √©t√© cr√©√© avec succ√®s. Souhaitez-vous l'ouvrir d√®s maintenant ?")
         dlgConfirm = wx.MessageDialog(None, txtMessage, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
         reponse = dlgConfirm.ShowModal()
         dlgConfirm.Destroy()
@@ -819,7 +819,7 @@ class MyFrame(wx.Frame):
         # Choix du mode d'affichage
         self.ctrl_stats.SetModeAffichage("mois")
         
-##        # Type dÈpÙts
+##        # Type d√©p√¥ts
 ##        self.ctrl_stats.SetTypeDepots(listeDepots=[1, 2, 3, 4, 5])
         
         # Type Prestations

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -28,16 +28,16 @@ def DateEngEnDateDD(dateEng):
     return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
     
 def DateDDEnDateFR(dateDD):
-    """ Transforme une datetime.date en date complËte FR """
+    """ Transforme une datetime.date en date compl√®te FR """
     listeJours = ("Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche")
-    listeMois = (_(u"janvier"), _(u"fÈvrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"ao˚t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÈcembre"))
+    listeMois = (_(u"janvier"), _(u"f√©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"ao√ªt"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"d√©cembre"))
     return listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
 
 
 
 
 def CreationIdentifiant(IDfamille=None, IDutilisateur=None, nbreCaract=8):
-    """ CrÈation d'un identifiant alÈatoire """
+    """ Cr√©ation d'un identifiant al√©atoire """
     identifiant = ""
     numTmp = ""
     for x in range(0, nbreCaract-4) :
@@ -51,8 +51,8 @@ def CreationIdentifiant(IDfamille=None, IDutilisateur=None, nbreCaract=8):
     return identifiant
 
 def CreationMDP(nbreCaract=8, IDfichier=None, cryptage=True):
-    """ CrÈation d'un mot de passe alÈatoire """
-    # GÈnÈration du mot de passe
+    """ Cr√©ation d'un mot de passe al√©atoire """
+    # G√©n√©ration du mot de passe
     mdp = ""
     for x in range(0, nbreCaract) :
         mdp += random.choice("bcdfghjkmnprstvwxzBCDFGHJKLMNPRSTVWXZ123456789")
@@ -76,7 +76,7 @@ def DecrypteMDP(mdp="", IDfichier=None):
     return mdp
 
 def CrypteMDP(mdp="", IDfichier=None):
-    """ Crypte un mot de passe donnÈ """
+    """ Crypte un mot de passe donn√© """
     if not mdp.startswith("#@#"):
         if not IDfichier:
             IDfichier = FonctionsPerso.GetIDfichier()
@@ -87,7 +87,7 @@ def CrypteMDP(mdp="", IDfichier=None):
 
 
 def CrypteMDP_archive(motdepasse=""):
-    """ Crypte un mot de passe donnÈ """
+    """ Crypte un mot de passe donn√© """
     mdpCrypte = UTILS_CryptageMD5.unix_md5_crypt(motdepasse, 'ab')
     return mdpCrypte
 
@@ -111,13 +111,13 @@ def InitCodesUtilisateurs():
 
 
 def UploadCalendrier():
-    """ CrÈÈ et upload le calendrier des pÈriodes internet """
+    """ Cr√©√© et upload le calendrier des p√©riodes internet """
     listePeriodes = []
     
-    # RÈcupÈration des noms de pÈriodes
+    # R√©cup√©ration des noms de p√©riodes
     dict_periodes = GestionDB.DICT_PERIODES
     
-    # RÈcupÈration des dates de pÈriodes
+    # R√©cup√©ration des dates de p√©riodes
     DB = GestionDB.DB()      
     req = """SELECT IDperiode, annee, date FROM dates ORDER BY date; """
     DB.executerReq(req)
@@ -131,7 +131,7 @@ def UploadCalendrier():
         else:
             dictDates[key] = [date,]
     
-    # RÈcupÈration des pÈriodes_internet
+    # R√©cup√©ration des p√©riodes_internet
     req = """SELECT IDperiode_internet, IDperiode, annee, debut_inscription, fin_inscription, synchro FROM periodes_internet ORDER BY debut_inscription; """
     DB = GestionDB.DB()        
     DB.executerReq(req)
@@ -151,14 +151,14 @@ def UploadCalendrier():
         
         listePeriodes.append(txt)
     
-    # CrÈation du fichier texte
+    # Cr√©ation du fichier texte
     texteFichier = ""
     for txtPeriode in listePeriodes :
         texteFichier += txtPeriode
         
-    # CrÈation du fichier texte
+    # Cr√©ation du fichier texte
     f = open("temp\calendrier.txt", "w")
-    f.write(texteFichier.encode("iso-8859-15"))
+    f.write(texteFichier.encode("utf8"))
     f.close()
     
     # Mise en ligne du fichier texte
@@ -171,22 +171,22 @@ def UploadCalendrier():
 
     nbrePeriodes = len(listePeriodes)
     
-    etat = _(u"> %d pÈriodes mises en ligne") % nbrePeriodes
+    etat = _(u"> %d p√©riodes mises en ligne") % nbrePeriodes
     return etat
     
     
     
 
 def ImporteFichierReservations():
-    """ RÈcupËre le contenu du fichier prÈsences sur Internet """
+    """ R√©cup√®re le contenu du fichier pr√©sences sur Internet """
     
-    # RÈcupËre le fichier en ligne
+    # R√©cup√®re le fichier en ligne
     f = urlopen('http://xxx/presences.txt')
     txtPresences = f.readlines()
     f.close()
     
     if len(txtPresences) < 2 :
-        etat =  _(u"> Aucune prÈsence a tÈlÈcharger.")
+        etat =  _(u"> Aucune pr√©sence a t√©l√©charger.")
         return etat
     
     listeReservations = []
@@ -209,25 +209,25 @@ def ImporteFichierReservations():
             comboDH = string.split(txtDateHeure, "-")
             dateHeure = datetime.datetime(int(comboDH[0]), int(comboDH[1]), int(comboDH[2]), int(comboDH[3]), int(comboDH[4]), int(comboDH[5]))
             
-            # Les prÈsences
+            # Les pr√©sences
             txtPresences = combo[3]
             dictPresences = {}
             if txtPresences[-1] == "\n" : txtPresences = txtPresences[:-1]
             comboPresences = string.split(txtPresences, ";")
             for presence in comboPresences :
                 if presence[0] == "-" : 
-                    # Pas de prÈsence
+                    # Pas de pr√©sence
                     break
                 date = DateEngEnDateDD(presence[:10])
                 typePresence = presence[10:]
                 dictPresences[date] = typePresence
             
-            # Met toutes les donnÈes recueillies dans une liste
+            # Met toutes les donn√©es recueillies dans une liste
             listeReservations.append( [IDenfant, IDperiode_internet, txtDateHeure, txtPresences, dictPresences] )
             nbreReservations += 1
 
     
-    # RÈcupËre les IDfamille de chaque enfant
+    # R√©cup√®re les IDfamille de chaque enfant
     DB = GestionDB.DB()        
     req = """SELECT IDenfant, IDfamille FROM enfants; """
     DB.executerReq(req)
@@ -237,12 +237,12 @@ def ImporteFichierReservations():
     for IDenfant, IDfamille in listeDonnees :
         listeEnfants[IDenfant] = IDfamille
     
-    # Enregistre les donnÈes dans la table 'reservations_internet'
+    # Enregistre les donn√©es dans la table 'reservations_internet'
     DB = GestionDB.DB()
     for IDenfant, IDperiode_internet, txtDateHeure, txtPresences, dictPresences in listeReservations :
         IDfamille = listeEnfants[IDenfant]
         
-        # Recherche si la rÈservation est dÈj‡ prÈsente dans la table reservations
+        # Recherche si la r√©servation est d√©j√† pr√©sente dans la table reservations
         req = """
         SELECT IDreservation FROM reservations_internet 
         WHERE IDenfant=%d AND date_heure='%s'; 
@@ -250,10 +250,10 @@ def ImporteFichierReservations():
         DB.executerReq(req)
         listeDonnees = DB.resultatReq()
         
-        # Si pas prÈsente, ajoute la rÈservation dans la table
+        # Si pas pr√©sente, ajoute la r√©servation dans la table
         if len(listeDonnees) == 0 :
             
-            # Enregistrement de la rÈservation
+            # Enregistrement de la r√©servation
             listeDonnees = [ ("IDfamille",   IDfamille),  
                                         ("IDenfant",    IDenfant),
                                         ("date_heure",    txtDateHeure), 
@@ -263,7 +263,7 @@ def ImporteFichierReservations():
             IDreservation = DB.ReqInsert("reservations_internet", listeDonnees)
             nbreEnregistrements += 1
             
-            # Enregistrement des prÈsences de la rÈservation
+            # Enregistrement des pr√©sences de la r√©servation
             for date, type_presence in dictPresences.items() : 
                 listeDonnees = [ ("IDreservation",   IDreservation),  
                                             ("IDfamille",   IDfamille),  
@@ -273,16 +273,16 @@ def ImporteFichierReservations():
                 DB = GestionDB.DB()     
                 IDpresence = DB.ReqInsert("presences_internet", listeDonnees)
     
-    # ClÙture de la base
+    # Cl√¥ture de la base
     DB.commit()
     DB.close()
     
-    etat = _(u"> %d rÈservations trouvÈes / %d rÈservations enregistrÈes dans la base") % (nbreReservations, nbreEnregistrements)
+    etat = _(u"> %d r√©servations trouv√©es / %d r√©servations enregistr√©es dans la base") % (nbreReservations, nbreEnregistrements)
     return etat
 
 
 def UploadFichierIdentites():
-    """ CrÈÈ le fichier des identitÈs """
+    """ Cr√©√© le fichier des identit√©s """
     
     dictCotisations = GetInfosCotisations()
     dictPieces = GetInfosPieces()
@@ -290,7 +290,7 @@ def UploadFichierIdentites():
     
     listeIdentites = []
     
-    # RÈcupËre les donnÈes enfants
+    # R√©cup√®re les donn√©es enfants
     DB = GestionDB.DB()        
     req = """SELECT IDenfant, IDfamille, prenom FROM enfants; """
     DB.executerReq(req)
@@ -303,14 +303,14 @@ def UploadFichierIdentites():
         else:
             dictEnfants[IDfamille] = [ (IDenfant, prenom), ]
     
-    # RÈcupËre les donnÈes familles
+    # R√©cup√®re les donn√©es familles
     DB = GestionDB.DB()        
     req = """SELECT IDfamille, internet_identifiant, internet_mdp FROM familles WHERE internet_actif=1; """
     DB.executerReq(req)
     listeFamilles = DB.resultatReq()
     DB.close()
 
-    # CrÈation des lignes de donnÈes
+    # Cr√©ation des lignes de donn√©es
     for IDfamille, internet_identifiant, internet_mdp in listeFamilles :
         txtIdentite = ""
         
@@ -321,7 +321,7 @@ def UploadFichierIdentites():
         txtEnfants = ""
         if IDfamille in dictEnfants :
             for IDenfant, prenom in dictEnfants[IDfamille] :
-                txtEnfants += u"%05d%s;" % (IDenfant, prenom.decode("iso-8859-15"))
+                txtEnfants += u"%05d%s;" % (IDenfant, prenom.decode("utf8"))
             if len(txtEnfants) > 0 : txtEnfants = txtEnfants[:-1]
         
         # Pieces
@@ -335,14 +335,14 @@ def UploadFichierIdentites():
         
         listeIdentites.append(txtIdentite)
         
-    # CrÈation du fichier texte
+    # Cr√©ation du fichier texte
     texteFichier = ""
     for txtIdentite in listeIdentites :
         texteFichier += txtIdentite
         
-    # CrÈation du fichier texte
+    # Cr√©ation du fichier texte
     f = open("temp\identites.txt", "w")
-    f.write(texteFichier.encode("iso-8859-15"))
+    f.write(texteFichier.encode("utf8"))
     f.close()
     
     # Mise en ligne du fichier texte
@@ -355,7 +355,7 @@ def UploadFichierIdentites():
 
     nbreIdentites = len(listeIdentites)
     
-    etat =  _(u"> %d identitÈs mises en ligne") % nbreIdentites
+    etat =  _(u"> %d identit√©s mises en ligne") % nbreIdentites
     return etat
     
 def GetInfosPieces():
@@ -398,7 +398,7 @@ def GetPiecesAFournir(dictPieces, dictCotisations, dictTypesPieces, dictEnfants,
         else :
             listeCotisationsFournies = []
     
-        # Creation de la liste des piËces ‡ fournir
+        # Creation de la liste des pi√®ces √† fournir
         datedujour = datetime.date.today()
         listeDonnees = []
         index = 1
@@ -411,7 +411,7 @@ def GetPiecesAFournir(dictPieces, dictCotisations, dictTypesPieces, dictEnfants,
                 etat = "pasok"
                 # Recherche d'une cotisation valide
                 for IDcotisation, date_debut, date_fin in listeCotisationsFournies :
-                    # VÈrifie si la piËce est valide :
+                    # V√©rifie si la pi√®ce est valide :
                     if date_debut <= str(datedujour) <= date_fin : 
                         etat = "ok"
                 labelPiece = nomTypePiece + " " + str(datedujour.year)
@@ -421,10 +421,10 @@ def GetPiecesAFournir(dictPieces, dictCotisations, dictTypesPieces, dictEnfants,
                 
             if attribution == "famille" and nomTypePiece != _(u"Cotisation annuelle") :
                 etat = "pasok"
-                # Recherche d'une piËce de type famille
+                # Recherche d'une pi√®ce de type famille
                 for IDpiece, IDenfant, IDtype, date_debut, date_fin in listePiecesFournies :
                     if IDtype == IDtypePiece : 
-                        # VÈrifie si la piËce est valide :
+                        # V√©rifie si la pi√®ce est valide :
                         if date_debut <= str(datedujour) <= date_fin : 
                             etat = "ok"
                 labelPiece = nomTypePiece
@@ -436,14 +436,14 @@ def GetPiecesAFournir(dictPieces, dictCotisations, dictTypesPieces, dictEnfants,
                 if IDfamille in dictEnfants :
                     for IDenfant, prenom in dictEnfants[IDfamille] :
                         etat = "pasok"
-                        # Recherche d'une piËce de type enfant
+                        # Recherche d'une pi√®ce de type enfant
                         for IDpiece, IDenfant2, IDtype, date_debut, date_fin in listePiecesFournies :
                             if IDtype == IDtypePiece and IDenfant2 == IDenfant : 
-                                # VÈrifie si la piËce est valide :
+                                # V√©rifie si la pi√®ce est valide :
                                 if date_debut <= str(datedujour) <= date_fin : 
                                     etat = "ok"
                         if six.PY2:
-                            prenom = prenom.decode("iso-8859-15")
+                            prenom = prenom.decode("utf8")
                         labelPiece = nomTypePiece + " de " + prenom
                         if etat == "pasok" :
                             listeDonnees.append( "%d%d" % (IDtypePiece, IDenfant) ) 

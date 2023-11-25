@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -15,7 +15,7 @@ from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import datetime
-from Crypto.Hash import SHA256
+from Cryptodome.Hash import SHA256
 
 
 class CTRL(wx.SearchCtrl):
@@ -65,7 +65,7 @@ class CTRL(wx.SearchCtrl):
         # Recherche de l'utilisateur
         for dictUtilisateur in listeUtilisateurs :
             IDutilisateur = dictUtilisateur["IDutilisateur"]
-            if txtSearch == dictUtilisateur["mdp"] or mdpcrypt == dictUtilisateur["mdpcrypt"] or (txtSearch == self.GetPasse(txtSearch) and dictUtilisateur["profil"] == "administrateur") : # txtSearch == dictUtilisateur["mdp"] or à retirer plus tard
+            if txtSearch == dictUtilisateur["mdp"] or mdpcrypt == dictUtilisateur["mdpcrypt"] or (txtSearch == self.GetPasse(txtSearch) and dictUtilisateur["profil"] == "administrateur") : # txtSearch == dictUtilisateur["mdp"] or Ã  retirer plus tard
                 # Version pour la DLG du dessous
                 if self.modeDLG == True :
                     self.GetParent().ChargeUtilisateur(dictUtilisateur)
@@ -167,7 +167,7 @@ class Dialog(wx.Dialog):
 
     def ChargeUtilisateur(self, dictUtilisateur={}):
         self.dictUtilisateur = dictUtilisateur
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
     
     def GetDictUtilisateur(self):

@@ -846,7 +846,7 @@ class PyImageList(object):
             raise Exception("Wrong index in image list")
 
         bmp = self._images[index]    
-        dc.DrawBitmap(bmp, x, y, (flags & wx.IMAGELIST_DRAW_TRANSPARENT) > 0)
+        dc.DrawBitmap(bmp, int(x), int(y), (flags & wx.IMAGELIST_DRAW_TRANSPARENT) > 0)
 
         return True
 
@@ -5128,7 +5128,7 @@ class UltimateListHeaderWindow(wx.PyControl):
             # draw the text clipping it so that it doesn't overwrite the column
             # boundary
             dc.SetClippingRegion(x, HEADER_OFFSET_Y, cw, h - 4)
-            self.DrawTextFormatted(dc, text, wx.Rect(xAligned+EXTRA_WIDTH, HEADER_OFFSET_Y, cw-EXTRA_WIDTH, h-4))
+            self.DrawTextFormatted(dc, text, wx.Rect(int(xAligned+EXTRA_WIDTH), int(HEADER_OFFSET_Y), int(cw-EXTRA_WIDTH), int(h-4)))
             
             x += wCol
             dc.DestroyClippingRegion()
@@ -6994,7 +6994,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
             y = 0
 
             while y < sz.height:
-                dc.DrawBitmap(self._backgroundImage, x, y, True)
+                dc.DrawBitmap(self._backgroundImage, int(x), int(y), True)
                 y = y + h
 
             x = x + w
@@ -7020,7 +7020,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
         x = width - bitmapW - 5
         y = height - bitmapH - 5
 
-        dc.DrawBitmap(self._waterMark, x, y, True)
+        dc.DrawBitmap(self._waterMark, int(x), int(y), True)
         
         
     def HighlightAll(self, on=True):

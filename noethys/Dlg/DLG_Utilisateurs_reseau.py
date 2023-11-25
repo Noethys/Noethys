@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -50,9 +50,9 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonSupprimer, self.bouton_supprimer)
         
     def __set_properties(self):
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÈer un utilisateur rÈseau")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'utilisateur rÈseau sÈlectionnÈ dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'utilisateur rÈseau sÈlectionnÈ dans la liste")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour cr√©er un utilisateur r√©seau")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'utilisateur r√©seau s√©lectionn√© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'utilisateur r√©seau s√©lectionn√© dans la liste")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
@@ -93,7 +93,7 @@ class Panel(wx.Panel):
 
     def OnBoutonModifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_utilisateurs_reseau", "modifier") == False : return
-        dlg = wx.MessageDialog(self, _(u"Actuellement, il n'est pas encore possible de modifier un utilisateur. \nVous devez donc supprimer l'utilisateur et le re-crÈer."), "Information", wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Actuellement, il n'est pas encore possible de modifier un utilisateur. \nVous devez donc supprimer l'utilisateur et le re-cr√©er."), "Information", wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()      
         
@@ -101,9 +101,9 @@ class Panel(wx.Panel):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_utilisateurs_reseau", "supprimer") == False : return
         index = self.listCtrl.GetFirstSelected()
 
-        # VÈrifie qu'un item a bien ÈtÈ sÈlectionnÈ
+        # V√©rifie qu'un item a bien √©t√© s√©lectionn√©
         if index == -1:
-            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sÈlectionner un utilisateur ‡ supprimer dans la liste."), "Information", wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord s√©lectionner un utilisateur √† supprimer dans la liste."), "Information", wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -111,7 +111,7 @@ class Panel(wx.Panel):
         nom = self.listCtrl.listeDonnees[index][0]
         hote = self.listCtrl.listeDonnees[index][1]
         
-        # VÈrifie que ce n'est pas ROOT
+        # V√©rifie que ce n'est pas ROOT
         if nom == "root" :
             dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer le compte administrateur"), "Information", wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
@@ -130,7 +130,7 @@ class Panel(wx.Panel):
         DB = GestionDB.DB()
         DB.ExecuterReq("USE mysql;")
 
-        # Suppression de l'autorisation ‡ la base en cours
+        # Suppression de l'autorisation √† la base en cours
         for suffixe in LISTE_SUFFIXES :
             req = "SELECT host, db, user FROM db WHERE user='%s' and db='%s' and host='%s';" % (nom, u"%s_%s" % (self.nomBase, suffixe), hote)
             DB.ExecuterReq(req)
@@ -140,7 +140,7 @@ class Panel(wx.Panel):
                 """ % (u"%s_%s" % (self.nomBase, suffixe), nom, hote)
                 DB.ExecuterReq(req)
 
-        # Suppression de l'hÙte :
+        # Suppression de l'h√¥te :
         req = "DELETE FROM user WHERE user='%s' and host='%s';" % (nom, hote)
         DB.ExecuterReq(req)
 
@@ -148,7 +148,7 @@ class Panel(wx.Panel):
         DB.ExecuterReq(req)
         DB.Close()
 
-        # M‡J du ListCtrl
+        # M√†J du ListCtrl
         self.listCtrl.MAJListeCtrl()
                 
     def RechercheBaseEnCours(self):
@@ -159,10 +159,10 @@ class Panel(wx.Panel):
         except :
             nomWindow = None
         if nomWindow == "general" : 
-            # Si la frame 'General' est chargÈe, on y rÈcupËre le dict de config
+            # Si la frame 'General' est charg√©e, on y r√©cup√®re le dict de config
             nomFichier = topWindow.userConfig["nomFichier"]
         else:
-            # RÈcupÈration du nom de la DB directement dans le fichier de config sur le disque dur
+            # R√©cup√©ration du nom de la DB directement dans le fichier de config sur le disque dur
             from Utils import UTILS_Config
             cfg = UTILS_Config.FichierConfig()
             nomFichier = cfg.GetItemConfig("nomFichier")
@@ -182,12 +182,12 @@ class ListCtrl(wx.ListCtrl, CheckListCtrlMixin):
     def Remplissage(self, select=None):
         self.listeDonnees = self.Importation()
 
-        # CrÈation des colonnes
-        self.InsertColumn(0, _(u"AccËs"))
+        # Cr√©ation des colonnes
+        self.InsertColumn(0, _(u"Acc√®s"))
         self.SetColumnWidth(0, 55)
         self.InsertColumn(1, _(u"Nom de l'utilisateur"))
         self.SetColumnWidth(1, 200)
-        self.InsertColumn(2, _(u"HÙte de connexion"))
+        self.InsertColumn(2, _(u"H√¥te de connexion"))
         self.SetColumnWidth(2, 300)
 
         # Remplissage avec les valeurs
@@ -215,9 +215,9 @@ class ListCtrl(wx.ListCtrl, CheckListCtrlMixin):
                 self.SetItem(index, 1, user)
             else:
                 self.SetStringItem(index, 1, user)
-            if host == "%" : host = _(u"Connexion depuis n'importe quel hÙte")
+            if host == "%" : host = _(u"Connexion depuis n'importe quel h√¥te")
             elif host == "localhost" : host = _(u"Connexion uniquement depuis le serveur principal")
-            else : host = _(u"Connexion uniquement depuis l'hÙte %s") % host
+            else : host = _(u"Connexion uniquement depuis l'h√¥te %s") % host
             if 'phoenix' in wx.PlatformInfo:
                 self.SetItem(index, 2, host)
             else:
@@ -243,7 +243,7 @@ class ListCtrl(wx.ListCtrl, CheckListCtrlMixin):
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_utilisateurs_reseau", "modifier") == False : return
             nom, hote = self.listeDonnees[index][0], self.listeDonnees[index][1]
             
-            # VÈrifie que ce n'est pas ROOT
+            # V√©rifie que ce n'est pas ROOT
             if nom == "root" :
                 self.remplissage = True
                 self.CheckItem(index) 
@@ -267,7 +267,7 @@ class ListCtrl(wx.ListCtrl, CheckListCtrlMixin):
             pass
 
     def SetAutorisation(self, etat=True, nom="", hote=""):
-        # CrÈation de l'autorisation ‡ la base en cours
+        # Cr√©ation de l'autorisation √† la base en cours
         DB = GestionDB.DB()
         DB.ExecuterReq("USE mysql;")
         
@@ -277,7 +277,7 @@ class ListCtrl(wx.ListCtrl, CheckListCtrlMixin):
                 """ % (u"%s_%s" % (self.nomBase, suffixe), nom, hote)
                 DB.ExecuterReq(req)
         else:
-            # Si l'autorisation existe dÈj‡ mais est dÈcochÈe : on efface cette autorisation
+            # Si l'autorisation existe d√©j√† mais est d√©coch√©e : on efface cette autorisation
             for suffixe in LISTE_SUFFIXES :
                 req = u"SELECT host, db, user FROM db WHERE user='%s' and db='%s' and host='%s';" % (nom, u"%s_%s" % (self.nomBase, suffixe), hote)
                 DB.ExecuterReq(req)
@@ -292,7 +292,7 @@ class ListCtrl(wx.ListCtrl, CheckListCtrlMixin):
         
 
     def Importation(self):
-        # Importation des donnÈes de la liste
+        # Importation des donn√©es de la liste
         DB = GestionDB.DB()
         
         # Recherche des utilisateurs MySQL
@@ -309,7 +309,7 @@ class ListCtrl(wx.ListCtrl, CheckListCtrlMixin):
         listeAutorisations = DB.ResultatReq()
         DB.Close()
         
-        # CrÈation de la liste de donnÈes
+        # Cr√©ation de la liste de donn√©es
         listeDonnees = []
         for host, user in listeUtilisateurs :
             # Recherche s'il y a une autorisation pour la base en cours
@@ -332,8 +332,8 @@ class Dialog(wx.Dialog):
         self.parent = parent      
         
         # Bandeau
-        intro = _(u"Quand vous crÈez un fichier rÈseau pour Noethys, il n'y a que vous, l'administrateur, qui avez le droit d'accÈder au fichier. Vous devez donc crÈer des utilisateurs ou accorder une autorisation d'accËs aux utilisateurs existants. Vous devez indiquer Ègalement les postes (hÙtes) depuis lesquels ces utilisateurs sont autorisÈs ‡ se connecter. Cochez les utilisateurs autorisÈs ‡ se connecter au fichier rÈseau chargÈ. Cliquez sur le bouton 'Aide' pour en savoir plus...")
-        titre = _(u"Gestion des accËs rÈseau")
+        intro = _(u"Quand vous cr√©ez un fichier r√©seau pour Noethys, il n'y a que vous, l'administrateur, qui avez le droit d'acc√©der au fichier. Vous devez donc cr√©er des utilisateurs ou accorder une autorisation d'acc√®s aux utilisateurs existants. Vous devez indiquer √©galement les postes (h√¥tes) depuis lesquels ces utilisateurs sont autoris√©s √† se connecter. Cochez les utilisateurs autoris√©s √† se connecter au fichier r√©seau charg√©. Cliquez sur le bouton 'Aide' pour en savoir plus...")
+        titre = _(u"Gestion des acc√®s r√©seau")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=54, nomImage="Images/32x32/Utilisateur_reseau.png")
         self.SetTitle(titre)
 

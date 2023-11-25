@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -24,8 +24,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des lots de prélèvements.")
-        titre = _(u"Gestion des lots de prélèvements")
+        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des lots de prÃ©lÃ¨vements.")
+        titre = _(u"Gestion des lots de prÃ©lÃ¨vements")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Prelevement.png")
         self.ctrl_listview = OL_Lots_prelevements.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
@@ -49,7 +49,7 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un lot")))
         self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le lot dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le lot sélectionné dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le lot sÃ©lectionnÃ© dans la liste")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((750, 600))
@@ -99,7 +99,7 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Prlvementautomatique1")
     
     def Assistant(self, filtres=[], nomLot=None):
-        """ Assistant à la saisie pour le module de facturation """
+        """ Assistant Ã  la saisie pour le module de facturation """
         self.ctrl_listview.Assistant(filtres=filtres, nomLot=nomLot)
         
 

@@ -98,7 +98,7 @@ class Newsticker(Control):
     def Start(self):
         """Starts the text moving"""
         if not self.timer.IsRunning():
-            self.timer.Start(1000 / self._fps)
+            self.timer.Start(int(1000 / self._fps))
     
     def IsTicking(self):
         """Is the ticker ticking? ie, is the text moving?"""

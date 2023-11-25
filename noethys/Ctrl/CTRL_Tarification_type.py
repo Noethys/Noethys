@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -36,7 +36,7 @@ class CTRL_Date_facturation(wx.Panel):
         for code, label in self.listeChoix :
             choices.append(label)
         self.ctrl_choix = wx.Choice(self, -1, choices=choices)
-        self.ctrl_choix.SetToolTip(wx.ToolTip(_(u"Sélectionnez la date de facturation de la prestation")))
+        self.ctrl_choix.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez la date de facturation de la prestation")))
         self.ctrl_date = CTRL_Saisie_date.Date2(self)
 
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=3, vgap=5, hgap=5)
@@ -81,7 +81,7 @@ class CTRL_Date_facturation(wx.Panel):
 
     def Validation(self):
         if self.GetCodeSelection() == "date:None" :
-            dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné la date de facturation 'La date suivante' mais sans sélectionner de date valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous avez sÃ©lectionnÃ© la date de facturation 'La date suivante' mais sans sÃ©lectionner de date valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date.SetFocus()
@@ -94,7 +94,7 @@ class CTRL_Date_facturation(wx.Panel):
 
 
 class Panel_type_sans_parametres(wx.Panel):
-    def __init__(self, parent, nouveauTarif=False, texte=_(u"Aucun paramètre à renseigner.")):
+    def __init__(self, parent, nouveauTarif=False, texte=_(u"Aucun paramÃ¨tre Ã  renseigner.")):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
         st = wx.StaticText(self, -1, texte, (0, 0))
@@ -115,16 +115,16 @@ class Panel_type_sans_parametres(wx.Panel):
 ##        self.IDtarif = IDtarif
 ##        self.nouveauTarif = nouveauTarif
 ##        
-##        # Création des pages
+##        # CrÃ©ation des pages
 ##        self.dictPages = {}
 ##        self.CreationPages()
 ##    
 ##    def CreationPages(self):
 ##        liste_pages = [
 ##            ("SIMPLE", _(u"Prestation simple"), Panel_type_sans_parametres(self, self.nouveauTarif)),
-##            ("JOURN", _(u"Prestation journalière"), CTRL_Tarification_journ.Panel(self, self.IDactivite, self.IDtarif, self.nouveauTarif)),
-##            ("FORFAIT", _(u"Forfait daté"), CTRL_Tarification_forfait.Panel(self, self.IDactivite, self.IDtarif, self.nouveauTarif)),
-##            ("CREDIT", _(u"Forfait crédit"), CTRL_Tarification_credit.Panel(self, self.IDactivite, self.IDtarif, self.nouveauTarif)),
+##            ("JOURN", _(u"Prestation journaliÃ¨re"), CTRL_Tarification_journ.Panel(self, self.IDactivite, self.IDtarif, self.nouveauTarif)),
+##            ("FORFAIT", _(u"Forfait datÃ©"), CTRL_Tarification_forfait.Panel(self, self.IDactivite, self.IDtarif, self.nouveauTarif)),
+##            ("CREDIT", _(u"Forfait crÃ©dit"), CTRL_Tarification_credit.Panel(self, self.IDactivite, self.IDtarif, self.nouveauTarif)),
 ##            ]
 ##        self.dictPages = {}
 ##        index = 0
@@ -134,12 +134,12 @@ class Panel_type_sans_parametres(wx.Panel):
 ##            index += 1
 ##    
 ##    def SetType(self, code="JOURN"):
-##        """ Sélection d'une page d'après son code """
+##        """ SÃ©lection d'une page d'aprÃ¨s son code """
 ##        if self.dictPages.has_key(code):
 ##            self.SetSelection(self.dictPages[code]["index"])
 ##    
 ##    def GetType(self):
-##        """ Retourne le code de la page sélectionnée """
+##        """ Retourne le code de la page sÃ©lectionnÃ©e """
 ##        selection = self.GetSelection()
 ##        for code, dictTemp in self.dictPages.iteritems() :
 ##            if dictTemp["index"] == selection :
@@ -153,12 +153,12 @@ class Panel_type_sans_parametres(wx.Panel):
 ##        return ctrl        
 ##        
 ##    def Validation(self):
-##        # Validation des paramètres du type
+##        # Validation des paramÃ¨tres du type
 ##        validation = self.GetPage().Validation()
 ##        return validation
 ##        
 ##    def Sauvegarde(self):
-##        # Validation des paramètres du type
+##        # Validation des paramÃ¨tres du type
 ##        self.GetPage().Sauvegarde()
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------
@@ -197,13 +197,13 @@ class CTRL_Parametres(wx.Panel):
         self.parent = parent
         
         self.liste_pages = [
-            ("JOURN", _(u"Prestation journalière"), CTRL_Tarification_journ.Panel(self, IDactivite, IDtarif, nouveauTarif)),
-            ("FORFAIT", _(u"Forfait daté"), CTRL_Tarification_forfait.Panel(self, IDactivite, IDtarif, nouveauTarif)),
-            ("CREDIT", _(u"Forfait crédit"), CTRL_Tarification_credit.Panel(self, IDactivite, IDtarif, nouveauTarif)),
-            ("BAREME", _(u"Barême de contrat"), Panel_type_sans_parametres(self, nouveauTarif)),
+            ("JOURN", _(u"Prestation journaliÃ¨re"), CTRL_Tarification_journ.Panel(self, IDactivite, IDtarif, nouveauTarif)),
+            ("FORFAIT", _(u"Forfait datÃ©"), CTRL_Tarification_forfait.Panel(self, IDactivite, IDtarif, nouveauTarif)),
+            ("CREDIT", _(u"Forfait crÃ©dit"), CTRL_Tarification_credit.Panel(self, IDactivite, IDtarif, nouveauTarif)),
+            ("BAREME", _(u"BarÃªme de contrat"), Panel_type_sans_parametres(self, nouveauTarif)),
             ]
 
-        # Création des pages
+        # CrÃ©ation des pages
         self.grid_sizer_pages = wx.FlexGridSizer(len(self.liste_pages), 1, 10, 10)
         self.dictPages = {}
         index = 0
@@ -248,7 +248,7 @@ class Panel(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
         
-        self.label_parametres = wx.StaticText(self, -1, _(u"Paramètres :"))
+        self.label_parametres = wx.StaticText(self, -1, _(u"ParamÃ¨tres :"))
         self.ctrl_parametres = CTRL_Parametres(self, IDactivite=IDactivite, IDtarif=IDtarif, nouveauTarif=nouveauTarif)
         
         self.label_type = wx.StaticText(self, -1, _(u"Type de tarif :"))
@@ -269,7 +269,7 @@ class Panel(wx.Panel):
         # Binds
         self.Bind(wx.EVT_CHOICE, self.OnChoixType, self.ctrl_type)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.SetType(code="JOURN")
     
     def OnChoixType(self, event=None):
@@ -283,12 +283,12 @@ class Panel(wx.Panel):
         self.ctrl_parametres.Sauvegarde()
 
     def SetType(self, code="JOURN"):
-        """ Sélection d'une page d'après son code """
+        """ SÃ©lection d'une page d'aprÃ¨s son code """
         self.ctrl_type.SetType(code)
         self.ctrl_parametres.AffichePage(code)
     
     def GetType(self):
-        """ Retourne le code de la page sélectionnée """
+        """ Retourne le code de la page sÃ©lectionnÃ©e """
         return self.ctrl_type.GetType()        
     
     def MAJ(self):

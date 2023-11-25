@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -77,7 +77,7 @@ class Dialog(wx.Dialog):
         self.parent = parent   
 
         # Bandeau
-        intro = _(u"Vous pouvez ici consulter la liste des inscriptions scolaires par classe. La liste des inscrits peut être imprimée ou exportée. Pour inscrire un ou plusieurs individus, sélectionnez une classe dans la liste de gauche puis cliquez sur le bouton Ajouter. Cette fonction est particulièrement utile à la rentrée pour inscrire tous les enfants d'une classe dans la classe suivante.")
+        intro = _(u"Vous pouvez ici consulter la liste des inscriptions scolaires par classe. La liste des inscrits peut Ãªtre imprimÃ©e ou exportÃ©e. Pour inscrire un ou plusieurs individus, sÃ©lectionnez une classe dans la liste de gauche puis cliquez sur le bouton Ajouter. Cette fonction est particuliÃ¨rement utile Ã  la rentrÃ©e pour inscrire tous les enfants d'une classe dans la classe suivante.")
         titre = _(u"Inscriptions scolaires")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Classe.png")
@@ -123,8 +123,8 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour inscrire un ou plusieurs individus")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'inscription sélectionnée")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'inscription sélectionnée")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'inscription sÃ©lectionnÃ©e")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'inscription sÃ©lectionnÃ©e")))
         self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un apercu avant impression")))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste des inscrits")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))

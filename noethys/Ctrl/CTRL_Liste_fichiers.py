@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -73,7 +73,7 @@ class FirstColumnRenderer(object):
         """Draw a custom progress bar using double buffering to prevent flicker"""
         if self.icon != None :
             bmpWidth, bmpHeight = self.icon.GetWidth(), self.icon.GetHeight()        
-            dc.DrawBitmap(self.icon, rect.x+5, rect.y+(rect.height-bmpHeight)/2)
+            dc.DrawBitmap(self.icon, int(rect.x+5), int(rect.y+(rect.height-bmpHeight)/2))
         else :
             bmpWidth, bmpHeight = TAILLE_IMAGE
             
@@ -81,7 +81,7 @@ class FirstColumnRenderer(object):
                         
         textWidth, textHeight = dc.GetTextExtent(self.text)
         dc.SetTextForeground(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNTEXT))
-        dc.DrawText(self.text, rect.x+bmpWidth+10, rect.y+(rect.height - textHeight)/4)
+        dc.DrawText(self.text, rect.x+bmpWidth+10, int(rect.y+(rect.height - textHeight)/4))
 
         if not self.description:
             return
@@ -90,7 +90,7 @@ class FirstColumnRenderer(object):
 
         textWidth, textHeight = dc.GetTextExtent(self.description)
         dc.SetTextForeground(self.greyColour)
-        dc.DrawText(self.description, rect.x+bmpWidth+10, rect.y+3*(rect.height - textHeight)/4)
+        dc.DrawText(self.description, rect.x+bmpWidth+10, int(rect.y+3*(rect.height - textHeight)/4))
         
 
     def GetLineHeight(self):
@@ -140,18 +140,18 @@ class SecondColumnRenderer(object):
             dummy1, dummy2= dc.GetTextExtent(_(u"Date modif.: "))
             textWidth, textHeight = dc.GetTextExtent(self.date)
             dc.SetTextForeground(self.greyColour)
-            dc.DrawText("Date modif.: ", rect.x+5, rect.y+(rect.height - textHeight)/4)
+            dc.DrawText("Date modif.: ", rect.x+5, int(rect.y+(rect.height - textHeight)/4))
             dc.SetTextForeground(wx.BLACK)
-            dc.DrawText(self.date, rect.x+dummy1+5, rect.y+(rect.height - textHeight)/4)
+            dc.DrawText(self.date, rect.x+dummy1+5, int(rect.y+(rect.height - textHeight)/4))
         else :
             textWidth, textHeight = 0, 0
 
         if self.size :
             dummy1, dummy2= dc.GetTextExtent("Taille: ")
             dc.SetTextForeground(self.greyColour)
-            dc.DrawText("Taille: ", rect.x+5, rect.y+3*(rect.height - textHeight)/4)
+            dc.DrawText("Taille: ", rect.x+5, int(rect.y+3*(rect.height - textHeight)/4))
             dc.SetTextForeground(wx.BLACK)
-            dc.DrawText(self.size, rect.x+dummy1+5, rect.y+3*(rect.height - textHeight)/4)
+            dc.DrawText(self.size, rect.x+dummy1+5, int(rect.y+3*(rect.height - textHeight)/4))
         
 
     def GetLineHeight(self):
@@ -201,7 +201,7 @@ class CTRL(ULC.UltimateListCtrl):
         self.Remplissage() 
 
     def Remplissage(self):
-        """ Remplissage du contrôle """
+        """ Remplissage du contrÃ´le """
         wx.BeginBusyCursor()
         self.Freeze()
         
@@ -235,8 +235,8 @@ class CTRL(ULC.UltimateListCtrl):
         wx.EndBusyCursor()
     
     def GetListeFichiersLocal(self) :
-        """ Récupère la liste des fichiers locaux à afficher """
-        # Lit le répertoire
+        """ RÃ©cupÃ¨re la liste des fichiers locaux Ã  afficher """
+        # Lit le rÃ©pertoire
         chemin = UTILS_Fichiers.GetRepData()
         fichiers = os.listdir(chemin)
         fichiers.sort()
@@ -249,7 +249,7 @@ class CTRL(ULC.UltimateListCtrl):
             
             if (self.prefixe == None and nomFichier.endswith("_DATA.dat")) or (self.prefixe != None and nomFichier.endswith("_DATA.dat") and nomFichier.startswith(self.prefixe)) :
             
-                # Taille des 3 bases de données
+                # Taille des 3 bases de donnÃ©es
                 taille = 0
                 for suffixe in ("DATA", "DOCUMENTS", "PHOTOS") :
                     fichierTemp = u"%s/%s_%s.dat" % (chemin, titre, suffixe)
@@ -257,12 +257,12 @@ class CTRL(ULC.UltimateListCtrl):
                         taille += os.path.getsize(fichierTemp)
                 taille = FormatFileSize(taille)
                 
-                # Date dernière modification
+                # Date derniÃ¨re modification
                 t = os.path.getmtime(cheminFichier)
                 date = datetime.datetime.fromtimestamp(t)
                 dateModif = date.strftime("%d/%m/%Y %H:%M")
                 
-                # Ouverture de la base de données pour récupérer les infos sur le fichier
+                # Ouverture de la base de donnÃ©es pour RÃ©cupÃ¨rer les infos sur le fichier
                 logo = None
                 description = u""
                 try :
@@ -289,7 +289,7 @@ class CTRL(ULC.UltimateListCtrl):
                 else :
                     image = None
 
-                # Mémorisation
+                # mÃ©morisation
                 listeFichiers.append({"titre" : titre, "image" : image, "description" : description, "taille" : taille, "dateModif" : dateModif})
         
         return listeFichiers
@@ -308,10 +308,10 @@ class CTRL(ULC.UltimateListCtrl):
         return True
 
     def GetListeFichiersReseau(self) :
-        """ Récupère la liste des fichiers réseau à afficher """
+        """ RÃ©cupÃ¨re la liste des fichiers rÃ©seau Ã  afficher """
         listeFichiers = []
         
-        # Connexion au réseau MySQL
+        # Connexion au rÃ©seau MySQL
         hote = self.codesReseau["hote"]
         utilisateur = self.codesReseau["utilisateur"]
         motdepasse = self.codesReseau["motdepasse"]
@@ -325,20 +325,20 @@ class CTRL(ULC.UltimateListCtrl):
             DB.Close()
             return listeFichiers
 
-        # Test de connexion à une base de données
+        # Test de connexion Ã  une base de donnÃ©es
         listeDatabases = []
         DB.ExecuterReq("SHOW DATABASES;")
         listeValeurs = DB.ResultatReq()
         for valeurs in listeValeurs :
             listeDatabases.append(valeurs[0])
 
-        # Récupération des infos
+        # RÃ©cupÃ©ration des infos
         for nomFichier in listeDatabases :
             if (self.prefixe == None and nomFichier.endswith("_data")) or (self.prefixe != None and nomFichier.endswith("_data") and nomFichier.startswith(self.prefixe)) :
                 
                 titre = nomFichier[:-5]
                 
-                # Taille des 3 bases de données
+                # Taille des 3 bases de donnÃ©es
                 taille = 0
 ##                for suffixe in ("data", "documents", "photos") :
 ##                    base = u"%s_%s" % (titre, suffixe)
@@ -350,10 +350,10 @@ class CTRL(ULC.UltimateListCtrl):
 ##                        pass
                 taille = FormatFileSize(float(taille))
                 
-                # Date de dernière modification
+                # Date de derniÃ¨re modification
                 dateModif = None
                 
-                # Ouverture de la base de données pour récupérer les infos sur le fichier
+                # Ouverture de la base de donnÃ©es pour RÃ©cupÃ¨rer les infos sur le fichier
                 nom = u""
                 logo = None
                 description = u""
@@ -378,7 +378,7 @@ class CTRL(ULC.UltimateListCtrl):
                 else :
                     image = None
 
-                # Mémorisation
+                # mÃ©morisation
                 listeFichiers.append({"titre" : titre, "image" : None, "image" : image, "description" : description, "taille" : taille, "dateModif" : dateModif})
 
         # Fermeture connexion
@@ -391,7 +391,7 @@ class CTRL(ULC.UltimateListCtrl):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("fichier_fichier", "modifier") == False : return
         
         if self.mode == "reseau" :
-            dlg = wx.MessageDialog(self, _(u"Il est impossible de modifier le nom d'un fichier réseau !"), _(u"Désolé"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il est impossible de modifier le nom d'un fichier rÃ©seau !"), _(u"DÃ©solÃ©"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -419,7 +419,7 @@ class CTRL(ULC.UltimateListCtrl):
             return
 
         # Demande de confirmation 2
-        dlg = wx.MessageDialog(None, _(u"Vous êtes vraiment sûr de vouloir changer le nom du fichier '%s' en '%s' ?") % (titre, nouveauTitre), _(u"Modifier un fichier"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(None, _(u"Vous Ãªtes vraiment sÃ»r de vouloir changer le nom du fichier '%s' en '%s' ?") % (titre, nouveauTitre), _(u"Modifier un fichier"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -447,7 +447,7 @@ class CTRL(ULC.UltimateListCtrl):
         if reponse != wx.ID_YES :
             return 
         
-        dlg = wx.MessageDialog(None, _(u"Attention, la suppression est irreversible !!! \n\n Vous êtes vraiment sûr de vouloir supprimer le fichier '%s' ?") % titre, _(u"Supprimer un fichier"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(None, _(u"Attention, la suppression est irreversible !!! \n\n Vous Ãªtes vraiment sÃ»r de vouloir supprimer le fichier '%s' ?") % titre, _(u"Supprimer un fichier"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -461,7 +461,7 @@ class CTRL(ULC.UltimateListCtrl):
                 except Exception as err :
                     pass
         
-        # Supprime un fichier réseau
+        # Supprime un fichier rÃ©seau
         if self.mode == "reseau" :
             hote = self.codesReseau["hote"]
             utilisateur = self.codesReseau["utilisateur"]
@@ -494,7 +494,7 @@ class MyFrame(wx.Frame):
         self.SetSizer(sizer_1)
         
         self.ctrl = CTRL(panel, prefixe="", details=True, mode="local", codesReseau={}) # Test mode local
-##        self.ctrl = CTRL(panel, prefixe="", details=True, mode="reseau", codesReseau={"port":3306, "hote" : "locahost", "utilisateur" : "root", "motdepasse" : "XXXX"}) # Test mode réseau
+##        self.ctrl = CTRL(panel, prefixe="", details=True, mode="reseau", codesReseau={"port":3306, "hote" : "locahost", "utilisateur" : "root", "motdepasse" : "XXXX"}) # Test mode rÃ©seau
         self.Bind(ULC.EVT_LIST_ITEM_ACTIVATED, self.OnSelection, self.ctrl)
         
         sizer_2 = wx.BoxSizer(wx.VERTICAL)

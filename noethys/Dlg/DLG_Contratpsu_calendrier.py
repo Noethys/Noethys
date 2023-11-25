@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -44,7 +44,7 @@ class Page_planning(wx.Panel):
         self.bouton_apercu = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Apercu.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_ANY))
 
-        self.bouton_generer = CTRL_Bouton_image.CTRL(self, texte=_(u"Générer les consommations"), cheminImage="Images/32x32/Magique.png")
+        self.bouton_generer = CTRL_Bouton_image.CTRL(self, texte=_(u"GÃ©nÃ©rer les consommations"), cheminImage="Images/32x32/Magique.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -58,12 +58,12 @@ class Page_planning(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.Generer, self.bouton_generer)
 
     def __set_properties(self):
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un paramètre de planning")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le paramètre de planning sélectionné")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le paramètre de planning sélectionné")))
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un paramÃ¨tre de planning")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le paramÃ¨tre de planning sÃ©lectionnÃ©")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le paramÃ¨tre de planning sÃ©lectionnÃ©")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperÃ§u avant impression de la liste")))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
-        self.bouton_generer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour générer les consommations selon le planning")))
+        self.bouton_generer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour gÃ©nÃ©rer les consommations selon le planning")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
@@ -124,9 +124,9 @@ class Page_consommations(wx.Panel):
 
     def __set_properties(self):
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une consommation")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la consommation sélectionnée")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la consommation sélectionnée")))
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la consommation sÃ©lectionnÃ©e")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la consommation sÃ©lectionnÃ©e")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperÃ§u avant impression de la liste")))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
 
     def __do_layout(self):
@@ -183,8 +183,8 @@ class Panel(wx.Panel):
         self.clsbase = clsbase
         self.MAJ_effectuee = False
 
-        # Prévisions
-        self.staticbox_previsions_staticbox = wx.StaticBox(self, -1, _(u"Présences prévisionnelles"))
+        # PrÃ©visions
+        self.staticbox_previsions_staticbox = wx.StaticBox(self, -1, _(u"PrÃ©sences prÃ©visionnelles"))
         self.ctrl_previsions = Notebook(self, clsbase)
         try :
             self.ctrl_previsions.SetBackgroundColour(self.GetParent().GetThemeBackgroundColour())
@@ -193,7 +193,7 @@ class Panel(wx.Panel):
 
         # Absences
         self.staticbox_absences_staticbox = wx.StaticBox(self, -1, _(u"Absences RTT"))
-        self.label_absences_prevues = wx.StaticText(self, -1, _(u"Prévues :"))
+        self.label_absences_prevues = wx.StaticText(self, -1, _(u"PrÃ©vues :"))
         self.ctrl_absences_prevues = CTRL_Saisie_duree.CTRL(self, size=(50, -1))
         self.label_absences_prises = wx.StaticText(self, -1, _(u"Prises :"))
         self.ctrl_absences_prises = CTRL_Saisie_duree.CTRL(self, size=(50, -1))
@@ -205,7 +205,7 @@ class Panel(wx.Panel):
         # Options
         self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
         self.label_arrondi = wx.StaticText(self, -1, _(u"Arrondi :"))
-        self.liste_arrondi_type = [(None, _(u"Aucun")), ("tranche_horaire", _(u"Tranche horaire")), ("duree", _(u"Durée"))]
+        self.liste_arrondi_type = [(None, _(u"Aucun")), ("tranche_horaire", _(u"Tranche horaire")), ("duree", _(u"DurÃ©e"))]
         self.liste_arrondi_delta = [(10, _(u"10 min")), (15, _(u"15 min")), (30, _(u"30 min")), (60, _(u"60 min"))]
         self.ctrl_arrondi_type = wx.Choice(self, -1, choices=[label for code, label in self.liste_arrondi_type])
         self.ctrl_arrondi_delta = wx.Choice(self, -1, choices=[label for code, label in self.liste_arrondi_delta])
@@ -226,14 +226,14 @@ class Panel(wx.Panel):
         self.ctrl_arrondi_delta.Enable(self.ctrl_arrondi_type.GetSelection() != 0)
 
     def __set_properties(self):
-        self.ctrl_absences_prevues.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nombre d'heures d'absences prévues (RTT)")))
-        self.ctrl_arrondi_type.SetToolTip(wx.ToolTip(_(u"Sélectionnez un type d'arrondi")))
-        self.ctrl_arrondi_delta.SetToolTip(wx.ToolTip(_(u"Sélectionnez le deltade l'arrondi")))
+        self.ctrl_absences_prevues.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nombre d'heures d'absences prÃ©vues (RTT)")))
+        self.ctrl_arrondi_type.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un type d'arrondi")))
+        self.ctrl_arrondi_delta.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le deltade l'arrondi")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         
-        # Prévisions
+        # PrÃ©visions
         staticbox_previsions = wx.StaticBoxSizer(self.staticbox_previsions_staticbox, wx.VERTICAL)
         staticbox_previsions.Add(self.ctrl_previsions, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(staticbox_previsions, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
@@ -312,13 +312,13 @@ class Panel(wx.Panel):
     def Validation(self):
         nbreConso = len(self.ctrl_previsions.page_consommations.ctrl_consommations.GetTracks())
         if nbreConso == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucune consommation prévisionnelle ! Souhaitez-vous tout de même continuer ?\n\nPour saisir des consommations, vous avez deux possibilités : Soit vous créez un planning dans l'onglet 'Planning' puis cliquez sur 'Générer les consommations', soit vous saisissez manuellement les consommations souhaitées depuis l'onglet 'Consommations'."), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucune consommation prÃ©visionnelle ! Souhaitez-vous tout de mÃªme continuer ?\n\nPour saisir des consommations, vous avez deux possibilitÃ©s : Soit vous crÃ©ez un planning dans l'onglet 'Planning' puis cliquez sur 'GÃ©nÃ©rer les consommations', soit vous saisissez manuellement les consommations souhaitÃ©es depuis l'onglet 'Consommations'."), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES :
                 return False
 
-        # Recalcul de toutes les données du contrat
+        # Recalcul de toutes les donnÃ©es du contrat
         if self.clsbase.Calculer(mode_test=True) == False :
             return False
 

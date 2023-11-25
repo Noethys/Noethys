@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -64,7 +64,7 @@ class CTRL_Mode(BitmapComboBox):
         return listeItems
 
     def GetImage(self, bufferImage=None):
-        """ Récupère une image """         
+        """ RÃ©cupÃ¨re une image """         
         qualite = wx.IMAGE_QUALITY_HIGH 
 
         # Recherche de l'image
@@ -78,7 +78,7 @@ class CTRL_Mode(BitmapComboBox):
             bmp = bmp.ConvertToBitmap()
             return bmp
         else:
-            # Si aucune image est trouvée, on prend l'image par défaut
+            # Si aucune image est trouvÃ©e, on prend l'image par dÃ©faut
             bmp = self.GetImageDefaut() 
             return bmp
     
@@ -160,13 +160,13 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des émetteurs de règlements. Commencez toujours par sélectionner un mode de règlement dans la liste déroulante puis utilisez les boutons de commande de la liste des émetteurs.")
-        titre = _(u"Gestion des émetteurs de règlements")
+        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des Ã©metteurs de rÃ¨glements. Commencez toujours par sÃ©lectionner un mode de rÃ¨glement dans la liste dÃ©roulante puis utilisez les boutons de commande de la liste des Ã©metteurs.")
+        titre = _(u"Gestion des Ã©metteurs de rÃ¨glements")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Mode_reglement.png")
         
         # Mode
-        self.staticbox_mode_staticbox = wx.StaticBox(self, -1, _(u"Mode de règlement"))
-        self.label_mode = wx.StaticText(self, -1, _(u"Mode de règlement :"))
+        self.staticbox_mode_staticbox = wx.StaticBox(self, -1, _(u"Mode de rÃ¨glement"))
+        self.label_mode = wx.StaticText(self, -1, _(u"Mode de rÃ¨glement :"))
         self.ctrl_mode = CTRL_Mode(self)
         
         # Emetteurs
@@ -188,15 +188,15 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnSupprimer, self.bouton_supprimer)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.boutons_aide)
         
-        # Initialisation des contrôles
+        # Initialisation des contrÃ´les
         self.OnChoixMode(None)
         
 
     def __set_properties(self):
-        self.ctrl_mode.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici un mode de règlement")))
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un émetteur à ce mode de règlement")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'émetteur sélectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'émetteur sélectionné dans la liste")))
+        self.ctrl_mode.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici un mode de rÃ¨glement")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un Ã©metteur Ã  ce mode de rÃ¨glement")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'Ã©metteur sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'Ã©metteur sÃ©lectionnÃ© dans la liste")))
         self.boutons_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer la fenetre")))
         self.SetMinSize((600, 640))

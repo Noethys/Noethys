@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -26,14 +26,14 @@ class Dialog(wx.Dialog):
         self.IDfamille = IDfamille
                 
         # Bandeau
-        intro = _(u"Saisissez ici les coordonnées bancaires du compte de la famille à débiter afin d'activer le prélèvement automatique.")
-        titre = _(u"Prélèvement automatique")
+        intro = _(u"Saisissez ici les coordonnÃ©es bancaires du compte de la famille Ã  dÃ©biter afin d'activer le prÃ©lÃ¨vement automatique.")
+        titre = _(u"PrÃ©lÃ¨vement automatique")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Prelevement.png")
         
         # Activation
         self.box_activation_staticbox = wx.StaticBox(self, -1, _(u"Activation"))
-        self.label_activation = wx.StaticText(self, -1, _(u"Prélèvement activé :"))
+        self.label_activation = wx.StaticText(self, -1, _(u"PrÃ©lÃ¨vement activÃ© :"))
         self.radio_activation_oui = wx.RadioButton(self, -1, _(u"Oui"), style=wx.RB_GROUP)
         self.radio_activation_non = wx.RadioButton(self, -1, _(u"Non"))
         self.radio_activation_non.SetValue(True) 
@@ -50,7 +50,7 @@ class Dialog(wx.Dialog):
 
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_rib = wx.Button(self, -1, _(u"Saisie d'un RIB (Prélèvements nationaux)"))
+        self.bouton_rib = wx.Button(self, -1, _(u"Saisie d'un RIB (PrÃ©lÃ¨vements nationaux)"))
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
@@ -65,17 +65,17 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonFermer, self.bouton_fermer)
         self.Bind(wx.EVT_CLOSE, self.OnBoutonFermer)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.Importation()
 
     def __set_properties(self):
-        self.radio_activation_oui.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour activer le prélèvement")))
-        self.radio_activation_non.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour désactiver le prélèvement")))
+        self.radio_activation_oui.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour activer le prÃ©lÃ¨vement")))
+        self.radio_activation_non.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dÃ©sactiver le prÃ©lÃ¨vement")))
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un mandat")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le mandat sélectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le mandat sélectionné dans la iste")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le mandat sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le mandat sÃ©lectionnÃ© dans la iste")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_rib.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour paramétrer un RIB pour les prélèvements nationaux (jusqu'au 1er février 2014)")))
+        self.bouton_rib.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour paramÃ©trer un RIB pour les prÃ©lÃ¨vements nationaux (jusqu'au 1er fÃ©vrier 2014)")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((680, 500))
 
@@ -140,7 +140,7 @@ class Dialog(wx.Dialog):
         self.ctrl_listview.Supprimer(None)
 
     def Importation(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         if self.IDfamille == None :
             return
         DB = GestionDB.DB()
@@ -158,20 +158,20 @@ class Dialog(wx.Dialog):
         
 
     def OnBoutonFermer(self, event):
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         activation = self.radio_activation_oui.GetValue()
 
-        # Vérification des données saisies
+        # VÃ©rification des donnÃ©es saisies
         if activation == True :
             if len(self.ctrl_listview.donnees) == 0 :
-                dlg = wx.MessageDialog(self, _(u"Vous devez saisir au moins un mandat pour pouvoir activer le prélèvement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez saisir au moins un mandat pour pouvoir activer le prÃ©lÃ¨vement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
 
         else :
             # Pas d'activation
-            dlg = wx.MessageDialog(None, _(u"Vous confirmez que vous ne souhaitez pas activer le prélèvement automatique ?"), _(u"Confirmation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(None, _(u"Vous confirmez que vous ne souhaitez pas activer le prÃ©lÃ¨vement automatique ?"), _(u"Confirmation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :

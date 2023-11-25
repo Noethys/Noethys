@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -24,7 +24,7 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des types de quotients. Ceux-ci sont ensuite associés à des quotients dans les fiches familles.")
+        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des types de quotients. Ceux-ci sont ensuite associÃ©s Ã  des quotients dans les fiches familles.")
         titre = _(u"Gestion des types de quotients")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Configuration2.png")
@@ -48,8 +48,8 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un type de quotient")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le type de quotient sélectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le type de quotient sélectionné dans la liste")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le type de quotient sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le type de quotient sÃ©lectionnÃ© dans la liste")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((530, 500))

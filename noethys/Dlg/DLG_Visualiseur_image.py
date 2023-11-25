@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -21,8 +21,8 @@ ID_PLUS = 100
 ID_MOINS = 101
 ID_SAVE = 102
 
-phrase1 = _(u"Ramener l'image à sa taille d'origine")
-phrase2 = _(u"Opération interdite")
+phrase1 = _(u"Ramener l'image Ã  sa taille d'origine")
+phrase2 = _(u"OpÃ©ration interdite")
 
 try :
     if not wx.USE_UNICODE:
@@ -63,7 +63,7 @@ class Visu(wx.ScrolledWindow):
             self.bmp = bmp
         self.SetVirtualSize(wx.Size(bmp.GetWidth(), bmp.GetHeight()))
         self.image = wx.StaticBitmap(self, -1, bmp)
-        self.SetScrollRate((10*ratio)/100, (10*ratio)/100)
+        self.SetScrollRate(int((10*ratio)/100), int((10*ratio)/100))
         self.Scroll(posX, posY)
         self.Refresh()
 
@@ -84,7 +84,7 @@ class MyFrame(wx.Frame):
             _icon = wx.EmptyIcon()
         _icon.CopyFromBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
         self.SetIcon(_icon)
-        self.SetTitle(_(u"Aperçu d'image"))
+        self.SetTitle(_(u"aperÃ§u d'image"))
         
         self.imgORIG = None
         self.imgORIX = 0
@@ -99,11 +99,11 @@ class MyFrame(wx.Frame):
         self.SetStatusBar(self.barre)
 
         outils = UTILS_Adaptations.ToolBar(self, -1, style = wx.TB_HORIZONTAL | wx.NO_BORDER)
-        outils.AddLabelTool(ID_EXIT, _(u"Fermer l'aperçu"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Fermer.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Fermer"), "")
+        outils.AddLabelTool(ID_EXIT, _(u"Fermer l'aperÃ§u"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Fermer.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Fermer"), "")
         outils.AddLabelTool(ID_PLUS, _(u"Agrandir"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/zoom_plus.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Agrandir"), "")
         outils.AddLabelTool(ID_UNDO, _(u"Taille originale"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/zoom_init.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Taille originale"), "")
         outils.AddLabelTool(ID_MOINS, _(u"Diminuer"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/zoom_moins.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Diminuer"), "")
-        outils.AddLabelTool(ID_SAVE, _(u"Télécharger"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Telecharger.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Télécharger"), "")
+        outils.AddLabelTool(ID_SAVE, _(u"TÃ©lÃ©charger"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Telecharger.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"TÃ©lÃ©charger"), "")
         outils.Realize()
         self.SetToolBar(outils)
 
@@ -154,15 +154,15 @@ class MyFrame(wx.Frame):
     def Save(self, evt):
         standardPath = wx.StandardPaths.Get()
         save_destination = standardPath.GetDocumentsDir()
-        dlg = wx.FileDialog(self, message=_(u"Télécharger l'image sous..."), defaultDir=save_destination, defaultFile="image.jpg", wildcard=_(u"Image JPG (*.jpg)|*.jpg"), style=wx.FD_SAVE)
+        dlg = wx.FileDialog(self, message=_(u"TÃ©lÃ©charger l'image sous..."), defaultDir=save_destination, defaultFile="image.jpg", wildcard=_(u"Image JPG (*.jpg)|*.jpg"), style=wx.FD_SAVE)
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.GetPath()
             if self.image_pil_originale:
                 self.image_pil_originale.convert('RGB').save(path, format="JPEG", quality=95)
             if self.image_wx_originale:
                 wxtopil(self.image_wx_originale.convert('RGB')).save(path, format="JPEG", quality=95)
-            message = _(u"L'image a été téléchargée avec succès")
-            dlg = wx.MessageDialog(self, message, _(u"Téléchargement"), wx.OK | wx.ICON_INFORMATION)
+            message = _(u"L'image a Ã©tÃ© tÃ©lÃ©chargÃ©e avec succÃ¨s")
+            dlg = wx.MessageDialog(self, message, _(u"TÃ©lÃ©chargement"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
 
@@ -186,7 +186,7 @@ class MyFrame(wx.Frame):
                 self.imgORIY = self.imgORIG.GetHeight()
                 self.bmpRESU = self.imgORIG.ConvertToBitmap()
                 self.panneau.Affiche(self.bmpRESU, self.ratio)
-                self.SetTitle(_(u"Aperçu d'image [%s]")% fichier)
+                self.SetTitle(_(u"aperÃ§u d'image [%s]")% fichier)
                 self.barre.SetStatusText("(%s, %s) %s %%" %(self.imgORIX, self.imgORIY, self.ratio), 1)
     
     def ChargeImagePIL(self, imgPIL=None):
@@ -214,7 +214,7 @@ class MyFrame(wx.Frame):
             self.imgORIY = 0
             self.bmpRESU = None
             self.ratio = 100
-            self.SetTitle(_(u"Aperçu d'images"))
+            self.SetTitle(_(u"aperÃ§u d'images"))
             self.barre.SetStatusText("", 1)
 
     def OnExit(self, evt):

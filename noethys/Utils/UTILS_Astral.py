@@ -64,350 +64,350 @@ __all__ = ['City','Astral','AstralError']
 __version__ = "0.6"
 __author__ = "Simon Kennedy <code@sffjunkie.co.uk>"
 
-_CITY_INFO = """Abu Dhabi,UAE,24°28'N,54°22'E,Asia/Dubai
-Abu Dhabi,United Arab Emirates,24°28'N,54°22'E,Asia/Dubai
-Abuja,Nigeria,09°05'N,07°32'E,Africa/Lagos
-Accra,Ghana,05°35'N,00°06'W,Africa/Accra
-Addis Ababa,Ethiopia,09°02'N,38°42'E,Africa/Addis_Ababa
-Adelaide,Australia,34°56'S,138°36'E,Australia/Adelaide
-Al Jubail,Saudi Arabia,25°24'N,49°39'W,Asia/Riyadh
-Algiers,Algeria,36°42'N,03°08'E,Africa/Algiers
-Amman,Jordan,31°57'N,35°52'E,Asia/Amman
-Amsterdam,Netherlands,52°23'N,04°54'E,Europe/Amsterdam
-Andorra la Vella,Andorra,42°31'N,01°32'E,Europe/Andorra
-Ankara,Turkey,39°57'N,32°54'E,Europe/Istanbul
-Antananarivo,Madagascar,18°55'S,47°31'E,Indian/Antananarivo
-Apia,Samoa,13°50'S,171°50'W,Pacific/Apia
-Ashgabat,Turkmenistan,38°00'N,57°50'E,Asia/Ashgabat
-Asmara,Eritrea,15°19'N,38°55'E,Africa/Asmara
-Astana,Kazakhstan,51°10'N,71°30'E,Asia/Qyzylorda
-Asuncion,Paraguay,25°10'S,57°30'W,America/Asuncion
-Athens,Greece,37°58'N,23°46'E,Europe/Athens
-Baghdad,Iraq,33°20'N,44°30'E,Asia/Baghdad
-Baku,Azerbaijan,40°29'N,49°56'E,Asia/Baku
-Bamako,Mali,12°34'N,07°55'W,Africa/Bamako
-Bandar Seri Begawan,Brunei Darussalam,04°52'N,115°00'E,Asia/Brunei
-Bangkok,Thailand,13°45'N,100°35'E,Asia/Bangkok
-Bangui,Central African Republic,04°23'N,18°35'E,Africa/Bangui
-Banjul,Gambia,13°28'N,16°40'W,Africa/Banjul
-Basse-Terre,Guadeloupe,16°00'N,61°44'W,America/Guadeloupe
-Basseterre,Saint Kitts and Nevis,17°17'N,62°43'W,America/St_Kitts
-Beijing,China,39°55'N,116°20'E,Asia/Harbin
-Beirut,Lebanon,33°53'N,35°31'E,Asia/Beirut
-Belgrade,Yugoslavia,44°50'N,20°37'E,Europe/Belgrade
-Belmopan,Belize,17°18'N,88°30'W,America/Belize
-Berlin,Germany,52°30'N,13°25'E,Europe/Berlin
-Bern,Switzerland,46°57'N,07°28'E,Europe/Zurich
-Bishkek,Kyrgyzstan,42°54'N,74°46'E,Asia/Bishkek
-Bissau,Guinea-Bissau,11°45'N,15°45'W,Africa/Bissau
-Bloemfontein,South Africa,29°12'S,26°07'E,Africa/Johannesburg
-Bogota,Colombia,04°34'N,74°00'W,America/Bogota
-Brasilia,Brazil,15°47'S,47°55'W,Brazil/East
-Bratislava,Slovakia,48°10'N,17°07'E,Europe/Bratislava
-Brazzaville,Congo,04°09'S,15°12'E,Africa/Brazzaville
-Bridgetown,Barbados,13°05'N,59°30'W,America/Barbados
-Brisbane,Australia,27°30'S,153°01'E,Australia/Brisbane
-Brussels,Belgium,50°51'N,04°21'E,Europe/Brussels
-Bucharest,Romania,44°27'N,26°10'E,Europe/Bucharest
-Bucuresti,Romania,44°27'N,26°10'E,Europe/Bucharest
-Budapest,Hungary,47°29'N,19°05'E,Europe/Budapest
-Buenos Aires,Argentina,36°30'S,60°00'W,America/Argentina/Buenos_Aires
-Bujumbura,Burundi,03°16'S,29°18'E,Africa/Bujumbura
-Cairo,Egypt,30°01'N,31°14'E,Africa/Cairo
-Canberra,Australia,35°15'S,149°08'E,Australia/Canberra
-Cape Town,South Africa,33°55'S,18°22'E,Africa/Johannesburg
-Caracas,Venezuela,10°30'N,66°55'W,America/Caracas
-Castries,Saint Lucia,14°02'N,60°58'W,America/St_Lucia
-Cayenne,French Guiana,05°05'N,52°18'W,America/Cayenne
-Charlotte Amalie,United States of Virgin Islands,18°21'N,64°56'W,America/Virgin
-Chisinau,Moldova,47°02'N,28°50'E,Europe/Chisinau
-Conakry,Guinea,09°29'N,13°49'W,Africa/Conakry
-Copenhagen,Denmark,55°41'N,12°34'E,Europe/Copenhagen
-Cotonou,Benin,06°23'N,02°42'E,Africa/Porto-Novo
-Dakar,Senegal,14°34'N,17°29'W,Africa/Dakar
-Damascus,Syrian Arab Republic,33°30'N,36°18'E,Asia/Damascus
-Dammam,Saudi Arabia,26°30'N,50°12'E,Asia/Riyadh
-Dhaka,Bangladesh,23°43'N,90°26'E,Asia/Dhaka
-Dili,East Timor,08°29'S,125°34'E,Asia/Dili
-Djibouti,Djibouti,11°08'N,42°20'E,Africa/Djibouti
-Dodoma,United Republic of Tanzania,06°08'S,35°45'E,Africa/Dar_es_Salaam
-Doha,Qatar,25°15'N,51°35'E,Asia/Qatar
-Dublin,Ireland,53°21'N,06°15'W,Europe/Dublin
-Dushanbe,Tajikistan,38°33'N,68°48'E,Asia/Dushanbe
-Fort-de-France,Martinique,14°36'N,61°02'W,America/Martinique
-Freetown,Sierra Leone,08°30'N,13°17'W,Africa/Freetown
-Funafuti,Tuvalu,08°31'S,179°13'E,Pacific/Funafuti
-Gaborone,Botswana,24°45'S,25°57'E,Africa/Gaborone
-George Town,Cayman Islands,19°20'N,81°24'W,America/Cayman
-Georgetown,Guyana,06°50'N,58°12'W,America/Guyana
-Guatemala,Guatemala,14°40'N,90°22'W,America/Guatemala
-Hanoi,Viet Nam,21°05'N,105°55'E,Asia/Saigon
-Harare,Zimbabwe,17°43'S,31°02'E,Africa/Harare
-Havana,Cuba,23°08'N,82°22'W,America/Havana
-Helsinki,Finland,60°15'N,25°03'E,Europe/Helsinki
-Hobart,Tasmania,42°53'S,147°19'E,Australia/Hobart
-Honiara,Solomon Islands,09°27'S,159°57'E,Pacific/Guadalcanal
-Islamabad,Pakistan,33°40'N,73°10'E,Asia/Karachi
-Jakarta,Indonesia,06°09'S,106°49'E,Asia/Jakarta
-Jerusalem,Israel,31°47'N,35°12'E,Asia/Jerusalem
-Jubail,Saudi Arabia,27°02'N,49°39'E,Asia/Riyadh
-Kabul,Afghanistan,34°28'N,69°11'E,Asia/Kabul
-Kampala,Uganda,00°20'N,32°30'E,Africa/Kampala
-Kathmandu,Nepal,27°45'N,85°20'E,Asia/Kathmandu
-Khartoum,Sudan,15°31'N,32°35'E,Africa/Khartoum
-Kiev,Ukraine,50°30'N,30°28'E,Europe/Kiev
-Kigali,Rwanda,01°59'S,30°04'E,Africa/Kigali
-Kingston,Jamaica,18°00'N,76°50'W,America/Jamaica
-Kingston,Norfolk Island,45°20'S,168°43'E,Pacific/Norfolk
-Kingstown,Saint Vincent and the Grenadines,13°10'N,61°10'W,America/St_Vincent
-Kinshasa,Democratic Republic of the Congo,04°20'S,15°15'E,Africa/Kinshasa
-Koror,Palau,07°20'N,134°28'E,Pacific/Palau
-Kuala Lumpur,Malaysia,03°09'N,101°41'E,Asia/Kuala_Lumpur
-Kuwait,Kuwait,29°30'N,48°00'E,Asia/Kuwait
-La Paz,Bolivia,16°20'S,68°10'W,America/La_Paz
-Libreville,Gabon,00°25'N,09°26'E,Africa/Libreville
-Lilongwe,Malawi,14°00'S,33°48'E,Africa/Blantyre
-Lima,Peru,12°00'S,77°00'W,America/Lima
-Lisbon,Portugal,38°42'N,09°10'W,Europe/Lisbon
-Ljubljana,Slovenia,46°04'N,14°33'E,Europe/Ljubljana
-Lome,Togo,06°09'N,01°20'E,Africa/Lome
-London,England,51°30'N,00°07'W,Europe/London
-Luanda,Angola,08°50'S,13°15'E,Africa/Luanda
-Lusaka,Zambia,15°28'S,28°16'E,Africa/Lusaka
-Luxembourg,Luxembourg,49°37'N,06°09'E,Europe/Luxembourg
-Macau,Macao,22°12'N,113°33'E,Asia/Macau
-Madinah,Saudi Arabia,24°28'N,39°36'E,Asia/Riyadh
-Madrid,Spain,40°25'N,03°45'W,Europe/Madrid
-Makkah,Saudi Arabia,21°26'N,39°49'E,Asia/Riyadh
-Malabo,Equatorial Guinea,03°45'N,08°50'E,Africa/Malabo
-Male,Maldives,04°00'N,73°28'E,Indian/Maldives
-Mamoudzou,Mayotte,12°48'S,45°14'E,Indian/Mayotte
-Managua,Nicaragua,12°06'N,86°20'W,America/Managua
-Manama,Bahrain,26°10'N,50°30'E,Asia/Bahrain
-Manila,Philippines,14°40'N,121°03'E,Asia/Manila
-Maputo,Mozambique,25°58'S,32°32'E,Africa/Maputo
-Maseru,Lesotho,29°18'S,27°30'E,Africa/Maseru
-Masqat,Oman,23°37'N,58°36'E,Asia/Muscat
-Mbabane,Swaziland,26°18'S,31°06'E,Africa/Mbabane
-Mecca,Saudi Arabia,21°26'N,39°49'E,Asia/Riyadh
-Medina,Saudi Arabia,24°28'N,39°36'E,Asia/Riyadh
-Mexico,Mexico,19°20'N,99°10'W,America/Mexico_City
-Minsk,Belarus,53°52'N,27°30'E,Europe/Minsk
-Mogadishu,Somalia,02°02'N,45°25'E,Africa/Mogadishu
-Monrovia,Liberia,06°18'N,10°47'W,Africa/Monrovia
-Montevideo,Uruguay,34°50'S,56°11'W,America/Montevideo
-Moroni,Comoros,11°40'S,43°16'E,Indian/Comoro
-Moscow,Russian Federation,55°45'N,37°35'E,Europe/Moscow
-Moskva,Russian Federation,55°45'N,37°35'E,Europe/Moscow
-Mumbai,India,18°58'N,72°49'E,Asia/Kolkata
-N'Djamena,Chad,12°10'N,14°59'E,Africa/Ndjamena
-Nairobi,Kenya,01°17'S,36°48'E,Africa/Nairobi
-Nassau,Bahamas,25°05'N,77°20'W,America/Nassau
-New Delhi,India,28°37'N,77°13'E,Asia/Kolkata
-Niamey,Niger,13°27'N,02°06'E,Africa/Niamey
-Nicosia,Cyprus,35°10'N,33°25'E,Asia/Nicosia
-Nouakchott,Mauritania,20°10'S,57°30'E,Africa/Nouakchott
-Noumea,New Caledonia,22°17'S,166°30'E,Pacific/Noumea
-Nuku'alofa,Tonga,21°10'S,174°00'W,Pacific/Tongatapu
-Nuuk,Greenland,64°10'N,51°35'W,America/Godthab
-Oranjestad,Aruba,12°32'N,70°02'W,America/Aruba
-Oslo,Norway,59°55'N,10°45'E,Europe/Oslo
-Ottawa,Canada,45°27'N,75°42'W,US/Eastern
-Ouagadougou,Burkina Faso,12°15'N,01°30'W,Africa/Ouagadougou
-P'yongyang,Democratic People's Republic of Korea,39°09'N,125°30'E,Asia/Pyongyang
-Pago Pago,American Samoa,14°16'S,170°43'W,Pacific/Pago_Pago
-Palikir,Micronesia,06°55'N,158°09'E,Pacific/Ponape
-Panama,Panama,09°00'N,79°25'W,America/Panama
-Papeete,French Polynesia,17°32'S,149°34'W,Pacific/Tahiti
-Paramaribo,Suriname,05°50'N,55°10'W,America/Paramaribo
-Paris,France,48°50'N,02°20'E,Europe/Paris
-Perth,Australia,31°56'S,115°50'E,Australia/Perth
-Phnom Penh,Cambodia,11°33'N,104°55'E,Asia/Phnom_Penh
-Port Moresby,Papua New Guinea,09°24'S,147°08'E,Pacific/Port_Moresby
-Port-Vila,Vanuatu,17°45'S,168°18'E,Pacific/Efate
-Port-au-Prince,Haiti,18°40'N,72°20'W,America/Port-au-Prince
-Porto-Novo,Benin,06°23'N,02°42'E,Africa/Porto-Novo
-Prague,Czech Republic,50°05'N,14°22'E,Europe/Prague
-Praia,Cape Verde,15°02'N,23°34'W,Atlantic/Cape_Verde
-Pretoria,South Africa,25°44'S,28°12'E,Africa/Johannesburg
-Quito,Ecuador,00°15'S,78°35'W,America/Guayaquil
-Reykjavik,Iceland,64°10'N,21°57'W,Atlantic/Reykjavik
-Riga,Latvia,56°53'N,24°08'E,Europe/Riga
-Riyadh,Saudi Arabia,24°41'N,46°42'E,Asia/Riyadh
-Road Town,British Virgin Islands,18°27'N,64°37'W,America/Virgin
-Rome,Italy,41°54'N,12°29'E,Europe/Rome
-Roseau,Dominica,15°20'N,61°24'W,America/Dominica
-Saint Pierre,Saint Pierre and Miquelon,46°46'N,56°12'W,America/Miquelon
-Saipan,Northern Mariana Islands,15°12'N,145°45'E,Pacific/Saipan
-San Jose,Costa Rica,09°55'N,84°02'W,America/Costa_Rica
-San Juan,Puerto Rico,18°28'N,66°07'W,America/Puerto_Rico
-San Marino,San Marino,43°55'N,12°30'E,Europe/San_Marino
-San Salvador,El Salvador,13°40'N,89°10'W,America/El_Salvador
-Santiago,Chile,33°24'S,70°40'W,America/Santiago
-Santo Domingo,Dominica Republic,18°30'N,69°59'W,America/Santo_Domingo
-Sao Tome,Sao Tome and Principe,00°10'N,06°39'E,Africa/Sao_Tome
-Sarajevo,Bosnia and Herzegovina,43°52'N,18°26'E,Europe/Sarajevo
-Seoul,Republic of Korea,37°31'N,126°58'E,Asia/Seoul
-Skopje,The Former Yugoslav Republic of Macedonia,42°01'N,21°26'E,Europe/Skopje
-Sofia,Bulgaria,42°45'N,23°20'E,Europe/Sofia
-St. Peter Port,Guernsey,49°26'N,02°33'W,Europe/Guernsey
-Stanley,Falkland Islands,51°40'S,59°51'W,Atlantic/Stanley
-Stockholm,Sweden,59°20'N,18°05'E,Europe/Stockholm
-Sucre,Bolivia,16°20'S,68°10'W,America/La_Paz
-Suva,Fiji,18°06'S,178°30'E,Pacific/Fiji
-Sydney,Australia,33°53'S,151°13'E,Australia/Sydney
-T'bilisi,Georgia,41°43'N,44°50'E,Asia/Tbilisi
-Tallinn,Estonia,59°22'N,24°48'E,Europe/Tallinn
-Tarawa,Kiribati,01°30'N,173°00'E,Pacific/Tarawa
-Tashkent,Uzbekistan,41°20'N,69°10'E,Asia/Tashkent
-Tegucigalpa,Honduras,14°05'N,87°14'W,America/Tegucigalpa
-Tehran,Iran,35°44'N,51°30'E,Asia/Tehran
-Thimphu,Bhutan,27°31'N,89°45'E,Asia/Thimphu
-Tirana,Albania,41°18'N,19°49'E,Europe/Tirane
-Tirane,Albania,41°18'N,19°49'E,Europe/Tirane
-Torshavn,Faroe Islands,62°05'N,06°56'W,Atlantic/Faroe
-Tokyo,Japan,35°41'N,139°41'E,Asia/Tokyo
-Tripoli,Libyan Arab Jamahiriya,32°49'N,13°07'E,Africa/Tripoli
-Tunis,Tunisia,36°50'N,10°11'E,Africa/Tunis
-Vaduz,Liechtenstein,47°08'N,09°31'E,Europe/Vaduz
-Valletta,Malta,35°54'N,14°31'E,Europe/Malta
-Vienna,Austria,48°12'N,16°22'E,Europe/Vienna
-Vientiane,Lao People's Democratic Republic,17°58'N,102°36'E,Asia/Vientiane
-Vilnius,Lithuania,54°38'N,25°19'E,Europe/Vilnius
-W. Indies,Antigua and Barbuda,17°20'N,61°48'W,America/Antigua
-Warsaw,Poland,52°13'N,21°00'E,Europe/Warsaw
-Washington DC,USA,39°91'N,77°02'W,US/Eastern
-Wellington,New Zealand,41°19'S,174°46'E,Pacific/Auckland
-Willemstad,Netherlands Antilles,12°05'N,69°00'W,America/Curacao
-Windhoek,Namibia,22°35'S,17°04'E,Africa/Windhoek
-Yamoussoukro,Cote d'Ivoire,06°49'N,05°17'W,Africa/Abidjan
-Yangon,Myanmar,16°45'N,96°20'E,Asia/Rangoon
-Yaounde,Cameroon,03°50'N,11°35'E,Africa/Douala
-Yerevan,Armenia,40°10'N,44°31'E,Asia/Yerevan
-Zagreb,Croatia,45°50'N,15°58'E,Europe/Zagreb
+_CITY_INFO = """Abu Dhabi,UAE,24Â°28'N,54Â°22'E,Asia/Dubai
+Abu Dhabi,United Arab Emirates,24Â°28'N,54Â°22'E,Asia/Dubai
+Abuja,Nigeria,09Â°05'N,07Â°32'E,Africa/Lagos
+Accra,Ghana,05Â°35'N,00Â°06'W,Africa/Accra
+Addis Ababa,Ethiopia,09Â°02'N,38Â°42'E,Africa/Addis_Ababa
+Adelaide,Australia,34Â°56'S,138Â°36'E,Australia/Adelaide
+Al Jubail,Saudi Arabia,25Â°24'N,49Â°39'W,Asia/Riyadh
+Algiers,Algeria,36Â°42'N,03Â°08'E,Africa/Algiers
+Amman,Jordan,31Â°57'N,35Â°52'E,Asia/Amman
+Amsterdam,Netherlands,52Â°23'N,04Â°54'E,Europe/Amsterdam
+Andorra la Vella,Andorra,42Â°31'N,01Â°32'E,Europe/Andorra
+Ankara,Turkey,39Â°57'N,32Â°54'E,Europe/Istanbul
+Antananarivo,Madagascar,18Â°55'S,47Â°31'E,Indian/Antananarivo
+Apia,Samoa,13Â°50'S,171Â°50'W,Pacific/Apia
+Ashgabat,Turkmenistan,38Â°00'N,57Â°50'E,Asia/Ashgabat
+Asmara,Eritrea,15Â°19'N,38Â°55'E,Africa/Asmara
+Astana,Kazakhstan,51Â°10'N,71Â°30'E,Asia/Qyzylorda
+Asuncion,Paraguay,25Â°10'S,57Â°30'W,America/Asuncion
+Athens,Greece,37Â°58'N,23Â°46'E,Europe/Athens
+Baghdad,Iraq,33Â°20'N,44Â°30'E,Asia/Baghdad
+Baku,Azerbaijan,40Â°29'N,49Â°56'E,Asia/Baku
+Bamako,Mali,12Â°34'N,07Â°55'W,Africa/Bamako
+Bandar Seri Begawan,Brunei Darussalam,04Â°52'N,115Â°00'E,Asia/Brunei
+Bangkok,Thailand,13Â°45'N,100Â°35'E,Asia/Bangkok
+Bangui,Central African Republic,04Â°23'N,18Â°35'E,Africa/Bangui
+Banjul,Gambia,13Â°28'N,16Â°40'W,Africa/Banjul
+Basse-Terre,Guadeloupe,16Â°00'N,61Â°44'W,America/Guadeloupe
+Basseterre,Saint Kitts and Nevis,17Â°17'N,62Â°43'W,America/St_Kitts
+Beijing,China,39Â°55'N,116Â°20'E,Asia/Harbin
+Beirut,Lebanon,33Â°53'N,35Â°31'E,Asia/Beirut
+Belgrade,Yugoslavia,44Â°50'N,20Â°37'E,Europe/Belgrade
+Belmopan,Belize,17Â°18'N,88Â°30'W,America/Belize
+Berlin,Germany,52Â°30'N,13Â°25'E,Europe/Berlin
+Bern,Switzerland,46Â°57'N,07Â°28'E,Europe/Zurich
+Bishkek,Kyrgyzstan,42Â°54'N,74Â°46'E,Asia/Bishkek
+Bissau,Guinea-Bissau,11Â°45'N,15Â°45'W,Africa/Bissau
+Bloemfontein,South Africa,29Â°12'S,26Â°07'E,Africa/Johannesburg
+Bogota,Colombia,04Â°34'N,74Â°00'W,America/Bogota
+Brasilia,Brazil,15Â°47'S,47Â°55'W,Brazil/East
+Bratislava,Slovakia,48Â°10'N,17Â°07'E,Europe/Bratislava
+Brazzaville,Congo,04Â°09'S,15Â°12'E,Africa/Brazzaville
+Bridgetown,Barbados,13Â°05'N,59Â°30'W,America/Barbados
+Brisbane,Australia,27Â°30'S,153Â°01'E,Australia/Brisbane
+Brussels,Belgium,50Â°51'N,04Â°21'E,Europe/Brussels
+Bucharest,Romania,44Â°27'N,26Â°10'E,Europe/Bucharest
+Bucuresti,Romania,44Â°27'N,26Â°10'E,Europe/Bucharest
+Budapest,Hungary,47Â°29'N,19Â°05'E,Europe/Budapest
+Buenos Aires,Argentina,36Â°30'S,60Â°00'W,America/Argentina/Buenos_Aires
+Bujumbura,Burundi,03Â°16'S,29Â°18'E,Africa/Bujumbura
+Cairo,Egypt,30Â°01'N,31Â°14'E,Africa/Cairo
+Canberra,Australia,35Â°15'S,149Â°08'E,Australia/Canberra
+Cape Town,South Africa,33Â°55'S,18Â°22'E,Africa/Johannesburg
+Caracas,Venezuela,10Â°30'N,66Â°55'W,America/Caracas
+Castries,Saint Lucia,14Â°02'N,60Â°58'W,America/St_Lucia
+Cayenne,French Guiana,05Â°05'N,52Â°18'W,America/Cayenne
+Charlotte Amalie,United States of Virgin Islands,18Â°21'N,64Â°56'W,America/Virgin
+Chisinau,Moldova,47Â°02'N,28Â°50'E,Europe/Chisinau
+Conakry,Guinea,09Â°29'N,13Â°49'W,Africa/Conakry
+Copenhagen,Denmark,55Â°41'N,12Â°34'E,Europe/Copenhagen
+Cotonou,Benin,06Â°23'N,02Â°42'E,Africa/Porto-Novo
+Dakar,Senegal,14Â°34'N,17Â°29'W,Africa/Dakar
+Damascus,Syrian Arab Republic,33Â°30'N,36Â°18'E,Asia/Damascus
+Dammam,Saudi Arabia,26Â°30'N,50Â°12'E,Asia/Riyadh
+Dhaka,Bangladesh,23Â°43'N,90Â°26'E,Asia/Dhaka
+Dili,East Timor,08Â°29'S,125Â°34'E,Asia/Dili
+Djibouti,Djibouti,11Â°08'N,42Â°20'E,Africa/Djibouti
+Dodoma,United Republic of Tanzania,06Â°08'S,35Â°45'E,Africa/Dar_es_Salaam
+Doha,Qatar,25Â°15'N,51Â°35'E,Asia/Qatar
+Dublin,Ireland,53Â°21'N,06Â°15'W,Europe/Dublin
+Dushanbe,Tajikistan,38Â°33'N,68Â°48'E,Asia/Dushanbe
+Fort-de-France,Martinique,14Â°36'N,61Â°02'W,America/Martinique
+Freetown,Sierra Leone,08Â°30'N,13Â°17'W,Africa/Freetown
+Funafuti,Tuvalu,08Â°31'S,179Â°13'E,Pacific/Funafuti
+Gaborone,Botswana,24Â°45'S,25Â°57'E,Africa/Gaborone
+George Town,Cayman Islands,19Â°20'N,81Â°24'W,America/Cayman
+Georgetown,Guyana,06Â°50'N,58Â°12'W,America/Guyana
+Guatemala,Guatemala,14Â°40'N,90Â°22'W,America/Guatemala
+Hanoi,Viet Nam,21Â°05'N,105Â°55'E,Asia/Saigon
+Harare,Zimbabwe,17Â°43'S,31Â°02'E,Africa/Harare
+Havana,Cuba,23Â°08'N,82Â°22'W,America/Havana
+Helsinki,Finland,60Â°15'N,25Â°03'E,Europe/Helsinki
+Hobart,Tasmania,42Â°53'S,147Â°19'E,Australia/Hobart
+Honiara,Solomon Islands,09Â°27'S,159Â°57'E,Pacific/Guadalcanal
+Islamabad,Pakistan,33Â°40'N,73Â°10'E,Asia/Karachi
+Jakarta,Indonesia,06Â°09'S,106Â°49'E,Asia/Jakarta
+Jerusalem,Israel,31Â°47'N,35Â°12'E,Asia/Jerusalem
+Jubail,Saudi Arabia,27Â°02'N,49Â°39'E,Asia/Riyadh
+Kabul,Afghanistan,34Â°28'N,69Â°11'E,Asia/Kabul
+Kampala,Uganda,00Â°20'N,32Â°30'E,Africa/Kampala
+Kathmandu,Nepal,27Â°45'N,85Â°20'E,Asia/Kathmandu
+Khartoum,Sudan,15Â°31'N,32Â°35'E,Africa/Khartoum
+Kiev,Ukraine,50Â°30'N,30Â°28'E,Europe/Kiev
+Kigali,Rwanda,01Â°59'S,30Â°04'E,Africa/Kigali
+Kingston,Jamaica,18Â°00'N,76Â°50'W,America/Jamaica
+Kingston,Norfolk Island,45Â°20'S,168Â°43'E,Pacific/Norfolk
+Kingstown,Saint Vincent and the Grenadines,13Â°10'N,61Â°10'W,America/St_Vincent
+Kinshasa,Democratic Republic of the Congo,04Â°20'S,15Â°15'E,Africa/Kinshasa
+Koror,Palau,07Â°20'N,134Â°28'E,Pacific/Palau
+Kuala Lumpur,Malaysia,03Â°09'N,101Â°41'E,Asia/Kuala_Lumpur
+Kuwait,Kuwait,29Â°30'N,48Â°00'E,Asia/Kuwait
+La Paz,Bolivia,16Â°20'S,68Â°10'W,America/La_Paz
+Libreville,Gabon,00Â°25'N,09Â°26'E,Africa/Libreville
+Lilongwe,Malawi,14Â°00'S,33Â°48'E,Africa/Blantyre
+Lima,Peru,12Â°00'S,77Â°00'W,America/Lima
+Lisbon,Portugal,38Â°42'N,09Â°10'W,Europe/Lisbon
+Ljubljana,Slovenia,46Â°04'N,14Â°33'E,Europe/Ljubljana
+Lome,Togo,06Â°09'N,01Â°20'E,Africa/Lome
+London,England,51Â°30'N,00Â°07'W,Europe/London
+Luanda,Angola,08Â°50'S,13Â°15'E,Africa/Luanda
+Lusaka,Zambia,15Â°28'S,28Â°16'E,Africa/Lusaka
+Luxembourg,Luxembourg,49Â°37'N,06Â°09'E,Europe/Luxembourg
+Macau,Macao,22Â°12'N,113Â°33'E,Asia/Macau
+Madinah,Saudi Arabia,24Â°28'N,39Â°36'E,Asia/Riyadh
+Madrid,Spain,40Â°25'N,03Â°45'W,Europe/Madrid
+Makkah,Saudi Arabia,21Â°26'N,39Â°49'E,Asia/Riyadh
+Malabo,Equatorial Guinea,03Â°45'N,08Â°50'E,Africa/Malabo
+Male,Maldives,04Â°00'N,73Â°28'E,Indian/Maldives
+Mamoudzou,Mayotte,12Â°48'S,45Â°14'E,Indian/Mayotte
+Managua,Nicaragua,12Â°06'N,86Â°20'W,America/Managua
+Manama,Bahrain,26Â°10'N,50Â°30'E,Asia/Bahrain
+Manila,Philippines,14Â°40'N,121Â°03'E,Asia/Manila
+Maputo,Mozambique,25Â°58'S,32Â°32'E,Africa/Maputo
+Maseru,Lesotho,29Â°18'S,27Â°30'E,Africa/Maseru
+Masqat,Oman,23Â°37'N,58Â°36'E,Asia/Muscat
+Mbabane,Swaziland,26Â°18'S,31Â°06'E,Africa/Mbabane
+Mecca,Saudi Arabia,21Â°26'N,39Â°49'E,Asia/Riyadh
+Medina,Saudi Arabia,24Â°28'N,39Â°36'E,Asia/Riyadh
+Mexico,Mexico,19Â°20'N,99Â°10'W,America/Mexico_City
+Minsk,Belarus,53Â°52'N,27Â°30'E,Europe/Minsk
+Mogadishu,Somalia,02Â°02'N,45Â°25'E,Africa/Mogadishu
+Monrovia,Liberia,06Â°18'N,10Â°47'W,Africa/Monrovia
+Montevideo,Uruguay,34Â°50'S,56Â°11'W,America/Montevideo
+Moroni,Comoros,11Â°40'S,43Â°16'E,Indian/Comoro
+Moscow,Russian Federation,55Â°45'N,37Â°35'E,Europe/Moscow
+Moskva,Russian Federation,55Â°45'N,37Â°35'E,Europe/Moscow
+Mumbai,India,18Â°58'N,72Â°49'E,Asia/Kolkata
+N'Djamena,Chad,12Â°10'N,14Â°59'E,Africa/Ndjamena
+Nairobi,Kenya,01Â°17'S,36Â°48'E,Africa/Nairobi
+Nassau,Bahamas,25Â°05'N,77Â°20'W,America/Nassau
+New Delhi,India,28Â°37'N,77Â°13'E,Asia/Kolkata
+Niamey,Niger,13Â°27'N,02Â°06'E,Africa/Niamey
+Nicosia,Cyprus,35Â°10'N,33Â°25'E,Asia/Nicosia
+Nouakchott,Mauritania,20Â°10'S,57Â°30'E,Africa/Nouakchott
+Noumea,New Caledonia,22Â°17'S,166Â°30'E,Pacific/Noumea
+Nuku'alofa,Tonga,21Â°10'S,174Â°00'W,Pacific/Tongatapu
+Nuuk,Greenland,64Â°10'N,51Â°35'W,America/Godthab
+Oranjestad,Aruba,12Â°32'N,70Â°02'W,America/Aruba
+Oslo,Norway,59Â°55'N,10Â°45'E,Europe/Oslo
+Ottawa,Canada,45Â°27'N,75Â°42'W,US/Eastern
+Ouagadougou,Burkina Faso,12Â°15'N,01Â°30'W,Africa/Ouagadougou
+P'yongyang,Democratic People's Republic of Korea,39Â°09'N,125Â°30'E,Asia/Pyongyang
+Pago Pago,American Samoa,14Â°16'S,170Â°43'W,Pacific/Pago_Pago
+Palikir,Micronesia,06Â°55'N,158Â°09'E,Pacific/Ponape
+Panama,Panama,09Â°00'N,79Â°25'W,America/Panama
+Papeete,French Polynesia,17Â°32'S,149Â°34'W,Pacific/Tahiti
+Paramaribo,Suriname,05Â°50'N,55Â°10'W,America/Paramaribo
+Paris,France,48Â°50'N,02Â°20'E,Europe/Paris
+Perth,Australia,31Â°56'S,115Â°50'E,Australia/Perth
+Phnom Penh,Cambodia,11Â°33'N,104Â°55'E,Asia/Phnom_Penh
+Port Moresby,Papua New Guinea,09Â°24'S,147Â°08'E,Pacific/Port_Moresby
+Port-Vila,Vanuatu,17Â°45'S,168Â°18'E,Pacific/Efate
+Port-au-Prince,Haiti,18Â°40'N,72Â°20'W,America/Port-au-Prince
+Porto-Novo,Benin,06Â°23'N,02Â°42'E,Africa/Porto-Novo
+Prague,Czech Republic,50Â°05'N,14Â°22'E,Europe/Prague
+Praia,Cape Verde,15Â°02'N,23Â°34'W,Atlantic/Cape_Verde
+Pretoria,South Africa,25Â°44'S,28Â°12'E,Africa/Johannesburg
+Quito,Ecuador,00Â°15'S,78Â°35'W,America/Guayaquil
+Reykjavik,Iceland,64Â°10'N,21Â°57'W,Atlantic/Reykjavik
+Riga,Latvia,56Â°53'N,24Â°08'E,Europe/Riga
+Riyadh,Saudi Arabia,24Â°41'N,46Â°42'E,Asia/Riyadh
+Road Town,British Virgin Islands,18Â°27'N,64Â°37'W,America/Virgin
+Rome,Italy,41Â°54'N,12Â°29'E,Europe/Rome
+Roseau,Dominica,15Â°20'N,61Â°24'W,America/Dominica
+Saint Pierre,Saint Pierre and Miquelon,46Â°46'N,56Â°12'W,America/Miquelon
+Saipan,Northern Mariana Islands,15Â°12'N,145Â°45'E,Pacific/Saipan
+San Jose,Costa Rica,09Â°55'N,84Â°02'W,America/Costa_Rica
+San Juan,Puerto Rico,18Â°28'N,66Â°07'W,America/Puerto_Rico
+San Marino,San Marino,43Â°55'N,12Â°30'E,Europe/San_Marino
+San Salvador,El Salvador,13Â°40'N,89Â°10'W,America/El_Salvador
+Santiago,Chile,33Â°24'S,70Â°40'W,America/Santiago
+Santo Domingo,Dominica Republic,18Â°30'N,69Â°59'W,America/Santo_Domingo
+Sao Tome,Sao Tome and Principe,00Â°10'N,06Â°39'E,Africa/Sao_Tome
+Sarajevo,Bosnia and Herzegovina,43Â°52'N,18Â°26'E,Europe/Sarajevo
+Seoul,Republic of Korea,37Â°31'N,126Â°58'E,Asia/Seoul
+Skopje,The Former Yugoslav Republic of Macedonia,42Â°01'N,21Â°26'E,Europe/Skopje
+Sofia,Bulgaria,42Â°45'N,23Â°20'E,Europe/Sofia
+St. Peter Port,Guernsey,49Â°26'N,02Â°33'W,Europe/Guernsey
+Stanley,Falkland Islands,51Â°40'S,59Â°51'W,Atlantic/Stanley
+Stockholm,Sweden,59Â°20'N,18Â°05'E,Europe/Stockholm
+Sucre,Bolivia,16Â°20'S,68Â°10'W,America/La_Paz
+Suva,Fiji,18Â°06'S,178Â°30'E,Pacific/Fiji
+Sydney,Australia,33Â°53'S,151Â°13'E,Australia/Sydney
+T'bilisi,Georgia,41Â°43'N,44Â°50'E,Asia/Tbilisi
+Tallinn,Estonia,59Â°22'N,24Â°48'E,Europe/Tallinn
+Tarawa,Kiribati,01Â°30'N,173Â°00'E,Pacific/Tarawa
+Tashkent,Uzbekistan,41Â°20'N,69Â°10'E,Asia/Tashkent
+Tegucigalpa,Honduras,14Â°05'N,87Â°14'W,America/Tegucigalpa
+Tehran,Iran,35Â°44'N,51Â°30'E,Asia/Tehran
+Thimphu,Bhutan,27Â°31'N,89Â°45'E,Asia/Thimphu
+Tirana,Albania,41Â°18'N,19Â°49'E,Europe/Tirane
+Tirane,Albania,41Â°18'N,19Â°49'E,Europe/Tirane
+Torshavn,Faroe Islands,62Â°05'N,06Â°56'W,Atlantic/Faroe
+Tokyo,Japan,35Â°41'N,139Â°41'E,Asia/Tokyo
+Tripoli,Libyan Arab Jamahiriya,32Â°49'N,13Â°07'E,Africa/Tripoli
+Tunis,Tunisia,36Â°50'N,10Â°11'E,Africa/Tunis
+Vaduz,Liechtenstein,47Â°08'N,09Â°31'E,Europe/Vaduz
+Valletta,Malta,35Â°54'N,14Â°31'E,Europe/Malta
+Vienna,Austria,48Â°12'N,16Â°22'E,Europe/Vienna
+Vientiane,Lao People's Democratic Republic,17Â°58'N,102Â°36'E,Asia/Vientiane
+Vilnius,Lithuania,54Â°38'N,25Â°19'E,Europe/Vilnius
+W. Indies,Antigua and Barbuda,17Â°20'N,61Â°48'W,America/Antigua
+Warsaw,Poland,52Â°13'N,21Â°00'E,Europe/Warsaw
+Washington DC,USA,39Â°91'N,77Â°02'W,US/Eastern
+Wellington,New Zealand,41Â°19'S,174Â°46'E,Pacific/Auckland
+Willemstad,Netherlands Antilles,12Â°05'N,69Â°00'W,America/Curacao
+Windhoek,Namibia,22Â°35'S,17Â°04'E,Africa/Windhoek
+Yamoussoukro,Cote d'Ivoire,06Â°49'N,05Â°17'W,Africa/Abidjan
+Yangon,Myanmar,16Â°45'N,96Â°20'E,Asia/Rangoon
+Yaounde,Cameroon,03Â°50'N,11Â°35'E,Africa/Douala
+Yerevan,Armenia,40Â°10'N,44Â°31'E,Asia/Yerevan
+Zagreb,Croatia,45Â°50'N,15Â°58'E,Europe/Zagreb
 
 # UK Cities
-Aberdeen,Scotland,57°08'N,02°06'W,Europe/London
-Birmingham,England,52°30'N,01°50'W,Europe/London
-Bolton,England,53°35'N,02°15'W,Europe/London
-Bradford,England,53°47'N,01°45'W,Europe/London
-Bristol,England,51°28'N,02°35'W,Europe/London
-Cardiff,Wales,51°29'N,03°13'W,Europe/London
-Crawley,England,51°8'N,00°10'W,Europe/London
-Edinburgh,Scotland,55°57'N,03°13'W,Europe/London
-Glasgow,Scotland,55°50'N,04°15'W,Europe/London
-Greenwich,England,51°28'N,00°00'W,Europe/London
-Leeds,England,53°48'N,01°35'W,Europe/London
-Leicester,England,52°38'N,01°08'W,Europe/London
-Liverpool,England,53°25'N,03°00'W,Europe/London
-Manchester,England,53°30'N,02°15'W,Europe/London
-Newcastle Upon Time,England,54°59'N,01°36'W,Europe/London
-Newcastle,England,54°59'N,01°36'W,Europe/London
-Norwich,England,52°38'N,01°18'E,Europe/London
-Oxford,England,51°45'N,01°15'W,Europe/London
-Plymouth,England,50°25'N,04°15'W,Europe/London
-Portsmouth,England,50°48'N,01°05'W,Europe/London
-Reading,England,51°27'N,0°58'W,Europe/London
-Sheffield,England,53°23'N,01°28'W,Europe/London
-Southampton,England,50°55'N,01°25'W,Europe/London
-Swansea,England,51°37'N,03°57'W,Europe/London
-Swindon,England,51°34'N,01°47'W,Europe/London
-Wolverhampton,England,52°35'N,2°08'W,Europe/London
+Aberdeen,Scotland,57Â°08'N,02Â°06'W,Europe/London
+Birmingham,England,52Â°30'N,01Â°50'W,Europe/London
+Bolton,England,53Â°35'N,02Â°15'W,Europe/London
+Bradford,England,53Â°47'N,01Â°45'W,Europe/London
+Bristol,England,51Â°28'N,02Â°35'W,Europe/London
+Cardiff,Wales,51Â°29'N,03Â°13'W,Europe/London
+Crawley,England,51Â°8'N,00Â°10'W,Europe/London
+Edinburgh,Scotland,55Â°57'N,03Â°13'W,Europe/London
+Glasgow,Scotland,55Â°50'N,04Â°15'W,Europe/London
+Greenwich,England,51Â°28'N,00Â°00'W,Europe/London
+Leeds,England,53Â°48'N,01Â°35'W,Europe/London
+Leicester,England,52Â°38'N,01Â°08'W,Europe/London
+Liverpool,England,53Â°25'N,03Â°00'W,Europe/London
+Manchester,England,53Â°30'N,02Â°15'W,Europe/London
+Newcastle Upon Time,England,54Â°59'N,01Â°36'W,Europe/London
+Newcastle,England,54Â°59'N,01Â°36'W,Europe/London
+Norwich,England,52Â°38'N,01Â°18'E,Europe/London
+Oxford,England,51Â°45'N,01Â°15'W,Europe/London
+Plymouth,England,50Â°25'N,04Â°15'W,Europe/London
+Portsmouth,England,50Â°48'N,01Â°05'W,Europe/London
+Reading,England,51Â°27'N,0Â°58'W,Europe/London
+Sheffield,England,53Â°23'N,01Â°28'W,Europe/London
+Southampton,England,50Â°55'N,01Â°25'W,Europe/London
+Swansea,England,51Â°37'N,03Â°57'W,Europe/London
+Swindon,England,51Â°34'N,01Â°47'W,Europe/London
+Wolverhampton,England,52Â°35'N,2Â°08'W,Europe/London
 
 # US State Capitals
-Montgomery,USA,32°21'N,86°16'W,US/Central
-Juneau,USA,58°23'N,134°11'W,US/Alaska
-Phoenix,USA,33°26'N,112°04'W,US/Mountain
-Little Rock,USA,34°44'N,92°19'W,US/Central
-Sacramento,USA,38°33'N,121°28'W,US/Pacific
-Denver,USA,39°44'N,104°59'W,US/Mountain
-Hartford,USA,41°45'N,72°41'W,US/Eastern
-Dover,USA,39°09'N,75°31'W,US/Eastern
-Tallahassee,USA,30°27'N,84°16'W,US/Eastern
-Atlanta,USA,33°45'N,84°23'W,US/Eastern
-Honolulu,USA,21°18'N,157°49'W,US/Hawaii
-Boise,USA,43°36'N,116°12'W,US/Mountain
-Springfield,USA,39°47'N,89°39'W,US/Central
-Indianapolis,USA,39°46'N,86°9'W,US/Eastern
-Des Moines,USA,41°35'N,93°37'W,US/Central
-Topeka,USA,39°03'N,95°41'W,US/Central
-Frankfort,USA,38°11'N,84°51'W,US/Eastern
-Baton Rouge,USA,30°27'N,91°8'W,US/Central
-Augusta,USA,44°18'N,69°46'W,US/Eastern
-Annapolis,USA,38°58'N,76°30'W,US/Eastern
-Boston,USA,42°21'N,71°03'W,US/Eastern
-Lansing,USA,42°44'N,84°32'W,US/Eastern
-Saint Paul,USA,44°56'N,93°05'W,US/Central
-Jackson,USA,32°17'N,90°11'W,US/Central
-Jefferson City,USA,38°34'N,92°10'W,US/Central
-Helena,USA,46°35'N,112°1'W,US/Mountain
-Lincoln,USA,40°48'N,96°40'W,US/Central
-Carson City,USA,39°9'N,119°45'W,US/Pacific
-Concord,USA,43°12'N,71°32'W,US/Eastern
-Trenton,USA,40°13'N,74°45'W,US/Eastern
-Santa Fe,USA,35°40'N,105°57'W,US/Mountain
-Albany,USA,42°39'N,73°46'W,US/Eastern
-Raleigh,USA,35°49'N,78°38'W,US/Eastern
-Bismarck,USA,46°48'N,100°46'W,US/Central
-Columbus,USA,39°59'N,82°59'W,US/Eastern
-Oklahoma City,USA,35°28'N,97°32'W,US/Central
-Salem,USA,44°55'N,123°1'W,US/Pacific
-Harrisburg,USA,40°16'N,76°52'W,US/Eastern
-Providence,USA,41°49'N,71°25'W,US/Eastern
-Columbia,USA,34°00'N,81°02'W,US/Eastern
-Pierre,USA,44°22'N,100°20'W,US/Central
-Nashville,USA,36°10'N,86°47'W,US/Central
-Austin,USA,30°16'N,97°45'W,US/Central
-Salt Lake City,USA,40°45'N,111°53'W,US/Mountain
-Montpelier,USA,44°15'N,72°34'W,US/Eastern
-Richmond,USA,37°32'N,77°25'W,US/Eastern
-Olympia,USA,47°2'N,122°53'W,US/Pacific
-Charleston,USA,38°20'N,81°38'W,US/Eastern
-Madison,USA,43°4'N,89°24'W,US/Central
-Cheyenne,USA,41°8'N,104°48'W,US/Mountain
+Montgomery,USA,32Â°21'N,86Â°16'W,US/Central
+Juneau,USA,58Â°23'N,134Â°11'W,US/Alaska
+Phoenix,USA,33Â°26'N,112Â°04'W,US/Mountain
+Little Rock,USA,34Â°44'N,92Â°19'W,US/Central
+Sacramento,USA,38Â°33'N,121Â°28'W,US/Pacific
+Denver,USA,39Â°44'N,104Â°59'W,US/Mountain
+Hartford,USA,41Â°45'N,72Â°41'W,US/Eastern
+Dover,USA,39Â°09'N,75Â°31'W,US/Eastern
+Tallahassee,USA,30Â°27'N,84Â°16'W,US/Eastern
+Atlanta,USA,33Â°45'N,84Â°23'W,US/Eastern
+Honolulu,USA,21Â°18'N,157Â°49'W,US/Hawaii
+Boise,USA,43Â°36'N,116Â°12'W,US/Mountain
+Springfield,USA,39Â°47'N,89Â°39'W,US/Central
+Indianapolis,USA,39Â°46'N,86Â°9'W,US/Eastern
+Des Moines,USA,41Â°35'N,93Â°37'W,US/Central
+Topeka,USA,39Â°03'N,95Â°41'W,US/Central
+Frankfort,USA,38Â°11'N,84Â°51'W,US/Eastern
+Baton Rouge,USA,30Â°27'N,91Â°8'W,US/Central
+Augusta,USA,44Â°18'N,69Â°46'W,US/Eastern
+Annapolis,USA,38Â°58'N,76Â°30'W,US/Eastern
+Boston,USA,42Â°21'N,71Â°03'W,US/Eastern
+Lansing,USA,42Â°44'N,84Â°32'W,US/Eastern
+Saint Paul,USA,44Â°56'N,93Â°05'W,US/Central
+Jackson,USA,32Â°17'N,90Â°11'W,US/Central
+Jefferson City,USA,38Â°34'N,92Â°10'W,US/Central
+Helena,USA,46Â°35'N,112Â°1'W,US/Mountain
+Lincoln,USA,40Â°48'N,96Â°40'W,US/Central
+Carson City,USA,39Â°9'N,119Â°45'W,US/Pacific
+Concord,USA,43Â°12'N,71Â°32'W,US/Eastern
+Trenton,USA,40Â°13'N,74Â°45'W,US/Eastern
+Santa Fe,USA,35Â°40'N,105Â°57'W,US/Mountain
+Albany,USA,42Â°39'N,73Â°46'W,US/Eastern
+Raleigh,USA,35Â°49'N,78Â°38'W,US/Eastern
+Bismarck,USA,46Â°48'N,100Â°46'W,US/Central
+Columbus,USA,39Â°59'N,82Â°59'W,US/Eastern
+Oklahoma City,USA,35Â°28'N,97Â°32'W,US/Central
+Salem,USA,44Â°55'N,123Â°1'W,US/Pacific
+Harrisburg,USA,40Â°16'N,76Â°52'W,US/Eastern
+Providence,USA,41Â°49'N,71Â°25'W,US/Eastern
+Columbia,USA,34Â°00'N,81Â°02'W,US/Eastern
+Pierre,USA,44Â°22'N,100Â°20'W,US/Central
+Nashville,USA,36Â°10'N,86Â°47'W,US/Central
+Austin,USA,30Â°16'N,97Â°45'W,US/Central
+Salt Lake City,USA,40Â°45'N,111Â°53'W,US/Mountain
+Montpelier,USA,44Â°15'N,72Â°34'W,US/Eastern
+Richmond,USA,37Â°32'N,77Â°25'W,US/Eastern
+Olympia,USA,47Â°2'N,122Â°53'W,US/Pacific
+Charleston,USA,38Â°20'N,81Â°38'W,US/Eastern
+Madison,USA,43Â°4'N,89Â°24'W,US/Central
+Cheyenne,USA,41Â°8'N,104Â°48'W,US/Mountain
 
 # Major US Cities
-Birmingham,USA,33°39'N,86°48'W,US/Central
-Anchorage,USA,61°13'N,149°53'W,US/Alaska
-Los Angeles,USA,34°03'N,118°15'W,US/Pacific
-San Francisco,USA,37°46'N,122°25'W,US/Pacific
-Bridgeport,USA,41°11'N,73°11'W,US/Eastern
-Wilmington,USA,39°44'N,75°32'W,US/Eastern
-Jacksonville,USA,30°19'N,81°39'W,US/Eastern
-Miami,USA,26°8'N,80°12'W,US/Eastern
-Chicago,USA,41°50'N,87°41'W,US/Central
-Wichita,USA,37°41'N,97°20'W,US/Central
-Louisville,USA,38°15'N,85°45'W,US/Eastern
-New Orleans,USA,29°57'N,90°4'W,US/Central
-Portland,USA,43°39'N,70°16'W,US/Eastern
-Baltimore,USA,9°17'N,76°37'W,US/Eastern
-Detroit,USA,42°19'N,83°2'W,US/Eastern
-Minneapolis,USA,44°58'N,93°15'W,US/Central
-Kansas City,USA,39°06'N,94°35'W,US/Central
-Billings,USA,45°47'N,108°32'W,US/Mountain
-Omaha,USA,41°15'N,96°0'W,US/Central
-Las Vegas,USA,36°10'N,115°08'W,US/Pacific
-Manchester,USA,42°59'N,71°27'W,US/Eastern
-Newark,USA,40°44'N,74°11'W,US/Eastern
-Albuquerque,USA,35°06'N,106°36'W,US/Mountain
-New York,USA,40°43'N,74°0'W,US/Eastern
-Charlotte,USA,35°13'N,80°50'W,US/Eastern
-Fargo,USA,46°52'N,96°47'W,US/Central
-Cleveland,USA,41°28'N,81°40'W,US/Eastern
-Portland,USA,45°31'N,122°40'W,US/Pacific
-Philadelphia,USA,39°57'N,75°10'W,US/Eastern
-Sioux Falls,USA,43°32'N,96°43'W,US/Central
-Memphis,USA,35°07'N,89°58'W,US/Central
-Houston,USA,29°45'N,95°22'W,US/Central
-Dallas,USA,32°47'N,96°48'W,US/Central
-Burlington,USA,44°28'N,73°9'W,US/Eastern
-Virginia Beach,USA,36°50'N,76°05'W,US/Eastern
-Seattle,USA,47°36'N,122°19'W,US/Pacific
-Milwaukee,USA,43°03'N,87°57'W,US/Central
-San Diego,USA,32°42'N,117°09'W,US/Pacific
-Orlando,USA,28°32'N,81°22'W,US/Eastern
-Buffalo,USA,42°54'N,78°50'W,US/Eastern
-Toledo,USA,41°39'N,83°34'W,US/Eastern
+Birmingham,USA,33Â°39'N,86Â°48'W,US/Central
+Anchorage,USA,61Â°13'N,149Â°53'W,US/Alaska
+Los Angeles,USA,34Â°03'N,118Â°15'W,US/Pacific
+San Francisco,USA,37Â°46'N,122Â°25'W,US/Pacific
+Bridgeport,USA,41Â°11'N,73Â°11'W,US/Eastern
+Wilmington,USA,39Â°44'N,75Â°32'W,US/Eastern
+Jacksonville,USA,30Â°19'N,81Â°39'W,US/Eastern
+Miami,USA,26Â°8'N,80Â°12'W,US/Eastern
+Chicago,USA,41Â°50'N,87Â°41'W,US/Central
+Wichita,USA,37Â°41'N,97Â°20'W,US/Central
+Louisville,USA,38Â°15'N,85Â°45'W,US/Eastern
+New Orleans,USA,29Â°57'N,90Â°4'W,US/Central
+Portland,USA,43Â°39'N,70Â°16'W,US/Eastern
+Baltimore,USA,9Â°17'N,76Â°37'W,US/Eastern
+Detroit,USA,42Â°19'N,83Â°2'W,US/Eastern
+Minneapolis,USA,44Â°58'N,93Â°15'W,US/Central
+Kansas City,USA,39Â°06'N,94Â°35'W,US/Central
+Billings,USA,45Â°47'N,108Â°32'W,US/Mountain
+Omaha,USA,41Â°15'N,96Â°0'W,US/Central
+Las Vegas,USA,36Â°10'N,115Â°08'W,US/Pacific
+Manchester,USA,42Â°59'N,71Â°27'W,US/Eastern
+Newark,USA,40Â°44'N,74Â°11'W,US/Eastern
+Albuquerque,USA,35Â°06'N,106Â°36'W,US/Mountain
+New York,USA,40Â°43'N,74Â°0'W,US/Eastern
+Charlotte,USA,35Â°13'N,80Â°50'W,US/Eastern
+Fargo,USA,46Â°52'N,96Â°47'W,US/Central
+Cleveland,USA,41Â°28'N,81Â°40'W,US/Eastern
+Portland,USA,45Â°31'N,122Â°40'W,US/Pacific
+Philadelphia,USA,39Â°57'N,75Â°10'W,US/Eastern
+Sioux Falls,USA,43Â°32'N,96Â°43'W,US/Central
+Memphis,USA,35Â°07'N,89Â°58'W,US/Central
+Houston,USA,29Â°45'N,95Â°22'W,US/Central
+Dallas,USA,32Â°47'N,96Â°48'W,US/Central
+Burlington,USA,44Â°28'N,73Â°9'W,US/Eastern
+Virginia Beach,USA,36Â°50'N,76Â°05'W,US/Eastern
+Seattle,USA,47Â°36'N,122Â°19'W,US/Pacific
+Milwaukee,USA,43Â°03'N,87Â°57'W,US/Central
+San Diego,USA,32Â°42'N,117Â°09'W,US/Pacific
+Orlando,USA,28Â°32'N,81Â°22'W,US/Eastern
+Buffalo,USA,42Â°54'N,78Â°50'W,US/Eastern
+Toledo,USA,41Â°39'N,83Â°34'W,US/Eastern
 """
 
 class AstralError(Exception):
@@ -472,7 +472,7 @@ class City(object):
         
         For strings they must be of the form::
         
-            degrees°minutes'[N|S] e.g. 51°31'N
+            degreesÂ°minutes'[N|S] e.g. 51Â°31'N
             
         For numbers, negative numbers signify latitudes to the South.
         """
@@ -482,7 +482,7 @@ class City(object):
             
         def fset(self, latitude):
             if isinstance(latitude, str):
-                (deg, rest) = latitude.split("°", 1)
+                (deg, rest) = latitude.split("Â°", 1)
                 (minute, rest) = rest.split("'", 1)
 
                 self._latitude = float(deg) + (float(minute)/60)
@@ -503,7 +503,7 @@ class City(object):
         
         For strings they must be of the form::
         
-            degrees°minutes'[E|W] e.g. 51°31'W
+            degreesÂ°minutes'[E|W] e.g. 51Â°31'W
             
         For numbers, positive numbers signify longitudes to the East.
         """
@@ -513,12 +513,12 @@ class City(object):
             
         def fset(self, longitude):
             if isinstance(longitude, str):
-                (deg, rest) = longitude.split("°", 1)
+                (deg, rest) = longitude.split("Â°", 1)
                 (minute, rest) = rest.split("'", 1)
 
                 self._longitude = float(deg) + (float(minute)/60)
 
-                # Conventionally locations to the west of 0° are negative
+                # Conventionally locations to the west of 0Â° are negative
                 # but the calculation is based on the opposite
                 if longitude.endswith("W"):
                     self._longitude = -self._longitude

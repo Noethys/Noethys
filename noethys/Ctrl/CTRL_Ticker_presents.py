@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -93,7 +93,7 @@ class CTRL(wx.Panel):
             return _(u" et ").join(listeTemp)
         
     def GetTexte(self, listeActivites=[]):
-        """ Récupération des données dans la base de données """
+        """ RÃ©cupÃ©ration des donnÃ©es dans la base de donnÃ©es """
         if len(listeActivites) == 0 : conditionActivites = "()"
         elif len(listeActivites) == 1 : conditionActivites = "(%d)" % listeActivites[0]
         else : conditionActivites = str(tuple(listeActivites))
@@ -150,7 +150,7 @@ class CTRL(wx.Panel):
                 temp = _(u"individu")
             else :
                 temp = _(u"individus")
-            listeTextes.append(_(u"%d %s sur l'activité %s (%s)") % (nbre, temp, nomActivite, self.JoinListe(groupes)))
+            listeTextes.append(_(u"%d %s sur l'activitÃ© %s (%s)") % (nbre, temp, nomActivite, self.JoinListe(groupes)))
         
         texte = _(u"Il y a actuellement %s") % self.JoinListe(listeTextes)
         return texte
@@ -170,7 +170,7 @@ class MyFrame(wx.Frame):
         panel.SetSizer(sizer_2)
         self.Layout()
 
-        # Init contrôles
+        # Init contrÃ´les
         print((self.ctrl.GetTexte([1,]),))
         self.ctrl.MAJ() 
         self.ctrl.Start()

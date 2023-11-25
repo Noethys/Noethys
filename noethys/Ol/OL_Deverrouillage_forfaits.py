@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -47,9 +47,9 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeID = None
-        # Recherche si des consommations y sont attachées
+        # Recherche si des consommations y sont attachÃ©es
         DB = GestionDB.DB()
         req = """
         SELECT IDconso, date, consommations.IDactivite, activites.nom, consommations.etat, consommations.IDunite, 
@@ -93,8 +93,8 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"ID"), "left", 50, "IDconso"),
             ColumnDefn(_(u"Date"), 'left', 150, "date", stringConverter=FormateDate),
             ColumnDefn(_(u"Individu"), "left", 180, "individu"),
-            ColumnDefn(_(u"Activité"), "left", 160, "nomActivite"),
-            ColumnDefn(_(u"Unité"), "left", 160, "nomUnite"),
+            ColumnDefn(_(u"ActivitÃ©"), "left", 160, "nomActivite"),
+            ColumnDefn(_(u"UnitÃ©"), "left", 160, "nomUnite"),
             ]
         
         self.SetColumns(liste_Colonnes)
@@ -128,19 +128,19 @@ class ListView(FastObjectListView):
     def Deverrouillage(self):
         nbreCoches = len(self.GetTracksCoches())
         if nbreCoches == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez coché aucune consommation à déverrouiller !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez cochÃ© aucune consommation Ã  dÃ©verrouiller !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         # Demande de confirmation
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment déverrouiller les %d consommations cochées ?") % nbreCoches, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment dÃ©verrouiller les %d consommations cochÃ©es ?") % nbreCoches, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         if dlg.ShowModal() != wx.ID_YES :
             dlg.Destroy()
             return
         dlg.Destroy()
 
-        # Déverrouillage
+        # DÃ©verrouillage
         DB = GestionDB.DB()
         for track in self.GetTracksCoches() :
             DB.ReqMAJ("consommations", [("forfait", 1),], "IDconso", track.IDconso)

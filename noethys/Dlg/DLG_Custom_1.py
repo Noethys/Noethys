@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-19 Ivan LUCAS
@@ -53,7 +53,7 @@ class Track_excel(object):
         self.liste_anomalies = []
         self.liste_ad = []
 
-        # Valeur par dÈfaut
+        # Valeur par d√©faut
         self.od_civilite = None
         self.od_nom_complet = None
         self.od_date_naiss = None
@@ -63,7 +63,7 @@ class Track_excel(object):
         # Remplissage avec les valeurs
         for num_colonne, valeur in dict_ligne.items():
 
-            # RÈcupËre le nom de colonne original
+            # R√©cup√®re le nom de colonne original
             nom_colonne = dict_champs[num_colonne]
 
             # ------------------------------ OD -------------------------------------
@@ -72,8 +72,8 @@ class Track_excel(object):
             if u"Matricule" in nom_colonne:
                 self.od_matricule = valeur
 
-            # OD CivilitÈ
-            if u"LibellÈ civilitÈ" in nom_colonne:
+            # OD Civilit√©
+            if u"Libell√© civilit√©" in nom_colonne:
                 if u"Monsieur" in valeur:
                     self.od_civilite = 1
                 if u"Mademoiselle" in valeur:
@@ -81,8 +81,8 @@ class Track_excel(object):
                 if u"Madame" in valeur:
                     self.od_civilite = 3
 
-            # OD Nom et prÈnom
-            if u"Nom+PrÈnom OD" in nom_colonne:
+            # OD Nom et pr√©nom
+            if u"Nom+Pr√©nom OD" in nom_colonne:
                 valeur_temp = valeur.split("  ")
                 if len(valeur_temp) >= 2:
                     self.od_nom = valeur_temp[0]
@@ -113,14 +113,14 @@ class Track_excel(object):
             if u"Ville domicile" in nom_colonne:
                 self.od_ville = valeur
 
-            # OD TÈlÈphone 1
-            if nom_colonne == u"TÈlÈphone personnel":
+            # OD T√©l√©phone 1
+            if nom_colonne == u"T√©l√©phone personnel":
                 valeur = valeur.replace(" ", "").replace(".", "")
                 if len(valeur) == 10:
                     self.od_telephone_1 = "%s.%s.%s.%s.%s." % (valeur[0:2], valeur[2:4], valeur[4:6], valeur[6:8], valeur[8:10])
 
-            # OD TÈlÈphone 2
-            if u"TÈlÈphone personnel 2" in nom_colonne:
+            # OD T√©l√©phone 2
+            if u"T√©l√©phone personnel 2" in nom_colonne:
                 valeur = valeur.replace(" ", "").replace(".", "")
                 if len(valeur) == 10:
                     self.od_telephone_2 = "%s.%s.%s.%s.%s." % (valeur[0:2], valeur[2:4], valeur[4:6], valeur[6:8], valeur[8:10])
@@ -134,15 +134,15 @@ class Track_excel(object):
                 self.od_mail_travail = valeur
 
             # ------------------------------ AD -------------------------------------
-            # AD Nom et prÈnom
-            if u"Nom+PrÈnom AD" in nom_colonne:
+            # AD Nom et pr√©nom
+            if u"Nom+Pr√©nom AD" in nom_colonne:
                 valeur_temp = valeur.split("  ")
                 if len(valeur_temp) >= 2:
                     self.ad_nom = valeur_temp[0]
                     self.ad_prenom = valeur_temp[1]
                     self.ad_nom_complet = u"%s %s" % (self.ad_nom, self.ad_prenom)
 
-            # AD CivilitÈ
+            # AD Civilit√©
             if u"Sexe Ayant-droit" in nom_colonne or u"Sexe AD" in nom_colonne:
                 if u"M" in valeur:
                     self.ad_civilite = 4
@@ -153,14 +153,14 @@ class Track_excel(object):
             if u"Date de naissance AD" in nom_colonne:
                 self.ad_date_naiss = valeur
 
-        # Stocke les donnÈes de l'AD dans un dict
+        # Stocke les donn√©es de l'AD dans un dict
         self.dict_ad = {"nom": self.ad_nom, "prenom": self.ad_prenom, "nom_complet": self.ad_nom_complet, "date_naiss": self.ad_date_naiss, "IDcivilite": self.ad_civilite}
         self.liste_ad.append(self.dict_ad)
 
 
         # Recherche anomalies sur la ligne
         if self.od_civilite == None:
-            self.liste_anomalies.append(u"La civilitÈ de l'OD n'est pas valide")
+            self.liste_anomalies.append(u"La civilit√© de l'OD n'est pas valide")
 
         if self.od_nom_complet == None:
             self.liste_anomalies.append(u"Le nom complet de l'OD n'est pas valide")
@@ -172,7 +172,7 @@ class Track_excel(object):
             self.liste_anomalies.append(u"Le nom complet de l'AD n'est pas valide")
 
         if self.ad_civilite == None:
-            self.liste_anomalies.append(u"La civilitÈ de l'AD n'est pas valide")
+            self.liste_anomalies.append(u"La civilit√© de l'AD n'est pas valide")
 
         if self.ad_date_naiss == None:
             self.liste_anomalies.append(u"La date de naissance de l'AD n'est pas valide")
@@ -193,12 +193,12 @@ class CTRL_Categories(wx.CheckListBox):
         """ items = (ID, label, checked) """
         liste_categories = [
             ("ajouter_famille", u"Ajouter une famille"),
-            ("modifier_civilite",  u"Modifier la civilitÈ"),
+            ("modifier_civilite",  u"Modifier la civilit√©"),
             ("modifier_rue",  u"Modifier la rue"),
             ("modifier_cp",  u"Modifier le code postal"),
             ("modifier_ville",  u"Modifier la ville"),
-            ("modifier_tel_domicile", u"Modifier le tÈl domicile"),
-            ("modifier_tel_portable",  u"Modifier le tÈl portable"),
+            ("modifier_tel_domicile", u"Modifier le t√©l domicile"),
+            ("modifier_tel_portable",  u"Modifier le t√©l portable"),
             ("modifier_mail_perso",  u"Modifier le mail perso"),
             ("modifier_mail_travail",  u"Modifier le mail pro"),
             ("modifier_internet_identifiant", u"Modifier l'identifiant internet"),
@@ -256,7 +256,7 @@ class CTRL_Donnees(FastObjectListView):
                 return ""
             return valeur
 
-        # CrÈation des colonnes
+        # Cr√©ation des colonnes
         liste_colonnes = [
             ColumnDefn(_(u"Ouvrant-droit"), 'left', 200, "od_nom_complet", typeDonnee="texte"),
             ColumnDefn(_(u"Action"), 'left', 270, "label", typeDonnee="texte"),
@@ -266,7 +266,7 @@ class CTRL_Donnees(FastObjectListView):
 
         self.SetColumns(liste_colonnes)
         self.CreateCheckStateColumn(0)
-        self.SetEmptyListMsg(_(u"Aucune donnÈe"))
+        self.SetEmptyListMsg(_(u"Aucune donn√©e"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -281,7 +281,7 @@ class CTRL_Donnees(FastObjectListView):
         self.CocheTout()
 
     def OnCheck(self, event=None):
-        texte = _(u"SÈlection des modifications ‡ appliquer (%d)") % len(self.GetTracksCoches())
+        texte = _(u"S√©lection des modifications √† appliquer (%d)") % len(self.GetTracksCoches())
         self.GetParent().box_donnees_staticbox.SetLabel(texte)
 
     def GetTracksCoches(self):
@@ -298,7 +298,7 @@ class CTRL_Donnees(FastObjectListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ouvrir fiche famille
@@ -316,7 +316,7 @@ class CTRL_Donnees(FastObjectListView):
 
         menuPop.AppendSeparator()
 
-        # GÈnÈration automatique des fonctions standards
+        # G√©n√©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop, titre=_(u"Liste des modifications"))
 
         self.PopupMenu(menuPop)
@@ -324,7 +324,7 @@ class CTRL_Donnees(FastObjectListView):
 
     def OuvrirFicheFamille(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune fiche famille ‡ ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune fiche famille √† ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -341,17 +341,17 @@ class CTRL_Donnees(FastObjectListView):
     def Analyse_fichier(self):
         self.SetTracks([])
 
-        # RÈcupÈration des catÈgories
+        # R√©cup√©ration des cat√©gories
         self.liste_categories = self.GetParent().ctrl_categories.GetIDcoches()
         if len(self.liste_categories) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins une catÈgorie !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins une cat√©gorie !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         # Validation du fichier
         if self.nom_fichier == None or len(self.nom_fichier) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÈlectionner un fichier de donnÈes ‡ importer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement s√©lectionner un fichier de donn√©es √† importer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -379,12 +379,12 @@ class CTRL_Donnees(FastObjectListView):
         for num_colonne in range(feuille.ncols):
             dict_champs[num_colonne] = feuille.cell(rowx=0, colx=num_colonne).value
 
-        # VÈrifie que les champs essentiels sont l‡
+        # V√©rifie que les champs essentiels sont l√†
         champs_obligatoires = [
-            u"Matricule Ouvrant-droit", u"LibellÈ civilitÈ", u"Nom+PrÈnom OD", u"Date de naissance OD", u"Adresse domicile 1",
+            u"Matricule Ouvrant-droit", u"Libell√© civilit√©", u"Nom+Pr√©nom OD", u"Date de naissance OD", u"Adresse domicile 1",
             u"Adresse domicile 2", u"Adresse domicile 3", u"Code postal domicile", u"Ville domicile",
-            u"TÈlÈphone personnel", u"TÈlÈphone personnel 2", u"E-Mail personnel", u"E-Mail interne",
-            u"Nom+PrÈnom AD", u"Sexe AD", u"Date de naissance AD",
+            u"T√©l√©phone personnel", u"T√©l√©phone personnel 2", u"E-Mail personnel", u"E-Mail interne",
+            u"Nom+Pr√©nom AD", u"Sexe AD", u"Date de naissance AD",
             ]
         champs_manquants = []
         for champ in champs_obligatoires:
@@ -402,8 +402,8 @@ class CTRL_Donnees(FastObjectListView):
             dlg.Destroy()
             return False
 
-        # Lecture des lignes de donnÈes
-        self.ctrl_log.Ecrit(u"%d lignes trouvÈes dans le fichier." % feuille.nrows)
+        # Lecture des lignes de donn√©es
+        self.ctrl_log.Ecrit(u"%d lignes trouv√©es dans le fichier." % feuille.nrows)
         dict_tracks = {}
         for num_ligne in range(1, feuille.nrows):
             dict_ligne = {}
@@ -419,21 +419,21 @@ class CTRL_Donnees(FastObjectListView):
 
                 dict_ligne[num_colonne] = valeur
 
-            # MÈmorisation dans un track
+            # M√©morisation dans un track
             track = Track_excel(self, self.ctrl_log, dict_champs, dict_ligne)
             if len(track.liste_anomalies) == 0:
 
                 if track.od_matricule not in dict_tracks:
-                    # Si le matricule n'est pas dans la liste, on mÈmorise le track
+                    # Si le matricule n'est pas dans la liste, on m√©morise le track
                     dict_tracks[track.od_matricule] = track
                 else:
-                    # Si le matricule existe dÈj‡, on rajoute juste le dict_ad au track existant
+                    # Si le matricule existe d√©j√†, on rajoute juste le dict_ad au track existant
                     dict_tracks[track.od_matricule].liste_ad.append(track.dict_ad)
 
             else:
                 self.ctrl_log.Ecrit(u"%d anomalies sur la ligne %d : %s" % (len(track.liste_anomalies), num_ligne, u" / ".join(track.liste_anomalies)))
 
-        # Importation des donnÈes de la base
+        # Importation des donn√©es de la base
         DB = GestionDB.DB()
 
         # Importation de tous les individus
@@ -447,7 +447,7 @@ class CTRL_Donnees(FastObjectListView):
             date_naiss = UTILS_Dates.DateEngEnDateDD(date_naiss)
             nom_complet = nom
             if prenom != None: nom_complet += u" " + prenom
-            # MÈmorisation du dict individu
+            # M√©morisation du dict individu
             dict_individus[IDindividu] = {
                 "IDcivilite" : IDcivilite, "nom" : nom, "prenom" : prenom, "date_naiss" : date_naiss, "adresse_auto": adresse_auto,
                 "rue_resid" : rue_resid, "cp_resid": cp_resid, "ville_resid" : ville_resid, "tel_domicile" : tel_domicile,
@@ -455,7 +455,7 @@ class CTRL_Donnees(FastObjectListView):
                 "familles" : []
             }
 
-            # MÈmorisation par date de naissance
+            # M√©morisation par date de naissance
             if date_naiss not in dict_date_naiss:
                 dict_date_naiss[date_naiss] = []
             dict_date_naiss[date_naiss].append(IDindividu)
@@ -476,12 +476,12 @@ class CTRL_Donnees(FastObjectListView):
         liste_rattachements = DB.ResultatReq()
         for IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire in liste_rattachements:
 
-            # MÈmorise l'IDfamille dans le dict_individus
+            # M√©morise l'IDfamille dans le dict_individus
             if titulaire == 1:
                 if IDindividu in dict_individus:
                     dict_individus[IDindividu]["familles"].append(IDfamille)
 
-            # MÈmorise les membres de la famille dans le dict_familles
+            # M√©morise les membres de la famille dans le dict_familles
             if IDfamille in dict_familles:
                 dict_familles[IDfamille]["individus"].append(IDindividu)
 
@@ -512,13 +512,13 @@ class CTRL_Donnees(FastObjectListView):
             # Recherche si l'OD existe dans la base
             IDindividu_od = Recherche_individu(track.GetValeur("od_nom"), track.GetValeur("od_prenom"), track.GetValeur("od_date_naiss"))
 
-            # Si l'OD n'existe pas, on propose de le crÈer
+            # Si l'OD n'existe pas, on propose de le cr√©er
             if IDindividu_od == None:
-                label = u"CrÈation d'une nouvelle famille"
+                label = u"Cr√©ation d'une nouvelle famille"
                 if "ajouter_famille" in self.liste_categories:
                     AjouterModification(Track_modification(action="ajouter_famille", label=label, track=track))
 
-            # Si l'OD existe dÈj‡ dans la base, on vÈrifie les donnÈes
+            # Si l'OD existe d√©j√† dans la base, on v√©rifie les donn√©es
             if IDindividu_od != None:
                 dict_individu = dict_individus[IDindividu_od]
 
@@ -531,12 +531,12 @@ class CTRL_Donnees(FastObjectListView):
                     liste_individus = []
                     self.ctrl_log.Ecrit(u"[ERREUR] Aucune famille pour l'OD %s" % track.GetValeur("od_nom_complet"))
 
-                # VÈrification OD - CivilitÈ
+                # V√©rification OD - Civilit√©
                 if dict_individu["IDcivilite"] != track.GetValeur("od_civilite"):
                     IDcivilite = track.GetValeur("od_civilite")
                     if IDcivilite != None:
 
-                        label = u"Changement de civilitÈ"
+                        label = u"Changement de civilit√©"
                         if dict_individu["IDcivilite"] in DICT_CIVILITES:
                             ancienne_valeur = DICT_CIVILITES[dict_individu["IDcivilite"]]["civiliteAbrege"]
                         else:
@@ -549,7 +549,7 @@ class CTRL_Donnees(FastObjectListView):
                         if "modifier_civilite" in self.liste_categories:
                             AjouterModification(Track_modification(action="modifier", label=label, track=track, IDfamille=IDfamille, ancienne_valeur=ancienne_valeur, nouvelle_valeur=nouvelle_valeur, req=req))
 
-                # VÈrification OD - Rue
+                # V√©rification OD - Rue
                 if dict_individu["adresse_auto"] == None and dict_individu["rue_resid"] != track.GetValeur("od_rue"):
                     label = u"Changement de rue"
                     ancienne_valeur = dict_individu["rue_resid"]
@@ -558,7 +558,7 @@ class CTRL_Donnees(FastObjectListView):
                     if "modifier_rue" in self.liste_categories:
                         AjouterModification(Track_modification(action="modifier", label=label, track=track, IDfamille=IDfamille, ancienne_valeur=ancienne_valeur, nouvelle_valeur=nouvelle_valeur, req=req))
 
-                # VÈrification OD - Code postal
+                # V√©rification OD - Code postal
                 if dict_individu["adresse_auto"] == None and dict_individu["cp_resid"] != track.GetValeur("od_code_postal"):
                     label = u"Changement de code postal"
                     ancienne_valeur = dict_individu["cp_resid"]
@@ -567,7 +567,7 @@ class CTRL_Donnees(FastObjectListView):
                     if "modifier_cp" in self.liste_categories:
                         AjouterModification(Track_modification(action="modifier", label=label, track=track, IDfamille=IDfamille, ancienne_valeur=ancienne_valeur, nouvelle_valeur=nouvelle_valeur, req=req))
 
-                # VÈrification OD - Ville
+                # V√©rification OD - Ville
                 if dict_individu["adresse_auto"] == None and dict_individu["ville_resid"] != track.GetValeur("od_ville"):
                     label = u"Changement de ville"
                     ancienne_valeur = dict_individu["ville_resid"]
@@ -576,18 +576,18 @@ class CTRL_Donnees(FastObjectListView):
                     if "modifier_ville" in self.liste_categories:
                         AjouterModification(Track_modification(action="modifier", label=label, track=track, IDfamille=IDfamille, ancienne_valeur=ancienne_valeur, nouvelle_valeur=nouvelle_valeur, req=req))
 
-                # VÈrification OD - TÈlÈphone 1
+                # V√©rification OD - T√©l√©phone 1
                 if dict_individu["tel_domicile"] != track.GetValeur("od_telephone_1") and track.GetValeur("od_telephone_1") != "":
-                    label = u"Changement de tÈlÈphone fixe"
+                    label = u"Changement de t√©l√©phone fixe"
                     ancienne_valeur = dict_individu["tel_domicile"]
                     nouvelle_valeur = track.GetValeur("od_telephone_1")
                     req = {"table": "individus", "nom_champ": "tel_domicile", "valeur": nouvelle_valeur, "nom_key": "IDindividu", "valeur_key": IDindividu_od}
                     if "modifier_tel_domicile" in self.liste_categories:
                         AjouterModification(Track_modification(action="modifier", label=label, track=track, IDfamille=IDfamille, ancienne_valeur=ancienne_valeur, nouvelle_valeur=nouvelle_valeur, req=req))
 
-                # VÈrification OD - TÈlÈphone 2
+                # V√©rification OD - T√©l√©phone 2
                 if dict_individu["tel_mobile"] != track.GetValeur("od_telephone_2") and track.GetValeur("od_telephone_2") != "":
-                    label = u"Changement de tÈlÈphone mobile"
+                    label = u"Changement de t√©l√©phone mobile"
                     ancienne_valeur = dict_individu["tel_mobile"]
                     nouvelle_valeur = track.GetValeur("od_telephone_2")
                     req = {"table": "individus", "nom_champ": "tel_mobile", "valeur": nouvelle_valeur, "nom_key": "IDindividu", "valeur_key": IDindividu_od}
@@ -612,7 +612,7 @@ class CTRL_Donnees(FastObjectListView):
                     if "modifier_mail_travail" in self.liste_categories:
                         AjouterModification(Track_modification(action="modifier", label=label, track=track, IDfamille=IDfamille, ancienne_valeur=ancienne_valeur, nouvelle_valeur=nouvelle_valeur, req=req))
 
-                # VÈrifie si l'identifiant internet est ok
+                # V√©rifie si l'identifiant internet est ok
                 if IDfamille != None:
                     internet_identifiant = dict_familles[IDfamille]["internet_identifiant"]
                     if internet_identifiant != track.GetValeur("od_matricule"):
@@ -623,7 +623,7 @@ class CTRL_Donnees(FastObjectListView):
                         if "modifier_internet_identifiant" in self.liste_categories:
                             AjouterModification(Track_modification(action="modifier", label=label, track=track, IDfamille=IDfamille, ancienne_valeur=ancienne_valeur, nouvelle_valeur=nouvelle_valeur, req=req))
 
-                # VÈrifie si le mot de passe internet est ok
+                # V√©rifie si le mot de passe internet est ok
                 if IDfamille != None:
                     internet_mdp = dict_familles[IDfamille]["internet_mdp"]
                     if internet_mdp.startswith("#@#"):
@@ -641,27 +641,27 @@ class CTRL_Donnees(FastObjectListView):
                 if IDfamille != None:
                     for dict_ad in track.liste_ad:
 
-                        # Recherche si l'individu existe dans la base de donnÈes
+                        # Recherche si l'individu existe dans la base de donn√©es
                         IDindividu_ad = Recherche_individu(dict_ad["nom"], dict_ad["prenom"], dict_ad["date_naiss"])
                         if IDindividu_ad == None:
-                            label = u"CrÈation de l'individu %s" % dict_ad["nom_complet"]
+                            label = u"Cr√©ation de l'individu %s" % dict_ad["nom_complet"]
                             donnees = {"IDfamille": IDfamille, "IDindividu_od": IDindividu_od, "dict_ad": dict_ad}
                             if "ajouter_individu" in self.liste_categories:
                                 AjouterModification(Track_modification(action="ajouter_individu", label=label, IDfamille=IDfamille, track=track, donnees=donnees))
 
                         if IDindividu_ad != None and IDindividu_ad not in liste_individus:
                             pass
-                            # self.ctrl_log.Ecrit(u"Bizarre, l'individu %s %s existe dans la base mais n'est pas rattachÈ ‡ la famille" % (dict_ad["nom"], dict_ad["prenom"]))
+                            # self.ctrl_log.Ecrit(u"Bizarre, l'individu %s %s existe dans la base mais n'est pas rattach√© √† la famille" % (dict_ad["nom"], dict_ad["prenom"]))
 
                         if IDindividu_ad != None and IDindividu_ad in liste_individus:
-                            # On vÈrifie si les donnÈes de l'ad sont exactes
+                            # On v√©rifie si les donn√©es de l'ad sont exactes
                             dict_individu = dict_individus[IDindividu_ad]
 
-                            # CivilitÈ
+                            # Civilit√©
                             if dict_individu["IDcivilite"] != dict_ad["IDcivilite"]:
                                 IDcivilite = dict_ad["IDcivilite"]
 
-                                label = u"Changement de civilitÈ"
+                                label = u"Changement de civilit√©"
                                 if dict_individu["IDcivilite"] in DICT_CIVILITES:
                                     ancienne_valeur = DICT_CIVILITES[dict_individu["IDcivilite"]]["civiliteAbrege"]
                                 else:
@@ -685,22 +685,22 @@ class Panel(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
 
-        # SÈlection du fichier
-        self.box_fichier_staticbox = wx.StaticBox(self, -1, _(u"SÈlection du fichier"))
-        self.label_fichier = wx.StaticText(self, -1, _(u"Cliquez sur le bouton 'SÈlectionner' pour sÈlectionner le fichier de donnÈes :"))
+        # S√©lection du fichier
+        self.box_fichier_staticbox = wx.StaticBox(self, -1, _(u"S√©lection du fichier"))
+        self.label_fichier = wx.StaticText(self, -1, _(u"Cliquez sur le bouton 'S√©lectionner' pour s√©lectionner le fichier de donn√©es :"))
         wildcard = _(u"Fichiers Excel (*.xls)|*.xls|Tous les fichiers (*.*)|*.*")
         sp = wx.StandardPaths.Get()
-        self.ctrl_fichier = filebrowse.FileBrowseButton(self, -1, labelText=_(u"Fichier ‡ importer :"), buttonText=_(u"SÈlectionner"), toolTip=_(u"Cliquez ici pour sÈlectionner un fichier de donnÈes"), dialogTitle=_(u"SÈlectionner un fichier"), fileMask=wildcard, startDirectory=sp.GetDocumentsDir(), changeCallback=self.OnSelectionFichier)
+        self.ctrl_fichier = filebrowse.FileBrowseButton(self, -1, labelText=_(u"Fichier √† importer :"), buttonText=_(u"S√©lectionner"), toolTip=_(u"Cliquez ici pour s√©lectionner un fichier de donn√©es"), dialogTitle=_(u"S√©lectionner un fichier"), fileMask=wildcard, startDirectory=sp.GetDocumentsDir(), changeCallback=self.OnSelectionFichier)
 
-        # CatÈgories des modifications
-        self.box_categories_staticbox = wx.StaticBox(self, -1, _(u"CatÈgories des modifications"))
+        # Cat√©gories des modifications
+        self.box_categories_staticbox = wx.StaticBox(self, -1, _(u"Cat√©gories des modifications"))
         self.ctrl_categories = CTRL_Categories(self)
         self.ctrl_categories.SetMinSize((250, 20))
         self.ctrl_appliquer_categories = wx.Button(self, -1, u"Appliquer")
 
-        # Liste de donnÈes
-        self.box_donnees_staticbox = wx.StaticBox(self, -1, _(u"SÈlection des modifications ‡ appliquer"))
-        self.label_donnees = wx.StaticText(self, -1, _(u"Cochez les donnÈes ‡ modifier puis cliquez sur le bouton Appliquer :"))
+        # Liste de donn√©es
+        self.box_donnees_staticbox = wx.StaticBox(self, -1, _(u"S√©lection des modifications √† appliquer"))
+        self.label_donnees = wx.StaticText(self, -1, _(u"Cochez les donn√©es √† modifier puis cliquez sur le bouton Appliquer :"))
         self.ctrl_donnees = CTRL_Donnees(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_recherche = CTRL_Outils(self, listview=self.ctrl_donnees, afficherCocher=True)
 
@@ -776,7 +776,7 @@ class CTRL_Log(wx.TextCtrl):
         try :
             texte += u"[%s] %s " % (horodatage, message)
         except :
-            texte += u"[%s] %s " % (horodatage, str(message).decode("iso-8859-15"))
+            texte += u"[%s] %s " % (horodatage, str(message).decode("utf8"))
         self.AppendText(texte)
 
         # Surlignage des erreurs
@@ -857,7 +857,7 @@ class Dialog(wx.Dialog):
         tracks = self.panel.ctrl_donnees.GetTracksCoches()
 
         # Demande de confirmation
-        dlg = wx.MessageDialog(self, _(u"Confirmez-vous la synchronisation de %d informations ?\n\nAttention, il est conseillÈ de procÈder ‡ une sauvegarde des donnÈes auparavant.") % len(tracks), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Confirmez-vous la synchronisation de %d informations ?\n\nAttention, il est conseill√© de proc√©der √† une sauvegarde des donn√©es auparavant.") % len(tracks), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -885,7 +885,7 @@ class Synchronisation(Thread):
             self.ctrl_log.Ecrit(u"%s pour %s..." % (track_modification.label, track_modification.od_nom_complet))
 
             def Creer_individu(IDfamille, ID_od, dict_ad):
-                # self.ctrl_log.Ecrit(u"CrÈation de l'individu %s %s..." % (dict_ad["nom"], dict_ad["prenom"]))
+                # self.ctrl_log.Ecrit(u"Cr√©ation de l'individu %s %s..." % (dict_ad["nom"], dict_ad["prenom"]))
                 ID_ad = DB.ReqInsert("individus", [("IDcivilite", dict_ad["IDcivilite"]), ("nom", dict_ad["nom"]),
                                                    ("prenom", dict_ad["prenom"]), ("date_naiss", dict_ad["date_naiss"]),
                                                    ("deces", 0), ("IDnationalite", 73), ("IDpays_naiss", 73),
@@ -908,7 +908,7 @@ class Synchronisation(Thread):
                 #                               ("IDcompte_payeur", IDcompte_payeur),
                 #                               ("date_inscription", datetime.date.today()), ("parti", 0)])
 
-            # Modifier une donnÈe
+            # Modifier une donn√©e
             if track_modification.action == "modifier":
                 DB.ReqMAJ(track_modification.req["table"], [(track_modification.req["nom_champ"], track_modification.req["valeur"]), ], track_modification.req["nom_key"], track_modification.req["valeur_key"])
                 DB.Commit()
@@ -933,7 +933,7 @@ class Synchronisation(Thread):
                 IDcompte_payeur = DB.ReqInsert("comptes_payeurs", [("IDfamille", IDfamille), ])
                 DB.ReqMAJ("familles", [("IDcompte_payeur", IDcompte_payeur), ], "IDfamille", IDfamille)
 
-                # CrÈation de l'OD
+                # Cr√©ation de l'OD
                 ID_od = DB.ReqInsert("individus", [("IDcivilite", track_excel.od_civilite),
                                                     ("nom", track_excel.od_nom),
                                                     ("prenom", track_excel.od_prenom),
@@ -953,14 +953,14 @@ class Synchronisation(Thread):
 
                 DB.ReqInsert("rattachements", [("IDindividu", ID_od), ("IDfamille", IDfamille), ("IDcategorie", 1), ("titulaire", 1)])
 
-                # CrÈation des AD
+                # Cr√©ation des AD
                 for dict_ad in track_excel.liste_ad:
                     Creer_individu(IDfamille, ID_od, dict_ad)
 
             index += 1
 
         DB.Close()
-        self.ctrl_log.Ecrit(u"Synchronisation terminÈe.")
+        self.ctrl_log.Ecrit(u"Synchronisation termin√©e.")
 
 
 

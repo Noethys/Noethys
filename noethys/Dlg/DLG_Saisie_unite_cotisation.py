@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -32,27 +32,27 @@ class Dialog(wx.Dialog):
         self.dictDonnees = dictDonnees
         
         # Nom
-        self.staticbox_nom_staticbox = wx.StaticBox(self, -1, _(u"Nom de l'unité"))
+        self.staticbox_nom_staticbox = wx.StaticBox(self, -1, _(u"Nom de l'unitÃ©"))
         self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
         
-        # Dates validité
-        self.staticbox_validite_staticbox = wx.StaticBox(self, -1, _(u"Dates de validité"))
+        # Dates validitÃ©
+        self.staticbox_validite_staticbox = wx.StaticBox(self, -1, _(u"Dates de validitÃ©"))
 
-        self.radio_periode = wx.RadioButton(self, -1, _(u"La période suivante : "), style=wx.RB_GROUP)
+        self.radio_periode = wx.RadioButton(self, -1, _(u"La pÃ©riode suivante : "), style=wx.RB_GROUP)
 
         self.label_date_debut = wx.StaticText(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_date_fin = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
 
-        self.radio_duree = wx.RadioButton(self, -1, _(u"La durée suivante : "))
+        self.radio_duree = wx.RadioButton(self, -1, _(u"La durÃ©e suivante : "))
 
         self.label_jours = wx.StaticText(self, -1, _(u"Jours :"))
         self.spin_jours = wx.SpinCtrl(self, -1, "", min=0, max=100)
         self.label_mois = wx.StaticText(self, -1, _(u"Mois :"))
         self.spin_mois = wx.SpinCtrl(self, -1, "", min=0, max=100)
-        self.label_annees = wx.StaticText(self, -1, _(u"Années :"))
+        self.label_annees = wx.StaticText(self, -1, _(u"AnnÃ©es :"))
         self.spin_annees = wx.SpinCtrl(self, -1, "", min=0, max=100)
 
         # Prestation
@@ -60,9 +60,9 @@ class Dialog(wx.Dialog):
         self.label_montant = wx.StaticText(self, -1, _(u"Montant :"))
         self.ctrl_montant = CTRL_Saisie_euros.CTRL(self)
         self.label_label_prestation = wx.StaticText(self, -1, _(u"Label de la\nprestation :"), style=wx.ALIGN_RIGHT)
-        self.radio_label_defaut = wx.RadioButton(self, -1, _(u"Par défaut :"), style=wx.RB_GROUP)
+        self.radio_label_defaut = wx.RadioButton(self, -1, _(u"Par dÃ©faut :"), style=wx.RB_GROUP)
         self.ctrl_label_defaut = wx.StaticText(self, -1, u"")
-        self.radio_label_personnalise = wx.RadioButton(self, -1, _(u"Personnalisé :"))
+        self.radio_label_personnalise = wx.RadioButton(self, -1, _(u"PersonnalisÃ© :"))
         self.ctrl_label_personnalise = wx.TextCtrl(self, -1, u"")
         
         # Commandes
@@ -81,28 +81,28 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         
-        # Init contrôles
+        # Init contrÃ´les
         if len(dictDonnees) == 0 :
-            self.SetTitle(_(u"Saisie d'une nouvelle unité de cotisation"))
+            self.SetTitle(_(u"Saisie d'une nouvelle unitÃ© de cotisation"))
             self.SetLabelPrestationDefaut() 
         else:
-            self.SetTitle(_(u"Modification d'une unité de cotisation"))
+            self.SetTitle(_(u"Modification d'une unitÃ© de cotisation"))
             self.Importation()
         self.OnRadioLabel(None)
         self.OnRadioValidite(None)
 
     def __set_properties(self):
         self.ctrl_label_defaut.SetForegroundColour((100, 100, 100))
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom de l'unité")))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom de l'unitÃ©")))
         self.spin_jours.SetMinSize((60, -1))
         self.spin_mois.SetMinSize((60, -1))
         self.spin_annees.SetMinSize((60, -1))
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de début de validité")))
-        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de validité")))
-        self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez ici le montant en euros de l'unité de cotisation")))
-        self.radio_label_defaut.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour utiliser le label de prestation par défaut")))
-        self.radio_label_personnalise.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour utiliser un label de prestation personnalisé")))
-        self.ctrl_label_personnalise.SetToolTip(wx.ToolTip(_(u"Saisissez ici un label personnalisé")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de dÃ©but de validitÃ©")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de validitÃ©")))
+        self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez ici le montant en euros de l'unitÃ© de cotisation")))
+        self.radio_label_defaut.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour utiliser le label de prestation par dÃ©faut")))
+        self.radio_label_personnalise.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour utiliser un label de prestation personnalisÃ©")))
+        self.ctrl_label_personnalise.SetToolTip(wx.ToolTip(_(u"Saisissez ici un label personnalisÃ©")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -120,7 +120,7 @@ class Dialog(wx.Dialog):
         staticbox_nom.Add(grid_sizer_nom, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(staticbox_nom, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
 
-        # Validité
+        # ValiditÃ©
         staticbox_validite = wx.StaticBoxSizer(self.staticbox_validite_staticbox, wx.VERTICAL)
 
         grid_sizer_validite = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
@@ -210,14 +210,14 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Cotisations")
 
     def OnBoutonOk(self, event):         
-        # Vérification des données
+        # VÃ©rification des donnÃ©es
         date_debut = None
         date_fin = None
         duree = None
 
         nom  = self.ctrl_nom.GetValue()
         if nom == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour cette unité de cotisation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour cette unitÃ© de cotisation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
@@ -228,21 +228,21 @@ class Dialog(wx.Dialog):
             date_fin = self.ctrl_date_fin.GetDate()
 
             if self.ctrl_date_debut.FonctionValiderDate() == False or date_debut == None:
-                dlg = wx.MessageDialog(self, _(u"La date de début de validité n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La date de dÃ©but de validitÃ© n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_debut.SetFocus()
                 return False
 
             if self.ctrl_date_fin.FonctionValiderDate() == False or date_fin == None:
-                dlg = wx.MessageDialog(self, _(u"La date de fin de validité n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La date de fin de validitÃ© n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_fin.SetFocus()
                 return False
 
             if date_debut > date_fin:
-                dlg = wx.MessageDialog(self, _(u"La date de début de validité est supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La date de dÃ©but de validitÃ© est supÃ©rieure Ã  la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -253,7 +253,7 @@ class Dialog(wx.Dialog):
             annees = int(self.spin_annees.GetValue())
 
             if jours == 0 and mois == 0 and annees == 0 :
-                dlg = wx.MessageDialog(self, _(u"Vous devez donc saisir un nombre de jours et/ou de mois et/ou d'années."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez donc saisir un nombre de jours et/ou de mois et/ou d'annÃ©es."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.spin_jours.SetFocus()

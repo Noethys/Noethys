@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -118,7 +118,7 @@ class CTRL(wx.Panel):
         # Labels
         self.ctrl_titre = CTRL_Titre(self)
         
-        # ContrÙles Grille des conso
+        # Contr√¥les Grille des conso
         self.panel_activites = Panel_Activites(self)
         if panel_facturation != None :
             self.panel_facturation = panel_facturation
@@ -146,7 +146,7 @@ class CTRL(wx.Panel):
             date_debut, date_fin = periode
         self.grille.SetModeIndividu([IDactivite,], [IDindividu,], [IDindividu,], [(date_debut, date_fin),], modeSilencieux=True)
         
-        # RÈcupÈration des informations
+        # R√©cup√©ration des informations
         self.dictInfosIndividu = self.grille.dictInfosIndividus[IDindividu]
         self.dictInfosInscriptions = self.grille.dictInfosInscriptions[IDindividu][IDactivite]
         
@@ -159,7 +159,7 @@ class CTRL(wx.Panel):
         self.grille.SauvegardeTransports()
     
     def GetCase(self, IDunite=None, date=None, memo=False):
-        """ RÈcupËre une case d'aprËs un IDunite """
+        """ R√©cup√®re une case d'apr√®s un IDunite """
         for numLigne, ligne in self.grille.dictLignes.items() :
             for numColonne, case in ligne.dictCases.items() :
                 if case.typeCase == "consommation" and memo == False :
@@ -187,16 +187,16 @@ class CTRL(wx.Panel):
         return case.ouvert
 
     def SaisieConso(self, IDunite=None, mode="reservation", etat="reservation", heure_debut="defaut", heure_fin="defaut", date=None, quantite=None, badgeage_debut=None, badgeage_fin=None, conso=None):
-        """ CrÈe ou modifie une conso pour l'unitÈ indiquÈe """
+        """ Cr√©e ou modifie une conso pour l'unit√© indiqu√©e """
         case = self.GetCase(IDunite, date)
         if case == None :
             return _(u"Cette case est inexistante.")
         
-        # VÈrifie que cette unitÈ est ouverte
+        # V√©rifie que cette unit√© est ouverte
         if case.ouvert == False :
-            return _(u"Cette unitÈ est fermÈe.")
+            return _(u"Cette unit√© est ferm√©e.")
 
-        # Recherche Heures par dÈfaut
+        # Recherche Heures par d√©faut
         heure_debut_defaut = self.grille.dictUnites[IDunite]["heure_debut"]
         heure_fin_defaut = self.grille.dictUnites[IDunite]["heure_fin"]
         typeUnite = self.grille.dictUnites[IDunite]["type"]
@@ -210,23 +210,23 @@ class CTRL(wx.Panel):
         if heure_debut == "defaut" : heure_debut = heure_debut_defaut
         if heure_fin == "defaut" : heure_fin = heure_fin_defaut
 
-        # VÈrifie qu'il reste des places disponibles
+        # V√©rifie qu'il reste des places disponibles
         hasPlaces = True
         if case.HasPlaceDisponible(*conditions) == False :
             hasPlaces = False
             if mode == "reservation" and self.usage != "nomadhys":
                 return _(u"Il n'y a plus de place le %s.") % UTILS_Dates.DateDDEnFr(date)
 
-        # VÈrifie la compatibilitÈ avec les autres unitÈs
+        # V√©rifie la compatibilit√© avec les autres unit√©s
         incompatibilite = case.VerifieCompatibilitesUnites()
         if incompatibilite != None :
             nomUniteIncompatible = self.grille.dictUnites[incompatibilite]["nom"]
-            return _(u"Action impossible car il existe dÈj‡ le %s une rÈservation sur l'unitÈ '%s'.") %  (UTILS_Dates.DateDDEnFr(date), nomUniteIncompatible)
+            return _(u"Action impossible car il existe d√©j√† le %s une r√©servation sur l'unit√© '%s'.") %  (UTILS_Dates.DateDDEnFr(date), nomUniteIncompatible)
             
-        # DÈfinit le mode
+        # D√©finit le mode
         self.mode = mode
                 
-        # Si la conso n'existe pas dÈj‡ :
+        # Si la conso n'existe pas d√©j√† :
         if case.IsCaseDisponible(*conditions) == True :
             if typeUnite == "Quantite" :
                 quantiteTmp = 1
@@ -248,7 +248,7 @@ class CTRL(wx.Panel):
                     case.ModifieEtat(None, etat)
 
 
-        # Si la conso existe dÈj‡ :
+        # Si la conso existe d√©j√† :
         else :
             
             # Type Horaire
@@ -259,7 +259,7 @@ class CTRL(wx.Panel):
                 if heure_debut != None : case.heure_debut = heure_debut
                 if heure_fin != None : case.heure_fin = heure_fin
             
-            # Type QuantitÈ
+            # Type Quantit√©
             if typeUnite == "Quantite" :
                 quantiteTmp = case.quantite
                 if quantite != None :
@@ -279,32 +279,32 @@ class CTRL(wx.Panel):
 
         # Si mode = attente
         #if hasPlaces == False :
-        #    return _(u"Il n'y a plus de place le %s. RÈservation en attente saisie.") % UTILS_Dates.DateDDEnFr(date)
+        #    return _(u"Il n'y a plus de place le %s. R√©servation en attente saisie.") % UTILS_Dates.DateDDEnFr(date)
 
         return True
     
     def SupprimeConso(self, IDunite=None, date=None):
-        """ Supprime la conso d'une unitÈ donnÈe """
+        """ Supprime la conso d'une unit√© donn√©e """
         case = self.GetCase(IDunite, date)
         if case == None : 
             return _(u"Cette case est inexistante.")
         if case.etat == None :
-            return _(u"Il n'existe aucune consommation ‡ cette date et pour cette unitÈ.")
+            return _(u"Il n'existe aucune consommation √† cette date et pour cette unit√©.")
         if case.IDfacture != None :
-            return _(u"Interdit de supprimer une consommation dÈj‡ facturÈe.")
+            return _(u"Interdit de supprimer une consommation d√©j√† factur√©e.")
         if case.etat in ("present", "absenti", "absentj") :
-            return _(u"Interdit de supprimer une consommation dÈj‡ pointÈe.")
+            return _(u"Interdit de supprimer une consommation d√©j√† point√©e.")
         case.OnClick(modeSilencieux=True, ForcerSuppr=True)
         return True
 
     def ModifieEtat(self, IDunite=None, etat="reservation", date=None):
-        """ Modifie l'Ètat de l'unitÈ donnÈe """
+        """ Modifie l'√©tat de l'unit√© donn√©e """
         case = self.GetCase(IDunite, date)
         if case == None :
             return _(u"Cette case est inexistante.")
         for conso in case.GetListeConso() :
             if conso.etat == None :
-                return _(u"Il n'existe aucune consommation ‡ cette date et pour cette unitÈ.")
+                return _(u"Il n'existe aucune consommation √† cette date et pour cette unit√©.")
             if conso.etat != etat :
                 case.ModifieEtat(None, etat)
         return True
@@ -312,7 +312,7 @@ class CTRL(wx.Panel):
     def ModifieMemo(self, date=None, texte=""):
         case = self.GetCase(date=date, memo=True)
         if case == None :
-            return _(u"La case mÈmo journalier est inexistante.")
+            return _(u"La case m√©mo journalier est inexistante.")
         case.SetTexte(texte)
         return True        
     
@@ -326,8 +326,8 @@ class CTRL(wx.Panel):
 # Sauvegarde() : Pour sauvegarder
 # SaisieConso() : Pour ajouter une conso
 # SupprimeConso() : Pour Supprimer une conso
-# ModifieMemo(): Pour modifier le mÈmo journalier
-# RecalculerToutesPrestations : Recalculer toutes les conso affichÈes
+# ModifieMemo(): Pour modifier le m√©mo journalier
+# RecalculerToutesPrestations : Recalculer toutes les conso affich√©es
 # TraitementLot_processus : Effectuer un traitement par lot global
 
 
@@ -336,7 +336,7 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        # ContrÙle
+        # Contr√¥le
         self.ctrl = CTRL(self)
         
         # Boutons de test
@@ -376,17 +376,17 @@ class Dialog(wx.Dialog):
         
     def OnBoutonTest4(self, event):
         """ TEST 4 """
-        # Saisie d'une journÈe
+        # Saisie d'une journ√©e
 ##        resultat = self.ctrl.SaisieConso(IDunite=1, mode="reservation", etat="present", heure_debut="17:30", heure_fin="defaut")
-##        print ("Test saisie UnitÈ 1 :", resultat)
+##        print ("Test saisie Unit√© 1 :", resultat)
 ##        resultat = self.ctrl.SaisieConso(IDunite=9, mode="reservation", etat="present", heure_debut="17:30", heure_fin="defaut")
-##        print ("Test saisie UnitÈ 9 :", resultat)
+##        print ("Test saisie Unit√© 9 :", resultat)
         
         # Saisie d'un repas
 ##        resultat = self.ctrl.SaisieConso(IDunite=2, mode="reservation", etat="present", heure_debut="12:05", heure_fin="defaut")
 ##        print ("Test saisie repas :", resultat)
         
-        # Modification de l'Ètat uniquement
+        # Modification de l'√©tat uniquement
 ##        resultat = self.ctrl.ModifieEtat(IDunite=2, etat="present")
 ##        print ("Test modifie etat sur PRESENT :", resultat)
 
@@ -394,13 +394,13 @@ class Dialog(wx.Dialog):
 ##        resultat = self.ctrl.SaisieConso(IDunite=7, mode="reservation", etat="present", heure_debut="14:35", heure_fin="defaut")
 ##        print ("Test saisie Garderie du Matin :", resultat)
 
-        # Saisie d'une journÈe avec repas sur une date donnÈe
+        # Saisie d'une journ√©e avec repas sur une date donn√©e
         resultat = self.ctrl.SaisieConso(IDunite=1, mode="reservation", etat="reservation", date=datetime.date(2019, 1, 18) )
-        print(("Test saisie UnitÈ 1 :", resultat))
+        print(("Test saisie Unit√© 1 :", resultat))
         resultat = self.ctrl.SaisieConso(IDunite=2, mode="reservation", etat="reservation", date=datetime.date(2019, 1, 18) )
-        print(("Test saisie UnitÈ 2 :", resultat))
+        print(("Test saisie Unit√© 2 :", resultat))
         resultat = self.ctrl.SaisieConso(IDunite=5, mode="reservation", etat="reservation", date=datetime.date(2019, 1, 18) )
-        print(("Test saisie UnitÈ 2 :", resultat))
+        print(("Test saisie Unit√© 2 :", resultat))
 
 if __name__ == "__main__":
     app = wx.App(0)

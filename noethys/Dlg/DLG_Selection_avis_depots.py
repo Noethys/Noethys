@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -49,8 +49,8 @@ class Dialog(wx.Dialog):
         self.listeDonnees = listeDonnees
         
         # Bandeau
-        intro = _(u"Sélectionnez les avis de dépôts à envoyer par Email et cliquez sur le bouton OK pour accéder à l'éditeur d'Emails. Si cette liste est vide, c'est qu'aucune famille concernée n'est abonnée à ce service. Les cases non cochées par défaut indiquent qu'un avis a déjà été envoyé.")
-        titre = _(u"Sélection des avis de dépôts à envoyer")
+        intro = _(u"SÃ©lectionnez les avis de dÃ©pÃ´ts Ã  envoyer par Email et cliquez sur le bouton OK pour accÃ©der Ã  l'Ã©diteur d'Emails. Si cette liste est vide, c'est qu'aucune famille concernÃ©e n'est abonnÃ©e Ã  ce service. Les cases non cochÃ©es par dÃ©faut indiquent qu'un avis a dÃ©jÃ  Ã©tÃ© envoyÃ©.")
+        titre = _(u"SÃ©lection des avis de dÃ©pÃ´ts Ã  envoyer")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Emails_exp.png")
 
@@ -65,7 +65,7 @@ class Dialog(wx.Dialog):
 
         self.hyper_tout = Hyperlien(self, label=_(u"Tout cocher"), infobulle=_(u"Cliquez ici pour tout cocher"), URL="tout")
         self.label_separation = wx.StaticText(self, -1, u"|")
-        self.hyper_rien = Hyperlien(self, label=_(u"Tout décocher"), infobulle=_(u"Cliquez ici pour tout décocher"), URL="rien")
+        self.hyper_rien = Hyperlien(self, label=_(u"Tout dÃ©cocher"), infobulle=_(u"Cliquez ici pour tout dÃ©cocher"), URL="rien")
         
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
@@ -82,11 +82,11 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.ExportTexte, self.bouton_texte)
         self.Bind(wx.EVT_BUTTON, self.ExportExcel, self.bouton_excel)
 
-        # init contrôles
+        # init contrÃ´les
         self.ctrl_donnees.MAJ() 
 
     def __set_properties(self):
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu de la liste")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er un aperÃ§u de la liste")))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
         self.bouton_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Texte")))
         self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
@@ -158,7 +158,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonOk(self, event): 
         if len(self.GetListeSelections()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner au moins un avis à envoyer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner au moins un avis Ã  envoyer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -168,7 +168,7 @@ class Dialog(wx.Dialog):
             if track.adresse == None :
                 nbreAnomalies += 1
         if nbreAnomalies > 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné %d lignes dont l'adresse Email est inconnue !") % nbreAnomalies, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous avez sÃ©lectionnÃ© %d lignes dont l'adresse Email est inconnue !") % nbreAnomalies, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -33,7 +33,7 @@ class Notebook(wx.Notebook):
         self.dictPages = {}
         
         self.listePages = [
-            ("generalites", _(u"Généralités"), "CTRL_Tarification_generalites.Panel(self, IDactivite=IDactivite, IDtarif=IDtarif, cacher_dates=cacher_dates)", "Information.png"),
+            ("generalites", _(u"GÃ©nÃ©ralitÃ©s"), "CTRL_Tarification_generalites.Panel(self, IDactivite=IDactivite, IDtarif=IDtarif, cacher_dates=cacher_dates)", "Information.png"),
             ("conditions", _(u"Conditions d'application"), "CTRL_Tarification_conditions.Panel(self, IDactivite=IDactivite, IDtarif=IDtarif)", "Filtre.png"),
             ("type", _(u"Type de tarif"), "CTRL_Tarification_type.Panel(self, IDactivite=IDactivite, IDtarif=IDtarif, nouveauTarif=nouveauTarif)", "Outils.png"),
             ("calcul", _(u"Calcul du tarif"), "CTRL_Tarification_calcul.Panel(self, IDactivite=IDactivite, IDtarif=IDtarif, track_tarif=track_tarif)", "Calculatrice.png"),
@@ -48,7 +48,7 @@ class Notebook(wx.Notebook):
             index += 1
         self.AssignImageList(il)
 
-        # Création des pages
+        # CrÃ©ation des pages
         index = 0
         for code, label, ctrl, img in self.listePages :
             if choix_pages == None or code in choix_pages :
@@ -78,14 +78,14 @@ class Notebook(wx.Notebook):
         self.SetSelection(indexPage)
 
     def ValidationPages(self) :
-        # Validation des données des pages
+        # Validation des donnÃ©es des pages
         for code, dictPage in self.dictPages.items() :
             if dictPage["ctrl"].Validation() == False:
                 return False
         return True
 
     def Sauvegarde(self):
-        # Sauvegarde des données
+        # Sauvegarde des donnÃ©es
         dict_resultats = {}
         for code, dictPage in self.dictPages.items() :
             resultat = dictPage["ctrl"].Sauvegarde()
@@ -116,8 +116,8 @@ class Dialog(wx.Dialog):
         else :
             self.nom_tarif = self.GetNomTarif()
 
-        intro = _(u"Renseignez les caractéristiques générales, les conditions d'application, le type de tarif puis le mode de calcul du tarif. Vous pouvez consulter le Guide de démarrage ou le manuel de référence pour en savoir davantage...")
-        titre = _(u"Paramétrage du tarif '%s'") % self.nom_tarif
+        intro = _(u"Renseignez les caractÃ©ristiques gÃ©nÃ©rales, les conditions d'application, le type de tarif puis le mode de calcul du tarif. Vous pouvez consulter le Guide de dÃ©marrage ou le manuel de rÃ©fÃ©rence pour en savoir davantage...")
+        titre = _(u"ParamÃ©trage du tarif '%s'") % self.nom_tarif
         if self.IDtarif != None :
             titre += u" (ID%d)" % self.IDtarif
         self.SetTitle(titre)
@@ -176,7 +176,7 @@ class Dialog(wx.Dialog):
         self.CenterOnScreen()
             
     def CreateIDtarif(self):
-        """ Crée le tarif dans la base de données afin d'obtenir un IDtarif """
+        """ CrÃ©e le tarif dans la base de donnÃ©es afin d'obtenir un IDtarif """
         DB = GestionDB.DB()
         listeDonnees = [
             ("IDactivite", self.IDactivite),
@@ -190,7 +190,7 @@ class Dialog(wx.Dialog):
         return self.IDtarif
     
     def GetNomTarif(self):
-        """ Récupère le nom du tarif """
+        """ RÃ©cupÃ¨re le nom du tarif """
         if self.IDnom_tarif == None : return u""
         db = GestionDB.DB()
         req = """SELECT nom FROM noms_tarifs WHERE IDnom_tarif=%d;""" % self.IDnom_tarif
@@ -222,7 +222,7 @@ class Dialog(wx.Dialog):
             DB.Close()
             if len(listeDonnees) == 0 : return
 
-            # Mémorisation des données du tarif
+            # MÃ©morisation des donnÃ©es du tarif
             dictTarif = {}
             index = 0
             for donnee in listeDonnees[0] :
@@ -237,7 +237,7 @@ class Dialog(wx.Dialog):
             # Importation du tarif
             dictTarif = self.track_tarif.GetDictTarif()
 
-        # Date début
+        # Date dÃ©but
         self.toolbook.GetPage("generalites").SetDateDebut(dictTarif["date_debut"])
         
         # Date fin
@@ -249,7 +249,7 @@ class Dialog(wx.Dialog):
         # Observations
         self.toolbook.GetPage("generalites").SetObservations(dictTarif["observations"])
 
-        # Catégories de tarifs rattachées
+        # CatÃ©gories de tarifs rattachÃ©es
         self.toolbook.GetPage("generalites").SetCategories(dictTarif["categories_tarifs"])
 
         # Label de prestation
@@ -268,22 +268,22 @@ class Dialog(wx.Dialog):
         page = self.toolbook.GetPage("conditions")
         if page != None:
 
-            # Groupes rattachés
+            # Groupes rattachÃ©s
             self.toolbook.GetPage("conditions").SetGroupes(dictTarif["groupes"])
 
-            # Etiquettes rattachées
+            # Etiquettes rattachÃ©es
             self.toolbook.GetPage("conditions").SetEtiquettes(dictTarif["etiquettes"])
 
-            # Cotisations rattachées
+            # Cotisations rattachÃ©es
             self.toolbook.GetPage("conditions").SetCotisations(dictTarif["cotisations"])
 
-            # Caisses rattachées
+            # Caisses rattachÃ©es
             self.toolbook.GetPage("conditions").SetCaisses(dictTarif["caisses"])
 
             # Filtres de questionnaires
             self.toolbook.GetPage("conditions").SetFiltres(listeFiltres)
 
-            # Périodes rattachées
+            # PÃ©riodes rattachÃ©es
             self.toolbook.GetPage("conditions").SetPeriodes(dictTarif["jours_scolaires"], dictTarif["jours_vacances"])
 
         # TYPE DE TARIF
@@ -301,7 +301,7 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Tarification")
 
     def OnBoutonOk(self, event): 
-        # Validation des données
+        # Validation des donnÃ©es
         validation = self.toolbook.ValidationPages()
         if validation == False :
             return
@@ -311,14 +311,14 @@ class Dialog(wx.Dialog):
         if etat == False :
             return
 
-        # Sauvegarde des données
+        # Sauvegarde des donnÃ©es
         dict_resultats = self.toolbook.Sauvegarde()
         
-        # Fermeture fenêtre
+        # Fermeture fenÃªtre
         self.EndModal(wx.ID_OK)
     
     def Sauvegarde(self):
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         date_debut = self.toolbook.GetPage("generalites").GetDateDebut() 
         date_fin = self.toolbook.GetPage("generalites").GetDateFin() 
         description = self.toolbook.GetPage("generalites").GetDescription()
@@ -355,16 +355,16 @@ class Dialog(wx.Dialog):
         else :
             typeTarif = None
         
-        # Méthode
+        # MÃ©thode
         codeMethode = self.toolbook.GetPage("calcul").GetCodeMethode()
         tarifsCompatibles = self.toolbook.GetPage("calcul").GetTarifsCompatibles()
 
         # Type de quotient
         IDtype_quotient = self.toolbook.GetPage("calcul").GetTypeQuotient()
 
-        # Vérifie que la méthode est compatible avec le type de tarif
+        # VÃ©rifie que la mÃ©thode est compatible avec le type de tarif
         if typeTarif != None and typeTarif not in tarifsCompatibles and self.track_tarif == None :
-            dlg = wx.MessageDialog(self, _(u"La méthode de calcul sélectionnée n'est pas compatible avec le type de tarif sélectionné !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La mÃ©thode de calcul sÃ©lectionnÃ©e n'est pas compatible avec le type de tarif sÃ©lectionnÃ© !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -391,7 +391,7 @@ class Dialog(wx.Dialog):
             ("label_prestation", label_prestation),
             ]
 
-        # Envoi des données au track_tarif
+        # Envoi des donnÃ©es au track_tarif
         if self.track_tarif != None :
             self.track_tarif.MAJ(listeDonnees)
 
@@ -465,7 +465,7 @@ class Dialog(wx.Dialog):
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = Dialog(None, IDactivite=1, IDtarif=116, nom_tarif=u"Evènement")
+    frame_1 = Dialog(None, IDactivite=1, IDtarif=116, nom_tarif=u"EvÃ¨nement")
     app.SetTopWindow(frame_1)
     frame_1.ShowModal()
     app.MainLoop()

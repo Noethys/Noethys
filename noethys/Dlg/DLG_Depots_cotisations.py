@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -31,9 +31,9 @@ def DateEngFr(textDate):
     return text
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -103,18 +103,18 @@ class Track(object):
         else:
             self.typeStr = _(u"Cotisation individuelle")
         
-        # Validité
+        # ValiditÃ©
         dateDuJour = datetime.date.today() 
         if dateDuJour >= self.date_debut and dateDuJour <= self.date_fin :
             self.valide = True
         else:
             self.valide = False
         
-        # Dépôt
+        # DÃ©pÃ´t
         if self.IDdepot_cotisation == None :
-            self.depotStr = _(u"Non déposée")
+            self.depotStr = _(u"Non dÃ©posÃ©e")
         else:
-            self.depotStr = _(u"Dépôt n°%d") % self.IDdepot_cotisation
+            self.depotStr = _(u"DÃ©pÃ´t nÂ°%d") % self.IDdepot_cotisation
         
         # Etat
         if self.IDdepot_cotisation == None or self.IDdepot_cotisation == 0 :
@@ -131,11 +131,11 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des dépôts de cotisations. Ces dépôts sont utiles si, par exemple, votre cotisation se présente sous la forme d'une carte d'adhérent dont vous devez renvoyer un bordereau de création à une fédération ou une maison-mère. Vous pouvez ainsi savoir quels sont les bordereaux qui ont déjà été envoyés...")
-        titre = _(u"Gestion des dépôts de cotisations")
+        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des dÃ©pÃ´ts de cotisations. Ces dÃ©pÃ´ts sont utiles si, par exemple, votre cotisation se prÃ©sente sous la forme d'une carte d'adhÃ©rent dont vous devez renvoyer un bordereau de crÃ©ation Ã  une fÃ©dÃ©ration ou une maison-mÃ¨re. Vous pouvez ainsi savoir quels sont les bordereaux qui ont dÃ©jÃ  Ã©tÃ© envoyÃ©s...")
+        titre = _(u"Gestion des dÃ©pÃ´ts de cotisations")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Depot_cotisations.png")
 
-        # Importation des activités
+        # Importation des activitÃ©s
         DB = GestionDB.DB()
         req = """SELECT IDactivite, nom, abrege
         FROM activites
@@ -154,8 +154,8 @@ class Dialog(wx.Dialog):
         self.ctrl_cotisations.SetMinSize((100, 100))
         self.MAJcotisations() 
 
-        # Dépôts
-        self.staticbox_depots = wx.StaticBox(self, -1, _(u"Dépôts de cotisations"))
+        # DÃ©pÃ´ts
+        self.staticbox_depots = wx.StaticBox(self, -1, _(u"DÃ©pÃ´ts de cotisations"))
         self.listviewAvecFooter = OL_Depots_cotisations.ListviewAvecFooter(self, kwargs={}) 
         self.ctrl_depots = self.listviewAvecFooter.GetListview()
         self.ctrl_depots.MAJ()
@@ -180,11 +180,11 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Gestion des dépôts de cotisations"))
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un dépôt")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le dépôt sélectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le dépôt sélectionné dans la liste")))
-        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste des dépôts affichés")))
+        self.SetTitle(_(u"Gestion des dÃ©pÃ´ts de cotisations"))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un dÃ©pÃ´t")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le dÃ©pÃ´t sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le dÃ©pÃ´t sÃ©lectionnÃ© dans la liste")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste des dÃ©pÃ´ts affichÃ©s")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((950, 700))
@@ -195,7 +195,7 @@ class Dialog(wx.Dialog):
         # Bandeau
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
 
-        # Règlements
+        # RÃ¨glements
         staticbox_cotisations = wx.StaticBoxSizer(self.staticbox_cotisations, wx.VERTICAL)
         grid_sizer_reglements = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         
@@ -206,7 +206,7 @@ class Dialog(wx.Dialog):
         staticbox_cotisations.Add(grid_sizer_reglements, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(staticbox_cotisations, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
 
-        # Dépôts
+        # DÃ©pÃ´ts
         staticbox_depots = wx.StaticBoxSizer(self.staticbox_depots, wx.VERTICAL)
         grid_sizer_depots = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         
@@ -251,7 +251,7 @@ class Dialog(wx.Dialog):
         self.ctrl_cotisations.MAJ(tracks) 
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         db = GestionDB.DB()
         req = """
         SELECT 
@@ -287,11 +287,11 @@ class Dialog(wx.Dialog):
         self.ctrl_depots.Supprimer(None)
         
     def OnBoutonImprimer(self, event):               
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
         
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 20, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 20, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -72,7 +72,7 @@ class Panel(wx.Panel):
         self.label_individu = wx.StaticText(self, -1, _(u"Individu :"))
         self.ctrl_individu = CTRL_Filtre(self, labelDefaut=_(u"Tous les individus"))
         
-        self.label_depart = wx.StaticText(self, -1, _(u"Départ :"))
+        self.label_depart = wx.StaticText(self, -1, _(u"DÃ©part :"))
         self.ctrl_depart_date = CTRL_Filtre(self, labelDefaut=_(u"Toutes les dates"))
         self.ctrl_depart_heure = CTRL_Filtre(self, labelDefaut=_(u"Tous les horaires"))
         self.ctrl_depart_lieu = CTRL_Filtre(self, labelDefaut=_(u"Tous les lieux"))
@@ -80,7 +80,7 @@ class Panel(wx.Panel):
         self.label_transport = wx.StaticText(self, -1, _(u"Transport :"))
         self.ctrl_transport = CTRL_Filtre(self, labelDefaut=_(u"Tous les transports"))
 
-        self.label_arrivee = wx.StaticText(self, -1, _(u"Arrivée :"))
+        self.label_arrivee = wx.StaticText(self, -1, _(u"ArrivÃ©e :"))
         self.ctrl_arrivee_date = CTRL_Filtre(self, labelDefaut=_(u"Toutes les dates"))
         self.ctrl_arrivee_heure = CTRL_Filtre(self, labelDefaut=_(u"Tous les horaires"))
         self.ctrl_arrivee_lieu = CTRL_Filtre(self, labelDefaut=_(u"Tous les lieux"))
@@ -108,20 +108,20 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonExportExcel, self.bouton_export_excel)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonExportTexte, self.bouton_export_texte)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.MAJ() 
         
     def __set_properties(self):
         self.ctrl_individu.SetToolTip(wx.ToolTip(_(u"Filtrer par individu")))
-        self.ctrl_depart_date.SetToolTip(wx.ToolTip(_(u"Filtrer par date de départ")))
-        self.ctrl_depart_heure.SetToolTip(wx.ToolTip(_(u"Filtrer par heure de départ")))
-        self.ctrl_depart_lieu.SetToolTip(wx.ToolTip(_(u"Filtrer par lieu de départ")))
-        self.ctrl_arrivee_date.SetToolTip(wx.ToolTip(_(u"Filtrer par date d'arrivée")))
-        self.ctrl_arrivee_heure.SetToolTip(wx.ToolTip(_(u"Filtrer par heure d'arrivée")))
-        self.ctrl_arrivee_lieu.SetToolTip(wx.ToolTip(_(u"Filtrer par lieu d'arrivée")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Modifier le transport sélectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Supprimer le transport sélectionné dans la liste")))
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Afficher un aperçu avant impression de la liste")))
+        self.ctrl_depart_date.SetToolTip(wx.ToolTip(_(u"Filtrer par date de dÃ©part")))
+        self.ctrl_depart_heure.SetToolTip(wx.ToolTip(_(u"Filtrer par heure de dÃ©part")))
+        self.ctrl_depart_lieu.SetToolTip(wx.ToolTip(_(u"Filtrer par lieu de dÃ©part")))
+        self.ctrl_arrivee_date.SetToolTip(wx.ToolTip(_(u"Filtrer par date d'arrivÃ©e")))
+        self.ctrl_arrivee_heure.SetToolTip(wx.ToolTip(_(u"Filtrer par heure d'arrivÃ©e")))
+        self.ctrl_arrivee_lieu.SetToolTip(wx.ToolTip(_(u"Filtrer par lieu d'arrivÃ©e")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Modifier le transport sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Supprimer le transport sÃ©lectionnÃ© dans la liste")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Afficher un aperÃ§u avant impression de la liste")))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Imprimer la liste")))
         self.bouton_export_excel.SetToolTip(wx.ToolTip(_(u"Exporter la liste au format Excel")))
         self.bouton_export_texte.SetToolTip(wx.ToolTip(_(u"Exporter la liste au format Texte")))
@@ -236,7 +236,7 @@ class Panel(wx.Panel):
         listeArriveeHeure = sorted(listeArriveeHeure, key=operator.itemgetter(0))
         listeArriveeLieu = sorted(listeArriveeLieu, key=operator.itemgetter(1))
         
-        # MAJ des contrôles
+        # MAJ des contrÃ´les
         self.ctrl_individu.SetDonnees(listeIndividu) 
         self.ctrl_transport.SetDonnees(listeTransport) 
         self.ctrl_depart_date.SetDonnees(listeDepartDate) 
@@ -299,8 +299,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Utilisez les filtres pour afficher les transports souhaités et imprimer ou exportez la liste affichée.")
-        titre = _(u"Liste détaillée des transports")
+        intro = _(u"Utilisez les filtres pour afficher les transports souhaitÃ©s et imprimer ou exportez la liste affichÃ©e.")
+        titre = _(u"Liste dÃ©taillÃ©e des transports")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Transport.png")
         

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -41,7 +41,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
 
-        # Init contrôles
+        # Init contrÃ´les
         if self.IDtiers != None :
             self.SetTitle(_(u"Modification d'un tiers"))
             self.Importation() 
@@ -92,15 +92,15 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event): 
         if self.Sauvegarde()  == False :
             return
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def Sauvegarde(self):
-        """ Sauvegarde des données """
+        """ Sauvegarde des donnÃ©es """
         nom = self.ctrl_nom.GetValue() 
         observations = self.ctrl_observations.GetValue() 
         
-        # Validation des données saisies
+        # Validation des donnÃ©es saisies
         if nom == "" :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()

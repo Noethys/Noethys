@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -26,11 +26,11 @@ class Dialog(wx.Dialog):
         
         # Bandeau
         titre = _(u"Fonds de page des documents")
-        intro = _(u"Les fonds de page peuvent être insérés dans les modèles de documents afin d'éviter un paramétrage fastidieux de chaque modèle. Ainsi, quand vous modifiez un fond de page, chaque modèle rattaché est impacté.")
+        intro = _(u"Les fonds de page peuvent Ãªtre insÃ©rÃ©s dans les modÃ¨les de documents afin d'Ã©viter un paramÃ©trage fastidieux de chaque modÃ¨le. Ainsi, quand vous modifiez un fond de page, chaque modÃ¨le rattachÃ© est impactÃ©.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Document_fond.png")
         
-        # Modèles
+        # ModÃ¨les
         self.staticbox_modeles_staticbox = wx.StaticBox(self, -1, _(u"Fonds de page disponibles"))
         self.ctrl_modeles = OL_Modeles_docs.ListView(self, categorie="fond", id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_modeles.MAJ() 
@@ -55,10 +55,10 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonFermer, self.bouton_fermer)
 
     def __set_properties(self):
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un nouveau fond")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le fond sélectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le fond sélectionné dans la liste")))
-        self.bouton_dupliquer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dupliquer le fond sélectionné dans la liste")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er un nouveau fond")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le fond sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le fond sÃ©lectionnÃ© dans la liste")))
+        self.bouton_dupliquer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dupliquer le fond sÃ©lectionnÃ© dans la liste")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((550, 450))
@@ -67,7 +67,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
         
-        # Modèles
+        # ModÃ¨les
         staticbox_modeles = wx.StaticBoxSizer(self.staticbox_modeles_staticbox, wx.VERTICAL)
         grid_sizer_modeles = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_modeles.Add(self.ctrl_modeles, 1, wx.EXPAND, 0)

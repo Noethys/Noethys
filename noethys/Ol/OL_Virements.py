@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -20,7 +20,7 @@ from Dlg import DLG_Saisie_virement
 import datetime
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 from Utils import UTILS_Interface
@@ -46,7 +46,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.IDcompte_bancaire = kwds.pop("IDcompte_bancaire", None)
         self.ctrl_soldes = None
         # Initialisation du listCtrl
@@ -66,7 +66,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         DB = GestionDB.DB()
         
         req = """SELECT IDvirement, IDoperation_debit, IDoperation_credit
@@ -126,7 +126,7 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(u"", "left", 0, "IDvirement", typeDonnee="entier"),
             ColumnDefn(_(u"Date"), 'left', 80, "date", typeDonnee="date", stringConverter=FormateDate),
-            ColumnDefn(_(u"Libellé"), 'left', 200, "libelle", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(_(u"LibellÃ©"), 'left', 200, "libelle", typeDonnee="texte", isSpaceFilling=True),
             ColumnDefn(_(u"Montant"), "right", 80, "montant", typeDonnee="montant", stringConverter=FormateMontant),
             ]
 
@@ -141,7 +141,7 @@ class ListView(FastObjectListView):
         self.Freeze()
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if track != None :
             self.SelectObject(track, deselectOthers=True, ensureVisible=True)
         if IDoperation != None :
@@ -169,7 +169,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDvirement
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ajouter
@@ -200,7 +200,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -259,7 +259,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
 ##        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_categories_comptables", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun virement à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun virement Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -272,13 +272,13 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
 ##        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_categories_comptables", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun virement à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun virement Ã  supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
         if track.IDreleve_debit != None or track.IDreleve_debit != None :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer un virement pointé sur un relevé bancaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer un virement pointÃ© sur un relevÃ© bancaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -341,8 +341,8 @@ class BarreRecherche(wx.SearchCtrl):
 ##class ListviewAvecFooter(PanelAvecFooter):
 ##    def __init__(self, parent, kwargs={}):
 ##        dictColonnes = {
-##            "nomTiers" : {"mode" : "nombre", "singulier" : _(u"opération"), "pluriel" : _(u"opérations"), "alignement" : wx.ALIGN_CENTER},
-##            "libelle" : {"mode" : "texte", "texte" : _(u"Solde du jour : 10000.00 ¤"), "alignement" : wx.ALIGN_CENTER},
+##            "nomTiers" : {"mode" : "nombre", "singulier" : _(u"opÃ©ration"), "pluriel" : _(u"opÃ©rations"), "alignement" : wx.ALIGN_CENTER},
+##            "libelle" : {"mode" : "texte", "texte" : _(u"Solde du jour : 10000.00 â‚¬"), "alignement" : wx.ALIGN_CENTER},
 ##            "solde" : {"mode" : "total"},
 ##            }
 ##        PanelAvecFooter.__init__(self, parent, ListView, kwargs, dictColonnes)

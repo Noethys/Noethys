@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -24,31 +24,31 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        # Activités
-        self.box_activites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Sélection des activités"))
+        # ActivitÃ©s
+        self.box_activites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"SÃ©lection des activitÃ©s"))
         self.ctrl_activites = CTRL_Selection_activites.CTRL(self, afficheToutes=True)
         
         # Options
         self.box_options_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Options"))
-        self.label_tri = wx.StaticText(self, wx.ID_ANY, _(u"Critère de tri :"))
-        self.ctrl_tri = wx.Choice(self, wx.ID_ANY, choices=[_(u"Nom d'activité"), _(u"Date de début d'activité"), _(u"Date de fin d'activité"), _(u"Nom abrégé de l'activité")])
+        self.label_tri = wx.StaticText(self, wx.ID_ANY, _(u"CritÃ¨re de tri :"))
+        self.ctrl_tri = wx.Choice(self, wx.ID_ANY, choices=[_(u"Nom d'activitÃ©"), _(u"Date de dÃ©but d'activitÃ©"), _(u"Date de fin d'activitÃ©"), _(u"Nom abrÃ©gÃ© de l'activitÃ©")])
         self.ctrl_tri.SetSelection(0)
 
         self.label_sens = wx.StaticText(self, wx.ID_ANY, _(u"Sens de tri :"))
-        self.ctrl_sens = wx.Choice(self, wx.ID_ANY, choices=[_(u"Croissant"), _(u"Décroissant")])
+        self.ctrl_sens = wx.Choice(self, wx.ID_ANY, choices=[_(u"Croissant"), _(u"DÃ©croissant")])
         self.ctrl_sens.SetSelection(0)
 
         self.label_alerte = wx.StaticText(self, wx.ID_ANY, _(u"Seuil d'alerte :"))
         self.ctrl_alerte = wx.SpinCtrl(self, wx.ID_ANY, "", min=0, max=100)
 
-        self.label_ouvert = wx.StaticText(self, wx.ID_ANY, _(u"Ancienneté :"))
-        self.ctrl_ouvert = wx.CheckBox(self, -1, _(u"Masquer les activités obsolètes"))
+        self.label_ouvert = wx.StaticText(self, wx.ID_ANY, _(u"AnciennetÃ© :"))
+        self.ctrl_ouvert = wx.CheckBox(self, -1, _(u"Masquer les activitÃ©s obsolÃ¨tes"))
 
         self.label_partis = wx.StaticText(self, wx.ID_ANY, _(u"Individus partis :"))
         self.ctrl_partis = wx.CheckBox(self, -1, _(u"Masquer les individus partis"))
 
         self.label_regroup = wx.StaticText(self, wx.ID_ANY, _(u"Regroupement :"))
-        self.ctrl_regroup = wx.CheckBox(self, -1, _(u"Regrouper les activités par groupe d'activités"))
+        self.ctrl_regroup = wx.CheckBox(self, -1, _(u"Regrouper les activitÃ©s par groupe d'activitÃ©s"))
 
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
@@ -66,13 +66,13 @@ class Dialog(wx.Dialog):
         self.Importation() 
 
     def __set_properties(self):
-        self.SetTitle(_(u"Paramètres d'affichage des inscriptions"))
-        self.ctrl_tri.SetToolTip(wx.ToolTip(_(u"Sélectionner un critère de tri")))
-        self.ctrl_sens.SetToolTip(wx.ToolTip(_(u"Sélectionner un sens de tri")))
-        self.ctrl_alerte.SetToolTip(wx.ToolTip(_(u"Saisissez une valeur de seuil d'alerte. Noethys signale ainsi lorsque le nombre de places restantes est égal ou inférieur à cette valeur")))
-        self.ctrl_ouvert.SetToolTip(wx.ToolTip(_(u"Masquer les activités dont la date de fin de validité est supérieure à la date du jour")))
-        self.ctrl_partis.SetToolTip(wx.ToolTip(_(u"Masquer les individus partis de l'activité")))
-        self.ctrl_regroup.SetToolTip(wx.ToolTip(_(u"Regrouper les activités par groupe d'activités")))
+        self.SetTitle(_(u"ParamÃ¨tres d'affichage des inscriptions"))
+        self.ctrl_tri.SetToolTip(wx.ToolTip(_(u"SÃ©lectionner un critÃ¨re de tri")))
+        self.ctrl_sens.SetToolTip(wx.ToolTip(_(u"SÃ©lectionner un sens de tri")))
+        self.ctrl_alerte.SetToolTip(wx.ToolTip(_(u"Saisissez une valeur de seuil d'alerte. Noethys signale ainsi lorsque le nombre de places restantes est Ã©gal ou infÃ©rieur Ã  cette valeur")))
+        self.ctrl_ouvert.SetToolTip(wx.ToolTip(_(u"Masquer les activitÃ©s dont la date de fin de validitÃ© est supÃ©rieure Ã  la date du jour")))
+        self.ctrl_partis.SetToolTip(wx.ToolTip(_(u"Masquer les individus partis de l'activitÃ©")))
+        self.ctrl_regroup.SetToolTip(wx.ToolTip(_(u"Regrouper les activitÃ©s par groupe d'activitÃ©s")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -125,7 +125,7 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
     
     def Importation(self):
-        # Activités
+        # ActivitÃ©s
         parametres = UTILS_Config.GetParametre("nbre_inscrits_parametre_activites", defaut=None)
         if parametres != None :
             code, liste = parametres.split("###")
@@ -150,7 +150,7 @@ class Dialog(wx.Dialog):
         if self.ctrl_activites.Validation() == False :
             return
         
-        # Mémorisation des activités
+        # MÃ©morisation des activitÃ©s
         mode, listeIDtemp = self.ctrl_activites.GetValeurs() 
         listeID = []
         for ID in listeIDtemp :

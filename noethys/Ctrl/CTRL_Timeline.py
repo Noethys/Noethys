@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 
 # Copyright (C) 2009  Rickard Lindberg, Roger Lindberg
 #
@@ -78,13 +78,13 @@ class ToolBar(UTILS_Adaptations.ToolBar):
 
         # Boutons
         self.AddLabelTool(ID_IMPRIMER,           _(u"Imprimer"), wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Imprimer"), "")
-        self.AddLabelTool(ID_APERCU,              _(u"Aperçu"), wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Aperçu avant impression"), "")
+        self.AddLabelTool(ID_APERCU,              _(u"AperÃ§u"), wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"AperÃ§u avant impression"), "")
         self.AddLabelTool(ID_IMAGE,                 _(u"Enreg."), wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Sauvegarder.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Exporter au format image"), "")
         self.AddSeparator()
         self.AddLabelTool(ID_GO_TODAY,         _(u"Aujourd."), wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Jour.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Atteindre aujourd'hui"), "")
         self.AddLabelTool(ID_GO_DATE,            _(u"Trouver"), wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Recherche_date.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Atteindre une date"), "")
         self.AddSeparator()
-        self.AddLabelTool(ID_AFFICHE_ANNEE, _(u"Année"), wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Calendrier.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Afficher l'année"), "")
+        self.AddLabelTool(ID_AFFICHE_ANNEE, _(u"AnnÃ©e"), wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Calendrier.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Afficher l'annÃ©e"), "")
         self.AddLabelTool(ID_AFFICHE_MOIS,    _(u"Mois"), wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Calendrier.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Afficher le mois"), "")
         self.AddLabelTool(ID_AFFICHE_JOUR,    _(u"Jour"), wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Calendrier.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Afficher le jour"), "")
         self.AddSeparator()
@@ -201,7 +201,7 @@ class CTRL(wx.Panel):
         self.drawing_area.set_timeline(self.timeline)
     
     def SetPositionVerticale(self, position=50):
-        """ Déplace la ligne verticale (entre 0 et 100 """
+        """ DÃ©place la ligne verticale (entre 0 et 100 """
         self.timeline_panel.divider_line_slider.SetValue(position)
         
     def Imprimer(self, event):
@@ -220,7 +220,7 @@ class CTRL(wx.Panel):
         if dialog.ShowModal() == wx.ID_OK:
             path, extension = _extend_path(dialog.GetPath(), extensions, "png")
             if os.path.exists(path) :
-                reponse = _ask_question(_(u"Le fichier existe déjà. Voulez-vous l'écraser ?"), self) 
+                reponse = _ask_question(_(u"Le fichier existe dÃ©jÃ . Voulez-vous l'Ã©craser ?"), self) 
                 if reponse == False :
                     return
             bitmap = self.drawing_area.bgbuf
@@ -667,7 +667,7 @@ class DrawingArea(wx.Panel):
         frame = wx.GetApp().GetTopWindow()
         if not printer.Print(frame, printout, True):
             if printer.GetLastError() == wx.PRINTER_ERROR:
-                wx.MessageBox(_(u"Problème d'impression. Peut-être votre imprimante n'est-elle pas configurée correctement ?"), "Impression", wx.OK)
+                wx.MessageBox(_(u"ProblÃ¨me d'impression. Peut-Ãªtre votre imprimante n'est-elle pas configurÃ©e correctement ?"), "Impression", wx.OK)
         else:
             self.printData = wx.PrintData( printer.GetPrintDialogData().GetPrintData() )
         printout.Destroy()
@@ -682,10 +682,10 @@ class DrawingArea(wx.Panel):
         else:
             etat = self.preview.Ok()
         if not etat:
-            logging.debug(_(u"Impossible d'afficher l'aperçu avant impression...\n"))
+            logging.debug(_(u"Impossible d'afficher l'aperÃ§u avant impression...\n"))
             return
         frame = wx.GetApp().GetTopWindow()
-        pfrm = wx.PreviewFrame(self.preview, frame, _(u"Aperçu avant impression"))
+        pfrm = wx.PreviewFrame(self.preview, frame, _(u"AperÃ§u avant impression"))
         pfrm.Initialize()
         pfrm.SetPosition(frame.GetPosition())
         pfrm.SetSize(frame.GetSize())
@@ -1195,9 +1195,9 @@ class DrawingArea(wx.Panel):
         selected_events = self.drawing_algorithm.get_selected_events()
         nbr_of_selected_events = len(selected_events)
         if nbr_of_selected_events > 1:
-            text = _(u"Confirmez-vous la suppression de %d évènements ?") % nbr_of_selected_events
+            text = _(u"Confirmez-vous la suppression de %d Ã©vÃ¨nements ?") % nbr_of_selected_events
         else:
-            text = _(u"Confirmez-vous la suppression de l'évènement ?")
+            text = _(u"Confirmez-vous la suppression de l'Ã©vÃ¨nement ?")
         if _ask_question(text, self) == wx.YES:
             try:
                 self.timeline.delete_selected_events()

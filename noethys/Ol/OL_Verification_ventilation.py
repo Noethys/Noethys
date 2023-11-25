@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -22,7 +22,7 @@ from Utils import UTILS_Utilisateurs
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 from Utils import UTILS_Interface
@@ -34,9 +34,9 @@ def DateEngFr(textDate):
     return text
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -53,7 +53,7 @@ def Importation(onlyNonVentiles=True, IDcompte_payeur=None):
     else:
         conditionCompte = ""
     
-    # Récupère les comptes payeurs
+    # RÃ©cupÃ¨re les comptes payeurs
     req = """SELECT IDcompte_payeur, IDfamille
     FROM comptes_payeurs
     %s
@@ -62,10 +62,10 @@ def Importation(onlyNonVentiles=True, IDcompte_payeur=None):
     DB.ExecuterReq(req)
     listeComptes = DB.ResultatReq()
 
-    # Mémorise les IDfamille
+    # MÃ©morise les IDfamille
     listeIDfamille = [IDfamille for temp, IDfamille in listeComptes]
     
-    # Récupère la ventilation
+    # RÃ©cupÃ¨re la ventilation
     req = """SELECT IDcompte_payeur, SUM(montant) AS total_ventilations
     FROM ventilation
     %s
@@ -78,7 +78,7 @@ def Importation(onlyNonVentiles=True, IDcompte_payeur=None):
     for IDcompte_payeur, total_ventilations in listeVentilations :
         dictVentilations[IDcompte_payeur] = total_ventilations
     
-    # Récupère les prestations
+    # RÃ©cupÃ¨re les prestations
     req = """SELECT IDcompte_payeur, SUM(montant) AS total_prestations
     FROM prestations
     %s
@@ -91,7 +91,7 @@ def Importation(onlyNonVentiles=True, IDcompte_payeur=None):
     for IDcompte_payeur, total_prestations in listePrestations :
         dictPrestations[IDcompte_payeur] = total_prestations
         
-    # Récupère les règlements
+    # RÃ©cupÃ¨re les rÃ¨glements
     req = """SELECT IDcompte_payeur, SUM(montant) AS total_reglements
     FROM reglements
     %s
@@ -106,10 +106,10 @@ def Importation(onlyNonVentiles=True, IDcompte_payeur=None):
     
     DB.Close()
     
-    # Récupération des titulaires de familles
+    # RÃ©cupÃ©ration des titulaires de familles
     dictTitulaires = UTILS_Titulaires.GetTitulaires(listeIDfamille=listeIDfamille)
     
-    # Traitement des données
+    # Traitement des donnÃ©es
     listeListeView = []
     for IDcompte_payeur, IDfamille in listeComptes :
         if IDcompte_payeur in dictVentilations :
@@ -128,7 +128,7 @@ def Importation(onlyNonVentiles=True, IDcompte_payeur=None):
         track = Track(dictTitulaires, item)
 
         if onlyNonVentiles == True :
-            # Afficher seulement ceux qui sont mal ventilés
+            # Afficher seulement ceux qui sont mal ventilÃ©s
             if track.reste_a_ventiler > FloatToDecimal(0.0) :
                 listeListeView.append(track)
         else:
@@ -157,7 +157,7 @@ class Track(object):
 # ----------------------------------------------------------------------------------------------------------------------------------------
 
 def VentilationAuto(IDcompte_payeur=None, IDreglement=None):
-    """ Ventilation auto de tous les règlements d'un compte payeur ou d'un règlement spécifique """
+    """ Ventilation auto de tous les rÃ¨glements d'un compte payeur ou d'un rÃ¨glement spÃ©cifique """
     DB = GestionDB.DB()
 
     if IDreglement != None :
@@ -165,7 +165,7 @@ def VentilationAuto(IDcompte_payeur=None, IDreglement=None):
     else :
         conditionReglement = ""
 
-    # Récupère la ventilation
+    # RÃ©cupÃ¨re la ventilation
     req = """SELECT IDventilation, IDreglement, IDprestation, montant
     FROM ventilation
     WHERE IDcompte_payeur=%d;""" % IDcompte_payeur
@@ -185,7 +185,7 @@ def VentilationAuto(IDcompte_payeur=None, IDreglement=None):
             dictVentilationsPrestation[IDprestation] = []
         dictVentilationsPrestation[IDprestation].append(IDventilation)
     
-    # Récupère les prestations
+    # RÃ©cupÃ¨re les prestations
     req = """SELECT IDprestation, date, montant
     FROM prestations
     WHERE IDcompte_payeur=%d
@@ -196,7 +196,7 @@ def VentilationAuto(IDcompte_payeur=None, IDreglement=None):
     for IDprestation, date, montant in listeDonnees :
         listePrestations.append({"IDprestation" : IDprestation, "date" : date, "montant" : FloatToDecimal(montant)})
 
-    # Vérifie qu'il n'y a pas de prestations négatives
+    # VÃ©rifie qu'il n'y a pas de prestations nÃ©gatives
     for dictPrestation in listePrestations : 
         IDprestation = dictPrestation["IDprestation"]
                         
@@ -207,13 +207,13 @@ def VentilationAuto(IDcompte_payeur=None, IDreglement=None):
         
         ResteAVentiler = dictPrestation["montant"] - montantVentilation
         if ResteAVentiler < FloatToDecimal(0.0) :
-            dlg = wx.MessageDialog(None, _(u"Ventilation automatique impossible !\n\nLa ventilation automatique n'est pas compatible avec les prestations comportant un montant négatif ! Vous devez donc effectuer une ventilation manuelle."), _(u"Information"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(None, _(u"Ventilation automatique impossible !\n\nLa ventilation automatique n'est pas compatible avec les prestations comportant un montant nÃ©gatif ! Vous devez donc effectuer une ventilation manuelle."), _(u"Information"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             DB.Close()
             return False
 
-    # Récupère les règlements
+    # RÃ©cupÃ¨re les rÃ¨glements
     req = """SELECT IDreglement, date, montant
     FROM reglements
     WHERE IDcompte_payeur=%d %s
@@ -224,12 +224,12 @@ def VentilationAuto(IDcompte_payeur=None, IDreglement=None):
     for IDreglement, date, montant in listeDonnees :
         listeReglements.append({"IDreglement" : IDreglement, "date" : date, "montant" : FloatToDecimal(montant)})
     
-    # Vérification de la ventilation de chaque règlement
+    # VÃ©rification de la ventilation de chaque rÃ¨glement
     listeReglementsAVentiler = []
     for dictReglement in listeReglements :
         IDreglement = dictReglement["IDreglement"]
         
-        # Recherche s'il reste du crédit à ventiler dans ce règlement
+        # Recherche s'il reste du crÃ©dit Ã  ventiler dans ce rÃ¨glement
         montantVentilation = FloatToDecimal(0.0)
         if IDreglement in dictVentilationsReglement :
             for IDventilation in dictVentilationsReglement[IDreglement] :
@@ -239,7 +239,7 @@ def VentilationAuto(IDcompte_payeur=None, IDreglement=None):
         
         if credit > FloatToDecimal(0.0) :
     
-            # Recherche s'il reste des prestations à ventiler pour cette famille
+            # Recherche s'il reste des prestations Ã  ventiler pour cette famille
             listePrestationsAVentiler = []
             for dictPrestation in listePrestations : 
                 IDprestation = dictPrestation["IDprestation"]
@@ -252,7 +252,7 @@ def VentilationAuto(IDcompte_payeur=None, IDreglement=None):
                 ResteAVentiler = dictPrestation["montant"] - montantVentilation
                 if ResteAVentiler > FloatToDecimal(0.0) :
                     
-                    # Calcul du montant qui peut être ventilé
+                    # Calcul du montant qui peut Ãªtre ventilÃ©
                     montant = ResteAVentiler
                     if credit < montant :
                         montant = credit
@@ -268,14 +268,14 @@ def VentilationAuto(IDcompte_payeur=None, IDreglement=None):
                                     
                                     DB.ReqMAJ("ventilation", [("montant", float(nouveauMontant)),], "IDventilation", IDventilation)
                                     
-                                    # Mémorisation du nouveau montant
+                                    # MÃ©morisation du nouveau montant
                                     dictVentilations[IDventilation]["montant"] = nouveauMontant
                                     ResteAVentiler -= montant
                                     credit -= montant
                                     ventilationTrouvee = True
                                     
                         
-                        # Création d'une ventilation
+                        # CrÃ©ation d'une ventilation
                         if ventilationTrouvee == False :
                             listeDonnees = [    
                                     ("IDreglement", IDreglement),
@@ -285,7 +285,7 @@ def VentilationAuto(IDcompte_payeur=None, IDreglement=None):
                                 ]
                             IDventilation = DB.ReqInsert("ventilation", listeDonnees)
                             
-                            # Mémorisation de la nouvelle ventilation
+                            # MÃ©morisation de la nouvelle ventilation
                             dictVentilations[IDventilation] = {"IDreglement" : IDreglement, "IDprestation" : IDprestation, "montant" : montant}
                             if (IDreglement in dictVentilationsReglement) == False :
                                 dictVentilationsReglement[IDreglement] = []
@@ -304,7 +304,7 @@ def VentilationAuto(IDcompte_payeur=None, IDreglement=None):
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.onlyNonVentiles = kwds.pop("onlyNonVentiles", False)
         self.IDcompte_payeur = kwds.pop("IDcompte_payeur", None)
         self.tracks = kwds.pop("tracks", None)
@@ -328,7 +328,7 @@ class ListView(FastObjectListView):
         self.OuvrirFicheFamille(None)
                 
     def InitModel(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         if self.tracks == None or self.donnees != None :
             self.donnees = Importation(self.onlyNonVentiles, self.IDcompte_payeur)
         else:
@@ -364,14 +364,14 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Famille"), 'left', 250, "nomsTitulaires", typeDonnee="texte"),
             ColumnDefn(_(u"Solde"), 'right', 80, "solde", typeDonnee="montant", stringConverter=FormateSolde),
             ColumnDefn(_(u"Prestations"), 'right', 80, "total_prestations", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(_(u"Règlements"), 'right', 80, "total_reglements", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(_(u"Total ventilé"), 'right', 80, "total_ventilations", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"RÃ¨glements"), 'right', 80, "total_reglements", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"Total ventilÃ©"), 'right', 80, "total_ventilations", typeDonnee="montant", stringConverter=FormateMontant),
             ColumnDefn(_(u"A ventiler"), 'right', 80, "reste_a_ventiler", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageVentilation),
             ]
         
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(0)
-        self.SetEmptyListMsg(_(u"Aucun problème de ventilation"))
+        self.SetEmptyListMsg(_(u"Aucun problÃ¨me de ventilation"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         if self.colonneTri == None :
             self.SortBy(1, self.sensTri)
@@ -388,7 +388,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -406,7 +406,7 @@ class ListView(FastObjectListView):
         else:
             noSelection = False
 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ouverture fiche famille
@@ -420,13 +420,13 @@ class ListView(FastObjectListView):
         # Item Ventilation Automatique
         sousMenuVentilation = UTILS_Adaptations.Menu()
         
-        item = wx.MenuItem(sousMenuVentilation, 201, _(u"Uniquement la ligne sélectionnée"))
+        item = wx.MenuItem(sousMenuVentilation, 201, _(u"Uniquement la ligne sÃ©lectionnÃ©e"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Magique.png"), wx.BITMAP_TYPE_PNG))
         sousMenuVentilation.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.VentilationAuto, id=201)
         if noSelection == True : item.Enable(False)
 
-        item = wx.MenuItem(sousMenuVentilation, 202, _(u"Uniquement les lignes cochées"))
+        item = wx.MenuItem(sousMenuVentilation, 202, _(u"Uniquement les lignes cochÃ©es"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Magique.png"), wx.BITMAP_TYPE_PNG))
         sousMenuVentilation.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.VentilationAuto, id=202)
@@ -448,8 +448,8 @@ class ListView(FastObjectListView):
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheTout, id=70)
 
-        # Item Tout décocher
-        item = wx.MenuItem(menuPop, 80, _(u"Tout décocher"))
+        # Item Tout dÃ©cocher
+        item = wx.MenuItem(menuPop, 80, _(u"Tout dÃ©cocher"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Decocher.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -458,7 +458,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
@@ -499,7 +499,7 @@ class ListView(FastObjectListView):
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune fiche famille à ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune fiche famille Ã  ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -542,9 +542,9 @@ class ListView(FastObjectListView):
         else:
             ID = event.GetId()
         if ID == 201 :
-            # Uniquement la ligne sélectionnée
+            # Uniquement la ligne sÃ©lectionnÃ©e
             if len(self.Selection()) == 0 :
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune ligne !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune ligne !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -552,10 +552,10 @@ class ListView(FastObjectListView):
             VentilationAuto(IDcompte_payeur=track.IDcompte_payeur)
             self.MAJ(track.IDfamille)
         if ID == 202 :
-            # Uniquement les lignes cochées
+            # Uniquement les lignes cochÃ©es
             listeTracks = self.GetTracksCoches()
             if len(listeTracks) == 0 :
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez coché aucune ligne !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez cochÃ© aucune ligne !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return

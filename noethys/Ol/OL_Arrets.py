@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -32,11 +32,11 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.IDligne = kwds.pop("IDligne", 0) 
         self.categorie = kwds.pop("categorie", "") # bus, car, train, etc...
-        self.categorieSingulier = kwds.pop("categorieSingulier", u"") # "arrêt de bus"
-        self.categoriePluriel = kwds.pop("categoriePluriel", u"") # "arrêts de bus"
+        self.categorieSingulier = kwds.pop("categorieSingulier", u"") # "arrÃªt de bus"
+        self.categoriePluriel = kwds.pop("categoriePluriel", u"") # "arrÃªts de bus"
         self.mode = kwds.pop("mode", "gestion") # Selection ou gestion
         
         self.selectionID = None
@@ -62,7 +62,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT IDarret, ordre, nom
@@ -113,7 +113,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -131,7 +131,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDarret
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -162,15 +162,15 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
         
         # Item Deplacer vers le haut
-        item = wx.MenuItem(menuPop, 40, _(u"Déplacer vers le haut"))
+        item = wx.MenuItem(menuPop, 40, _(u"DÃ©placer vers le haut"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_haut.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Monter, id=40)
         if noSelection == True : item.Enable(False)
         
-        # Item Déplacer vers le bas
-        item = wx.MenuItem(menuPop, 50, _(u"Déplacer vers le bas"))
+        # Item DÃ©placer vers le bas
+        item = wx.MenuItem(menuPop, 50, _(u"DÃ©placer vers le bas"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_bas.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -180,7 +180,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 80, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 80, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -209,7 +209,7 @@ class ListView(FastObjectListView):
 
     def Ajouter(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_arrets", "creer") == False : return
-        # Recherche numéro d'ordre à appliquer
+        # Recherche numÃ©ro d'ordre Ã  appliquer
         listeTemp = []
         for track in self.donnees :
             listeTemp.append(track.ordre)
@@ -237,7 +237,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_arrets", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun %s à modifier !") % self.categorieSingulier, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun %s Ã  modifier !") % self.categorieSingulier, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -262,7 +262,7 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_arrets", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun %s à supprimer !") % self.categorieSingulier, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun %s Ã  supprimer !") % self.categorieSingulier, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -289,7 +289,7 @@ class ListView(FastObjectListView):
     def Monter(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_arrets", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun arrêt dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun arrÃªt dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -311,7 +311,7 @@ class ListView(FastObjectListView):
     def Descendre(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_arrets", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun arrêt dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun arrÃªt dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -339,7 +339,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(_(u"Rechercher un arrêt..."))
+        self.SetDescriptiveText(_(u"Rechercher un arrÃªt..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview
@@ -381,7 +381,7 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.myOlv = ListView(panel, id=-1, categorie="bus", IDligne=8, categorieSingulier=_(u"arrêt de bus"), categoriePluriel=_(u"arrêts de bus"), name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.myOlv = ListView(panel, id=-1, categorie="bus", IDligne=8, categorieSingulier=_(u"arrÃªt de bus"), categoriePluriel=_(u"arrÃªts de bus"), name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.myOlv.MAJ() 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)

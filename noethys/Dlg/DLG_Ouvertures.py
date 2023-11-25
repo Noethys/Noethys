@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -74,11 +74,11 @@ class Track():
         return [(variable, getattr(self, variable)) for variable in self.GetVariables()]
 
     def MAJ(self, donnees=None):
-        # Si on reÁoit un dict
+        # Si on re√ßoit un dict
         if type(donnees) == dict :
             for key, valeur in donnees.items() :
                 setattr(self, key, valeur)
-        # Si on reÁoit une liste
+        # Si on re√ßoit une liste
         if type(donnees) == list :
             for key, valeur in donnees :
                 setattr(self, key, valeur)
@@ -133,7 +133,7 @@ class Track_tarif(Track):
         self.champ_cle = "IDtarif"
         self.nom_table = "tarifs"
 
-        # Autres donnÈes
+        # Autres donn√©es
         self.filtres = []
         if "filtres" in dictDonnees:
             for dictFiltre in dictDonnees["filtres"] :
@@ -201,8 +201,8 @@ class Track_evenement(Track):
             self.tarifs.append(Track_tarif(dictTarif))
 
     def Reinit(self, date=None, IDunite=None, IDgroupe=None):
-        """ RÈinitialise l'ÈvËnement, les tarifs, lignes, filtres avec une nouvelle date (sert pour le copier/coller) """
-        # EvËnement
+        """ R√©initialise l'√©v√®nement, les tarifs, lignes, filtres avec une nouvelle date (sert pour le copier/coller) """
+        # Ev√©nement
         self.IDevenement = None
         self.date = date
         if IDunite != None :
@@ -238,9 +238,9 @@ COULEUR_FERIE = "#828282"
 
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complËte : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date compl√®te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"fÈvrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"ao˚t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÈcembre"))
+    listeMois = (_(u"janvier"), _(u"f√©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"ao√ªt"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"D√©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -253,7 +253,7 @@ def hex_to_rgb(value):
     return tuple(int(value[i:i+lv//3], 16) for i in range(0, lv, lv//3))
 
 def CreationImage(largeur, hauteur, couleur=None):
-    """ couleur peut Ítre RGB ou HEXA """
+    """ couleur peut √™tre RGB ou HEXA """
     if type(couleur) == str : r, v, b = hex_to_rgb(couleur)
     if type(couleur) == tuple : r, v, b = couleur
     if 'phoenix' in wx.PlatformInfo:
@@ -325,13 +325,13 @@ class CaseOuverture():
         etat = False
         survolEvenement = False
 
-        # VÈrifie si case survolÈe
+        # V√©rifie si case survol√©e
         if x != None and y != None :
             numLigne, numColonne = self.grid.YToRow(y), self.grid.XToCol(x)
             if numLigne == self.numLigne and numColonne == self.numColonne :
                 etat = True
 
-            # VÈrifie si bouton EvËnement survolÈ
+            # V√©rifie si bouton Ev√©nement survol√©
             rect = self.renderer.coordsBoutonEvenements
             if rect != None :
                 if 'phoenix' in wx.PlatformInfo:
@@ -350,28 +350,28 @@ class CaseOuverture():
 
     def GetTexteInfobulle(self):
         if self.ouvert == False :
-            pied = _(u"Cliquez pour ouvrir cette unitÈ")
-            texte = _(u"Cette unitÈ est fermÈe.\n")
+            pied = _(u"Cliquez pour ouvrir cette unit√©")
+            texte = _(u"Cette unit√© est ferm√©e.\n")
         else :
-            texte = _(u"Cette unitÈ est ouverte.\n")
-            pied = _(u"Cliquez pour fermer cette unitÈ")
+            texte = _(u"Cette unit√© est ouverte.\n")
+            pied = _(u"Cliquez pour fermer cette unit√©")
 
-            # Conso associÈes
+            # Conso associ√©es
             if self.nbre_conso > 0 :
-                texte += _(u"Vous ne pouvez pas la fermer car %d consommations y ont dÈj‡ ÈtÈ associÈes\n") % self.nbre_conso
+                texte += _(u"Vous ne pouvez pas la fermer car %d consommations y ont d√©j√† √©t√© associ√©es\n") % self.nbre_conso
 
-            # EvËnements
+            # Ev√©nements
             if self.typeUnite == "Evenement" :
                 if len(self.liste_evenements) > 0 :
-                    texte += _(u"\nEvËnements associÈs :\n")
+                    texte += _(u"\nEv√©nements associ√©s :\n")
                     for track in self.liste_evenements :
                         texte += u"  - %s\n" % track.nom
                 else :
-                    texte += _(u"\nAucun ÈvËnement associÈ.\n\nCliquez sur le + pour ajouter des ÈvËnements.")
+                    texte += _(u"\nAucun √©v√®nement associ√©.\n\nCliquez sur le + pour ajouter des √©v√®nements.")
 
         # Titre
         if self.date == datetime.date(2998, 12, 1) :
-            label_date = _(u"ModËle de schÈma")
+            label_date = _(u"mod√®le de sch√©ma")
         else :
             label_date = DateComplete(self.date)
 
@@ -428,7 +428,7 @@ class CaseOuvertureRenderer(GridCellRenderer):
             quantite = str(self.case.nbre_conso)
             dc.DrawText(quantite, rect[0] + 5, rect[1] + 2)
 
-        # Dessine les ÈvËnements
+        # Dessine les √©v√®nements
         if self.case.typeUnite == "Evenement" and self.case.ouvert == True :
             taille = (20, 16)
             x = rect.x + rect.width -2 - taille[0]
@@ -454,7 +454,7 @@ class CaseOuvertureRenderer(GridCellRenderer):
                     couleur_rond = wx.WHITE
 
             image = self.GetImageEvement(texte=texte, taille=taille, couleur_texte=couleur_texte, couleur_fond=couleur_fond, couleur_rond=couleur_rond)
-            dc.DrawBitmap(image, x, y)
+            dc.DrawBitmap(image, int(x), int(y))
 
             self.coordsBoutonEvenements = wx.Rect(x, y, taille[0], taille[1])
 
@@ -463,7 +463,7 @@ class CaseOuvertureRenderer(GridCellRenderer):
 
     def GetImageEvement(self, texte="", taille=(16, 16), couleur_texte=wx.BLACK, couleur_fond=wx.Colour(0, 0, 0), couleur_rond=wx.RED, alignement="droite-bas", padding=0, taille_police=9):
         """ Ajoute un texte sur une image bitmap """
-        # CrÈation du bitmap
+        # cr√©ation du bitmap
         if 'phoenix' in wx.PlatformInfo:
             bmp = wx.Bitmap(taille[0], taille[1])
         else :
@@ -473,7 +473,7 @@ class CaseOuvertureRenderer(GridCellRenderer):
         mdc.SetBackground(wx.Brush(couleur_fond))
         mdc.Clear()
 
-        # ParamËtres
+        # Param√™tres
         dc.SetBrush(wx.Brush(couleur_rond))
         dc.SetPen(wx.TRANSPARENT_PEN)
         dc.SetFont(wx.Font(taille_police, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))
@@ -582,14 +582,14 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.dictUnitesGroupes = self.GetDictUnitesGroupes(DB)
         DB.Close()
 
-        self.clipboard = None # Date ‡ copier pour  la fonction copier-coller
+        self.clipboard = None # Date √† copier pour  la fonction copier-coller
         self.annee = None
         self.mois = None
         self.afficherTousGroupes = None
 
         # Init Tooltip
         self.tip = STT.SuperToolTip(u"")
-        self.tip.SetEndDelay(10000) # Fermeture auto du tooltip aprËs 10 secs
+        self.tip.SetEndDelay(10000) # Fermeture auto du tooltip apr√®s 10 secs
 
         self.GetGridWindow().SetToolTip(wx.ToolTip(""))
         self.caseSurvolee = None
@@ -605,7 +605,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.Bind(gridlib.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
     
     def Sauvegarde(self):
-        # ---- Nouvelle version optimisÈe ----
+        # ---- Nouvelle version optimis√©e ----
 
         DB = GestionDB.DB()
         
@@ -624,7 +624,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
                     # Ouverture
                     if etat != initial :
-                        # Si la valeur a ÈtÈ modifiÈe :
+                        # Si la valeur a √©t√© modifi√©e :
                         if IDouverture == None and etat == True :
                             listeAjoutsOuvertures.append((self.IDactivite, IDunite, IDgroupe, str(dateDD)))
                         elif IDouverture != None and etat == False :
@@ -653,7 +653,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # Confirmation
         DB.Commit()
 
-        # RÈcupÈration des prochains ID
+        # R√©cup√©ration des prochains ID
         prochainIDevenement = DB.GetProchainID("evenements")
         prochainIDtarif = DB.GetProchainID("tarifs")
 
@@ -781,7 +781,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     listeDonnees.append(listeTemp)
                 DB.Executermany("UPDATE %s SET %s WHERE %s=?" % (track.nom_table, track.Get_interrogations_et_variables_pour_db(), track.champ_cle), listeDonnees, commit=False)
 
-        # Recherche les suppressions ‡ effectuer
+        # Recherche les suppressions √† effectuer
         for nom_table, dictTemp in dict_suppressions.items() :
             liste_suppressions = []
             for ID in self.dict_donnees_initiales[nom_table] :
@@ -809,7 +809,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     initial = dictValeurs["initial"]
                     IDremplissage = dictValeurs["IDremplissage"]
                     if places != initial :
-                        # Si la valeur a ÈtÈ modifiÈe :
+                        # Si la valeur a √©t√© modifi√©e :
                         if IDremplissage == None and places != 0 :
                             listeAjouts.append((self.IDactivite, IDunite_remplissage, IDgroupe, str(dateDD), places))
                         elif IDremplissage != None and places != 0 :
@@ -876,13 +876,13 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         
         dictCases = {}
         
-        # ----------------- CrÈation des colonnes -------------------------------------------------------
+        # ----------------- cr√©ation des colonnes -------------------------------------------------------
         largeurColonneOuverture = 50
         largeurColonneEvenement = 70
         largeurColonneRemplissage = 60
         numColonne = 0
         
-        # Colonnes UnitÈs
+        # Colonnes unit√©s
         for dictUnite in self.listeUnites :
             self.SetColLabelValue(numColonne, dictUnite["abrege"])
             largeur = largeurColonneOuverture
@@ -890,18 +890,18 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 largeur = largeurColonneEvenement
             self.SetColSize(numColonne, largeur)
             numColonne += 1
-        # Colonne de sÈparation
+        # Colonne de s√©paration
         self.SetColLabelValue(numColonne, "")
         self.SetColSize(numColonne, 15)
         numColonne += 1
-        # Colonnes UnitÈs de remplissage
+        # Colonnes unit√©s de remplissage
         for dictUniteRemplissage in self.listeUnitesRemplissage :
             self.SetColLabelValue(numColonne, dictUniteRemplissage["abrege"])
             self.SetColSize(numColonne, largeurColonneRemplissage)
             numColonne += 1
         
         
-        # ------------------ CrÈation des lignes -------------------------------------------------------
+        # ------------------ cr√©ation des lignes -------------------------------------------------------
         
         nbreLignes = (len(self.listeGroupes)+1) * len(listeDates)
         self.AppendRows(nbreLignes)
@@ -913,7 +913,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             # Ligne DATE
             hauteurLigne = 20
             if dateDD == datetime.date(2998, 12, 1) :
-                label = _(u"ModËle de schÈma")
+                label = _(u"mod√®le de sch√©ma")
             else :
                 label = DateComplete(dateDD)
             self.SetRowLabelValue(numLigne, label)
@@ -947,7 +947,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 # Si vacances : entete en jaune
                 if self.EstEnVacances(dateDD) == True :
                     self.SetRowLabelRenderer(numLigne, MyRowLabelRenderer(COULEUR_VACANCES))
-                # Si vacances : entete en gris foncÈ
+                # Si vacances : entete en gris fonc√©
                 if self.EstFerie(dateDD) == True :
                     self.SetRowLabelRenderer(numLigne, MyRowLabelRenderer(COULEUR_FERIE))
 
@@ -988,7 +988,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                             if IDunite in self.dictConso[dateDD][IDgroupe] :
                                 nbreConso = self.dictConso[dateDD][IDgroupe][IDunite]
 
-                    # CrÈation de la case
+                    # cr√©ation de la case
                     case = CaseOuverture(self, numLigne=numLigne, numColonne=numColonne, date=dateDD, typeUnite=typeUnite, actif=actif, IDgroupe=IDgroupe, nomGroupe=dictGroupe["nom"], IDunite=IDunite, nbre_conso=nbreConso, liste_evenements=liste_evenements)
                     case.ouvert = ouvert
                     case.Refresh()
@@ -1010,7 +1010,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     date_debut = dictUniteRemplissage["date_debut"]
                     date_fin = dictUniteRemplissage["date_fin"]
                     if str(dateDD) >= date_debut and str(dateDD) <= date_fin and (str(dateDD) >= self.datesValiditeActivite[0] and str(dateDD) <= self.datesValiditeActivite[1]) :
-                        # Si date valide pour cette unitÈ de remplissage
+                        # Si date valide pour cette unit√© de remplissage
                         nbrePlaces = self.RechercheRemplissage(dateDD, IDgroupe, IDunite_remplissage)
                         if nbrePlaces > 0 :
                             self.SetCellValue(numLigne, numColonne, str(nbrePlaces))
@@ -1018,7 +1018,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                             self.SetCellValue(numLigne, numColonne, "")
                         actif = True
                     else:
-                        # Hors pÈriode de validitÈ
+                        # Hors p√©riode de validit√©
                         self.SetReadOnly(numLigne, numColonne, True)
                         self.SetCellBackgroundColour(numLigne, numColonne, COULEUR_DATE)
                         actif = False
@@ -1061,7 +1061,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         if numLigne == -1 or (numLigne in self.listeLignesDates) == False : return
         dateDD = self.listeLignesDates[numLigne]
         
-        # CrÈation du menu contextuel
+        # cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
         
         item = wx.MenuItem(menuPop, 10, self.GetRowLabelValue(numLigne))
@@ -1089,7 +1089,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         menuPop.AppendSeparator()
 
         # Item Reinitialiser
-        item = wx.MenuItem(menuPop, 4000+numLigne, _(u"RÈinitialiser cette date"))
+        item = wx.MenuItem(menuPop, 4000+numLigne, _(u"r√©initialiser cette date"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -1113,7 +1113,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             IDgroupe = dictGroupe["IDgroupe"]
             numColonne = 0
             
-            # Parcours les unitÈs
+            # Parcours les unit√©s
             for dictUnite in self.listeUnites :
                 IDunite = dictUnite["IDunite"]
                 try :
@@ -1133,7 +1133,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 self.OnChangeOuverture(numLigne, numColonne, etat, liste_evenements)
                 numColonne += 1
             
-            # Parcours les unitÈs de remplissage
+            # Parcours les unit√©s de remplissage
             numColonne += 1
             for dictUniteRemplissage in self.listeUnitesRemplissage :
                 IDunite_remplissage = dictUniteRemplissage["IDunite_remplissage"]
@@ -1155,7 +1155,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         if dlg.ShowModal() == wx.ID_OK:
             dictDonnees = dlg.GetDonnees()
             try :
-                dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant l'opÈration..."), None)
+                dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant l'op√©ration..."), None)
                 if 'phoenix' not in wx.PlatformInfo:
                     wx.Yield()
                 self.TraitementLot(dictDonnees)
@@ -1163,7 +1163,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             except Exception as err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
-                dlg2 = wx.MessageDialog(self, _(u"DÈsolÈ, le problËme suivant a ÈtÈ rencontrÈ dans le traitement par lot : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+                dlg2 = wx.MessageDialog(self, _(u"D√©sol√©, le probl√®me suivant a √©t√© rencontr√© dans le traitement par lot : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg2.ShowModal()
                 dlg2.Destroy()
         dlg.Destroy()
@@ -1208,7 +1208,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         dateTemp = date
         for date in listeDates :
             
-            # VÈrifie pÈriode et jour
+            # V√©rifie p√©riode et jour
             valide = False
             if self.EstEnVacances(date) :
                 if date.weekday() in jours_vacances :
@@ -1217,12 +1217,12 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 if date.weekday() in jours_scolaires :
                     valide = True
 
-            # Calcul le numÈro de semaine
+            # Calcul le num√©ro de semaine
             if len(listeDates) > 0:
                 if date.weekday() < dateTemp.weekday():
                     numSemaine += 1
 
-            # FrÈquence semaines
+            # Fr√©quence semaines
             if semaines in (2, 3, 4):
                 if numSemaine % semaines != 0:
                     valide = False
@@ -1235,7 +1235,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 if numSemaineAnnee % 2 != 0 and semaines == 5:
                     valide = False
 
-            # VÈrifie si fÈriÈ
+            # V√©rifie si f√©ri√©
             if feries == False and self.EstFerie(date) == True :
                 valide = False
                 
@@ -1259,17 +1259,17 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                 except :
                                     etat = False
                             else :
-                                # Mode rÈinit
+                                # Mode r√©init
                                 etat = False
                             
-                            # VÈrifie si pas de conso
+                            # V√©rifie si pas de conso
                             try :
                                 nbreConso = self.dictConso[date][IDgroupe][IDunite]
                             except :
                                 nbreConso = 0
 
                             if nbreConso == 0 :
-                                # MÈmorise ouverture
+                                # m√©morise ouverture
                                 dictTemp = self.GetOuverture(date, IDgroupe, IDunite)
                                 if dictTemp == None :
                                     IDouverture = None
@@ -1279,7 +1279,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                     initial = dictTemp["initial"]
                                 self.MemoriseOuverture(date, IDouverture, IDunite, IDgroupe, etat, initial, forcer=True)
 
-                    # EvËnements
+                    # Ev√©nements
                     if action in ("date", "schema", "reinit", "ajouter", "supprimer") and (action != "date" or "evenements" in dictDonnees["elements"]):
 
                         for dictUnite in self.listeUnites:
@@ -1311,17 +1311,17 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                     liste_evenements = []
 
                             if action == "reinit" and nbreConso == 0 :
-                                # Mode rÈinit
+                                # Mode r√©init
                                 liste_evenements = []
 
-                            # MÈmorisation des ÈvËnements
+                            # m√©morisation des √©v√®nements
                             if liste_evenements != None:
                                 try:
                                     self.dictOuvertures[date][IDgroupe][IDunite]["liste_evenements"] = liste_evenements
                                 except:
                                     self.MemoriseOuverture(date, IDouverture=None, IDunite=IDunite, IDgroupe=IDgroupe, etat=True, initial=False, liste_evenements=liste_evenements, forcer=True)
 
-                            # Ajout des ÈvËnements
+                            # Ajout des √©v√®nements
                             if (action == "ajouter" and IDunite== dictDonnees["IDunite"] and IDgroupe == dictDonnees["IDgroupe"]) or action == "supprimer" :
                                 try:
                                     liste_evenements = self.dictOuvertures[date][IDgroupe][IDunite]["liste_evenements"]
@@ -1335,7 +1335,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                         track.Reinit(date=date, IDunite=dictDonnees["IDunite"], IDgroupe=dictDonnees["IDgroupe"])
                                         liste_evenements.append(track)
 
-                                        # MÈmorisation des ÈvËnements
+                                        # m√©morisation des √©v√®nements
                                         if liste_evenements != None:
                                             try:
                                                 self.dictOuvertures[date][IDgroupe][IDunite]["liste_evenements"] = liste_evenements
@@ -1368,10 +1368,10 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                 except : 
                                     nbrePlaces = 0
                             else :
-                                # Mode rÈinit
+                                # Mode r√©init
                                 nbrePlaces = 0
                             
-                            # MÈmorise remplissage
+                            # m√©morise remplissage
                             dictTemp = self.GetRemplissage(date, IDgroupe, IDunite_remplissage)
                             if dictTemp == None :
                                 IDremplissage = None
@@ -1390,7 +1390,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         numLigne = event.GetId() - 4000
         dateDD = self.listeLignesDates[numLigne]
         # Demande de confirmation
-        # dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment rÈinitialiser les paramËtres de la date du %s ?") % DateComplete(dateDD), _(u"RÈinitialisation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        # dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment r√©initialiser les param√™tres de la date du %s ?") % DateComplete(dateDD), _(u"R√©initialisation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
         # if dlg.ShowModal() != wx.ID_YES :
         #     dlg.Destroy()
         #     return
@@ -1403,14 +1403,14 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             IDgroupe = dictGroupe["IDgroupe"]
             numColonne = 0
             
-            # Parcours les unitÈs
+            # Parcours les unit√©s
             for dictUnite in self.listeUnites :
                 IDunite = dictUnite["IDunite"]
                 etat = False
                 self.OnChangeOuverture(numLigne, numColonne, etat)
                 numColonne += 1
             
-            # Parcours les unitÈs de remplissage
+            # Parcours les unit√©s de remplissage
             numColonne += 1
             for dictUniteRemplissage in self.listeUnitesRemplissage :
                 IDunite_remplissage = dictUniteRemplissage["IDunite_remplissage"]
@@ -1437,7 +1437,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     self.SetCellValue(numLigne, numColonne, "")
 
     def ModifieRemplissage(self, numLigne, numColonne, dateDD, IDgroupe, IDunite_remplissage, nbrePlaces):        
-        # Modifie le dictionnaire de donnÈes
+        # Modifie le dictionnaire de donn√©es
         if (dateDD in self.dictRemplissage) == False :
             self.dictRemplissage[dateDD] = {}
         if (IDgroupe in self.dictRemplissage[dateDD]) == False :
@@ -1498,7 +1498,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         if dlg.ShowModal() == wx.ID_OK:
             liste_evenements = dlg.GetListeEvenements()
             # self.liste_evenements_supprimes.extend(dlg.GetListeEvenementsSupprimes())
-            # MÈmorisation
+            # m√©morisation
             self.dictOuvertures[case.date][case.IDgroupe][case.IDunite]["liste_evenements"] = liste_evenements
             case.liste_evenements = liste_evenements
             case.Refresh()
@@ -1529,22 +1529,22 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 if case.nbre_conso > 0 :
                     # Interdit la modification si des conso existent
                     if silencieux == False :
-                        dlg = wx.MessageDialog(self, _(u"Impossible de supprimer cette ouverture !\n\n%s consommation(s) existent dÈj‡...") % case.nbre_conso, "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                        dlg = wx.MessageDialog(self, _(u"Impossible de supprimer cette ouverture !\n\n%s consommation(s) existent d√©j√†...") % case.nbre_conso, "Erreur", wx.OK | wx.ICON_EXCLAMATION)
                         dlg.ShowModal()
                         dlg.Destroy()
                     return False
 
                 if len(case.liste_evenements) > 0 :
                     if silencieux == False :
-                        dlg = wx.MessageDialog(None, _(u"%s ÈvËnement(s) sont dÈj‡ associÈ(s) ‡ cette unitÈ de consommation.\n\nConfirmez-vous leur suppression ?") % len(case.liste_evenements), _(u"Avertissement"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_QUESTION)
+                        dlg = wx.MessageDialog(None, _(u"%s √©v√®nement(s) sont d√©j√† associ√©(s) √† cette unit√© de consommation.\n\nConfirmez-vous leur suppression ?") % len(case.liste_evenements), _(u"Avertissement"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_QUESTION)
                         reponse = dlg.ShowModal()
                         dlg.Destroy()
                         if reponse != wx.ID_YES:
                             return False
 
 
-                    # # Interdit la modification si des ÈvËnements existent
-                    # dlg = wx.MessageDialog(self, _(u"Impossible de supprimer cette ouverture !\n\n%s ÈvËnements(s) y sont dÈj‡ associÈs...") % len(case.liste_evenements), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                    # # Interdit la modification si des √©v√®nements existent
+                    # dlg = wx.MessageDialog(self, _(u"Impossible de supprimer cette ouverture !\n\n%s √©v√®nements(s) y sont d√©j√† associ√©s...") % len(case.liste_evenements), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
                     # dlg.ShowModal()
                     # dlg.Destroy()
                     # return False
@@ -1556,7 +1556,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 return False
     
     def ModifieOuverture(self, case=None, ouvert=False, liste_evenements=[]):
-        # Modifie le dictionnaire de donnÈes
+        # Modifie le dictionnaire de donn√©es
         if (case.date in self.dictOuvertures) == False :
             self.dictOuvertures[case.date] = {}
         if (case.IDgroupe in self.dictOuvertures[case.date]) == False :
@@ -1693,7 +1693,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         DB.ExecuterReq(req)
         listeOuvertures = DB.ResultatReq()
 
-        # Importation des ÈvËnements
+        # Importation des √©v√®nements
         req = """SELECT IDevenement, IDactivite, IDunite, IDgroupe, date, nom, description, capacite_max, heure_debut, heure_fin, montant
         FROM evenements 
         WHERE IDactivite=%d AND date>='%s' AND date<='%s'
@@ -1711,7 +1711,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             listeIDevenements.append(IDevenement)
             self.dict_donnees_initiales["evenements"].append(IDevenement)
 
-        # Importation des tarifs des ÈvËnements
+        # Importation des tarifs des √©v√®nements
         dict_tarifs = {}
         if len(listeIDevenements) > 0 :
 
@@ -1763,16 +1763,16 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 dictLignes[dictLigne["IDtarif"]].append(dictLigne)
                 self.dict_donnees_initiales["tarifs_lignes"].append(dictLigne["IDligne"])
 
-            # MÈmorisation des tarifs
+            # m√©morisation des tarifs
             for IDtarif, IDactivite, date_debut, date_fin, methode, type, categories_tarifs, groupes, etiquettes, cotisations, caisses, description, jours_scolaires, jours_vacances, observations, tva, code_compta, code_produit_local, IDtype_quotient, label_prestation, IDevenement in listeDonneesTarifs :
 
-                # RÈcupÈration des filtres du tarif
+                # R√©cup√©ration des filtres du tarif
                 if IDtarif in dictFiltres:
                     liste_filtres = dictFiltres[IDtarif]
                 else :
                     liste_filtres = []
 
-                # RÈcupÈration des lignes du tarif
+                # R√©cup√©ration des lignes du tarif
                 if IDtarif in dictLignes:
                     liste_lignes = dictLignes[IDtarif]
                 else :
@@ -1790,26 +1790,26 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     dict_tarifs[IDevenement] = []
                 dict_tarifs[IDevenement].append(dictTemp)
 
-        # MÈmorise les ÈvËnements sous forme de tracks
+        # m√©morise les √©v√®nements sous forme de tracks
         dictEvenements = {}
         for dictEvenement in liste_evenements :
 
-            # RÈcupÈration des tarifs associÈ ‡ l'ÈvËnement
+            # R√©cup√©ration des tarifs associ√© √† l'√©v√®nement
             if dictEvenement["IDevenement"] in dict_tarifs :
                 dictEvenement["tarifs"] = dict_tarifs[dictEvenement["IDevenement"]]
 
-            # Stockage des l'ÈvËnement
+            # Stockage des l'√©v√®nement
             track_evenement = Track_evenement(dictEvenement)
             key = (dictEvenement["IDunite"], dictEvenement["IDgroupe"], dictEvenement["date"])
             if (key in dictEvenements) == False :
                 dictEvenements[key] = []
             dictEvenements[key].append(track_evenement)
 
-        # MÈmorisation des donnÈes
+        # m√©morisation des donn√©es
         for IDouverture, IDunite, IDgroupe, date in listeOuvertures :
             date = DateEngEnDateDD(date)
 
-            # Recherche des ÈvËnements associÈs
+            # Recherche des √©v√®nements associ√©s
             key = (IDunite, IDgroupe, date)
 
             if key in dictEvenements:
@@ -1883,16 +1883,16 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         return (listeDonnees[0][0], listeDonnees[0][1])
 
     def AfficheTooltip(self):
-        """ CrÈation du supertooltip """
+        """ cr√©ation du supertooltip """
         case = self.tip.case
 
-        # RÈcupÈration des donnÈes du tooltip
+        # R√©cup√©ration des donn√©es du tooltip
         dictDonnees = case.GetTexteInfobulle()
         if dictDonnees == None or type(dictDonnees) != dict:
             self.ActiveTooltip(actif=False)
             return
 
-        # ParamÈtrage du tooltip
+        # Param√©trage du tooltip
         font = self.GetFont()
         self.tip.SetHyperlinkFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
 
@@ -1939,9 +1939,9 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.tipFrame.SetPosition((x + 15, y + 17))
         self.tipFrame.DropShadow(True)
         self.tipFrame.Show()
-        # self.tipFrame.StartAlpha(True)  # ou .Show() pour un affichage immÈdiat
+        # self.tipFrame.StartAlpha(True)  # ou .Show() pour un affichage imm√©diat
 
-        # ArrÍt du timer
+        # Arr√™t du timer
         self.timerTip.Stop()
         del self.timerTip
 
@@ -1962,7 +1962,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 self.timerTip.Start(1500)
                 self.tip.case = case
         else:
-            # DÈsactive le tooltip
+            # D√©sactive le tooltip
             if hasattr(self, "timerTip"):
                 if self.timerTip.IsRunning():
                     self.timerTip.Stop()
@@ -1978,29 +1978,29 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.IDactivite = IDactivite
         
-        intro = _(u"Ce calendrier vous permet de dÈfinir les jours d'ouverture de l'activitÈ et le nombre maximal de places. Cliquez sur les cases pour indiquer que l'unitÈ est fonctionnelle et saisissez directement les effectifs maximals en double-cliquant sur les cases blanches. <U>Important :</U> Cliquez avec le bouton droit de la souris sur les cases Dates pour utiliser le Copier-Coller.")
-        titre = _(u"Calendrier des ouvertures et des ÈvËnements")
+        intro = _(u"Ce calendrier vous permet de d√©finir les jours d'ouverture de l'activit√© et le nombre maximal de places. Cliquez sur les cases pour indiquer que l'unit√© est fonctionnelle et saisissez directement les effectifs maximals en double-cliquant sur les cases blanches. <U>Important :</U> Cliquez avec le bouton droit de la souris sur les cases Dates pour utiliser le Copier-Coller.")
+        titre = _(u"Calendrier des ouvertures et des √©v√®nements")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Calendrier.png")
         
         # Selection Mois
-        self.staticbox_mois_staticbox = wx.StaticBox(self, -1, _(u"SÈlection du mois"))
+        self.staticbox_mois_staticbox = wx.StaticBox(self, -1, _(u"s√©lection du mois"))
         self.label_mois = wx.StaticText(self, -1, _(u"Mois :"))
-        self.ctrl_mois = wx.Choice(self, -1, choices=[_(u"Janvier"), _(u"FÈvrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Ao˚t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"DÈcembre")])
+        self.ctrl_mois = wx.Choice(self, -1, choices=[_(u"Janvier"), _(u"f√©vrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"ao√ªt"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"D√©cembre")])
         self.spin_mois = wx.SpinButton(self, -1, size=(18, 20),  style=wx.SP_VERTICAL)
         self.spin_mois.SetRange(-1, 1)
-        self.label_annee = wx.StaticText(self, -1, _(u"AnnÈe :"))
+        self.label_annee = wx.StaticText(self, -1, _(u"ann√©e :"))
         self.ctrl_annee = wx.SpinCtrl(self, -1, "", min=1977, max=2999)
         dateDuJour = datetime.date.today()
         self.ctrl_annee.SetValue(dateDuJour.year)
         self.ctrl_mois.SetSelection(dateDuJour.month-1)
         
-        # LÈgende
-        self.staticbox_legende_staticbox = wx.StaticBox(self, -1, _(u"LÈgende"))
+        # L√©gende
+        self.staticbox_legende_staticbox = wx.StaticBox(self, -1, _(u"L√©gende"))
         self.listeLegende = [
             { "label" : _(u"Ouvert"), "couleur" : COULEUR_OUVERTURE, "ctrl_label" : None, "ctrl_img" : None },
-            { "label" : _(u"FermÈ"), "couleur" : COULEUR_FERMETURE, "ctrl_label" : None, "ctrl_img" : None },
+            { "label" : _(u"Ferm√©"), "couleur" : COULEUR_FERMETURE, "ctrl_label" : None, "ctrl_img" : None },
             { "label" : _(u"Vacances"), "couleur" : COULEUR_VACANCES, "ctrl_label" : None, "ctrl_img" : None },
-            { "label" : _(u"FÈriÈ"), "couleur" : COULEUR_FERIE, "ctrl_label" : None, "ctrl_img" : None },
+            { "label" : _(u"f√©ri√©"), "couleur" : COULEUR_FERIE, "ctrl_label" : None, "ctrl_img" : None },
             { "label" : _(u"Effectifs max."), "couleur" : (255, 255, 255), "ctrl_label" : None, "ctrl_img" : None },
             ]
         index = 0
@@ -2044,9 +2044,9 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Calendrier des ouvertures"))
-        self.ctrl_mois.SetToolTip(wx.ToolTip(_(u"SÈlectionnez un mois")))
+        self.ctrl_mois.SetToolTip(wx.ToolTip(_(u"s√©lectionnez un mois")))
         self.ctrl_annee.SetMinSize((70, -1))
-        self.ctrl_annee.SetToolTip(wx.ToolTip(_(u"SÈlectionnez une annÈe")))
+        self.ctrl_annee.SetToolTip(wx.ToolTip(_(u"s√©lectionnez une ann√©e")))
         self.check_tous_groupes.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les lignes 'Total max.' afin de saisir des limitations d'effectifs globales")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_saisie_lot.SetToolTip(wx.ToolTip(_(u"Cliquez ici saisir ou supprimer un lot d'ouvertures")))
@@ -2074,7 +2074,7 @@ class Dialog(wx.Dialog):
         staticbox_mois.Add(grid_sizer_mois, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_haut.Add(staticbox_mois, 1, wx.EXPAND, 0)
         
-        # LÈgende
+        # L√©gende
         staticbox_legende = wx.StaticBoxSizer(self.staticbox_legende_staticbox, wx.VERTICAL)
         grid_sizer_legende = wx.FlexGridSizer(rows=1, cols=len(self.listeLegende)*3, vgap=4, hgap=4)
         for dictTemp in self.listeLegende :
@@ -2144,7 +2144,7 @@ class Dialog(wx.Dialog):
         self.ctrl_calendrier.afficherTousGroupes = etat
 
     def OnBoutonCancel(self, event):
-        # Suppression des ÈvËnements crÈÈs
+        # Suppression des √©v√®nements cr√©√©s
         # listeSuppressions = []
         # for track in self.ctrl_calendrier.liste_evenements_crees :
         #     if track.IDevenement != None :
@@ -2163,12 +2163,12 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
 
     def OnBoutonOk(self, event):
-        # MÈmoriser paramËtres
+        # m√©moriser param√™tres
         UTILS_Parametres.Parametres(mode="set", categorie="dlg_ouvertures", nom="afficher_tous_groupes", valeur=self.check_tous_groupes.GetValue())
 
-        # MÈmoriser calendrier
+        # m√©moriser calendrier
         try :
-            dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant la sauvegarde des donnÈes..."), None) # .PyBusyInfo(_(u"Veuillez patienter durant la sauvegarde des donnÈes..."), parent=None, title=_(u"Enregistrement"), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+            dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant la sauvegarde des donn√©es..."), None) # .PyBusyInfo(_(u"Veuillez patienter durant la sauvegarde des donn√©es..."), parent=None, title=_(u"Enregistrement"), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
             if 'phoenix' not in wx.PlatformInfo:
                 wx.Yield()
             self.ctrl_calendrier.Sauvegarde()
@@ -2176,11 +2176,11 @@ class Dialog(wx.Dialog):
         except Exception as err:
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
-            dlg = wx.MessageDialog(self, _(u"DÈsolÈ, le problËme suivant a ÈtÈ rencontrÈ dans la sauvegarde des ouvertures : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"D√©sol√©, le probl√®me suivant a √©t√© rencontr√© dans la sauvegarde des ouvertures : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
 
-        # Fermeture de la fenÍtre
+        # Fermeture de la fen√™tre
         self.EndModal(wx.ID_OK)
 
     def OnBoutonAide(self, event): 

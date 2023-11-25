@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -22,7 +22,7 @@ from lxml import etree
 
 
 def GetLigneEmetteur(dictDonnees={}) :
-    """ Création de la première ligne avec les infos sur l'émetteur """
+    """ CrÃ©ation de la premiÃ¨re ligne avec les infos sur l'Ã©metteur """
     """
     dictDonnees = {
         "type_prelevement" : u"0308",
@@ -58,14 +58,14 @@ def GetLigneEmetteur(dictDonnees={}) :
 
 
 def GetLigneDestinataire(dictDonnees={}) :
-    """ Création de la ligne destinataire """
+    """ CrÃ©ation de la ligne destinataire """
     """
     dictDonnees = {
         "type_prelevement" : u"0608",
         "numero_emetteur" : u"222222",
         "reference_ligne" : u"1",
-        "nom_destinataire" : _(u"S.A Matériaux plus"),
-        "nom_banque" : _(u"Crédit agricole"),
+        "nom_destinataire" : _(u"S.A MatÃ©riaux plus"),
+        "nom_banque" : _(u"CrÃ©dit agricole"),
         "numero_guichet" : u"02902",
         "numero_compte" : u"01234567895",
         "montant" : u"1201",
@@ -93,7 +93,7 @@ def GetLigneDestinataire(dictDonnees={}) :
 
 
 def GetLigneTotal(dictDonnees={}) :
-    """ Création de la dernière ligne avec les totaux """
+    """ CrÃ©ation de la derniÃ¨re ligne avec les totaux """
     """
     dictDonnees = {
         "type_prelevement" : u"0808",
@@ -201,7 +201,7 @@ def ControleBIC(bic):
 
 
 def GetXMLSepa(dictDonnees):
-    """ Génération du fichier XML SEPA """
+    """ GÃ©nÃ©ration du fichier XML SEPA """
     doc = Document()
     
     # Variables principales
@@ -221,7 +221,7 @@ def GetXMLSepa(dictDonnees):
     
     listeLots = dictDonnees["lots"]
 
-    # Génération du document XML
+    # GÃ©nÃ©ration du document XML
     racine = doc.createElement("Document")
     racine.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
     racine.setAttribute("xmlns", "urn:iso:std:iso:20022:tech:xsd:pain.008.001.02")
@@ -233,7 +233,7 @@ def GetXMLSepa(dictDonnees):
     
     # ----------------------------------------------------------- NIVEAU MESSAGE ------------------------------------------------------------------------------
     
-    # ------------- Caractéristiques générales du prélèvement -------------------
+    # ------------- CaractÃ©ristiques gÃ©nÃ©rales du prÃ©lÃ¨vement -------------------
     
     # GrpHdr
     GrpHdr = doc.createElement("GrpHdr")
@@ -262,7 +262,7 @@ def GetXMLSepa(dictDonnees):
     GrpHdr.appendChild(CtrlSum)
     CtrlSum.appendChild(doc.createTextNode(remise_montant))
 
-    # ------------- Créantier (organisateur) -------------------
+    # ------------- CrÃ©antier (organisateur) -------------------
 
     # InitgPty
     InitgPty = doc.createElement("InitgPty")
@@ -618,12 +618,12 @@ def EnregistrerXML(doc=None, nomFichier=""):
 def ValidationXSD(xml=""):
     try :
 
-        # Téléchargement du fichier XSD
+        # TÃ©lÃ©chargement du fichier XSD
         url = "http://www.noethys.com/fichiers/sepa/schema_sepa.zip"
         fichier_dest = UTILS_Fichiers.GetRepTemp(fichier="schema_sepa.zip")
         urlretrieve(url, fichier_dest)
 
-        # Décompression du zip XSD
+        # DÃ©compression du zip XSD
         z = zipfile.ZipFile(fichier_dest, 'r')
         rep_dest = UTILS_Fichiers.GetRepTemp() + "/schema_sepa"
         z.extractall(rep_dest)

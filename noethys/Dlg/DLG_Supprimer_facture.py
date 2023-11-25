@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -29,12 +29,12 @@ class Dialog(wx.Dialog):
             
         # Bandeau
         titre = _(u"Supprimer ou annuler des factures")
-        intro = _(u"Sélectionnez l'action à effectuer. Attention, ces deux types d'actions sont irréversibles !")
+        intro = _(u"SÃ©lectionnez l'action Ã  effectuer. Attention, ces deux types d'actions sont irrÃ©versibles !")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Fermer.png")
 
-        self.bouton_annulation = CommandLinkButton(self, -1, _(u"Annulation"), _(u"Cette action conservera les traces de la facture annulée dans la base de données. Les principales\ncaractéristiques de la facture seront mémorisées mais il sera impossible par exemple de l'imprimer\nou d'en consulter le détail. Cette action permet notamment de faire apparaître les prestations\nassociées sur une nouvelle facture."))
-        self.bouton_suppression = CommandLinkButton(self, -1, _(u"Suppression"), _(u"Cette action supprimera totalement la facture. Seule une trace sera conservée dans l'historique.\nLe numéro est susceptible d'être réutilisé s'il s'agit de la dernière facture générée. Cette action peut\nêtre utilisée par exemple pour supprimer une ou plusieurs factures qui viennent d'être générées par\nerreur."))
+        self.bouton_annulation = CommandLinkButton(self, -1, _(u"Annulation"), _(u"Cette action conservera les traces de la facture annulÃ©e dans la base de donnÃ©es. Les principales\ncaractÃ©ristiques de la facture seront mÃ©morisÃ©es mais il sera impossible par exemple de l'imprimer\nou d'en consulter le dÃ©tail. Cette action permet notamment de faire apparaÃ®tre les prestations\nassociÃ©es sur une nouvelle facture."))
+        self.bouton_suppression = CommandLinkButton(self, -1, _(u"Suppression"), _(u"Cette action supprimera totalement la facture. Seule une trace sera conservÃ©e dans l'historique.\nLe numÃ©ro est susceptible d'Ãªtre rÃ©utilisÃ© s'il s'agit de la derniÃ¨re facture gÃ©nÃ©rÃ©e. Cette action peut\nÃªtre utilisÃ©e par exemple pour supprimer une ou plusieurs factures qui viennent d'Ãªtre gÃ©nÃ©rÃ©es par\nerreur."))
         
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
@@ -47,8 +47,8 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.bouton_annulation.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler la ou les factures sélectionnées")))
-        self.bouton_suppression.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer totalement la ou les factures sélectionnées")))
+        self.bouton_annulation.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler la ou les factures sÃ©lectionnÃ©es")))
+        self.bouton_suppression.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer totalement la ou les factures sÃ©lectionnÃ©es")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Obtenir de l'aide")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Annuler")))
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -42,11 +42,11 @@ def CalcValidite(date_vaccin, duree_validite):
     jours, mois, annees = FormatDuree(duree_validite)
     
     if jours==0 and mois==0 and annees==0:
-        # Si illimité
+        # Si illimitÃ©
         dateFin = datetime.date(2999, 1, 1)
         return str(dateFin), None
     else:
-        # Calcul de la date de fin de validité
+        # Calcul de la date de fin de validitÃ©
         dateFin = date_vaccin
         if jours != 0 : dateFin = dateFin + relativedelta.relativedelta(days=+jours)
         if mois != 0 : dateFin = dateFin + relativedelta.relativedelta(months=+mois)
@@ -59,7 +59,7 @@ def CalcValidite(date_vaccin, duree_validite):
 
 
 def GetListeEtatsMaladies(IDindividu):
-    # Récupère la liste des maladies dont le vaccin est obligatoire
+    # RÃ©cupÃ¨re la liste des maladies dont le vaccin est obligatoire
     db = GestionDB.DB()
     req = """
     SELECT nom, IDtype_maladie
@@ -70,7 +70,7 @@ def GetListeEtatsMaladies(IDindividu):
     db.ExecuterReq(req)
     listeMaladies = db.ResultatReq()
     
-    # Récupère la liste des vaccins de l'individu
+    # RÃ©cupÃ¨re la liste des vaccins de l'individu
     req = """
     SELECT 
     vaccins.IDvaccin, vaccins.IDtype_vaccin, vaccins.date, vaccins_maladies.IDtype_maladie, 
@@ -107,7 +107,7 @@ def GetListeEtatsMaladies(IDindividu):
                 etat = "ok"
         else:
             etat = "pasok"
-        # Ajout à la liste finale
+        # Ajout Ã  la liste finale
         listeMaladiesFinal.append((nom, IDtype_maladie, etat))
     
     return listeMaladiesFinal
@@ -123,7 +123,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.IDindividu = kwds.pop("IDindividu", None)
         self.selectionID = None
         self.selectionTrack = None
@@ -139,7 +139,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeID = None
         
         listeDonnees = GetListeEtatsMaladies(self.IDindividu)
@@ -192,7 +192,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None

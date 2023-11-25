@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -34,13 +34,13 @@ class Dialog(wx.Dialog):
         self.listeFichiers = listeFichiers
 
         # Bandeau
-        intro = _(u"Cliquez simplement sur le bouton Importer pour importer dans Noethys les données cochées.")
-        titre = _(u"Importation des données")
+        intro = _(u"Cliquez simplement sur le bouton Importer pour importer dans Noethys les donnÃ©es cochÃ©es.")
+        titre = _(u"Importation des donnÃ©es")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Nomadhys.png")
 
-        # Données
-        self.box_donnees_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Données à importer"))
+        # DonnÃ©es
+        self.box_donnees_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"DonnÃ©es Ã  importer"))
         self.ctrl_donnees = OL_Synchronisation_donnees.ListView(self, id=-1, listeFichiers=self.listeFichiers, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_donnees.SetMinSize((100, 100))
         self.bouton_apercu = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Apercu.png"), wx.BITMAP_TYPE_ANY))
@@ -51,11 +51,11 @@ class Dialog(wx.Dialog):
         self.check_cacher_doublons = wx.CheckBox(self, -1, _(u"Cacher les doublons"))
         self.check_cacher_doublons.SetValue(True)
         self.label_regroupement = wx.StaticText(self, -1, _(u"Regrouper par"))
-        self.ctrl_regroupement = wx.Choice(self, -1, choices=[_(u"Catégorie"), _(u"Action"), _(u"Individu")])
+        self.ctrl_regroupement = wx.Choice(self, -1, choices=[_(u"CatÃ©gorie"), _(u"Action"), _(u"Individu")])
         self.ctrl_regroupement.Select(0) 
         
         # Journal
-        self.box_journal_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Journal d'évènements"))
+        self.box_journal_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Journal d'Ã©vÃ¨nements"))
         self.ctrl_journal = wx.TextCtrl(self, wx.ID_ANY, u"", style=wx.TE_MULTILINE | wx.TE_READONLY)
         self.bouton_enregistrer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Sauvegarder.png"), wx.BITMAP_TYPE_ANY))
         
@@ -84,21 +84,21 @@ class Dialog(wx.Dialog):
         
     def __set_properties(self):
         self.check_cacher_doublons.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour cacher les doublons")))
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperÃ§u avant impression de la liste")))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
         self.bouton_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Texte")))
         self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
         self.bouton_enregistrer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour enregistrer le contenu du journal dans un fichier")))
-        self.ctrl_regroupement.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner une colonne de regroupement")))
+        self.ctrl_regroupement.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner une colonne de regroupement")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lancer l'importation des données")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lancer l'importation des donnÃ©es")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((900, 700))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(4, 1, 10, 10)
         
-        # Données
+        # DonnÃ©es
         box_donnees = wx.StaticBoxSizer(self.box_donnees_staticbox, wx.VERTICAL)
         grid_sizer_donnees = wx.FlexGridSizer(2, 2, 5, 5)
         
@@ -211,7 +211,7 @@ class Dialog(wx.Dialog):
     def OnBoutonEnregistrer(self, event):
         standardPath = wx.StandardPaths.Get()
         wildcard = _(u"Tous les fichiers (*.*)|*.*")
-        dlg = wx.FileDialog(None, message=_(u"Sélectionnez un répertoire et un nom de fichier"), defaultDir=standardPath.GetDocumentsDir(),  defaultFile="journal.txt", wildcard=wildcard, style=wx.FD_SAVE)
+        dlg = wx.FileDialog(None, message=_(u"SÃ©lectionnez un rÃ©pertoire et un nom de fichier"), defaultDir=standardPath.GetDocumentsDir(),  defaultFile="journal.txt", wildcard=wildcard, style=wx.FD_SAVE)
         nomFichier = None
         if dlg.ShowModal() == wx.ID_OK:
             nomFichier = dlg.GetPath()
@@ -225,7 +225,7 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event):  
         listeTracks = self.ctrl_donnees.GetTracksCoches() 
         if len(listeTracks) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez coché aucune action à importer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez cochÃ© aucune action Ã  importer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return 
@@ -235,10 +235,10 @@ class Dialog(wx.Dialog):
         dlg.Destroy()
     
     def ArchiverFichiers(self):
-        """ Archivage des fichiers traités """
+        """ Archivage des fichiers traitÃ©s """
         archiver = False
         
-        # Récupère stats
+        # RÃ©cupÃ¨re stats
         nbreTotal = 0
         nbreTraites = 0
         nbreNonTraites = 0
@@ -253,16 +253,16 @@ class Dialog(wx.Dialog):
         
         #print nbreTotal, nbreTraites, nbreNonTraites, nbreOk, nbreErreurs
         
-        # Si aucun traités
+        # Si aucun traitÃ©s
         if nbreTraites == 0 :
             return True
         
-        # Si des erreurs ont été trouvées
+        # Si des erreurs ont Ã©tÃ© trouvÃ©es
         if nbreErreurs > 0 or nbreNonTraites > 0 :
-            if nbreErreurs > 0 and nbreNonTraites == 0 : intro = _(u"%d erreurs ont été trouvées lors de l'importation. ") % nbreErreurs
-            if nbreErreurs == 0 and nbreNonTraites > 0 : intro = _(u"%d actions n'ont pas été traitées. ") % nbreNonTraites
-            if nbreErreurs > 0 and nbreNonTraites > 0 : intro = _(u"%d actions n'ont pas été traitées et %d erreurs ont été trouvées. ") % (nbreErreurs, nbreNonTraites)
-            dlg = wx.MessageDialog(self, _(u"%s\n\nConfirmez-vous tout de même l'archivage des fichiers de synchronisation traités ?\n(Si vous choisissez Non, les fichiers seront conservés)") % intro, _(u"Archivage"), wx.YES_NO|wx.CANCEL|wx.YES_DEFAULT|wx.ICON_QUESTION)
+            if nbreErreurs > 0 and nbreNonTraites == 0 : intro = _(u"%d erreurs ont Ã©tÃ© trouvÃ©es lors de l'importation. ") % nbreErreurs
+            if nbreErreurs == 0 and nbreNonTraites > 0 : intro = _(u"%d actions n'ont pas Ã©tÃ© traitÃ©es. ") % nbreNonTraites
+            if nbreErreurs > 0 and nbreNonTraites > 0 : intro = _(u"%d actions n'ont pas Ã©tÃ© traitÃ©es et %d erreurs ont Ã©tÃ© trouvÃ©es. ") % (nbreErreurs, nbreNonTraites)
+            dlg = wx.MessageDialog(self, _(u"%s\n\nConfirmez-vous tout de mÃªme l'archivage des fichiers de synchronisation traitÃ©s ?\n(Si vous choisissez Non, les fichiers seront conservÃ©s)") % intro, _(u"Archivage"), wx.YES_NO|wx.CANCEL|wx.YES_DEFAULT|wx.ICON_QUESTION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse == wx.ID_CANCEL :
@@ -270,14 +270,14 @@ class Dialog(wx.Dialog):
             if reponse == wx.ID_YES :
                 archiver = True
                 
-        # Si tous ont été traités avec succès
+        # Si tous ont Ã©tÃ© traitÃ©s avec succÃ¨s
         if nbreOk == nbreTotal :
             archiver = True
         
         # Archivage
         if archiver == True :
             
-            # Récupération de la liste des fichiers
+            # RÃ©cupÃ©ration de la liste des fichiers
             if self.listeFichiers == None :
                 listeFichiers = self.ctrl_donnees.listeFichiersTrouves
             else :
@@ -292,7 +292,7 @@ class Dialog(wx.Dialog):
                     if os.path.isfile(nomTemp) == True :
                         os.remove(nomTemp)
                     os.rename(UTILS_Fichiers.GetRepSync(nomFichier), nomTemp)
-                    # Mémorisation de l'archivage dans la base
+                    # MÃ©morisation de l'archivage dans la base
                     nomFichierTemp = nomFichier.replace(".dat", "").replace(".archive", "")
                     ID_appareil = self.ctrl_donnees.dictIDappareil[nomFichierTemp]
                     IDarchive = DB.ReqInsert("nomade_archivage", [("nom_fichier", nomFichierTemp), ("ID_appareil", ID_appareil), ("date", datetime.date.today())])
@@ -390,7 +390,7 @@ class Traitement(Thread):
                             listeAnomalies.append(texte)
 
 
-                    # ------------------- Traitement d'un mémo journalier -------------------
+                    # ------------------- Traitement d'un mÃ©mo journalier -------------------
                     if track.categorie == "memo_journee" :
 
                         DB = GestionDB.DB()
@@ -417,7 +417,7 @@ class Traitement(Thread):
                         self.parent.parent.EcritLog(track.detail + u" -> ok")
                         self.parent.parent.SetStatut(track, "ok")
                         
-                # Arrête le traitement si bouton arrêter enfoncé
+                # ArrÃªte le traitement si bouton arrÃªter enfoncÃ©
                 if self.stop:
                     time.sleep(2)
                     raise Abort
@@ -431,8 +431,8 @@ class Traitement(Thread):
 
         except Abort as KeyBoardInterrupt:
             if self.succes == True :
-                self.parent.label_intro.SetLabel(_(u"Traitement terminé")) 
-                self.parent.parent.EcritLog(_(u"Traitement terminé")) 
+                self.parent.label_intro.SetLabel(_(u"Traitement terminÃ©")) 
+                self.parent.parent.EcritLog(_(u"Traitement terminÃ©")) 
                 self.parent.Fermer(forcer=True) 
             else:
                 self.parent.label_intro.SetLabel(_(u"Traitement interrompu par l'utilisateur"))
@@ -445,13 +445,13 @@ class Traitement(Thread):
         
         # Message de confirmation de fin de traitement
         if len(listeAnomalies) > 0 :
-            introduction = _(u"%d actions ont été importées avec succès et %d anomalies ont été trouvées :") % (nbre_tracks - len(listeAnomalies), len(listeAnomalies))
+            introduction = _(u"%d actions ont Ã©tÃ© importÃ©es avec succÃ¨s et %d anomalies ont Ã©tÃ© trouvÃ©es :") % (nbre_tracks - len(listeAnomalies), len(listeAnomalies))
             conclusion = u""
             dlg = DLG_Messagebox.Dialog(None, titre=_(u"Information"), introduction=introduction, detail=u"\n".join(listeAnomalies), conclusion=conclusion, icone=wx.ICON_EXCLAMATION, boutons=[_(u"Ok"),])
             reponse = dlg.ShowModal() 
             dlg.Destroy() 
         else :
-            dlg = wx.MessageDialog(None, _(u"Les %d actions ont été importées avec succès !") % nbre_tracks, _(u"Information"), wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(None, _(u"Les %d actions ont Ã©tÃ© importÃ©es avec succÃ¨s !") % nbre_tracks, _(u"Information"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
 
@@ -490,8 +490,8 @@ class Dialog_Traitement(wx.Dialog):
         wx.CallLater(1000, self.Demarrer)
         
     def __set_properties(self):
-        self.SetTitle(_(u"Importation des données"))
-        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lancer l'importation des données")))
+        self.SetTitle(_(u"Importation des donnÃ©es"))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lancer l'importation des donnÃ©es")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         if self.debug == False :
             self.SetMinSize((500, 100))
@@ -524,7 +524,7 @@ class Dialog_Traitement(wx.Dialog):
         self.Fermer() 
         
     def Fermer(self, forcer=False):
-        # On vérifie si le thread n'a jamais été lancé avant :
+        # On vÃ©rifie si le thread n'a jamais Ã©tÃ© lancÃ© avant :
         try:
             TraitmentEnCours = self.traitement.isAlive()
         except AttributeError :
@@ -534,8 +534,8 @@ class Dialog_Traitement(wx.Dialog):
             if forcer == True :
                 self.traitement.abort()
             else :
-                # Demande la confirmation de l'arrêt
-                dlgConfirm = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment arrêter le traitement ?"), _(u"Confirmation d'arrêt"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
+                # Demande la confirmation de l'arrÃªt
+                dlgConfirm = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment arrÃªter le traitement ?"), _(u"Confirmation d'arrÃªt"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
                 reponse = dlgConfirm.ShowModal()
                 dlgConfirm.Destroy()
                 if reponse == wx.ID_NO:
@@ -544,7 +544,7 @@ class Dialog_Traitement(wx.Dialog):
                 self.traitement.abort()
                 self.label_intro.SetLabel(_(u"Vous avez interrompu le traitement."))
         
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         time.sleep(1)
         self.EndModal(wx.ID_CANCEL)
     

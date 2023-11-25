@@ -1480,7 +1480,7 @@ class Block(object):
         # Draw any image
         if image:
             y = _CalcBitmapPosition(bounds, image.Height)
-            dc.DrawBitmap(image, RectUtils.Left(bounds), y)
+            dc.DrawBitmap(image, RectUtils.Left(bounds), int(y))
             RectUtils.MoveLeftBy(
                 bounds,
                 image.GetWidth() +
@@ -2870,7 +2870,7 @@ class ImageDecoration(Decoration):
                     mdc, xsrc=0, ysrc=0, useMask=True)
             mdc.SelectObject(wx.NullBitmap)         
         else:
-            dc.DrawBitmap(self.bitmap, x, y, True)
+            dc.DrawBitmap(self.bitmap, int(x), int(y), True)
 
 
 #----------------------------------------------------------------------------

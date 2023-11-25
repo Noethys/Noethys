@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -20,7 +20,7 @@ import GestionDB
 from Utils import UTILS_Dates
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 from Utils import UTILS_Titulaires
 from Utils import UTILS_Utilisateurs
@@ -67,7 +67,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         listeID = None
         
         DB = GestionDB.DB()
@@ -164,17 +164,17 @@ class ListView(FastObjectListView):
         self.oddRowsBackColor = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
         self.evenRowsBackColor = "#FFFFFF" # Vert
         
-        # Paramètres ListView
+        # ParamÃ¨tres ListView
         self.useExpansionColumn = True
         self.SetColumns([
             ColumnDefn(u"", "left", 0, "IDfamille", typeDonnee="entier"),
             ColumnDefn(_(u"Famille"), "left", 250, "titulaires", typeDonnee="texte"),
             ColumnDefn(_(u"Nbre Prest."), "center", 80, "quantite", typeDonnee="entier"),
-            ColumnDefn(_(u"Impayés"), "right", 80, "impaye", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"ImpayÃ©s"), "right", 80, "impaye", typeDonnee="montant", stringConverter=FormateMontant),
         ])
         self.CreateCheckStateColumn(0)
         self.SetSortColumn(self.columns[2])
-        self.SetEmptyListMsg(_(u"Aucun impayé"))
+        self.SetEmptyListMsg(_(u"Aucun impayÃ©"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetObjects(self.donnees)
     
@@ -203,7 +203,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -219,7 +219,7 @@ class ListView(FastObjectListView):
         if len(self.Selection()) > 0 :
             ID = self.Selection()[0].IDfamille
         
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ouverture fiche famille
@@ -239,8 +239,8 @@ class ListView(FastObjectListView):
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheTout, id=70)
 
-        # Item Tout décocher
-        item = wx.MenuItem(menuPop, 80, _(u"Tout décocher"))
+        # Item Tout dÃ©cocher
+        item = wx.MenuItem(menuPop, 80, _(u"Tout dÃ©cocher"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Decocher.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -249,7 +249,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -293,11 +293,11 @@ class ListView(FastObjectListView):
 
     def ExportTexte(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Liste des comptes à solder"))
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des comptes Ã  solder"))
         
     def ExportExcel(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Liste des comptes à solder"))
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des comptes Ã  solder"))
         
     def CocheTout(self, event=None):
         if self.GetFilter() != None :
@@ -319,7 +319,7 @@ class ListView(FastObjectListView):
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune fiche famille à ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune fiche famille Ã  ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

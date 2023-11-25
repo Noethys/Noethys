@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -28,16 +28,16 @@ class Page_Semaines(wx.Panel):
         # Semaine
         self.label_semaine = wx.StaticText(self, -1, _(u"Semaine :"))
         self.ctrl_semaine = wx.SpinCtrl(self, -1, "", min=1, max=52)
-        self.label_annee = wx.StaticText(self, -1, _(u"Année :"))
+        self.label_annee = wx.StaticText(self, -1, _(u"AnnÃ©e :"))
         self.ctrl_annee = wx.SpinCtrl(self, -1, "", min=1977, max=2999)
         self.bouton_aujourdhui = wx.Button(self, -1, _(u"Aujourd'hui"))
 
         # Properties
         self.ctrl_semaine.SetMinSize((70, -1))
-        self.ctrl_semaine.SetToolTip(wx.ToolTip(_(u"Sélectionnez une semaine")))
+        self.ctrl_semaine.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une semaine")))
         self.ctrl_annee.SetMinSize((70, -1))
-        self.ctrl_annee.SetToolTip(wx.ToolTip(_(u"Sélectionnez une année")))
-        self.bouton_aujourdhui.SetToolTip(wx.ToolTip(_(u"Sélectionnez la semaine en cours")))
+        self.ctrl_annee.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une annÃ©e")))
+        self.bouton_aujourdhui.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez la semaine en cours")))
 
         # Binds
         self.Bind(wx.EVT_SPINCTRL, self.parent.CallBack, self.ctrl_semaine)
@@ -47,7 +47,7 @@ class Page_Semaines(wx.Panel):
         # Layout
         sizer_base = wx.BoxSizer(wx.HORIZONTAL)
 
-        # Période
+        # PÃ©riode
         grid_sizer_semaines = wx.FlexGridSizer(rows=1, cols=7, vgap=0, hgap=0)
         grid_sizer_semaines.Add(self.label_semaine, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_semaines.Add(self.ctrl_semaine, 0, wx.ALIGN_CENTER_VERTICAL|wx.LEFT, 5)
@@ -92,18 +92,18 @@ class Page_Mois(wx.Panel):
 
         # Mois
         self.label_mois = wx.StaticText(self, -1, _(u"Mois :"))
-        self.ctrl_mois = wx.Choice(self, -1, choices=[_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre")])
+        self.ctrl_mois = wx.Choice(self, -1, choices=[_(u"Janvier"), _(u"FÃ©vrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"AoÃ»t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"DÃ©cembre")])
         self.spin_mois = wx.SpinButton(self, -1, size=(18, 24),  style=wx.SP_VERTICAL)
         self.spin_mois.SetRange(-1, 1)
-        self.label_annee = wx.StaticText(self, -1, _(u"Année :"))
+        self.label_annee = wx.StaticText(self, -1, _(u"AnnÃ©e :"))
         self.ctrl_annee = wx.SpinCtrl(self, -1, "", min=1977, max=2999)
         self.bouton_aujourdhui = wx.Button(self, -1, _(u"Aujourd'hui"))
 
         # Properties
-        self.ctrl_mois.SetToolTip(wx.ToolTip(_(u"Sélectionnez un mois")))
+        self.ctrl_mois.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un mois")))
         self.ctrl_annee.SetMinSize((70, -1))
-        self.ctrl_annee.SetToolTip(wx.ToolTip(_(u"Sélectionnez une année")))
-        self.bouton_aujourdhui.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'année en cours")))
+        self.ctrl_annee.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une annÃ©e")))
+        self.bouton_aujourdhui.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez l'annÃ©e en cours")))
 
         # Binds
         self.Bind(wx.EVT_SPIN, self.OnSpinMois, self.spin_mois)
@@ -114,7 +114,7 @@ class Page_Mois(wx.Panel):
         # Layout
         sizer_base = wx.BoxSizer(wx.HORIZONTAL)
 
-        # Période
+        # PÃ©riode
         grid_sizer_mois = wx.FlexGridSizer(rows=1, cols=7, vgap=0, hgap=0)
         grid_sizer_mois.Add(self.label_mois, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_mois.Add(self.ctrl_mois, 0, wx.LEFT|wx.ALIGN_CENTER_VERTICAL, 5)
@@ -166,16 +166,16 @@ class Page_Vacances(wx.Panel):
         self.parent = parent
 
         # Vacances
-        self.label_vacances = wx.StaticText(self, -1, _(u"Période :"))
+        self.label_vacances = wx.StaticText(self, -1, _(u"PÃ©riode :"))
         self.ctrl_vacances = wx.Choice(self, -1, choices=[])
-        self.label_annee = wx.StaticText(self, -1, _(u"Année :"))
+        self.label_annee = wx.StaticText(self, -1, _(u"AnnÃ©e :"))
         self.ctrl_annee = wx.SpinCtrl(self, -1, "", min=1977, max=2999)
 
         # Properties
         self.ctrl_vacances.SetMinSize((90, -1))
-        self.ctrl_vacances.SetToolTip(wx.ToolTip(_(u"Sélectionnez une période de vacances")))
+        self.ctrl_vacances.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une pÃ©riode de vacances")))
         self.ctrl_annee.SetMinSize((70, -1))
-        self.ctrl_annee.SetToolTip(wx.ToolTip(_(u"Sélectionnez une année")))
+        self.ctrl_annee.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une annÃ©e")))
 
         # Binds
         self.Bind(wx.EVT_CHOICE, self.parent.CallBack, self.ctrl_vacances)
@@ -184,7 +184,7 @@ class Page_Vacances(wx.Panel):
         # Layout
         sizer_base = wx.BoxSizer(wx.HORIZONTAL)
 
-        # Période
+        # PÃ©riode
         grid_sizer_semaines = wx.FlexGridSizer(rows=1, cols=7, vgap=0, hgap=0)
         grid_sizer_semaines.Add(self.label_vacances, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_semaines.Add(self.ctrl_vacances, 0, wx.ALIGN_CENTER_VERTICAL|wx.LEFT, 5)
@@ -253,7 +253,7 @@ class Page_Dates(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
 
-        # Période
+        # PÃ©riode
         self.label_periode = wx.StaticText(self, wx.ID_ANY, _(u"Du"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_au = wx.StaticText(self, wx.ID_ANY, _(u"au"))
@@ -261,9 +261,9 @@ class Page_Dates(wx.Panel):
         self.bouton_appliquer_dates = wx.Button(self, -1, _(u"Appliquer"))
 
         # Properties
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début de la période")))
-        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de la période")))
-        self.bouton_appliquer_dates.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider la période saisie")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de dÃ©but de la pÃ©riode")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de la pÃ©riode")))
+        self.bouton_appliquer_dates.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider la pÃ©riode saisie")))
 
         # Binds
         self.Bind(wx.EVT_BUTTON, self.parent.CallBack, self.bouton_appliquer_dates)
@@ -271,7 +271,7 @@ class Page_Dates(wx.Panel):
         # Layout
         sizer_base = wx.BoxSizer(wx.HORIZONTAL)
 
-        # Période
+        # PÃ©riode
         grid_sizer_periode = wx.FlexGridSizer(1, 6, 5, 5)
         grid_sizer_periode.Add(self.label_periode, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_periode.Add(self.ctrl_date_debut, 0, wx.EXPAND, 0)
@@ -310,7 +310,7 @@ class Page_Jour(wx.Panel):
         # Properties
         self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Saisissez une date")))
         self.bouton_appliquer_dates.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider la date saisie")))
-        self.bouton_aujourdhui.SetToolTip(wx.ToolTip(_(u"Sélectionnez la date du jour")))
+        self.bouton_aujourdhui.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez la date du jour")))
 
         # Binds
         self.Bind(wx.EVT_BUTTON, self.parent.CallBack, self.bouton_appliquer_dates)
@@ -319,7 +319,7 @@ class Page_Jour(wx.Panel):
         # Layout
         sizer_base = wx.BoxSizer(wx.HORIZONTAL)
 
-        # Période
+        # PÃ©riode
         grid_sizer_periode = wx.FlexGridSizer(1, 4, 5, 5)
         grid_sizer_periode.Add(self.ctrl_date, 0, wx.EXPAND | wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_periode.Add(self.bouton_appliquer_dates, 0, wx.EXPAND | wx.ALIGN_CENTER_VERTICAL, 0)
@@ -362,7 +362,7 @@ class CTRL(wx.Notebook):
             {"code": "mois", "ctrl": Page_Mois(self), "label": _(u"Mois"), "image": "Calendrier_mois.png"},
             {"code": "semaine", "ctrl": Page_Semaines(self), "label": _(u"Semaine"), "image": "Calendrier3jours.png"},
             {"code": "vacances", "ctrl": Page_Vacances(self), "label": _(u"Vacances"), "image": "Calendrier3jours.png"},
-            {"code": "periode", "ctrl": Page_Dates(self), "label": _(u"Période"), "image": "Calendrier_jour.png"},
+            {"code": "periode", "ctrl": Page_Dates(self), "label": _(u"PÃ©riode"), "image": "Calendrier_jour.png"},
             {"code": "date", "ctrl": Page_Jour(self), "label": _(u"Jour"), "image": "Calendrier_jour.png"},
         ]
 
@@ -373,7 +373,7 @@ class CTRL(wx.Notebook):
             self.dictImages[dictPage["code"]] = il.Add(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s" % dictPage["image"]), wx.BITMAP_TYPE_PNG))
         self.AssignImageList(il)
 
-        # Création des pages
+        # CrÃ©ation des pages
         self.dictPages = {}
         index = 0
         for dictPage in self.listePages:
@@ -403,7 +403,7 @@ class CTRL(wx.Notebook):
             index += 1
 
     def OnPageChanged(self, event):
-        """ Quand une page du notebook est sélectionnée """
+        """ Quand une page du notebook est sÃ©lectionnÃ©e """
         self.CallBack()
 
     def GetDateDebut(self):

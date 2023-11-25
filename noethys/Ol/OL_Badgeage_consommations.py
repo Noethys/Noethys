@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-19 Ivan LUCAS
@@ -55,7 +55,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         if self.date_debut == None or self.date_fin == None :
             listeDonnees = []
         else :
@@ -103,9 +103,9 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"ID"), "left", 0, "IDconso", typeDonnee="entier"),
             ColumnDefn(_(u"Date"), 'center', 80, "date", typeDonnee="date", stringConverter=FormateDate),
             ColumnDefn(_(u"Individu"), 'left', 180, "nom_individu", typeDonnee="date"),
-            ColumnDefn(_(u"Unité"), 'left', 100, "nom_unite", typeDonnee="date"),
-            ColumnDefn(_(u"Début"), 'center', 65, "heure_debut", typeDonnee="texte", stringConverter=FormateHeure),
-            ColumnDefn(_(u"Badgeage début"), 'center', 125, "badgeage_debut", typeDonnee="dateheure", stringConverter=FormateHorodatage),
+            ColumnDefn(_(u"UnitÃ©"), 'left', 100, "nom_unite", typeDonnee="date"),
+            ColumnDefn(_(u"DÃ©but"), 'center', 65, "heure_debut", typeDonnee="texte", stringConverter=FormateHeure),
+            ColumnDefn(_(u"Badgeage dÃ©but"), 'center', 125, "badgeage_debut", typeDonnee="dateheure", stringConverter=FormateHorodatage),
             ColumnDefn(_(u"Fin"), 'center', 65, "heure_fin", typeDonnee="texte", stringConverter=FormateHeure),
             ColumnDefn(_(u"Badgeage fin"), 'center', 125, "badgeage_fin", typeDonnee="dateheure", stringConverter=FormateHorodatage),
         ]
@@ -126,10 +126,10 @@ class ListView(FastObjectListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
-        # Génération automatique des fonctions standards
+        # GÃ©nÃ©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
 
         self.PopupMenu(menuPop)
@@ -137,7 +137,7 @@ class ListView(FastObjectListView):
 
     def GetParametresImpression(self):
         dictParametres = {
-            "titre": _(u"Liste des consommations badgées"),
+            "titre": _(u"Liste des consommations badgÃ©es"),
             "total": _(u"> %s consommations") % len(self.GetFilteredObjects()),
             "orientation": wx.PORTRAIT,
         }

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -27,7 +27,7 @@ from Utils import UTILS_Historique
 import wx.lib.dialogs as dialogs
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 from Utils import UTILS_Interface
@@ -39,7 +39,7 @@ DICT_BANQUES = {}
 
 
 class TrackManuelle():
-    """ Simulation de track facture pour saisie manuelle de prélèvement """
+    """ Simulation de track facture pour saisie manuelle de prÃ©lÃ¨vement """
     def __init__(self, IDfamille=None, libelle=u"", montant=0.0):
         self.IDfamille = IDfamille
         self.IDfacture = None
@@ -102,7 +102,7 @@ class Track(object):
 
 
 def GetTracks(IDlot=None):
-    """ Récupération des données """
+    """ RÃ©cupÃ©ration des donnÃ©es """
     dictTitulaires = UTILS_Titulaires.GetTitulaires() 
     if IDlot == None :
         return []
@@ -142,7 +142,7 @@ def GetTracks(IDlot=None):
 
 
 ##def GetMandats():
-##    """ Récupération des mandats """
+##    """ RÃ©cupÃ©ration des mandats """
 ##    DB = GestionDB.DB()
 ##    req = """SELECT IDmandat, IDfamille, rum, type, date, IDbanque, mandats.IDindividu, individu_nom, iban, bic, sequence, individus.nom, individus.prenom
 ##    FROM mandats
@@ -168,7 +168,7 @@ def GetTracks(IDlot=None):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.IDlot = kwds.pop("IDlot", None)
         self.typePrelevement = kwds.pop("typePrelevement", "sepa")
         self.selectionID = None
@@ -275,18 +275,18 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"ID"), "left", 0, "IDprelevement", typeDonnee="entier"),
             ColumnDefn(_(u"Famille"), 'left', 230, "titulaires", typeDonnee="texte"),
             ColumnDefn(_(u"Type"), 'left', 70, "type", typeDonnee="texte", stringConverter=FormateType),
-            ColumnDefn(_(u"Libellé"), 'left', 110, "libelle", typeDonnee="texte"),
+            ColumnDefn(_(u"LibellÃ©"), 'left', 110, "libelle", typeDonnee="texte"),
 ##            ColumnDefn(_(u"Banque"), 'left', 120, "nomBanque"),
             ColumnDefn(_(u"Montant"), 'right', 70, "montant", typeDonnee="montant", stringConverter=FormateMontant),
             ColumnDefn(_(u"Statut"), 'left', 80, "statut", typeDonnee="texte", stringConverter=FormateStatut, imageGetter=GetImageStatut),
-            ColumnDefn(_(u"Règlement"), 'left', 70, "reglement", typeDonnee="bool", stringConverter=FormateReglement, imageGetter=GetImageReglement),
-            ColumnDefn(_(u"Séquence"), 'left', 70, "sequence", typeDonnee="texte"),
+            ColumnDefn(_(u"RÃ¨glement"), 'left', 70, "reglement", typeDonnee="bool", stringConverter=FormateReglement, imageGetter=GetImageReglement),
+            ColumnDefn(_(u"SÃ©quence"), 'left', 70, "sequence", typeDonnee="texte"),
             ColumnDefn(_(u"IBAN"), 'left', 190, "prelevement_iban", typeDonnee="texte"),
             ColumnDefn(_(u"BIC"), 'left', 100, "prelevement_bic", typeDonnee="texte"),
 ##            ColumnDefn(_(u"Etab."), 'left', 50, "prelevement_etab"),
 ##            ColumnDefn(_(u"Guich."), 'left', 50, "prelevement_guichet"),
 ##            ColumnDefn(_(u"Compte"), 'left', 90, "prelevement_numero"),
-##            ColumnDefn(_(u"Clé"), 'left', 30, "prelevement_cle"),
+##            ColumnDefn(_(u"ClÃ©"), 'left', 30, "prelevement_cle"),
 ##            ColumnDefn(_(u"Banque"), 'left', 130, "nomBanque"),
             ColumnDefn(_(u"Titulaire du compte"), 'left', 160, "titulaire", typeDonnee="texte"),
             ColumnDefn(_(u"Ref. mandat"), 'left', 90, "prelevement_reference_mandat", typeDonnee="texte"),
@@ -296,7 +296,7 @@ class ListView(FastObjectListView):
 
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(1)
-        self.SetEmptyListMsg(_(u"Aucun prélèvement"))
+        self.SetEmptyListMsg(_(u"Aucun prÃ©lÃ¨vement"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
 ##        self.SetSortColumn(self.columns[self.numColonneTri])
         self.SortBy(self.numColonneTri, ascending=self.ordreAscendant)
@@ -305,7 +305,7 @@ class ListView(FastObjectListView):
     def MAJ(self, tracks=None, ID=None, selectionTrack=None, nextTrack=None, IDcompte=None, IDmode=None):
         self.InitModel(tracks, IDcompte, IDmode)
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if selectionTrack != None :
             self.SelectObject(selectionTrack, deselectOthers=True, ensureVisible=True)
             if self.GetSelectedObject() == None :
@@ -322,7 +322,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDprelevement
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Saisie de factures
@@ -333,7 +333,7 @@ class ListView(FastObjectListView):
         self.Bind(wx.EVT_MENU, self.Saisie_factures, id=11)
 
         # Item Saisie manuelle
-        item = wx.MenuItem(menuPop, 10, _(u"Ajouter un prélèvement manuel"))
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter un prÃ©lÃ¨vement manuel"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -358,7 +358,7 @@ class ListView(FastObjectListView):
                 
         menuPop.AppendSeparator()
     
-        # Génération automatique des fonctions standards
+        # GÃ©nÃ©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
 
         self.PopupMenu(menuPop)
@@ -366,14 +366,14 @@ class ListView(FastObjectListView):
 
     def GetParametresImpression(self):
         intro = self.GetParent().GetLabelParametres()
-        # Récupère le total
+        # RÃ©cupÃ¨re le total
         total = 0.0
         for track in self.donnees :
             total += track.montant
         total = self.GetTexteTotaux().replace("<B>", "").replace("</B>", "")
 
         dictParametres = {
-            "titre" : _(u"Liste des prélèvements"),
+            "titre" : _(u"Liste des prÃ©lÃ¨vements"),
             "intro" : intro,
             "total" : total,
             "orientation" : wx.LANDSCAPE,
@@ -383,7 +383,7 @@ class ListView(FastObjectListView):
     def Saisie_factures(self, event=None):
         """ Saisie de factures """
         if self.GetParent().GetVerrouillage() == True :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas effectuer cette action car le lot de prélèvement est verrouillé !"), _(u"Verrouillage"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas effectuer cette action car le lot de prÃ©lÃ¨vement est verrouillÃ© !"), _(u"Verrouillage"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -398,7 +398,7 @@ class ListView(FastObjectListView):
         self.AjoutFactures(tracks)
     
     def AjoutFactures(self, tracks=[]):
-        # Vérifie que cette facture n'est pas déjà présente dans le lot
+        # VÃ©rifie que cette facture n'est pas dÃ©jÃ  prÃ©sente dans le lot
         listeFacturesPresentes = []
         for track in self.GetObjects() :
             if track.IDfacture != None :
@@ -406,7 +406,7 @@ class ListView(FastObjectListView):
         
         mandats = UTILS_Mandats.Mandats() 
         
-        # MAJ de la liste affichée
+        # MAJ de la liste affichÃ©e
         dictTitulaires = UTILS_Titulaires.GetTitulaires() 
         listeNewTracks = []
         listeMandatsNonValides = []
@@ -423,7 +423,7 @@ class ListView(FastObjectListView):
                 listeMandatsNonValides.append(_(u"Famille %s (ID%d)") % (nomTitulaires, track.IDfamille))
                     
             else :
-                # Récupère les données du mandat
+                # RÃ©cupÃ¨re les donnÃ©es du mandat
                 dictMandat = mandats.GetDictMandat(IDmandat) 
                 
                 IDbanque = dictMandat["IDbanque"]
@@ -434,11 +434,11 @@ class ListView(FastObjectListView):
                 mandat_date = dictMandat["date"]
                 titulaire = dictMandat["titulaire"]
                 
-                # Recherche de la séquence
+                # Recherche de la sÃ©quence
                 analyse = mandats.AnalyseMandat(IDmandat)
                 sequence = analyse["prochaineSequence"]
                 
-                # Mémorisation du track
+                # MÃ©morisation du track
                 if track.IDfacture != None :
                     typeTrack = "facture"
                     libelle = _(u"FACT%s") % track.numero
@@ -459,7 +459,7 @@ class ListView(FastObjectListView):
                     listeNewTracks.append(Track(dictTemp, dictTitulaires))
         
         if len(listeMandatsNonValides) > 0 :
-            message1 = _(u"Les prélèvements suivants n'ont pas été intégrés car les mandats SEPA des familles sont indisponibles ou non valides :")
+            message1 = _(u"Les prÃ©lÃ¨vements suivants n'ont pas Ã©tÃ© intÃ©grÃ©s car les mandats SEPA des familles sont indisponibles ou non valides :")
             message2 = "\n".join(listeMandatsNonValides)
             dlg = dialogs.MultiMessageDialog(self, message1, caption=_(u"Avertissement"), msg2=message2, style = wx.ICON_EXCLAMATION |wx.OK, icon=None, btnLabels={wx.ID_OK : _(u"Ok")})
             reponse = dlg.ShowModal() 
@@ -488,12 +488,12 @@ class ListView(FastObjectListView):
 ##        dlg.Destroy() 
 
         if self.GetParent().GetVerrouillage() == True :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas effectuer cette action car le lot de prélèvement est verrouillé !"), _(u"Verrouillage"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas effectuer cette action car le lot de prÃ©lÃ¨vement est verrouillÃ© !"), _(u"Verrouillage"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # Demande les caractéristiques du prélèvement manuel
+        # Demande les caractÃ©ristiques du prÃ©lÃ¨vement manuel
         from Dlg import DLG_Saisie_prelevement_manuel
         dlg = DLG_Saisie_prelevement_manuel.Dialog(self)
         if dlg.ShowModal() == wx.ID_OK :
@@ -505,18 +505,18 @@ class ListView(FastObjectListView):
             dlg.Destroy()
             return
         
-        # Simule un track de facture pour créer plus facilement le track prélèvement
+        # Simule un track de facture pour crÃ©er plus facilement le track prÃ©lÃ¨vement
         track = TrackManuelle(IDfamille, libelle, montant)
         self.AjoutFactures([track,])
         
     def Modifier(self, event=None):
         if self.GetParent().GetVerrouillage() == True :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas effectuer cette action car le lot de prélèvement est verrouillé !"), _(u"Verrouillage"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas effectuer cette action car le lot de prÃ©lÃ¨vement est verrouillÃ© !"), _(u"Verrouillage"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun prélèvement à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun prÃ©lÃ¨vement Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -536,13 +536,13 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event=None):
         if self.GetParent().GetVerrouillage() == True :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas effectuer cette action car le lot de prélèvement est verrouillé !"), _(u"Verrouillage"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas effectuer cette action car le lot de prÃ©lÃ¨vement est verrouillÃ© !"), _(u"Verrouillage"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         if len(self.Selection()) == 0 and len(self.GetTracksCoches()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun prélèvement à retirer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun prÃ©lÃ¨vement Ã  retirer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -550,7 +550,7 @@ class ListView(FastObjectListView):
         if len(self.GetTracksCoches()) > 0 :
             # Suppression multiple
             listeSelections = self.GetTracksCoches()
-            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment retirer les %d prélèvements cochés ?") % len(listeSelections), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment retirer les %d prÃ©lÃ¨vements cochÃ©s ?") % len(listeSelections), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -559,19 +559,19 @@ class ListView(FastObjectListView):
         else :
             # Suppression unique
             listeSelections = self.Selection()
-            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment retirer le prélèvement sélectionné ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment retirer le prÃ©lÃ¨vement sÃ©lectionnÃ© ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
                 return
 
-        # Vérifie que le règlement n'est pas déjà déposé en banque
+        # VÃ©rifie que le rÃ¨glement n'est pas dÃ©jÃ  dÃ©posÃ© en banque
         listeDepots = []
         for track in listeSelections :
             if track.IDdepot != None :
                 listeDepots.append(track)
         if len(listeDepots) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Suppression interdite car %d prélèvement(s) de la sélection ont déjà un règlement attribué à un dépôt de règlement !") % len(listeDepots), _(u"Remarque"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Suppression interdite car %d prÃ©lÃ¨vement(s) de la sÃ©lection ont dÃ©jÃ  un rÃ¨glement attribuÃ© Ã  un dÃ©pÃ´t de rÃ¨glement !") % len(listeDepots), _(u"Remarque"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -612,11 +612,11 @@ class ListView(FastObjectListView):
                 # Changement de statut
                 track.statut = statut
                 
-                # Règlement automatique
+                # RÃ¨glement automatique
                 if self.reglement_auto == True and statut == "valide" : #and track.type != "manuel" :
                     track.reglement = True   
                 
-                # Annulation du règlement si statut = refus
+                # Annulation du rÃ¨glement si statut = refus
                 if statut == "refus" :
                     if track.IDdepot != None :
                         listeDepots.append(track)
@@ -630,7 +630,7 @@ class ListView(FastObjectListView):
         self.MAJtotaux() 
         
         if len(listeDepots) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Notez que Noethys n'a pas procédé changement de statut de %d prélèvement(s) car le règlement correspondant appartient déjà à un dépôt de règlement !") % len(listeDepots), _(u"Remarque"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Notez que Noethys n'a pas procÃ©dÃ© changement de statut de %d prÃ©lÃ¨vement(s) car le rÃ¨glement correspondant appartient dÃ©jÃ  Ã  un dÃ©pÃ´t de rÃ¨glement !") % len(listeDepots), _(u"Remarque"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -643,7 +643,7 @@ class ListView(FastObjectListView):
             if self.IsChecked(track) : #and track.type != "manuel" :
     
                 if etat == True :
-                    # Si on veut régler
+                    # Si on veut rÃ©gler
                     if track.statut in ("valide", "attente") :
                         track.reglement = True
                         if track.etat != "ajout" :
@@ -653,7 +653,7 @@ class ListView(FastObjectListView):
                         listeAnomalies.append(track)
                 
                 if etat == False :
-                    # Si on veut annuler le règlement
+                    # Si on veut annuler le rÃ¨glement
                     if track.IDdepot != None :
                         listeDepots.append(track)
                     else :
@@ -663,13 +663,13 @@ class ListView(FastObjectListView):
                         self.RefreshObject(track)
 
         if len(listeAnomalies) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Notez que Noethys n'a pas procédé au règlement de %d prélèvement(s) en raison de leur statut 'Refus'.") % len(listeAnomalies), _(u"Remarque"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Notez que Noethys n'a pas procÃ©dÃ© au rÃ¨glement de %d prÃ©lÃ¨vement(s) en raison de leur statut 'Refus'.") % len(listeAnomalies), _(u"Remarque"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         if len(listeDepots) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Notez que Noethys n'a pas procédé à la suppression de %d prélèvement(s) car le règlement correspondant appartient déjà à un dépôt de règlement !") % len(listeDepots), _(u"Remarque"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Notez que Noethys n'a pas procÃ©dÃ© Ã  la suppression de %d prÃ©lÃ¨vement(s) car le rÃ¨glement correspondant appartient dÃ©jÃ  Ã  un dÃ©pÃ´t de rÃ¨glement !") % len(listeDepots), _(u"Remarque"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -677,7 +677,7 @@ class ListView(FastObjectListView):
         self.MAJtotaux() 
 
     def GetLabelListe(self):
-        """ Récupère le nombre de prélèvements et le montant total de la liste """
+        """ RÃ©cupÃ¨re le nombre de prÃ©lÃ¨vements et le montant total de la liste """
         nbre = 0
         montant = 0.0
         for track in self.GetObjects() :
@@ -685,14 +685,14 @@ class ListView(FastObjectListView):
             montant += track.montant
         # Label de staticbox
         if nbre > 1 :
-            texte = _(u"prélèvements")
+            texte = _(u"prÃ©lÃ¨vements")
         else :
-            texte = _(u"prélèvement")
+            texte = _(u"prÃ©lÃ¨vement")
         label = u"%d %s (%.2f %s)" % (nbre, texte, montant, SYMBOLE)
         return label          
 
     def MAJtotaux(self):
-        """ Créé le texte infos avec les stats du lot """
+        """ CrÃ©Ã© le texte infos avec les stats du lot """
         if self.GetParent().GetName() != "DLG_Saisie_prelevement_lot" :
             return
         # Label de staticbox
@@ -701,7 +701,7 @@ class ListView(FastObjectListView):
         self.GetParent().box_prelevements_staticbox.SetLabel(self.GetLabelListe())
 
     def GetTexteTotaux(self):
-        # Récupération des chiffres
+        # RÃ©cupÃ©ration des chiffres
         nbreTotal = 0
         montantTotal = 0.0
         dictDetails = {}
@@ -713,7 +713,7 @@ class ListView(FastObjectListView):
                 dictDetails[track.statut] = {"nbre" : 0, "montant" : 0.0}
             dictDetails[track.statut]["nbre"] += 1
             dictDetails[track.statut]["montant"] += track.montant
-            # Regroupement par règlemennt
+            # Regroupement par rÃ¨glemennt
             if track.reglement == True :
                 reglement = "regle"
             else :
@@ -723,29 +723,29 @@ class ListView(FastObjectListView):
             dictDetails[reglement]["nbre"] += 1
             dictDetails[reglement]["montant"] += track.montant
             
-        # Création du texte
+        # CrÃ©ation du texte
         if nbreTotal == 0 :
-            texte = _(u"<B>Aucun prélèvement.   </B>")
+            texte = _(u"<B>Aucun prÃ©lÃ¨vement.   </B>")
         elif nbreTotal == 1 :
-            texte = _(u"<B>%d prélèvement (%.2f %s) : </B>") % (nbreTotal, montantTotal, SYMBOLE)
+            texte = _(u"<B>%d prÃ©lÃ¨vement (%.2f %s) : </B>") % (nbreTotal, montantTotal, SYMBOLE)
         else :
-            texte = _(u"<B>%d prélèvements (%.2f %s) : </B>") % (nbreTotal, montantTotal, SYMBOLE)
+            texte = _(u"<B>%d prÃ©lÃ¨vements (%.2f %s) : </B>") % (nbreTotal, montantTotal, SYMBOLE)
         
         for key in ("attente", "valide", "refus", "regle", "pasregle") :
             if key in dictDetails :
                 dictDetail = dictDetails[key]
                 if dictDetail["nbre"] == 1 :
                     if key == "attente" : label = _(u"en attente")
-                    if key == "valide" : label = _(u"validé")
-                    if key == "refus" : label = _(u"refusé")
-                    if key == "regle" : label = _(u"réglé")
-                    if key == "pasregle" : label = _(u"non réglé")
+                    if key == "valide" : label = _(u"validÃ©")
+                    if key == "refus" : label = _(u"refusÃ©")
+                    if key == "regle" : label = _(u"rÃ©glÃ©")
+                    if key == "pasregle" : label = _(u"non rÃ©glÃ©")
                 else :
                     if key == "attente" : label = _(u"en attente")
-                    if key == "valide" : label = _(u"validés")
-                    if key == "refus" : label = _(u"refusés")
-                    if key == "regle" : label = _(u"réglés")
-                    if key == "pasregle" : label = _(u"non réglés")
+                    if key == "valide" : label = _(u"validÃ©s")
+                    if key == "refus" : label = _(u"refusÃ©s")
+                    if key == "regle" : label = _(u"rÃ©glÃ©s")
+                    if key == "pasregle" : label = _(u"non rÃ©glÃ©s")
                 texteDetail = u"%d %s (%.2f %s), " % (dictDetail["nbre"], label, dictDetail["montant"], SYMBOLE)
                 texte += texteDetail
         if len(dictDetails) > 0 :
@@ -755,7 +755,7 @@ class ListView(FastObjectListView):
         return texte
 
     def Sauvegarde(self, IDlot=None, datePrelevement=None, IDcompte=None, IDmode=None):
-        """ Sauvegarde des données """
+        """ Sauvegarde des donnÃ©es """
         DB = GestionDB.DB()
         
         # Ajouts et suppressions
@@ -798,12 +798,12 @@ class ListView(FastObjectListView):
 
         DB.Close() 
         
-        # Sauvegarde des règlements
+        # Sauvegarde des rÃ¨glements
         self.SauvegardeReglements(date=datePrelevement, IDcompte=IDcompte, IDmode=IDmode)
 
 
     def SauvegardeReglements(self, date=None, IDcompte=None, IDmode=None):
-        """ A effectuer après la sauvegarde des prélèvements """
+        """ A effectuer aprÃ¨s la sauvegarde des prÃ©lÃ¨vements """
         DB = GestionDB.DB()
         
         # Recherche des payeurs
@@ -818,7 +818,7 @@ class ListView(FastObjectListView):
             dictPayeurs[IDcompte_payeur].append({"nom" : nom, "IDpayeur" : IDpayeur})
 
         
-        # Récupération des prestations à ventiler pour chaque facture
+        # RÃ©cupÃ©ration des prestations Ã  ventiler pour chaque facture
         listeIDfactures = []
         for track in self.GetObjects() :
             if track.IDfacture != None :
@@ -851,7 +851,7 @@ class ListView(FastObjectListView):
                     dictFactures[IDfacture] = []
                 dictFactures[IDfacture].append({"IDprestation" : IDprestation, "IDcompte_payeur" : IDcompte_payeur, "montant" : montant, "ventilation" : ventilation, "aventiler" : aventiler})
                         
-        # Sauvegarde des règlements + ventilation
+        # Sauvegarde des rÃ¨glements + ventilation
         listeSuppressionReglements = []
         listeHistoriqueAjouts = []
         for track in self.GetObjects() :
@@ -866,11 +866,11 @@ class ListView(FastObjectListView):
                         if dictPayeur["nom"] == track.titulaire :
                             IDpayeur = dictPayeur["IDpayeur"]
                 
-                # Si pas de payeur correspond au titulaire du compte trouvé :
+                # Si pas de payeur correspond au titulaire du compte trouvÃ© :
                 if IDpayeur == None :
                     IDpayeur = DB.ReqInsert("payeurs", [("IDcompte_payeur", track.IDcompte_payeur), ("nom", track.titulaire)])
                     
-                # Création des données à sauvegarder
+                # CrÃ©ation des donnÃ©es Ã  sauvegarder
                 listeDonnees = [
                     ("IDcompte_payeur", track.IDcompte_payeur),
                     ("date", date),
@@ -912,7 +912,7 @@ class ListView(FastObjectListView):
                             ]
                         IDventilation = DB.ReqInsert("ventilation", listeDonnees)        
             
-            # Suppression de règlements et ventilation
+            # Suppression de rÃ¨glements et ventilation
             else :
 
                 if track.IDreglement != None :
@@ -931,7 +931,7 @@ class ListView(FastObjectListView):
         UTILS_Historique.InsertActions(listeHistoriqueAjouts)
     
     def MemoriseReglementHistorique(self, mode="saisie", IDfamille=None, IDreglement=None, montant=0.0):
-        """ Mémorisation d'un règlement dans l'historique """
+        """ MÃ©morisation d'un rÃ¨glement dans l'historique """
         # Choix du mode
         if mode == "saisie" :
             IDcategorie = 6
@@ -947,7 +947,7 @@ class ListView(FastObjectListView):
         dictAction = {
             "IDfamille" : IDfamille,
             "IDcategorie" : IDcategorie, 
-            "action" : _(u"%s du règlement ID%d : %s payés par prélèvement automatique SEPA") % (categorie, IDreglement, montantStr),
+            "action" : _(u"%s du rÃ¨glement ID%d : %s payÃ©s par prÃ©lÃ¨vement automatique SEPA") % (categorie, IDreglement, montantStr),
             }
         return dictAction
 
@@ -959,7 +959,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(_(u"Rechercher un prélèvement..."))
+        self.SetDescriptiveText(_(u"Rechercher un prÃ©lÃ¨vement..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_reglements

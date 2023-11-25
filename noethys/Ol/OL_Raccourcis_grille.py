@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -24,11 +24,11 @@ from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTR
 
 
 LISTE_DONNEES = [
-    (_(u"Présent"), "Touche_p", 1),
-    (_(u"Absence justifiée"), "Touche_j", 2),
-    (_(u"Absence injustifiée"), "Touche_i", 3),
+    (_(u"PrÃ©sent"), "Touche_p", 1),
+    (_(u"Absence justifiÃ©e"), "Touche_j", 2),
+    (_(u"Absence injustifiÃ©e"), "Touche_i", 3),
     (_(u"Pointage en attente"), "Touche_a", 4),
-    (_(u"Copie dernière conso"), "Touche_c", 5),
+    (_(u"Copie derniÃ¨re conso"), "Touche_c", 5),
     (_(u"Suppression conso"), "Touche_s", 6),
     ]
 
@@ -48,13 +48,13 @@ class ListView(FastObjectListView):
         FastObjectListView.__init__(self, *args, **kwds)
         self.InitModel()
         self.InitObjectListView()
-        self.SetToolTip(wx.ToolTip(_(u"Retrouvez ici la liste des raccourcis clavier que vous pouvez utilisez dans la grille des consommations. Conservez la touche appuyée puis cliquez sur une case de la grille.")))
+        self.SetToolTip(wx.ToolTip(_(u"Retrouvez ici la liste des raccourcis clavier que vous pouvez utilisez dans la grille des consommations. Conservez la touche appuyÃ©e puis cliquez sur une case de la grille.")))
 
     def InitModel(self):
         self.donnees = self.GetTracks()
             
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeListeView = []
         for donnees in LISTE_DONNEES :
             track = Track(donnees)
@@ -63,7 +63,7 @@ class ListView(FastObjectListView):
         return listeListeView
       
     def InitObjectListView(self):
-        # Création du imageList
+        # CrÃ©ation du imageList
         indexTmp = 0
         for label, nomImage, ordre in LISTE_DONNEES :
             self.AddNamedImages(nomImage, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s.png" % nomImage), wx.BITMAP_TYPE_PNG))
@@ -105,7 +105,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, _(u"OL légende grille des consommations"))
+    frame_1 = MyFrame(None, -1, _(u"OL lÃ©gende grille des consommations"))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

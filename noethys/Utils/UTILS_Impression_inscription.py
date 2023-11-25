@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -15,7 +15,7 @@ import FonctionsPerso
 import wx
 from Dlg import DLG_Noedoc
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 MONNAIE_SINGULIER = UTILS_Config.GetParametre("monnaie_singulier", _(u"Euro"))
 MONNAIE_DIVISION = UTILS_Config.GetParametre("monnaie_division", _(u"Centime"))
 
@@ -37,7 +37,7 @@ DICT_VALEURS = {}
 
 
 def Template(canvas, doc):
-    """ Première page de l'attestation """
+    """ PremiÃ¨re page de l'attestation """
     doc.modeleDoc.DessineFond(canvas)
     doc.modeleDoc.DessineFormes(canvas)
 
@@ -47,7 +47,7 @@ class MyPageTemplate(PageTemplate):
         self.pageWidth = pageSize[0]
         self.pageHeight = pageSize[1]
 
-        ##        # Récupère les coordonnées du cadre principal
+        ##        # RÃ©cupÃ¨re les coordonnÃ©es du cadre principal
         ##        cadre_principal = doc.modeleDoc.FindObjet("cadre_principal")
         ##        x, y, l, h = doc.modeleDoc.GetCoordsObjet(cadre_principal)
         ##        global CADRE_CONTENU
@@ -102,11 +102,11 @@ class Impression():
             nomDoc = nomFichier
         doc = BaseDocTemplate(nomDoc, pagesize=TAILLE_PAGE, showBoundary=False)
 
-        # Mémorise le ID du modèle
+        # MÃ©morise le ID du modÃ¨le
         modeleDoc = DLG_Noedoc.ModeleDoc(IDmodele=IDmodele)
         doc.modeleDoc = modeleDoc
 
-        # Importe le template de la première page
+        # Importe le template de la premiÃ¨re page
         doc.addPageTemplates(MyPageTemplate(pageSize=TAILLE_PAGE, doc=doc))
 
         story = []
@@ -179,10 +179,10 @@ class Impression():
                                                    fontSize=9,
                                                    )
                         dataTableau.append((_(u"Nom"), Paragraph(DICT_VALEURS["{INDIVIDU_NOM}"], paraStyle)))
-                        dataTableau.append((_(u"Prénom"), Paragraph(DICT_VALEURS["{INDIVIDU_PRENOM}"], paraStyle)))
-                        dataTableau.append((_(u"Activité"), Paragraph(DICT_VALEURS["{ACTIVITE_NOM_LONG}"], paraStyle)))
+                        dataTableau.append((_(u"PrÃ©nom"), Paragraph(DICT_VALEURS["{INDIVIDU_PRENOM}"], paraStyle)))
+                        dataTableau.append((_(u"ActivitÃ©"), Paragraph(DICT_VALEURS["{ACTIVITE_NOM_LONG}"], paraStyle)))
                         dataTableau.append((_(u"Groupe"), Paragraph(DICT_VALEURS["{GROUPE_NOM_LONG}"], paraStyle)))
-                        dataTableau.append((_(u"Catégorie"), Paragraph(DICT_VALEURS["{NOM_CATEGORIE_TARIF}"], paraStyle)))
+                        dataTableau.append((_(u"CatÃ©gorie"), Paragraph(DICT_VALEURS["{NOM_CATEGORIE_TARIF}"], paraStyle)))
 
                         style = TableStyle([
                             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),

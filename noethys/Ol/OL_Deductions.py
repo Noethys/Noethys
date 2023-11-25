@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -18,7 +18,7 @@ import datetime
 import GestionDB
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 from Utils import UTILS_Interface
@@ -40,7 +40,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.IDcompte_payeur = kwds.pop("IDcompte_payeur", None)
         self.IDprestation = kwds.pop("IDprestation", None)
         self.modificationsVirtuelles = kwds.pop("modificationsVirtuelles", True)
@@ -95,7 +95,7 @@ class ListView(FastObjectListView):
         return dictDeductions
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeID = None
         listeListeView = []
         for IDdeduction, item in self.dictDeductions.items() :
@@ -130,7 +130,7 @@ class ListView(FastObjectListView):
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucune déduction"))
+        self.SetEmptyListMsg(_(u"Aucune dÃ©duction"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -144,7 +144,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -163,7 +163,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDdeduction
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ajouter
@@ -193,8 +193,8 @@ class ListView(FastObjectListView):
                 
         menuPop.AppendSeparator()
     
-        # Génération automatique des fonctions standards
-        self.GenerationContextMenu(menuPop, titre=_(u"Liste des déductions"))
+        # GÃ©nÃ©ration automatique des fonctions standards
+        self.GenerationContextMenu(menuPop, titre=_(u"Liste des dÃ©ductions"))
 
         self.PopupMenu(menuPop)
         menuPop.Destroy()
@@ -206,7 +206,7 @@ class ListView(FastObjectListView):
             newLabel = dlg.GetLabel()
             newMontant = dlg.GetMontant()
             if self.modificationsVirtuelles == False :
-                # Ajout direct dans la base de données
+                # Ajout direct dans la base de donnÃ©es
                 DB = GestionDB.DB()
                 listeDonnees = [    
                     ("IDprestation", self.IDprestation),
@@ -231,7 +231,7 @@ class ListView(FastObjectListView):
                 self.dictDeductions[IDdeduction]["etat"] = "AJOUT"
                 self.prochainIDdeduction -= 1
         
-            # MAJ du contrôle
+            # MAJ du contrÃ´le
             self.MAJ(IDdeduction)
             
             # MAJ du montant de la prestation
@@ -242,7 +242,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune déduction à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune dÃ©duction Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -257,7 +257,7 @@ class ListView(FastObjectListView):
             newLabel = dlg.GetLabel()
             newMontant = dlg.GetMontant()
             if self.modificationsVirtuelles == False :
-                # Modification directes dans la base de données
+                # Modification directes dans la base de donnÃ©es
                 DB = GestionDB.DB()
                 listeDonnees = [    
                     ("label", newLabel),
@@ -276,21 +276,21 @@ class ListView(FastObjectListView):
             
         dlg.Destroy() 
         
-        # MAJ du contrôle
+        # MAJ du contrÃ´le
         self.MAJ(IDdeduction)
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune déduction à supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune dÃ©duction Ã  supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDdeduction = self.Selection()[0].IDdeduction
         montant = self.Selection()[0].montant
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette déduction ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette dÃ©duction ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             if self.modificationsVirtuelles == False :
-                # Suppression dans la base de données
+                # Suppression dans la base de donnÃ©es
                 DB = GestionDB.DB()
                 DB.ReqDEL("deductions", "IDdeduction", IDdeduction)
                 DB.Close() 
@@ -331,7 +331,7 @@ class ListView(FastObjectListView):
 ##            print montantPrestation, totalDeductions
     
     def GetTotalDeductions(self):
-        """ Est utilisée par la DLG_Saisie_prestation pour connaître le montant total des déductions """
+        """ Est utilisÃ©e par la DLG_Saisie_prestation pour connaÃ®tre le montant total des dÃ©ductions """
         total = 0.0
         for IDdeduction, dictDeduction in self.dictDeductions.items() :
             if dictDeduction["etat"] != "SUPPR" :
@@ -340,7 +340,7 @@ class ListView(FastObjectListView):
         
     
     def Sauvegarde(self, IDprestation=None):
-        """ Effectue une sauvegarde des données SI on est en mode MODIFICATIONS VIRTUELLES """
+        """ Effectue une sauvegarde des donnÃ©es SI on est en mode MODIFICATIONS VIRTUELLES """
         DB = GestionDB.DB()
         
         for IDdeduction, dictDeduction in self.dictDeductions.items() :
@@ -382,7 +382,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(_(u"Rechercher une déduction..."))
+        self.SetDescriptiveText(_(u"Rechercher une dÃ©duction..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

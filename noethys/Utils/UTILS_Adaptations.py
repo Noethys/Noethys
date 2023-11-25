@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -21,7 +21,7 @@ def Import(nom_module=""):
     except ImportError:
         pass
 
-    # Recherche si le module est dÈj‡ chargÈ
+    # Recherche si le module est d√©j√† charg√©
     if nom_module in sys.modules:
         module = sys.modules[nom_module]
         return module

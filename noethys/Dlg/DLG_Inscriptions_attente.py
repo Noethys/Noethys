@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -31,15 +31,15 @@ class Dialog(wx.Dialog):
         if self.mode == "attente" :
             label = _(u"en attente")
         else :
-            label = _(u"refusées")
+            label = _(u"refusÃ©es")
         
-        intro = _(u"Vous pouvez ici consulter la liste des inscriptions %s. Si une coche verte apparaît en début de ligne, cela signifie qu'une place s'est libérée pour cet individu. Cliquez alors sur l'individu souhaité avec le bouton droit de la souris puis sélectionnez dans le menu contextuel la commande 'Ouvrir la fiche Famille'...") % label
+        intro = _(u"Vous pouvez ici consulter la liste des inscriptions %s. Si une coche verte apparaÃ®t en dÃ©but de ligne, cela signifie qu'une place s'est libÃ©rÃ©e pour cet individu. Cliquez alors sur l'individu souhaitÃ© avec le bouton droit de la souris puis sÃ©lectionnez dans le menu contextuel la commande 'Ouvrir la fiche Famille'...") % label
         titre = _(u"Inscriptions %s") % label
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Liste_attente.png")
 
-        # Périodes
-        self.staticbox_periodes_staticbox = wx.StaticBox(self, -1, _(u"Période"))
+        # PÃ©riodes
+        self.staticbox_periodes_staticbox = wx.StaticBox(self, -1, _(u"PÃ©riode"))
         self.ctrl_periodes = CTRL_Grille_periode.CTRL(self)
         self.ctrl_periodes.SetMinSize((220, 230))
 
@@ -47,7 +47,7 @@ class Dialog(wx.Dialog):
         self.staticbox_periodes_staticbox.Show(False)
         self.ctrl_periodes.Show(False)
 
-        # Résultats
+        # RÃ©sultats
         self.staticbox_resultats_staticbox = wx.StaticBox(self, -1, titre)
         self.ctrl_attente = CTRL_Inscriptions_attente.CTRL(self, liste_activites=liste_activites, mode=self.mode)
         self.ctrl_attente.SetMinSize((100, 100))
@@ -68,9 +68,9 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.bouton_ouvrir_fiche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la fiche famille de l'individu sélectionné dans la liste")))
+        self.bouton_ouvrir_fiche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la fiche famille de l'individu sÃ©lectionnÃ© dans la liste")))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer cette liste (PDF)")))
-        self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter les résultats au format MS Excel")))
+        self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter les rÃ©sultats au format MS Excel")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((805, 600))
@@ -81,12 +81,12 @@ class Dialog(wx.Dialog):
 
         grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=3, vgap=10, hgap=10)
 
-        # Période
+        # PÃ©riode
         staticbox_periodes = wx.StaticBoxSizer(self.staticbox_periodes_staticbox, wx.VERTICAL)
         staticbox_periodes.Add(self.ctrl_periodes, 1, wx.EXPAND|wx.ALL, 5)
         grid_sizer_contenu.Add(staticbox_periodes, 1, wx.EXPAND, 0)
 
-        # Résultats
+        # RÃ©sultats
         staticbox_resultats = wx.StaticBoxSizer(self.staticbox_resultats_staticbox, wx.VERTICAL)
         grid_sizer_resultats = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_resultats.Add(self.ctrl_attente, 0, wx.EXPAND, 0)

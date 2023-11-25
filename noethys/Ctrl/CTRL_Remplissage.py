@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -38,12 +38,12 @@ from Utils import UTILS_Config
 from Utils import UTILS_Texte
 from Utils import UTILS_Dates
 
-# Colonnes unités
+# Colonnes unitÃ©s
 LARGEUR_COLONNE_UNITE = 60
 ABREGE_GROUPES = 0
 AFFICHE_TOTAUX = 1
 
-# Colonnes Activités
+# Colonnes ActivitÃ©s
 LARGEUR_COLONNE_ACTIVITE = 18
 COULEUR_COLONNE_ACTIVITE = (205, 144, 233)
 
@@ -61,9 +61,9 @@ COULEUR_FERME = (220, 220, 220)
 
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -89,7 +89,7 @@ class CaseSeparationActivite():
             if grid.dictActivites != None :
                 labelActivite = grid.dictActivites[IDactivite]["nom"]
             else:
-                labelActivite = _(u"Activité ID%d") % IDactivite
+                labelActivite = _(u"ActivitÃ© ID%d") % IDactivite
         grid.SetCellValue(numLigne, numColonne, labelActivite)
         grid.SetCellAlignment(numLigne, numColonne, wx.ALIGN_RIGHT, wx.ALIGN_CENTRE)
         grid.SetCellRenderer(numLigne, numColonne, self.renderer)
@@ -110,7 +110,7 @@ class Evenement():
     def __init__(self, case=None, dict_evenement=None):
         self.case = case
 
-        # Caractéristiques de l'évènement
+        # CaractÃ©ristiques de l'Ã©vÃ¨nement
         self.IDevenement = dict_evenement["IDevenement"]
         self.IDactivite = dict_evenement["IDactivite"]
         self.IDunite = dict_evenement["IDunite"]
@@ -174,7 +174,7 @@ class Evenement():
 
     def GetCouleur(self):
         """ Retourn la couleur de fond du bouton """
-        # Recherche nbre places évènements
+        # Recherche nbre places Ã©vÃ¨nements
         dictPlacesEvenement = self.GetPlacesEvenement()
         if dictPlacesEvenement["nbrePlacesInitial"] != None :
             if dictPlacesEvenement["nbrePlacesRestantes"] == None or dictPlacesEvenement["nbrePlacesRestantes"] > 0 :
@@ -235,16 +235,16 @@ class Case():
         self.estTotal = estTotal
         self.total = total
 
-        # Création des évènements
+        # CrÃ©ation des Ã©vÃ¨nements
         self.liste_evenements = self.CreationEvenements()
 
-        # Recherche si l'activité est ouverte
+        # Recherche si l'activitÃ© est ouverte
         self.ouvert = self.EstOuvert()
 
-        # Récupère les infos de remplissage de la case
+        # RÃ©cupÃ¨re les infos de remplissage de la case
         self.dictInfosPlaces = self.GetInfosPlaces() 
         
-        # Définition des couleurs de la case
+        # DÃ©finition des couleurs de la case
         self.couleurFond = self.GetCouleur()
 
         # Dessin de la case
@@ -275,8 +275,8 @@ class Case():
         return len(self.liste_evenements)
 
     def CreationEvenements(self):
-        """ Génère les évènements """
-        # Recherche les évènements dans toutes les unités de conso associées à l'unité de remplissage
+        """ GÃ©nÃ¨re les Ã©vÃ¨nements """
+        # Recherche les Ã©vÃ¨nements dans toutes les unitÃ©s de conso associÃ©es Ã  l'unitÃ© de remplissage
         liste_donnees = []
         for IDunite, listeUnitesRemplissage in self.grid.dictUnitesRemplissage.items() :
             if self.IDunite in listeUnitesRemplissage :
@@ -315,7 +315,7 @@ class Case():
         except : 
             nbreAttente = 0
 
-        # Récupère le nombre de places restantes pour l'ensemble des groupes
+        # RÃ©cupÃ¨re le nombre de places restantes pour l'ensemble des groupes
         nbrePlacesInitialTousGroupes = 0
         try :
             nbrePlacesInitialTousGroupes = self.grid.dictRemplissage[IDunite_remplissage][self.date][None]["nbrePlacesInitial"]
@@ -337,7 +337,7 @@ class Case():
                 #nbrePlacesPrises = nbrePlacesPrisesTousGroupes
                 nbrePlacesRestantes = nbrePlacesRestantesTousGroupes
 
-        # Création d'un dictionnaire de réponses
+        # CrÃ©ation d'un dictionnaire de rÃ©ponses
         dictInfosPlaces = {
             "nbrePlacesInitial" : nbrePlacesInitial, 
             "nbrePlacesPrises" : nbrePlacesPrises, 
@@ -348,11 +348,11 @@ class Case():
         return dictInfosPlaces
                 
     def GetCouleur(self):
-        """ Obtient la couleur à appliquer à la case """    
+        """ Obtient la couleur Ã  appliquer Ã  la case """    
         if self.estTotal == True :
             return COULEUR_COLONNE_TOTAL
 
-        # Si fermée
+        # Si fermÃ©e
         if self.ouvert == False : return COULEUR_FERME
 
         if self.dictInfosPlaces["nbrePlacesInitial"] != None :
@@ -365,7 +365,7 @@ class Case():
         return COULEUR_NORMAL
         
     def EstOuvert(self):
-        """ Recherche si l'unité est ouverte à cette date """
+        """ Recherche si l'unitÃ© est ouverte Ã  cette date """
         ouvert = False
         if self.date in self.grid.dictOuvertures:
             if self.IDgroupe in self.grid.dictOuvertures[self.date]:
@@ -386,15 +386,15 @@ class Case():
         # Heures de la consommation
         if self.etat in ("reservation", "attente", "present") :
             if self.heure_debut == None or self.heure_fin == None :
-                texte += _(u"Horaire de la consommation non spécifié\n")
+                texte += _(u"Horaire de la consommation non spÃ©cifiÃ©\n")
             else:
-                texte += _(u"De %s à %s\n") % (self.heure_debut.replace(":","h"), self.heure_fin.replace(":","h"))
+                texte += _(u"De %s Ã  %s\n") % (self.heure_debut.replace(":","h"), self.heure_fin.replace(":","h"))
             texte += _(u"Sur le groupe %s \n") % self.grid.dictGroupes[self.IDgroupe]["nom"]
         texte += u"-------------------------------------------------------------------\n" 
         
-        # Si unité fermée
+        # Si unitÃ© fermÃ©e
         if self.ouvert == False :
-            return _(u"Unité fermée")
+            return _(u"UnitÃ© fermÃ©e")
         # Nbre de places
         if self.dictInfosPlaces != None :
             nbrePlacesInitial = self.dictInfosPlaces["nbrePlacesInitial"]
@@ -413,7 +413,7 @@ class Case():
         texte += "-------------------------------------------------------------------\n"
         if self.etat in ("reservation", "attente", "present") :
             date_saisie_FR = DateComplete(self.date_saisie)
-            if self.etat == "reservation" or self.etat == "present" : texte += _(u"Consommation réservée le %s\n") % date_saisie_FR
+            if self.etat == "reservation" or self.etat == "present" : texte += _(u"Consommation rÃ©servÃ©e le %s\n") % date_saisie_FR
             if self.etat == "attente" : texte += _(u"Consommation mise en attente le %s\n") % date_saisie_FR
             if self.IDutilisateur != None :
                 texte += _(u"Par l'utilisateur ID%d\n") % self.IDutilisateur
@@ -435,7 +435,7 @@ class Case():
         nom_categorie_tarif = self.dictInfosInscriptions["nom_categorie_tarif"]
         if self.etat in ("reservation", "absent", "present") :
             texte += "-------------------------------------------------------------------\n"
-            texte += _(u"Catégorie de tarif : '%s'\n") % nom_categorie_tarif
+            texte += _(u"CatÃ©gorie de tarif : '%s'\n") % nom_categorie_tarif
         
         return texte
     
@@ -443,7 +443,7 @@ class Case():
         if self.ouvert == False :
             return
         
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item IDENTIFICATION DE LA CASE
@@ -461,7 +461,7 @@ class Case():
             menuPop.AppendItem(item)
             if self.etat == "reservation" : item.Check(True)
             self.grid.Bind(wx.EVT_MENU, self.SetPresentAbsent, id=60)
-            item = wx.MenuItem(menuPop, 70, _(u"Présent"), kind=wx.ITEM_RADIO)
+            item = wx.MenuItem(menuPop, 70, _(u"PrÃ©sent"), kind=wx.ITEM_RADIO)
             menuPop.AppendItem(item)
             if self.etat == "present" : item.Check(True)
             self.grid.Bind(wx.EVT_MENU, self.SetPresentAbsent, id=70)
@@ -472,7 +472,7 @@ class Case():
         
         if self.etat in ("reservation", "attente", "refus") :
             menuPop.AppendSeparator()
-            item = wx.MenuItem(menuPop, 30, _(u"Réservation"), kind=wx.ITEM_RADIO)
+            item = wx.MenuItem(menuPop, 30, _(u"RÃ©servation"), kind=wx.ITEM_RADIO)
             menuPop.AppendItem(item)
             if self.etat == "reservation" : item.Check(True)
             self.grid.Bind(wx.EVT_MENU, self.SetEtat, id=30)
@@ -500,10 +500,10 @@ class Case():
                 if self.IDgroupe == IDgroupe : item.Check(True)
                 self.grid.Bind(wx.EVT_MENU, self.SetGroupe, id=IDitem)
                 
-        # Détail de la consommation
+        # DÃ©tail de la consommation
         if self.etat in ("reservation", "present", "absent", "attente", "refus") :
             menuPop.AppendSeparator()
-            item = wx.MenuItem(menuPop, 20, _(u"Détail de la consommation"))
+            item = wx.MenuItem(menuPop, 20, _(u"DÃ©tail de la consommation"))
             bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Calendrier_zoom.png"), wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
@@ -517,7 +517,7 @@ class Case():
 ##            menuPop.AppendItem(item)
 ##            self.grid.Bind(wx.EVT_MENU, self.Verrouillage, id=10)
 ##        if self.verrouillage == 1 and self.etat != None :
-##            item = wx.MenuItem(menuPop, 10, _(u"Déverrouiller cette consommation"))
+##            item = wx.MenuItem(menuPop, 10, _(u"DÃ©verrouiller cette consommation"))
 ##            bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Cadenas.png"), wx.BITMAP_TYPE_PNG)
 ##            item.SetBitmap(bmp)
 ##            menuPop.AppendItem(item)
@@ -545,7 +545,7 @@ class Ligne():
         self.couleurFermeture = "#F7ACB2"
         couleurVacances = "#F3FD89"
         
-        # Création du label de ligne
+        # CrÃ©ation du label de ligne
         self.grid.SetRowLabelValue(numLigne, self.labelLigne)
         if self.EstEnVacances(self.date) == True :
             couleurCase = couleurVacances
@@ -555,7 +555,7 @@ class Ligne():
         self.grid.SetRowLabelRenderer(numLigne, self.renderer)
         self.grid.dictLignes[numLigne] = self.renderer
         
-        # Création des cases
+        # CrÃ©ation des cases
         self.dictCases = {}
         self.dictTotaux = {}
         nbre_evenements = 0
@@ -563,13 +563,13 @@ class Ligne():
         numColonne = 0
         for IDactivite in self.grid.listeActivites :
             
-            # Création de la colonne activité
+            # CrÃ©ation de la colonne activitÃ©
             if len(self.grid.listeActivites) > 1 and IDactivite in dictGroupeTemp :
                 case = CaseSeparationActivite(self, self.grid, self.numLigne, numColonne, IDactivite)
                 self.dictCases[numColonne] = case
                 numColonne += 1
                 
-            # Création des cases unités de remplissage
+            # CrÃ©ation des cases unitÃ©s de remplissage
             if IDactivite in dictGroupeTemp:
                 for IDgroupe in dictGroupeTemp[IDactivite] :
                     if IDactivite in dictListeRemplissage :
@@ -583,7 +583,7 @@ class Ligne():
                             self.dictCases[numColonne] = case
                             numColonne += 1
                         
-            # Création des colonnes totaux
+            # CrÃ©ation des colonnes totaux
             if AFFICHE_TOTAUX == 1 and IDactivite in dictListeRemplissage and IDactivite in dictGroupeTemp :
                 if len(dictListeRemplissage[IDactivite]) > 0 and len(dictGroupeTemp[IDactivite]) > 0 :
                     for ordre, IDunite_remplissage in dictListeRemplissage[IDactivite] :
@@ -612,7 +612,7 @@ class Ligne():
         return False
 
     def OnContextMenu(self):
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item IDENTIFICATION DE LA LIGNE
@@ -629,7 +629,7 @@ class Ligne():
 ##        menuPop.AppendItem(item)
 ##        self.grid.Bind(wx.EVT_MENU, self.Verrouillage, id=10)
 ##        
-##        item = wx.MenuItem(menuPop, 20, _(u"Déverrouiller toutes les consommations"))
+##        item = wx.MenuItem(menuPop, 20, _(u"DÃ©verrouiller toutes les consommations"))
 ##        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Cadenas.png"), wx.BITMAP_TYPE_PNG)
 ##        item.SetBitmap(bmp)
 ##        menuPop.AppendItem(item)
@@ -643,10 +643,10 @@ class Ligne():
                     nbreCasesReservations += 1
                     
         if nbreCasesReservations > 0 :
-            item = wx.MenuItem(menuPop, 30, _(u"Définir toutes les pointages de la ligne comme 'Pointage en attente'"))
+            item = wx.MenuItem(menuPop, 30, _(u"DÃ©finir toutes les pointages de la ligne comme 'Pointage en attente'"))
             menuPop.AppendItem(item)
             self.grid.Bind(wx.EVT_MENU, self.SetPresentAbsent, id=30)
-            item = wx.MenuItem(menuPop, 40, _(u"Pointer toutes les consommations de la ligne sur 'Présent'"))
+            item = wx.MenuItem(menuPop, 40, _(u"Pointer toutes les consommations de la ligne sur 'PrÃ©sent'"))
             bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok.png"), wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
@@ -686,7 +686,7 @@ class RendererCase(GridCellRenderer):
         largeurTexte, hauteurTexte = dc.GetTextExtent(texte)
         if self.case.ouvert == True or self.case.estTotal == True :
             self.DrawBorder(grid, dc, rect)
-        dc.DrawText(texte, rect[0] + rect[2]/2.0 - largeurTexte/2.0, rect[1] + rect[3]/2.0 - hauteurTexte/2.0)            
+        dc.DrawText(texte, int(rect[0] + rect[2]/2.0 - largeurTexte/2.0), int(rect[1] + rect[3]/2.0 - hauteurTexte/2.0))
             
     def MAJ(self):
         self.grid.Refresh()
@@ -718,12 +718,12 @@ class RendererCase(GridCellRenderer):
         dc.DrawLine(left+1, top, right, top)
     
     def AdapteTailleTexte(self, dc, texte, tailleMaxi):
-        """ Raccourcit le texte de l'intitulé en fonction de la taille donnée """
-        # Pas de retouche nécessaire
+        """ Raccourcit le texte de l'intitulÃ© en fonction de la taille donnÃ©e """
+        # Pas de retouche nÃ©cessaire
         if dc.GetTextExtent(texte)[0] < tailleMaxi : return texte
         # Renvoie aucun texte si tailleMaxi trop petite
         if tailleMaxi <= dc.GetTextExtent("W...")[0] : return "..."
-        # Retouche nécessaire
+        # Retouche nÃ©cessaire
         tailleTexte = dc.GetTextExtent(texte)[0]
         texteTemp = ""
         texteTemp2 = ""
@@ -745,7 +745,7 @@ class RendererCaseEvenement(GridCellRenderer):
     def Draw(self, grid, attr, dc, rect, row, col, isSelected):
         self.grid = grid
 
-        # Préparation du buffer Image
+        # PrÃ©paration du buffer Image
         dcGrid = dc
         if 'phoenix' in wx.PlatformInfo:
             bmp = wx.Bitmap(rect.GetWidth(), rect.GetHeight())
@@ -798,7 +798,7 @@ class RendererCaseEvenement(GridCellRenderer):
             largeurTexte, hauteurTexte = gc.GetTextExtent(texte)
             rect_texte = self.DrawTexte(gc, rectEvenement, texte, couleur=couleur_nom, position=(rectEvenement.width - largeurTexte -4, 2), font=font)
 
-            # Dessin du nom de l'évènement
+            # Dessin du nom de l'Ã©vÃ¨nement
             couleur_nom = wx.Colour(150, 150, 150)
             rectTemp = wx.Rect(rectEvenement.x, rectEvenement.y, rectEvenement.width - largeurTexte, rectEvenement.height)
             rect_texte = self.DrawTexte(gc, rectTemp, evenement.nom, couleur=couleur_nom, position=(4, 2), font=wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL))
@@ -971,7 +971,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.dictLignes = {}
         self.SetModeAffichage("nbrePlacesPrises")
         self.moveTo = None
-        tip = _(u"Double-cliquez sur une case contenant des valeurs pour consulter la liste des consommations associées")
+        tip = _(u"Double-cliquez sur une case contenant des valeurs pour consulter la liste des consommations associÃ©es")
         try :
             self.GetGridWindow().SetToolTip(tip)
         except :
@@ -987,7 +987,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         global AFFICHE_TOTAUX
         AFFICHE_TOTAUX = UTILS_Config.GetParametre("remplissage_affiche_totaux", 1)
 
-        # Création initiale de la grille
+        # CrÃ©ation initiale de la grille
         self.CreateGrid(0, 0)
         self.SetRowLabelSize(180)
         self.EnableGridLines(False)
@@ -1005,7 +1005,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 ##        self.Bind(gridlib.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
 ##        self.GetGridWindow().Bind(wx.EVT_MOTION, self.OnMouseOver)
 
-        # Dict de données de sélection
+        # Dict de donnÃ©es de sÃ©lection
         self.dictDonnees = dictDonnees
 
     def SetDictDonnees(self, dictDonnees=None):
@@ -1016,7 +1016,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             self.SetModeAffichage(self.dictDonnees["modeAffichage"])
                         
     def Tests(self):
-        """ Commande de test pour le développement """
+        """ Commande de test pour le dÃ©veloppement """
         # Param pour les tests
         self.listeActivites = [1,]
         self.listePeriodes = [(datetime.date(2018, 10, 1), datetime.date(2018, 10, 31)),]
@@ -1044,7 +1044,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     def MAJ_donnees(self):
         if self.dictDonnees != None :
             self.SetDictDonnees(self.dictDonnees)
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         self.DB = GestionDB.DB() 
         self.dictActivites = self.Importation_activites()
         self.dictOuvertures, listeUnitesUtilisees, self.listeGroupesUtilises = self.GetDictOuvertures(self.listeActivites, self.listePeriodes)
@@ -1063,9 +1063,9 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.Refresh()
                 
     def InitGrid(self):
-        # ----------------- Création des colonnes -------------------------
+        # ----------------- CrÃ©ation des colonnes -------------------------
         
-        # Récupération des groupes
+        # RÃ©cupÃ©ration des groupes
         dictGroupeTemp = {}
         for IDgroupe, dictGroupe in self.dictGroupes.items() : 
             IDactivite = dictGroupe["IDactivite"]
@@ -1081,7 +1081,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 listeTemp.append(IDgroupe)
             dictGroupeTemp[IDactivite] = listeTemp
             
-        # Récupération des unités de remplissage
+        # RÃ©cupÃ©ration des unitÃ©s de remplissage
         dictListeRemplissage = {}
         for IDunite_remplissage, dictRemplissage in self.dictRemplissage.items() :
             if "IDactivite" in dictRemplissage :
@@ -1096,7 +1096,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         
         nbreColonnes = 0
         for IDactivite in self.listeActivites :
-            # Compte colonne titre activité
+            # Compte colonne titre activitÃ©
             if len(self.listeActivites) > 1 and IDactivite in dictGroupeTemp :
                 nbreColonnes += 1
             if IDactivite in dictGroupeTemp :
@@ -1114,7 +1114,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         listeColonnesActivites = []
         for IDactivite in self.listeActivites :
 
-            # Création de la colonne activité
+            # CrÃ©ation de la colonne activitÃ©
             if len(self.listeActivites) > 1 and IDactivite in dictGroupeTemp :
                 renderer = MyColLabelRenderer("activite", COULEUR_COLONNE_ACTIVITE)
                 self.SetColLabelRenderer(numColonne, renderer)
@@ -1123,7 +1123,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 listeColonnesActivites.append(numColonne)
                 numColonne += 1
 
-            # Création des colonnes unités
+            # CrÃ©ation des colonnes unitÃ©s
             if IDactivite in dictGroupeTemp:
 
                 # Parcours des groupes
@@ -1146,7 +1146,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                             self.SetColLabelValue(numColonne, labelColonne)
                             numColonne += 1
 
-                    # Création des colonnes totaux
+                    # CrÃ©ation des colonnes totaux
                     if AFFICHE_TOTAUX == 1 and len(dictListeRemplissage[IDactivite]) > 0 and len(dictGroupeTemp[IDactivite]) > 0 :
                         for ordre, IDunite_remplissage in dictListeRemplissage[IDactivite] :
                             renderer = MyColLabelRenderer("unite", None)
@@ -1157,7 +1157,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                             self.SetColLabelValue(numColonne, labelColonne)
                             numColonne += 1
         
-        # ------------------ Création des lignes -----------------------------
+        # ------------------ CrÃ©ation des lignes -----------------------------
         
         # Tri des dates
         listeDatesTmp = list(self.dictOuvertures.keys())
@@ -1170,12 +1170,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # Calcul du nombre de lignes
         self.AppendRows(nbreDates)
         
-        # Span des colonnes Activités
+        # Span des colonnes ActivitÃ©s
         if nbreDates > 0 :
             for numColonneActivite in listeColonnesActivites :
                 self.SetCellSize(0, numColonneActivite, nbreDates, 1)
         
-        # Création des lignes
+        # CrÃ©ation des lignes
         self.dictLignes = {}
         numLigne = 0
         for dateDD in listeDates :
@@ -1268,7 +1268,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         if len(listeUnitesUtilisees) == 0 : conditionSQL = "()"
         elif len(listeUnitesUtilisees) == 1 : conditionSQL = "(%d)" % listeUnitesUtilisees[0]
         else : conditionSQL = str(tuple(listeUnitesUtilisees))
-        # Récupère la liste des unités
+        # RÃ©cupÃ¨re la liste des unitÃ©s
         req = """SELECT IDunite, IDactivite, nom, abrege, type, heure_debut, heure_fin, date_debut, date_fin, ordre, touche_raccourci
         FROM unites 
         WHERE IDunite IN %s
@@ -1282,7 +1282,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             else:
                 dictListeUnites[IDactivite] = [dictTemp,]
             dictUnites[IDunite] = dictTemp
-        # Récupère les incompatibilités entre unités
+        # RÃ©cupÃ¨re les incompatibilitÃ©s entre unitÃ©s
 ##        req = """SELECT IDunite_incompat, IDunite, IDunite_incompatible
 ##        FROM unites_incompat;"""
 ##        self.DB.ExecuterReq(req)
@@ -1306,7 +1306,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         elif len(listeActivites) == 1 : conditionActivites = "(%d)" % listeActivites[0]
         else : conditionActivites = str(tuple(listeActivites))
 
-        # Importation des évènements
+        # Importation des Ã©vÃ¨nements
         req = """SELECT IDevenement, IDactivite, IDunite, IDgroupe, date, nom, description, capacite_max, heure_debut, heure_fin
         FROM evenements 
         WHERE IDactivite IN %s %s
@@ -1380,7 +1380,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         elif len(listeActivites) == 1 : conditionActivites = "(%d)" % listeActivites[0]
         else : conditionActivites = str(tuple(listeActivites))
         
-        # Récupération des unités de remplissage
+        # RÃ©cupÃ©ration des unitÃ©s de remplissage
         req = """SELECT IDunite_remplissage_unite, IDunite_remplissage, IDunite
         FROM unites_remplissage_unites; """ 
         self.DB.ExecuterReq(req)
@@ -1391,7 +1391,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             else:
                 dictUnitesRemplissage[IDunite].append(IDunite_remplissage)
                                 
-        # Récupération des unités de remplissage
+        # RÃ©cupÃ©ration des unitÃ©s de remplissage
         req = """SELECT IDunite_remplissage, IDactivite, ordre, nom, abrege, date_debut, date_fin, seuil_alerte, heure_min, heure_max, etiquettes, largeur
         FROM unites_remplissage 
         WHERE IDactivite IN %s %s
@@ -1402,7 +1402,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         for IDunite_remplissage, IDactivite, ordre, nom, abrege, date_debut, date_fin, seuil_alerte, heure_min, heure_max, etiquettes, largeur in listeUnitesRemplissage :
             etiquettes = UTILS_Texte.ConvertStrToListe(etiquettes)
 
-            # Mémorise l'unité de remplissage
+            # MÃ©morise l'unitÃ© de remplissage
             dictRemplissage[IDunite_remplissage] = {"IDactivite" : IDactivite,
                                                                         "ordre" : ordre,
                                                                         "nom" : nom,
@@ -1416,7 +1416,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                                                         "largeur" : largeur,
                                                                         }
                                                                         
-        # Récupération des paramètres de remplissage
+        # RÃ©cupÃ©ration des paramÃ¨tres de remplissage
         req = """SELECT IDremplissage, IDactivite, IDunite_remplissage, IDgroupe, date, places
         FROM remplissage 
         WHERE IDactivite IN %s %s
@@ -1434,7 +1434,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             if (IDgroupe in dictRemplissage[IDunite_remplissage][dateDD]) == False:
                 dictRemplissage[IDunite_remplissage][dateDD][IDgroupe] = dictValeursTemp
 
-        # Récupération des consommations existantes 
+        # RÃ©cupÃ©ration des consommations existantes 
         req = """SELECT IDconso, IDactivite, date, IDunite, IDgroupe, heure_debut, heure_fin, consommations.etat, quantite, etiquettes, IDevenement
         FROM consommations 
         WHERE IDactivite IN %s %s; """ % (conditionActivites, conditionDates)
@@ -1444,17 +1444,17 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             dateDD = DateEngEnDateDD(date)
             etiquettesConso = UTILS_Texte.ConvertStrToListe(etiquettesConso)
 
-            # Mémorisation spéciale si c'est un évènement
+            # MÃ©morisation spÃ©ciale si c'est un Ã©vÃ¨nement
             if IDevenement != None and etat in ["reservation", "present", "attente"] :
                 if (IDevenement in dictRemplissageEvenements) == False:
                     dictRemplissageEvenements[IDevenement] = {"reservation": 0, "present": 0, "attente": 0}
                 dictRemplissageEvenements[IDevenement][etat] += 1
 
-            # Quantité
+            # QuantitÃ©
             if quantite == None :
                 quantite = 1
                         
-            # Mémorisation des nbre de places
+            # MÃ©morisation des nbre de places
             if IDunite in dictUnitesRemplissage :
                 for IDunite_remplissage in dictUnitesRemplissage[IDunite] :
                     if (IDunite_remplissage in dictRemplissage) == False :
@@ -1467,11 +1467,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         dictRemplissage[IDunite_remplissage][dateDD][IDgroupe]["nbrePlacesPrises"] = 0
                         dictRemplissage[IDunite_remplissage][dateDD][IDgroupe]["listeConsoPresents"] = []
 
-                    # Réservations
+                    # RÃ©servations
                     if etat in ["reservation", "present"] :
                         valide = True
                         
-                        # Vérifie s'il y a une plage horaire conditionnelle :
+                        # VÃ©rifie s'il y a une plage horaire conditionnelle :
                         try :
                             heure_min = dictRemplissage[IDunite_remplissage]["heure_min"]
                             heure_max = dictRemplissage[IDunite_remplissage]["heure_max"]
@@ -1488,7 +1488,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         except :
                             pass
                         
-                        # Vérifie si condition étiquettes
+                        # VÃ©rifie si condition Ã©tiquettes
                         if "etiquettes" in dictRemplissage[IDunite_remplissage] :
                             etiquettes = dictRemplissage[IDunite_remplissage]["etiquettes"]
                             if len(etiquettes) > 0 :
@@ -1496,12 +1496,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                 if len(etiquettesCommunes) == 0 :
                                     valide = False
 
-                        # Mémorisation de la place prise
+                        # MÃ©morisation de la place prise
                         if valide == True :
                             dictRemplissage[IDunite_remplissage][dateDD][IDgroupe]["nbrePlacesPrises"] += quantite
                             dictRemplissage[IDunite_remplissage][dateDD][IDgroupe]["listeConsoPresents"].append(IDconso)
 
-                    # Mémorisation des places sur liste d'attente
+                    # MÃ©morisation des places sur liste d'attente
                     if etat == "attente" :
                         if (dateDD in dictConsoAttente) == False :
                             dictConsoAttente[dateDD] = {}
@@ -1512,7 +1512,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         else:
                             dictConsoAttente[dateDD][IDgroupe][IDunite_remplissage] += quantite
 
-        # Renvoie les données
+        # Renvoie les donnÃ©es
         return dictRemplissage, dictUnitesRemplissage, dictConsoAttente, dictRemplissageEvenements
     
 
@@ -1571,7 +1571,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         return dictActivites
     
     def GetEtatPlaces(self):
-        """ Fonction qui sert au DLG_Attente pour savoir si des places se sont libérées """
+        """ Fonction qui sert au DLG_Attente pour savoir si des places se sont libÃ©rÃ©es """
         dictEtatPlaces = {}
         # Parcours les lignes
         for numLigne, ligne in self.dictLignes.items() :
@@ -1584,7 +1584,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     IDgroupe = case.IDgroupe
                     IDuniteRemplissage = case.IDunite
                     IDactivite = case.IDactivite
-                    # Mémorisation dans un dict
+                    # MÃ©morisation dans un dict
                     if len(liste_evenements) > 0 :
                         listeTemp = [(evenement.IDevenement, evenement) for evenement in liste_evenements]
                     else :
@@ -1628,7 +1628,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         nbreLignes = self.GetNumberRows()
         nbreColonnes = self.GetNumberCols()
         if nbreLignes == 0 or nbreColonnes == 0 :
-            dlg = wx.MessageDialog(self, _(u"Il n'y a rien à imprimer !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a rien Ã  imprimer !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return None
@@ -1693,11 +1693,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         printout2 = prt.GetPrintout()
         preview = wx.PrintPreview(printout, printout2, data)
         if not preview.Ok():
-            wx.MessageBox(_(u"Désolé, un problème a été rencontré dans l'aperçu avant impression..."), "Erreur", wx.OK)
+            wx.MessageBox(_(u"DÃ©solÃ©, un problÃ¨me a Ã©tÃ© rencontrÃ© dans l'aperÃ§u avant impression..."), "Erreur", wx.OK)
             return
 ##        frm = UTILS_Printer.PreviewFrame(preview, None)
         frame = wx.GetApp().GetTopWindow() 
-        frm = wx.PreviewFrame(preview, None, _(u"Aperçu avant impression"))
+        frm = wx.PreviewFrame(preview, None, _(u"AperÃ§u avant impression"))
         frm.Initialize()
         frm.MakeModal(False)
         frm.SetPosition(frame.GetPosition())

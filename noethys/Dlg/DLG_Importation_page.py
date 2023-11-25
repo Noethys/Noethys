@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -26,7 +26,7 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = _(u"Vous pouvez ici importer un document à partir d'un fichier présent sur le disque dur ou depuis d'un scanner connecté à votre ordinateur.")
+        intro = _(u"Vous pouvez ici importer un document Ã  partir d'un fichier prÃ©sent sur le disque dur ou depuis d'un scanner connectÃ© Ã  votre ordinateur.")
         titre = _(u"Importation d'un document")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Document.png")
 

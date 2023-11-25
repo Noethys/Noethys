@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -20,7 +20,7 @@ import calendar
 import six
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"§")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"‚Ç¨")
 
 
 from Utils import UTILS_Interface
@@ -32,7 +32,7 @@ from Ctrl.CTRL_ObjectListView import EVT_CELL_EDIT_STARTING, EVT_CELL_EDIT_FINIS
 from Dlg.DLG_Saisie_contratpsu import Base
 from Ctrl import CTRL_Saisie_duree
 
-LISTE_MOIS = [_(u"Janvier"), _(u"FÈvrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Ao˚t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"DÈcembre")]
+LISTE_MOIS = [_(u"Janvier"), _(u"F√©vrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Ao√ªt"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"D√©cembre")]
 
 
 
@@ -44,7 +44,7 @@ class Track(object):
         self.clsbase = clsbase
         self.track_mensualite = track_mensualite
 
-        # GÈnÈralitÈs
+        # G√©n√©ralit√©s
         self.IDinscription = self.clsbase.GetValeur("IDinscription", None)
         self.date_debut_contrat = self.clsbase.GetValeur("date_debut", None)
         self.date_fin_contrat = self.clsbase.GetValeur("date_fin", None)
@@ -61,7 +61,7 @@ class Track(object):
         else :
             self.duree_solde_rtt = datetime.timedelta(0)
 
-        # MensualitÈ
+        # Mensualit√©
         self.label_prestation = self.track_mensualite.label_prestation
         self.heures_prevues = self.track_mensualite.heures_prevues
         self.montant_prevu = self.track_mensualite.montant_prevu
@@ -87,7 +87,7 @@ class Track(object):
         self.heures_depassements = datetime.timedelta(seconds=0)
         self.heures_regularisation = datetime.timedelta(seconds=0)
 
-        # RÈcupÈration des paramËtres d'arrondis du contrat
+        # R√©cup√©ration des param√®tres d'arrondis du contrat
         # arrondi_type = self.clsbase.GetValeur("arrondi_type")
         # arrondi_delta = self.clsbase.GetValeur("arrondi_delta")
 
@@ -121,7 +121,7 @@ class Track(object):
 
                 for track in listeConso :
 
-                    # Recherche des prÈvisions
+                    # Recherche des pr√©visions
                     if track.IDunite == self.clsbase.GetValeur("IDunite_prevision") :
                         self.heures_prevues_mois += track.duree_arrondie # track.duree_reelle
 
@@ -132,7 +132,7 @@ class Track(object):
                         dict_date["prevision"]["duree_reelle"] += track.duree_reelle
                         dict_date["prevision"]["duree_arrondie"] += track.duree_arrondie
 
-                    # Recherche des prÈsences
+                    # Recherche des pr√©sences
                     if track.IDunite == self.clsbase.GetValeur("IDunite_presence") :
 
                         if track.etat in ("reservation", "present") :
@@ -160,55 +160,55 @@ class Track(object):
 
 
 
-        #         # Recherche des dÈpassements
+        #         # Recherche des d√©passements
         #         if track.IDunite == self.clsbase.GetValeur("IDunite_depassement") :
         #             self.heures_depassements += duree
 
-                # VÈrifie dÈpassement du dÈbut puis le dÈpassement de la fin
+                # V√©rifie d√©passement du d√©but puis le d√©passement de la fin
                 depassement_debut = ("debut", dict_date["presence"]["heure_debut"], dict_date["prevision"]["heure_debut"])
                 depassement_fin = ("fin", dict_date["prevision"]["heure_fin"], dict_date["presence"]["heure_fin"])
 
                 for type_depassement, heure_min, heure_max in [depassement_debut, depassement_fin] :
                     depassement_arrondi = datetime.timedelta(0)
 
-                    # VÈrifie s'il y a bien une prÈsence
+                    # V√©rifie s'il y a bien une pr√©sence
                     if dict_date["presence"]["duree_arrondie"] != datetime.timedelta(0) :
 
-                        # S'il y avait une prÈvision :
+                        # S'il y avait une pr√©vision :
                         if dict_date["prevision"]["duree_arrondie"] != datetime.timedelta(0) :
 
                             if heure_min < heure_max :
 
-                                # VÈrifie si la tolÈrance est dÈpassÈe
+                                # V√©rifie si la tol√©rance est d√©pass√©e
                                 depassement_reel = UTILS_Dates.TimeEnDelta(heure_max) - UTILS_Dates.TimeEnDelta(heure_min)
 
                                 if depassement_reel > self.duree_tolerance_depassement :
 
-                                    # VÈrifie s'il y a un dÈpassement
+                                    # V√©rifie s'il y a un d√©passement
                                     if heure_min < heure_max :
                                         depassement_arrondi = UTILS_Dates.CalculerArrondi(arrondi_type=self.arrondi_type, arrondi_delta=self.arrondi_delta, heure_debut=heure_min, heure_fin=heure_max)
 
                         else :
-                            # S'il n'y avait pas de prÈvision
+                            # S'il n'y avait pas de pr√©vision
                             depassement_arrondi = dict_date["presence"]["duree_arrondie"]
 
-                        # MÈmorisation du dÈpassement
+                        # M√©morisation du d√©passement
                         if depassement_arrondi > datetime.timedelta(0) :
                             dict_date["depassement"] += depassement_arrondi
                             self.heures_depassements += depassement_arrondi
 
-                # MÈmorisation des donnÈes de la date
+                # M√©morisation des donn√©es de la date
                 self.dict_dates[date] = dict_date
 
-        # MAJ du track mensualitÈ
+        # MAJ du track mensualit√©
         self.MAJ()
 
     def MAJ(self):
-        # Calcul des heures ‡ facturer
+        # Calcul des heures √† facturer
         self.heures_a_facturer = self.heures_prevues - self.heures_absences_deductibles + self.heures_regularisation + self.duree_solde_rtt
         self.montant_a_facturer = FloatToDecimal(self.tarif_base * UTILS_Dates.DeltaEnFloat(self.heures_a_facturer))
 
-        # Calcul des dÈpassements
+        # Calcul des d√©passements
         self.montant_depassements = FloatToDecimal(self.tarif_depassement * UTILS_Dates.DeltaEnFloat(self.heures_depassements))
         self.montant_a_facturer += self.montant_depassements
 
@@ -218,7 +218,7 @@ class Track(object):
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.mois = None
         self.annee = None
         self.IDactivite = None
@@ -259,7 +259,7 @@ class ListView(FastObjectListView):
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
 
-        # PrÈparation de la listeImages
+        # Pr√©paration de la listeImages
         imageValide = self.AddNamedImages("valide", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok4.png"), wx.BITMAP_TYPE_PNG))
 
         def GetImage(track):
@@ -302,13 +302,13 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"H. forfait."), 'center', 80, "heures_prevues", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
             ColumnDefn(_(u"Mt. forfait"), 'center', 80, "montant_prevu", typeDonnee="montant", stringConverter=FormateMontant, isEditable=False),
 
-            ColumnDefn(_(u"H. prÈvues"), 'center', 80, "heures_prevues_mois", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
-            ColumnDefn(_(u"PrÈsences"), 'center', 80, "heures_presences", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
-            ColumnDefn(_(u"Abs dÈduc."), 'center', 80, "heures_absences_deductibles", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
-            ColumnDefn(_(u"Abs non dÈduc."), 'center', 95, "heures_absences_non_deductibles", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
+            ColumnDefn(_(u"H. pr√©vues"), 'center', 80, "heures_prevues_mois", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
+            ColumnDefn(_(u"Pr√©sences"), 'center', 80, "heures_presences", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
+            ColumnDefn(_(u"Abs d√©duc."), 'center', 80, "heures_absences_deductibles", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
+            ColumnDefn(_(u"Abs non d√©duc."), 'center', 95, "heures_absences_non_deductibles", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
             ColumnDefn(_(u"H. compl."), 'center', 80, "heures_depassements", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
             ColumnDefn(_(u"RTT non prises"), 'center', 95, "duree_solde_rtt", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
-            ColumnDefn(_(u"H. rÈgular."), 'center', 80, "heures_regularisation", typeDonnee="duree", stringConverter=FormateDuree, isEditable=True),
+            ColumnDefn(_(u"H. r√©gular."), 'center', 80, "heures_regularisation", typeDonnee="duree", stringConverter=FormateDuree, isEditable=True),
 
             ColumnDefn(_(u"HEURES"), 'center', 80, "heures_a_facturer", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
             ColumnDefn(_(u"MONTANT"), 'center', 80, "montant_a_facturer", typeDonnee="montant", stringConverter=FormateMontant, isEditable=False),
@@ -316,9 +316,9 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u""), 'center', 2, "", typeDonnee="texte", isEditable=False),
 
             ColumnDefn(_(u"Date"), 'center', 80, "date_facturation", typeDonnee="date", stringConverter=FormateDate, isEditable=False),
-            ColumnDefn(_(u"H. facturÈes"), 'center', 80, "heures_facturees", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
+            ColumnDefn(_(u"H. factur√©es"), 'center', 80, "heures_facturees", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
             ColumnDefn(_(u"Montant fact."), 'center', 90, "montant_facture", typeDonnee="montant", stringConverter=FormateMontant, isEditable=False),
-            ColumnDefn(_(u"N∞ Facture"), 'center', 70, "num_facture", typeDonnee="entier", isEditable=False),
+            ColumnDefn(_(u"N¬∞ Facture"), 'center', 70, "num_facture", typeDonnee="entier", isEditable=False),
 
             # ColumnDefn(_(u"Taux"), 'center', 80, "taux", typeDonnee="montant", stringConverter=FormateMontant2, isEditable=False),
             # ColumnDefn(_(u"Tarif de base"), 'center', 80, "tarif_base", typeDonnee="montant", stringConverter=FormateMontant2, isEditable=False),
@@ -326,7 +326,7 @@ class ListView(FastObjectListView):
         
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(0)
-        self.SetEmptyListMsg(_(u"Aucune mensualitÈ"))
+        self.SetEmptyListMsg(_(u"Aucune mensualit√©"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(2)
 
@@ -337,11 +337,11 @@ class ListView(FastObjectListView):
         self.annee = annee
         self.IDactivite = IDactivite
         self.nomActivite = nomActivite
-        # MAJ des donnÈes
+        # MAJ des donn√©es
         self.MAJ_donnees()
 
     def MAJ_donnees(self):
-        # Recherche des dates extrÍmes du mois
+        # Recherche des dates extr√™mes du mois
         dernierJourMois = calendar.monthrange(self.annee, self.mois)[1]
         date_debut = datetime.date(self.annee, self.mois, 1)
         date_fin = datetime.date(self.annee, self.mois, dernierJourMois)
@@ -362,13 +362,13 @@ class ListView(FastObjectListView):
         for IDcontrat, IDindividu in listeContrats :
             listeIDcontrats.append(IDcontrat)
 
-        # Recherche des donnÈes de chaque contrat
+        # Recherche des donn√©es de chaque contrat
         self.donnees = []
         for IDcontrat in listeIDcontrats :
             clsbase = Base(IDcontrat=IDcontrat, DB=DB)
             clsbase.Calculer()
 
-            # Recherche d'une mensualitÈ valide
+            # Recherche d'une mensualit√© valide
             track_mensualite = None
             liste_mensualites = clsbase.GetValeur("tracks_mensualites", [])
             for track in liste_mensualites :
@@ -376,7 +376,7 @@ class ListView(FastObjectListView):
                     track_mensualite = track
                     break
 
-            # CrÈation du track
+            # Cr√©ation du track
             track = Track(self.mois, self.annee, clsbase, track_mensualite)
             track.MAJ()
             self.donnees.append(track)
@@ -403,7 +403,7 @@ class ListView(FastObjectListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """        
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         if len(self.Selection()) == 0:
@@ -411,11 +411,11 @@ class ListView(FastObjectListView):
         else:
             noSelection = False
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
-        # Item DÈtail
-        item = wx.MenuItem(menuPop, 20, _(u"DÈtail de la mensualitÈ"))
+        # Item D√©tail
+        item = wx.MenuItem(menuPop, 20, _(u"D√©tail de la mensualit√©"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/zoom_plus.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -433,7 +433,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -467,48 +467,48 @@ class ListView(FastObjectListView):
             
     def Apercu(self, event):
         if self.IDactivite == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez commencer par sÈlectionner une activitÈ !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez commencer par s√©lectionner une activit√© !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des mensualitÈs"), intro=self.GetIntro(), format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des mensualit√©s"), intro=self.GetIntro(), format="A", orientation=wx.LANDSCAPE)
         prt.Preview()
 
     def Imprimer(self, event):
         if self.IDactivite == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez commencer par sÈlectionner une activitÈ !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez commencer par s√©lectionner une activit√© !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des mensualitÈs"), intro=self.GetIntro(), format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des mensualit√©s"), intro=self.GetIntro(), format="A", orientation=wx.LANDSCAPE)
         prt.Print()
 
     def ExportTexte(self, event):
         if self.IDactivite == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez commencer par sÈlectionner une activitÈ !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez commencer par s√©lectionner une activit√© !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Liste des mensualitÈs"), autoriseSelections=False)
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des mensualit√©s"), autoriseSelections=False)
         
     def ExportExcel(self, event):
         if self.IDactivite == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez commencer par sÈlectionner une activitÈ !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez commencer par s√©lectionner une activit√© !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Liste des mensualitÈs"), autoriseSelections=False)
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des mensualit√©s"), autoriseSelections=False)
 
     def GetIntro(self):
-        return u"MensualitÈs de %s %d de l'activitÈ %s" % (LISTE_MOIS[self.mois-1], self.annee, self.nomActivite)
+        return u"Mensualit√©s de %s %d de l'activit√© %s" % (LISTE_MOIS[self.mois-1], self.annee, self.nomActivite)
 
     def Supprimer(self, event=None):
         if len(self.Selection()) == 0 and len(self.GetCheckedObjects()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune aucune ligne dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune aucune ligne dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -516,7 +516,7 @@ class ListView(FastObjectListView):
         if len(self.GetCheckedObjects()) > 0 :
             # Suppression multiple
             listeSelections = self.GetCheckedObjects()
-            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer les prestations des mensualitÈs cochÈes ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer les prestations des mensualit√©s coch√©es ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -525,7 +525,7 @@ class ListView(FastObjectListView):
         else :
             # Suppression unique
             listeSelections = self.Selection()
-            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la prestation de la mensualitÈ sÈlectionnÈe ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la prestation de la mensualit√© s√©lectionn√©e ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -535,7 +535,7 @@ class ListView(FastObjectListView):
         listeSuppressions = []
         for track in listeSelections :
             if track.IDfacture != None :
-                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer la prestation de %s car elle apparaÓt dÈj‡ sur une facture !") % track.individu_nom_complet, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer la prestation de %s car elle appara√Æt d√©j√† sur une facture !") % track.individu_nom_complet, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -576,14 +576,14 @@ class ListView(FastObjectListView):
         # MAJ de la liste
         self.MAJ_donnees()
 
-        # Confirmation succËs
-        dlg = wx.MessageDialog(self, _(u"%d prestations ont ÈtÈ supprimÈes avec succËs !") % len(listeSuppressions), _(u"Suppression terminÈe"), wx.OK | wx.ICON_EXCLAMATION)
+        # Confirmation succ√®s
+        dlg = wx.MessageDialog(self, _(u"%d prestations ont √©t√© supprim√©es avec succ√®s !") % len(listeSuppressions), _(u"Suppression termin√©e"), wx.OK | wx.ICON_EXCLAMATION)
         dlg.ShowModal()
         dlg.Destroy()
 
     def Detail(self, event=None):
         if len(self.Selection()) == 0 :
-           dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune mensualitÈ dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+           dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune mensualit√© dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
            dlg.ShowModal()
            dlg.Destroy()
            return False
@@ -595,31 +595,31 @@ class ListView(FastObjectListView):
         dlg.Destroy()
 
     def Valider(self):
-        """ Valider les mensualitÈs """
+        """ Valider les mensualit√©s """
         listeTracks = self.GetCheckedObjects()
 
-        # VÈrifications
+        # V√©rifications
         if len(listeTracks) == 0 :
-           dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune mensualitÈ ‡ gÈnÈrer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+           dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune mensualit√© √† g√©n√©rer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
            dlg.ShowModal()
            dlg.Destroy()
            return False
 
         for track in listeTracks :
             if track.IDprestation != None :
-                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas sÈlectionner des lignes dont les mensualitÈs ont dÈj‡ ÈtÈ gÈnÈrÈes !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas s√©lectionner des lignes dont les mensualit√©s ont d√©j√† √©t√© g√©n√©r√©es !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
 
         # Demande de confirmation
-        dlg = wx.MessageDialog(self, _(u"Confirmez-vous la validation des %d mensualitÈs sÈlectionnÈes sur le mois de %s %d ?" % (len(listeTracks), LISTE_MOIS[self.mois-1], self.annee)), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Confirmez-vous la validation des %d mensualit√©s s√©lectionn√©es sur le mois de %s %d ?" % (len(listeTracks), LISTE_MOIS[self.mois-1], self.annee)), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES :
             return False
 
-        # Enregistrement des mensualitÈs
+        # Enregistrement des mensualit√©s
         DB = GestionDB.DB()
 
         for track in listeTracks :
@@ -672,8 +672,8 @@ class ListView(FastObjectListView):
         DB.Commit()
         DB.Close()
 
-        # Confirmation succËs
-        dlg = wx.MessageDialog(self, _(u"Les mensualitÈs ont ÈtÈ gÈnÈrÈes avec succËs !"), _(u"GÈnÈration terminÈe"), wx.OK | wx.ICON_INFORMATION)
+        # Confirmation succ√®s
+        dlg = wx.MessageDialog(self, _(u"Les mensualit√©s ont √©t√© g√©n√©r√©es avec succ√®s !"), _(u"G√©n√©ration termin√©e"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         return True

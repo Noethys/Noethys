@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -17,8 +17,8 @@ from Dlg import DLG_Selection_dates
 
 
 def Appliquer():
-    """ Applique un code produit local à un lot de prestations """
-    # Demande la période de dates
+    """ Applique un code produit local Ã  un lot de prestations """
+    # Demande la pÃ©riode de dates
     dlg = DLG_Selection_dates.Dialog(None)
     if dlg.ShowModal() == wx.ID_OK:
         date_debut = dlg.GetDateDebut() 
@@ -28,7 +28,7 @@ def Appliquer():
         dlg.Destroy()
         return
     
-    # Demande les prestations à modifier
+    # Demande les prestations Ã  modifier
     DB = GestionDB.DB()
     req = """SELECT IDprestation, label, activites.nom
     FROM prestations 
@@ -48,7 +48,7 @@ def Appliquer():
             dictPrestations[label] = []
         dictPrestations[label].append(IDprestation)
     
-    dlg = wx.MultiChoiceDialog(None, _(u"Sélectionnez les prestations à modifier :"), _(u"Selection des prestations"), list(dictPrestations.keys()))
+    dlg = wx.MultiChoiceDialog(None, _(u"SÃ©lectionnez les prestations Ã  modifier :"), _(u"Selection des prestations"), list(dictPrestations.keys()))
     dlg.SetSize((500, 400))
     if dlg.ShowModal() == wx.ID_OK :
         selections = dlg.GetSelections()
@@ -59,7 +59,7 @@ def Appliquer():
         return
 
     # Choix du code produit local
-    dlg = wx.TextEntryDialog(None, _(u"Quel code produit local souhaitez-vous appliquer ?"), _(u"Sélection d'un code produit local"), "")
+    dlg = wx.TextEntryDialog(None, _(u"Quel code produit local souhaitez-vous appliquer ?"), _(u"SÃ©lection d'un code produit local"), "")
     if dlg.ShowModal() == wx.ID_OK:
         code_produit_local = dlg.GetValue()
         dlg.Destroy()
@@ -71,7 +71,7 @@ def Appliquer():
     nbrePrestations = 0
     for label in selectionsLabels :
         nbrePrestations += len(dictPrestations[label])
-    dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment appliquer le produit local '%s' aux %d prestations sélectionnées ?\n\n(PS : Cette modification n'aura aucun impact sur les montants facturés)") % (code_produit_local, nbrePrestations), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+    dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment appliquer le produit local '%s' aux %d prestations sÃ©lectionnÃ©es ?\n\n(PS : Cette modification n'aura aucun impact sur les montants facturÃ©s)") % (code_produit_local, nbrePrestations), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
     if dlg.ShowModal() != wx.ID_YES :
         dlg.Destroy()
         return
@@ -90,7 +90,7 @@ def Appliquer():
     del dlgAttente
     
     # Fin du traitement
-    dlg = wx.MessageDialog(None, _(u"Le traitement s'est terminé avec succès !"), _(u"Fin"), wx.OK | wx.ICON_INFORMATION)
+    dlg = wx.MessageDialog(None, _(u"Le traitement s'est terminÃ© avec succÃ¨s !"), _(u"Fin"), wx.OK | wx.ICON_INFORMATION)
     dlg.ShowModal()
     dlg.Destroy()
 

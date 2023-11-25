@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -26,10 +26,10 @@ for rep in os.listdir(REP_PARENT) :
         sys.path.insert(2, chemin)
 
 def GetStaticPath(fichier=""):
-    """ Retourne le chemin du répertoire Static """
+    """ Retourne le chemin du rÃ©pertoire Static """
     chemin = os.path.join(REP_PARENT, "Static")
     return os.path.join(chemin, fichier)
 
 def GetMainPath(fichier=""):
-    """ Retourne le chemin du répertoire principal """
+    """ Retourne le chemin du rÃ©pertoire principal """
     return os.path.join(REP_PARENT, fichier)

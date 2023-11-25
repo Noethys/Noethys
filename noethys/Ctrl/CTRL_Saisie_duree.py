@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -76,7 +76,7 @@ class CTRL(wx.TextCtrl):
         wx.TextCtrl.__init__(self, parent, -1, "", size=size, validator=MyValidator(), style=style)
         self.parent = parent
         self.separateur = separateur
-        self.SetToolTip(wx.ToolTip(_(u"Saisissez une durée.\n\nExemples de formats acceptés :\n12h45, 6:32, 12.5, 45h, 1725H30")))
+        self.SetToolTip(wx.ToolTip(_(u"Saisissez une durÃ©e.\n\nExemples de formats acceptÃ©s :\n12h45, 6:32, 12.5, 45h, 1725H30")))
         self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
         self.SetValue(datetime.timedelta(0))
         self.oldValeur = self.GetValue()
@@ -97,7 +97,7 @@ class CTRL(wx.TextCtrl):
         try :
             valeur = self.GetDuree()
         except :
-            message = _(u"La durée que vous avez saisi ne semble pas valide.")
+            message = _(u"La durÃ©e que vous avez saisi ne semble pas valide.")
             return False, message
         return True, None
 
@@ -110,7 +110,7 @@ class CTRL(wx.TextCtrl):
         if valeur == ":" :
             valeur = None
 
-        # Vérifie si c'est un float
+        # VÃ©rifie si c'est un float
         try :
             valeur = float(valeur)
             format = float
@@ -167,13 +167,13 @@ class MyFrame(wx.Frame):
 
     def OnBouton(self, event):
         """ Test des formats possibles """
-        # Importation des données
+        # Importation des donnÃ©es
         #self.ctrl.SetDuree(datetime.timedelta(hours=123, minutes=0))
         #self.ctrl.SetDuree("12:45")
         #self.ctrl.SetDuree(12.5)
         self.ctrl.SetValue(13.5)
 
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         #print self.ctrl.GetDuree(format=datetime.timedelta)
         #print self.ctrl.GetDuree(format=str)
         #print self.ctrl.GetDuree(format=float)

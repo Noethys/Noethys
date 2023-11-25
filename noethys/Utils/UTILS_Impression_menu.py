@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -62,7 +62,7 @@ class Titre():
         self.canvas = canvas
         self.largeur = largeur
 
-        # Préparation du dessin
+        # PrÃ©paration du dessin
         self.canvas.saveState()
         self.canvas.translate(0, self.canvas._pagesize[1] - self.parent.dictDonnees["titre_hauteur"])
 
@@ -103,7 +103,7 @@ class Titre():
             self.canvas.drawCentredString(x_box + largeur_box / 2.0, y_box + hauteur_box / 2.0 - hauteur_font / 2.0, _(u"MENUS"))
             self.canvas.rotate(-2)
 
-        # Ecrit la période
+        # Ecrit la pÃ©riode
 
         # Calcule la hauteur du texte
         face = pdfmetrics.getFont(self.parent.dictDonnees["titre_nom_police"]).face
@@ -129,11 +129,11 @@ class Legende():
         self.largeur = largeur
         self.dictNumerosLegendes = {}
 
-        # Préparation du dessin
+        # PrÃ©paration du dessin
         self.canvas.saveState()
         self.canvas.translate(x, y)
 
-        # Création du clipping
+        # CrÃ©ation du clipping
         p = self.canvas.beginPath()
         self.canvas.setStrokeColor(ColorWxToPdf(wx.WHITE, alpha=0))
         self.canvas.setLineWidth(0)
@@ -146,7 +146,7 @@ class Legende():
         self.canvas.restoreState()
 
     def Dessine_legende(self, liste_legendes=[]):
-        """ Dessine la légende """
+        """ Dessine la lÃ©gende """
         # Dessine le rectangle de fond
         self.canvas.setStrokeColor(ColorWxToPdf(self.parent.dictDonnees["legende_bord_couleur"], alpha=self.parent.dictDonnees["legende_bord_alpha"]/100.0))
         self.canvas.setFillColor(ColorWxToPdf(self.parent.dictDonnees["legende_fond_couleur"], alpha=self.parent.dictDonnees["legende_fond_alpha"]/100.0))
@@ -160,7 +160,7 @@ class Legende():
         # Tri par nom
         liste_legendes.sort(cmp, lambda x: x["nom"])
 
-        # Création du texte
+        # CrÃ©ation du texte
         texte_paragraphe = u""
         numero = 1
         self.dictNumerosLegendes = {}
@@ -177,7 +177,7 @@ class Legende():
             self.dictNumerosLegendes[IDlegende] = numero
             numero += 1
 
-        # Création du paragraphe
+        # CrÃ©ation du paragraphe
         style = ParagraphStyle(name="style", fontName=self.parent.dictDonnees["legende_nom_police"], fontSize=self.parent.dictDonnees["legende_taille_police"],
                                spaceBefore=0, spaceafter=0, leftIndent=0, rightIndent=0, alignment=1, leading=self.parent.dictDonnees["legende_taille_police"]+2,
                                textColor=ColorWxToPdf(self.parent.dictDonnees["legende_texte_couleur"]))
@@ -200,11 +200,11 @@ class Pied():
         self.y = y
         self.largeur = largeur
 
-        # Préparation du dessin
+        # PrÃ©paration du dessin
         self.canvas.saveState()
         self.canvas.translate(x, y)
 
-        # Création du clipping
+        # CrÃ©ation du clipping
         p = self.canvas.beginPath()
         self.canvas.setStrokeColor(ColorWxToPdf(wx.WHITE, alpha=0))
         self.canvas.setLineWidth(0)
@@ -249,11 +249,11 @@ class Entete():
         self.y = y
         self.largeur_case = largeur_case
 
-        # Préparation du dessin
+        # PrÃ©paration du dessin
         self.canvas.saveState()
         self.canvas.translate(x, y)
 
-        # Création du clipping
+        # CrÃ©ation du clipping
         p = self.canvas.beginPath()
         self.canvas.setStrokeColor(ColorWxToPdf(wx.WHITE, alpha=0))
         self.canvas.setLineWidth(0)
@@ -309,15 +309,15 @@ class Case():
         self.largeur_case = largeur_case
         self.hauteur_case = hauteur_case
 
-        # Préparation du dessin
+        # PrÃ©paration du dessin
         self.canvas.saveState()
         self.canvas.translate(x, y)
 
-        # Rotation aléatoire
+        # Rotation alÃ©atoire
         if self.parent.dictDonnees["case_rotation_aleatoire"] == True :
             self.canvas.rotate(random.randint(-3, 3))
 
-        # Création du clipping
+        # CrÃ©ation du clipping
         p = self.canvas.beginPath()
         self.canvas.setStrokeColor(ColorWxToPdf(wx.WHITE, alpha=0))
         self.canvas.setLineWidth(0)
@@ -354,7 +354,7 @@ class Case():
                     y = self.parent.dictDonnees["case_titre_hauteur"]
                     hauteur -= self.parent.dictDonnees["case_titre_hauteur"]
 
-                # Recherche les catégories et textes à afficher
+                # Recherche les catÃ©gories et textes Ã  afficher
                 hauteur_categorie = 1.0 * hauteur / len(self.parent.dictDonnees["categories"])
 
                 for dictCategorie in self.parent.dictDonnees["categories"] :
@@ -387,7 +387,7 @@ class Case():
         hauteur_paragraphes = 0
         for texte_paragraphe in texte.split("\n") :
 
-            # Remplacement des légendes
+            # Remplacement des lÃ©gendes
             liste_legendes = REGEX_LEGENDES.findall(texte_paragraphe)
             for chaine in liste_legendes :
                 IDlegende = int(chaine[1:-1])
@@ -405,7 +405,7 @@ class Case():
                     chaine_remplacement = u""
                 texte_paragraphe = texte_paragraphe.replace(chaine, chaine_remplacement)
 
-            # Création du paragraphe
+            # CrÃ©ation du paragraphe
             paragraphe = Paragraph(texte_paragraphe, style=style)
             largeur_paragraphe, hauteur_paragraphe = paragraphe.wrapOn(self.canvas, self.largeur_case, self.hauteur_case)
             hauteur_paragraphes += hauteur_paragraphe
@@ -417,7 +417,7 @@ class Case():
         if texte == None :
             texte = ""
 
-        # Dessine le nom de la catégorie
+        # Dessine le nom de la catÃ©gorie
         if nom_categorie != None :
             self.canvas.saveState()
             self.canvas.setStrokeColor(ColorWxToPdf(self.parent.dictDonnees["case_titre_texte_couleur"], alpha=1))
@@ -431,21 +431,21 @@ class Case():
             self.canvas.restoreState()
 
 
-        # Propriétés
+        # PropriÃ©tÃ©s
         self.canvas.setFillColor(ColorWxToPdf(self.parent.dictDonnees["case_texte_couleur"], alpha=1))
 
-        # Création des paragraphes
+        # CrÃ©ation des paragraphes
         taille_police = self.parent.dictDonnees["case_taille_police"]
         espace_vertical = self.parent.dictDonnees["case_espace_vertical"]
         liste_paragraphes, hauteur_paragraphes = self.GetParagraphes(texte, taille_police)
         ratio_depassement = (hauteur_paragraphes + (len(liste_paragraphes) - 1) * espace_vertical) / hauteur
 
-        # Vérifie si le texte ne dépasse pas de la case
+        # VÃ©rifie si le texte ne dÃ©passe pas de la case
         if ratio_depassement > 1 :
             taille_police = taille_police / ratio_depassement
             liste_paragraphes, hauteur_paragraphes = self.GetParagraphes(texte, taille_police)
 
-        # Calcule l'espace vertical et la marge supérieure
+        # Calcule l'espace vertical et la marge supÃ©rieure
         if self.parent.dictDonnees["case_repartition_verticale"] == True :
             # marge_haut = self.parent.dictDonnees["case_marge_haut"]
             # espace_vertical = (hauteur - hauteur_paragraphes - marge_haut * 2) / (len(liste_paragraphes) - 1)
@@ -456,7 +456,7 @@ class Case():
             espace_vertical = self.parent.dictDonnees["case_espace_vertical"]
             marge_haut = (hauteur - (hauteur_paragraphes + (len(liste_paragraphes) - 1) * espace_vertical)) / 2.0
 
-        # Préparation des images
+        # PrÃ©paration des images
         if self.parent.dictDonnees["case_separateur_type"] == "image" and self.parent.dictDonnees["case_separateur_image"] != "aucune":
             img = wx.Image(Chemins.GetStaticPath("Images/Menus/%s" % self.parent.dictDonnees["case_separateur_image"]), wx.BITMAP_TYPE_ANY)
             ratio_image = 1.0 * img.GetWidth() / img.GetHeight()
@@ -471,7 +471,7 @@ class Case():
             y_paragraphe -= hauteur_paragraphe
             paragraphe.drawOn(self.canvas, 0, y_paragraphe)
 
-            # Dessine l'image de séparation
+            # Dessine l'image de sÃ©paration
             if self.parent.dictDonnees["case_separateur_type"] != "aucun" and index < len(liste_paragraphes) - 1:
                 if self.parent.dictDonnees["case_separateur_type"] == "image" :
                     separateur_image.drawOn(self.canvas, self.largeur_case / 2.0 - separateur_image._width / 2.0, y_paragraphe - espace_vertical / 2.0 - separateur_image._height / 2.0)
@@ -554,10 +554,10 @@ class Impression():
     def __init__(self, dictDonnees={}):
         self.dictDonnees = dictDonnees
 
-        # Importation des données
+        # Importation des donnÃ©es
         DB = GestionDB.DB()
 
-        # Catégories de menus
+        # CatÃ©gories de menus
         if 0 not in dictDonnees["categories_menus"]:
             if len(dictDonnees["categories_menus"]) == 0 :
                 conditions = "WHERE IDcategorie IN ()"
@@ -577,7 +577,7 @@ class Impression():
         for IDcategorie, nom in listeDonnees:
             self.dictDonnees["categories"].append({"IDcategorie": IDcategorie, "nom": nom})
 
-        # Légendes
+        # LÃ©gendes
         req = """SELECT IDlegende, nom, couleur
         FROM menus_legendes ;"""
         DB.ExecuterReq(req)
@@ -605,7 +605,7 @@ class Impression():
 
         DB.Close()
 
-        # Paramètres
+        # ParamÃ¨tres
         if dictDonnees["page_format"] == "paysage" :
             hauteur_page, largeur_page = A4
         else :
@@ -645,7 +645,7 @@ class Impression():
                 nbre_colonnes = 1
                 texte_titre = UTILS_Dates.DateComplete(dict_page["date"])
 
-            # Préparation
+            # PrÃ©paration
             marge_haut = copy.copy(dictDonnees["page_marge_haut"])
             marge_bas = copy.copy(dictDonnees["page_marge_bas"])
 
@@ -663,14 +663,14 @@ class Impression():
                 titre = Titre(parent=self, texte=texte_titre, canvas=canvas, largeur=largeur_page)
                 marge_haut += dictDonnees["titre_hauteur"]
 
-            # Dessine les entêtes
+            # Dessine les entÃªtes
             if dictDonnees["entete_afficher"] == True:
                 for num_colonne in range(0, nbre_colonnes):
                     # Calcule la position de la case
                     x_entete = dictDonnees["page_marge_gauche"] + ((largeur_case + dictDonnees["page_espace_horizontal"]) * num_colonne)
                     y_entete = hauteur_page - marge_haut - dictDonnees["entete_hauteur"]
 
-                    # Dessine l'entête
+                    # Dessine l'entÃªte
                     texte = UTILS_Dates.LISTE_JOURS[dictDonnees["jours_semaine"][num_colonne]]
                     entete = Entete(parent=self, texte=texte, canvas=canvas, x=x_entete, y=y_entete, largeur_case=largeur_case)
 
@@ -681,11 +681,11 @@ class Impression():
                 pied = Pied(parent=self, texte=dictDonnees["pied_texte"], canvas=canvas, x=dictDonnees["page_marge_gauche"], y=marge_bas, largeur=largeur_page - dictDonnees["page_marge_gauche"] - dictDonnees["page_marge_droite"])
                 marge_bas += dictDonnees["pied_hauteur"] + dictDonnees["page_espace_vertical"]
 
-            # Dessine la légende
+            # Dessine la lÃ©gende
             self.dictNumerosLegendes = {}
             if dictDonnees["legende_afficher"] == True :
 
-                # Recherche les légendes présentes dans la page
+                # Recherche les lÃ©gendes prÃ©sentes dans la page
                 liste_legendes = []
                 for num_colonne in range(0, nbre_colonnes):
                     for num_ligne in range(0, nbre_lignes):
@@ -800,7 +800,7 @@ if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
 
-    # Données test
+    # DonnÃ©es test
     dictDonnees = {
         "date_debut": datetime.date(2018, 7, 2),
         "date_fin": datetime.date(2018, 7, 31),
@@ -888,7 +888,7 @@ if __name__ == "__main__":
         "titre_texte_couleur" : wx.WHITE,
         "titre_texte" : u"Test",
 
-        # Légende
+        # LÃ©gende
         "legende_afficher": True,
         "legende_type" : "carre",
         "legende_hauteur": 50,
@@ -897,7 +897,7 @@ if __name__ == "__main__":
         "legende_bord_alpha": 0.2 * 100,
         "legende_fond_couleur": wx.WHITE,
         "legende_fond_alpha": 0.05 * 100,
-        "legende_nom_police": "Helvetica",  # Pas intégré dans le propertyGrid !
+        "legende_nom_police": "Helvetica",  # Pas intÃ©grÃ© dans le propertyGrid !
         "legende_taille_police": 10,
         "legende_texte_couleur": wx.BLACK,
 

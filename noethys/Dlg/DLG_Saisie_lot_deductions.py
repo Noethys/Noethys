@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -29,7 +29,7 @@ from Dlg import DLG_Messagebox
 
 from Utils import UTILS_Gestion
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 
@@ -40,13 +40,13 @@ class Dialog(wx.Dialog):
         self.parent = parent   
 
         # Bandeau
-        titre = _(u"Saisir un lot de déductions")
-        intro = _(u"Vous pouvez saisir ici un lot de déductions pour les prestations sélectionnées. Commencez par définir les caractéristiques de la déduction puis sélectionnez les prestations concernées.")
+        titre = _(u"Saisir un lot de dÃ©ductions")
+        intro = _(u"Vous pouvez saisir ici un lot de dÃ©ductions pour les prestations sÃ©lectionnÃ©es. Commencez par dÃ©finir les caractÃ©ristiques de la dÃ©duction puis sÃ©lectionnez les prestations concernÃ©es.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Impayes.png")
 
-        # Déduction
-        self.box_deduction_staticbox = wx.StaticBox(self, -1, _(u"Paramètres de la déduction"))
+        # DÃ©duction
+        self.box_deduction_staticbox = wx.StaticBox(self, -1, _(u"ParamÃ¨tres de la dÃ©duction"))
         self.label_label = wx.StaticText(self, -1, _(u"Label :"))
         self.ctrl_label = wx.TextCtrl(self, -1, "")
 
@@ -59,7 +59,7 @@ class Dialog(wx.Dialog):
         self.ctrl_montant_pourcent.SetDigits(2)
         
         # Prestations
-        self.box_prestations_staticbox = wx.StaticBox(self, -1, _(u"Sélection des prestations"))
+        self.box_prestations_staticbox = wx.StaticBox(self, -1, _(u"SÃ©lection des prestations"))
         self.label_date_debut = wx.StaticText(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_date_fin = wx.StaticText(self, -1, "au")
@@ -90,10 +90,10 @@ class Dialog(wx.Dialog):
         wx.CallLater(0, self.Layout)
 
     def __set_properties(self):
-        self.ctrl_label.SetToolTip(wx.ToolTip(_(u"Saisissez le label de la déduction")))
-        self.radio_montant_fixe.SetToolTip(wx.ToolTip(_(u"Saisie d'un montant pour chaque déduction")))
+        self.ctrl_label.SetToolTip(wx.ToolTip(_(u"Saisissez le label de la dÃ©duction")))
+        self.radio_montant_fixe.SetToolTip(wx.ToolTip(_(u"Saisie d'un montant pour chaque dÃ©duction")))
         self.radio_montant_pourcent.SetToolTip(wx.ToolTip(_(u"Saisie d'un pourcentage du montant de la prestation")))
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez une date de début")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez une date de dÃ©but")))
         self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez une date de fin")))
         self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser la liste")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
@@ -104,7 +104,7 @@ class Dialog(wx.Dialog):
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
         
-        # Déduction
+        # DÃ©duction
         box_deduction = wx.StaticBoxSizer(self.box_deduction_staticbox, wx.VERTICAL)
         grid_sizer_deduction = wx.FlexGridSizer(rows=4, cols=2, vgap=5, hgap=5)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
@@ -180,7 +180,7 @@ class Dialog(wx.Dialog):
     def OnBoutonActualiser(self, event): 
         date_debut = self.ctrl_date_debut.GetDate()
         if date_debut == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de dÃ©but !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus() 
@@ -205,10 +205,10 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)        
         
     def OnBoutonOk(self, event): 
-        # Déduction
+        # DÃ©duction
         label = self.ctrl_label.GetValue()
         if len(label) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un label pour la déduction !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un label pour la dÃ©duction !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_label.SetFocus() 
@@ -241,7 +241,7 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return False
 
-        # Périodes de gestion
+        # PÃ©riodes de gestion
         gestion = UTILS_Gestion.Gestion(None)
         date_debut = self.ctrl_date_debut.GetDate()
         date_fin = self.ctrl_date_fin.GetDate()
@@ -249,14 +249,14 @@ class Dialog(wx.Dialog):
 
         listePrestations = self.ctrl_prestations.GetListePrestations() 
         
-        # Demande les prestations concernées
+        # Demande les prestations concernÃ©es
         listeLabelsPrestations = []
         for dictPrestation in listePrestations :
             if dictPrestation["label"] not in listeLabelsPrestations :
                 listeLabelsPrestations.append(dictPrestation["label"]) 
         listeLabelsPrestations.sort() 
         
-        dlg = wx.MultiChoiceDialog( self, _(u"Cochez les prestations auxquelles vous souhaitez appliquer les déductions :"), _(u"Sélection des prestations"), listeLabelsPrestations)
+        dlg = wx.MultiChoiceDialog( self, _(u"Cochez les prestations auxquelles vous souhaitez appliquer les dÃ©ductions :"), _(u"SÃ©lection des prestations"), listeLabelsPrestations)
         dlg.SetSelections(range(0, len(listeLabelsPrestations)))
         reponse = dlg.ShowModal() 
         selections = dlg.GetSelections()
@@ -271,7 +271,7 @@ class Dialog(wx.Dialog):
             if dictPrestation["label"] in listeSelectionPrestations :
                 nbrePrestations += 1
 
-        dlg = wx.MessageDialog(self, _(u"Confirmez-vous la création automatique de %d déductions ?") % nbrePrestations, _(u"Demande de confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Confirmez-vous la crÃ©ation automatique de %d dÃ©ductions ?") % nbrePrestations, _(u"Demande de confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -279,7 +279,7 @@ class Dialog(wx.Dialog):
         
         
         
-        # ----------------------------- Création des déductions -----------------------------------------------------------
+        # ----------------------------- CrÃ©ation des dÃ©ductions -----------------------------------------------------------
         DB = GestionDB.DB()
         
         listeAjouts = []
@@ -288,10 +288,10 @@ class Dialog(wx.Dialog):
         listeAnomalies = []
         for dictPrestation in listePrestations :
             
-            # Vérifie si label sélectionné :
+            # VÃ©rifie si label sÃ©lectionnÃ© :
             if dictPrestation["label"] in listeSelectionPrestations :
                 
-                # Calcul du montant de la déduction
+                # Calcul du montant de la dÃ©duction
                 montantPrestation = float(dictPrestation["montant"])
                 montantVentilation = float(dictPrestation["paye"])
                 
@@ -302,23 +302,23 @@ class Dialog(wx.Dialog):
                 
                 nouveauMontantPrestation = montantPrestation - montantDeduction
                 
-                # Détection anomalie
+                # DÃ©tection anomalie
                 valide = True
                 labelPrestation = _(u"Famille ID%d - Prestation ID%d '%s' : ") % (dictPrestation["IDfamille"], dictPrestation["IDprestation"], dictPrestation["label"])
                 
                 if nouveauMontantPrestation < 0.0 :
-                    listeAnomalies.append(labelPrestation + _(u"La déduction est plus élevée que le montant de la prestation !"))
+                    listeAnomalies.append(labelPrestation + _(u"La dÃ©duction est plus Ã©levÃ©e que le montant de la prestation !"))
                     valide = False
 
                 if nouveauMontantPrestation < montantVentilation :
-                    listeAnomalies.append(labelPrestation + _(u"La ventilation est plus élevée que le nouveau montant de la prestation !"))
+                    listeAnomalies.append(labelPrestation + _(u"La ventilation est plus Ã©levÃ©e que le nouveau montant de la prestation !"))
                     valide = False
 
                 if dictPrestation["IDfacture"] != None :
-                    listeAnomalies.append(labelPrestation + _(u"La prestation ne peut être modifiée car elle apparaît sur une facture !"))
+                    listeAnomalies.append(labelPrestation + _(u"La prestation ne peut Ãªtre modifiÃ©e car elle apparaÃ®t sur une facture !"))
                     valide = False
 
-                # Mémorisation
+                # MÃ©morisation
                 if valide == True :
                     listeAjouts.append((dictPrestation["IDprestation"], dictPrestation["IDcompte_payeur"], str(datetime.date.today()), montantDeduction, label))
                     listeModifications.append((nouveauMontantPrestation, dictPrestation["IDprestation"]))
@@ -326,7 +326,7 @@ class Dialog(wx.Dialog):
                     
         # Affichages anomalies
         if len(listeAnomalies) > 0 :
-            dlg = DLG_Messagebox.Dialog(self, titre=_(u"Anomalies"), introduction=_(u"Les %d anomalies suivantes ont été détectées :") % len(listeAnomalies), detail=u"\n".join(listeAnomalies), conclusion=_(u"Souhaitez-vous continuer pour les %d déductions valides ?") % len(listeAjouts), icone=wx.ICON_EXCLAMATION, boutons=[_(u"Oui"), _(u"Non"), _(u"Annuler")])
+            dlg = DLG_Messagebox.Dialog(self, titre=_(u"Anomalies"), introduction=_(u"Les %d anomalies suivantes ont Ã©tÃ© dÃ©tectÃ©es :") % len(listeAnomalies), detail=u"\n".join(listeAnomalies), conclusion=_(u"Souhaitez-vous continuer pour les %d dÃ©ductions valides ?") % len(listeAjouts), icone=wx.ICON_EXCLAMATION, boutons=[_(u"Oui"), _(u"Non"), _(u"Annuler")])
             reponse = dlg.ShowModal() 
             dlg.Destroy() 
             if reponse in (1, 2) :
@@ -346,7 +346,7 @@ class Dialog(wx.Dialog):
         DB.Close() 
         
         # Confirmation
-        dlg = wx.MessageDialog(self, _(u"%d déductions ont été créées avec succès.") % len(listeAjouts), _(u"Confirmation"), wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"%d dÃ©ductions ont Ã©tÃ© crÃ©Ã©es avec succÃ¨s.") % len(listeAjouts), _(u"Confirmation"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         

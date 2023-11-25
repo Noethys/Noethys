@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -19,7 +19,7 @@ import os
 import wx.grid as gridlib
 import six
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Choix_modele
@@ -40,10 +40,10 @@ from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 DICT_CIVILITES = Civilites.GetDictCivilites()
 
 LISTE_DONNEES = [
-    { "nom" : _(u"Reçu"), "champs" : [ 
-        { "code" : "numero", "label" : _(u"Numéro")},
-        { "code" : "date", "label" : _(u"Date d'édition")},
-        { "code" : "lieu", "label" : _(u"Lieu d'édition")},
+    { "nom" : _(u"ReÃ§u"), "champs" : [ 
+        { "code" : "numero", "label" : _(u"NumÃ©ro")},
+        { "code" : "date", "label" : _(u"Date d'Ã©dition")},
+        { "code" : "lieu", "label" : _(u"Lieu d'Ã©dition")},
         ] },
     { "nom" : _(u"Destinataire"), "champs" : [ 
         { "code" : "nom", "label" : "Nom"}, 
@@ -51,21 +51,21 @@ LISTE_DONNEES = [
         { "code" : "ville", "label" : "CP + Ville"},
         ] },
     { "nom" : _(u"Organisme"), "champs" : [ 
-        { "code" : "siret", "label" : _(u"Numéro SIRET")},
+        { "code" : "siret", "label" : _(u"NumÃ©ro SIRET")},
         { "code" : "ape", "label" : "Code APE"}, 
         ] },
     ]
 
-TEXTE_INTRO = _(u"Je soussigné{GENRE} {NOM}, {FONCTION}, certifie avoir reçu pour la famille de {FAMILLE} la somme de {MONTANT}.")
+TEXTE_INTRO = _(u"Je soussignÃ©{GENRE} {NOM}, {FONCTION}, certifie avoir reÃ§u pour la famille de {FAMILLE} la somme de {MONTANT}.")
 
 DICT_DONNEES = {}
 
 
 def DateComplete(dateDD):
-    u""" Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 u"""
+    u""" Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 u"""
     if dateDD == None or dateDD == "" : return ""
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -145,7 +145,7 @@ class CTRL_Signataires(wx.Choice):
         return self.dictDonnees[index]["ID"]
     
     def GetInfos(self):
-        """ Récupère les infos sur le signataire sélectionné """
+        """ RÃ©cupÃ¨re les infos sur le signataire sÃ©lectionnÃ© """
         index = self.GetSelection()
         if index == -1 : return None
         return self.dictDonnees[index]
@@ -174,7 +174,7 @@ class CTRL_Donnees(gridlib.Grid):
             for dictChamp in dictCategorie["champs"] :
                 nbreLignes += 1
         
-        # Création de la grille
+        # CrÃ©ation de la grille
         self.CreateGrid(nbreLignes, 2)
         self.SetColSize(0, 150)
         self.SetColSize(1, 330)
@@ -183,12 +183,12 @@ class CTRL_Donnees(gridlib.Grid):
         self.SetRowLabelSize(1)
         self.SetColLabelSize(1)
         
-        # Remplissage avec les données
+        # Remplissage avec les donnÃ©es
         key = 0
         for dictCategorie in LISTE_DONNEES :
             nomCategorie = dictCategorie["nom"]
             
-            # Création d'une ligne CATEGORIE
+            # CrÃ©ation d'une ligne CATEGORIE
             self.SetRowLabelValue(key, "")
             self.SetCellFont(key, 0, wx.Font(8, wx.DEFAULT , wx.NORMAL, wx.BOLD))
             self.SetCellBackgroundColour(key, 0, "#C5DDFA")
@@ -202,7 +202,7 @@ class CTRL_Donnees(gridlib.Grid):
             
             key += 1
             
-            # Création d'une ligne de données
+            # CrÃ©ation d'une ligne de donnÃ©es
             for dictChamp in dictCategorie["champs"] :
                 code = dictChamp["code"]
                 label = dictChamp["label"]
@@ -214,14 +214,14 @@ class CTRL_Donnees(gridlib.Grid):
                 # Entete de ligne
                 self.SetRowLabelValue(key, "")
                 
-                # Création de la cellule LABEL
+                # CrÃ©ation de la cellule LABEL
                 self.SetCellValue(key, 0, label)
                 self.SetCellBackgroundColour(key, 0, "#EEF4FB")
                 self.SetReadOnly(key, 0, True)
                 self.SetCellAlignment(key, 0, wx.ALIGN_CENTRE, wx.ALIGN_CENTRE)
                 self.SetCellValue(key, 1, valeur)
             
-                # Mémorisation dans le dictionnaire des données
+                # MÃ©morisation dans le dictionnaire des donnÃ©es
                 self.dictCodes[key] = code
                 key += 1
             
@@ -233,7 +233,7 @@ class CTRL_Donnees(gridlib.Grid):
         self.moveTo = (1, 1)
 
     def OnCellChange(self, evt):
-        # Modification de la valeur dans le dict de données
+        # Modification de la valeur dans le dict de donnÃ©es
         numRow = evt.GetRow()
         valeur = self.GetCellValue(numRow, 1)
         code = self.dictCodes[numRow]
@@ -256,10 +256,10 @@ class CTRL_Donnees(gridlib.Grid):
         DICT_DONNEES[code] = valeur
 
     def MAJ_CTRL_Donnees(self):
-        """ Importe les valeurs de base dans le GRID Données """
+        """ Importe les valeurs de base dans le GRID DonnÃ©es """
         DB = GestionDB.DB()
         
-        # Récupération des infos sur l'attestation
+        # RÃ©cupÃ©ration des infos sur l'attestation
         dateDuJour = str(datetime.date.today())
         self.SetValeur("date", DateEngFr(dateDuJour))
         
@@ -278,7 +278,7 @@ class CTRL_Donnees(gridlib.Grid):
             numero = 0
         self.SetValeur("numero", u"%06d" % numero)
         
-        # Récupération des infos sur l'organisme
+        # RÃ©cupÃ©ration des infos sur l'organisme
         req = """SELECT nom, num_siret, code_ape, ville
         FROM organisateur
         WHERE IDorganisateur=1;""" 
@@ -299,7 +299,7 @@ class CTRL_Donnees(gridlib.Grid):
             else :
                 self.SetValeur("lieu", "")
         
-        # Récupération des données sur le destinataire
+        # RÃ©cupÃ©ration des donnÃ©es sur le destinataire
         dictNomsTitulaires = UTILS_Titulaires.GetTitulaires([self.parent.IDfamille,]) 
         dictInfosTitulaires = dictNomsTitulaires[self.parent.IDfamille]
         nomsTitulairesAvecCivilite = dictInfosTitulaires["titulairesAvecCivilite"]
@@ -327,22 +327,22 @@ class Dialog(wx.Dialog):
         self.dictSave = {}
         self.listeAdresses = []
         
-        # Importation des données
+        # Importation des donnÃ©es
         self.dictReglement = self.Importation()
         self.IDfamille = self.dictReglement["IDfamille"]
                 
         # Bandeau
-        intro = _(u"Vous pouvez ici éditer un reçu de règlement au format PDF. Pour un reçu standard, cliquez tout simplement sur 'Aperçu' ou sur 'Envoyer Par Email'.")
-        titre = _(u"Edition d'un reçu de règlement")
+        intro = _(u"Vous pouvez ici Ã©diter un reÃ§u de rÃ¨glement au format PDF. Pour un reÃ§u standard, cliquez tout simplement sur 'AperÃ§u' ou sur 'Envoyer Par Email'.")
+        titre = _(u"Edition d'un reÃ§u de rÃ¨glement")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Imprimante.png")
         
-        # Données
-        self.staticbox_donnees_staticbox = wx.StaticBox(self, -1, _(u"Données"))
+        # DonnÃ©es
+        self.staticbox_donnees_staticbox = wx.StaticBox(self, -1, _(u"DonnÃ©es"))
         self.ctrl_donnees = CTRL_Donnees(self)
 
         # Options
         self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
-        self.label_modele = wx.StaticText(self, -1, _(u"Modèle :"))
+        self.label_modele = wx.StaticText(self, -1, _(u"ModÃ¨le :"))
         self.ctrl_modele = CTRL_Choix_modele.CTRL_Choice(self, categorie="reglement")
         self.bouton_gestion_modeles = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
         
@@ -354,12 +354,12 @@ class Dialog(wx.Dialog):
         self.ctrl_intro.SetValue(True)
         self.ctrl_texte_intro = wx.TextCtrl(self, -1, TEXTE_INTRO)
         self.label_prestations = wx.StaticText(self, -1, _(u"Prestations :"))
-        self.ctrl_prestations = wx.CheckBox(self, -1, _(u"Afficher la liste des prestations payées avec ce règlement"))
+        self.ctrl_prestations = wx.CheckBox(self, -1, _(u"Afficher la liste des prestations payÃ©es avec ce rÃ¨glement"))
 
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_email = CTRL_Bouton_image.CTRL(self, texte=_(u"Envoyer par Email"), cheminImage="Images/32x32/Emails_exp.png")
-        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"AperÃ§u"), cheminImage="Images/32x32/Apercu.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
@@ -373,7 +373,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         self.Bind(wx.EVT_CLOSE, self.OnBoutonAnnuler)
 
-        # Importation des paramètres perso
+        # Importation des paramÃ¨tres perso
         dictValeursDefaut = {
             "intro_activer" : True,
             "intro_texte" : TEXTE_INTRO,
@@ -381,7 +381,7 @@ class Dialog(wx.Dialog):
             }
         dictParametres = UTILS_Parametres.ParametresCategorie(mode="get", categorie="impression_recu", dictParametres=dictValeursDefaut)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.ctrl_intro.SetValue(dictParametres["intro_activer"])
         if dictParametres["intro_texte"] != None :
             self.ctrl_texte_intro.SetValue(dictParametres["intro_texte"])
@@ -398,14 +398,14 @@ class Dialog(wx.Dialog):
         UTILS_Parametres.ParametresCategorie(mode="set", categorie="impression_recu", dictParametres=dictValeurs)
         
     def __set_properties(self):
-        self.SetTitle(_(u"Edition d'un reçu de règlement"))
-        self.ctrl_donnees.SetToolTip(wx.ToolTip(_(u"Vous pouvez modifier ici les données de base")))
-        self.ctrl_modele.SetToolTip(wx.ToolTip(_(u"Selectionnez un modèle de documents")))
-        self.ctrl_signataire.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici le signataire du document")))
-        self.ctrl_intro.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure le texte d'introduction : 'Je soussigné... atteste...' ")))
-        self.ctrl_texte_intro.SetToolTip(wx.ToolTip(_(u"Vous pouvez modifier ici le texte d'introduction. \n\nUtilisez les mots-clés {GENRE}, {NOM}, {FONCTION}, {ENFANTS}, \n{DATE_DEBUT} et {DATE_FIN} pour inclure dynamiquement les \nvaleurs correspondantes.")))
-        self.ctrl_prestations.SetToolTip(wx.ToolTip(_(u"Afficher la liste des prestations payées avec ce règlement")))
-        self.bouton_gestion_modeles.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des modèles de documents")))
+        self.SetTitle(_(u"Edition d'un reÃ§u de rÃ¨glement"))
+        self.ctrl_donnees.SetToolTip(wx.ToolTip(_(u"Vous pouvez modifier ici les donnÃ©es de base")))
+        self.ctrl_modele.SetToolTip(wx.ToolTip(_(u"Selectionnez un modÃ¨le de documents")))
+        self.ctrl_signataire.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici le signataire du document")))
+        self.ctrl_intro.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure le texte d'introduction : 'Je soussignÃ©... atteste...' ")))
+        self.ctrl_texte_intro.SetToolTip(wx.ToolTip(_(u"Vous pouvez modifier ici le texte d'introduction. \n\nUtilisez les mots-clÃ©s {GENRE}, {NOM}, {FONCTION}, {ENFANTS}, \n{DATE_DEBUT} et {DATE_FIN} pour inclure dynamiquement les \nvaleurs correspondantes.")))
+        self.ctrl_prestations.SetToolTip(wx.ToolTip(_(u"Afficher la liste des prestations payÃ©es avec ce rÃ¨glement")))
+        self.bouton_gestion_modeles.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la gestion des modÃ¨les de documents")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer ce document par Email")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher le PDF")))
@@ -416,7 +416,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
                 
-        # Données
+        # DonnÃ©es
         staticbox_donnees = wx.StaticBoxSizer(self.staticbox_donnees_staticbox, wx.VERTICAL)
         staticbox_donnees.Add(self.ctrl_donnees, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(staticbox_donnees, 1, wx.EXPAND|wx.LEFT|wx.RIGHT, 10)
@@ -425,7 +425,7 @@ class Dialog(wx.Dialog):
         staticbox_options = wx.StaticBoxSizer(self.staticbox_options_staticbox, wx.VERTICAL)
         grid_sizer_options = wx.FlexGridSizer(rows=4, cols=2, vgap=5, hgap=10)
         
-        # Modèle
+        # ModÃ¨le
         grid_sizer_options.Add(self.label_modele, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_modele = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_modele.Add(self.ctrl_modele, 0, wx.EXPAND|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -484,7 +484,7 @@ class Dialog(wx.Dialog):
         self.ctrl_modele.MAJ() 
     
     def Importation(self):
-        # Récupération des informations sur le règlement
+        # RÃ©cupÃ©ration des informations sur le rÃ¨glement
         DB = GestionDB.DB()
         req = """SELECT 
         reglements.IDreglement, 
@@ -539,13 +539,13 @@ class Dialog(wx.Dialog):
         return dictReglements
 
     def OnBoutonAnnuler(self, event):
-        # Mémoriser le reçu
+        # MÃ©moriser le reÃ§u
         self.Sauvegarder() 
 
-        # Mémorisation des paramètres perso
+        # MÃ©morisation des paramÃ¨tres perso
         self.MemorisationParametres() 
 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def OnBoutonAide(self, event):
@@ -553,13 +553,13 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Rglements1")
 
     def Sauvegarder(self, demander=True):
-        """ Sauvegarder la trace du reçu """
+        """ Sauvegarder la trace du reÃ§u """
         if len(self.dictSave) == 0 : 
             return
         
         # Demande la confirmation de sauvegarde
         if demander == True :
-            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous mémoriser le reçu édité ?\n\n(Cliquez NON si c'était juste un test sinon cliquez OUI)"), _(u"Sauvegarde"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous mÃ©moriser le reÃ§u Ã©ditÃ© ?\n\n(Cliquez NON si c'Ã©tait juste un test sinon cliquez OUI)"), _(u"Sauvegarde"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -577,11 +577,11 @@ class Dialog(wx.Dialog):
         IDrecu = DB.ReqInsert("recus", listeDonnees)        
         DB.Close()
         
-        # Mémorisation de l'action dans l'historique
+        # MÃ©morisation de l'action dans l'historique
         UTILS_Historique.InsertActions([{
                 "IDfamille" : self.IDfamille,
                 "IDcategorie" : 28, 
-                "action" : _(u"Edition d'un reçu pour le règlement ID%d") % self.dictSave["IDreglement"],
+                "action" : _(u"Edition d'un reÃ§u pour le rÃ¨glement ID%d") % self.dictSave["IDreglement"],
                 },])
                 
     def OnBoutonOk(self, event): 
@@ -646,10 +646,10 @@ class Dialog(wx.Dialog):
     def CreationPDF(self, nomDoc=FonctionsPerso.GenerationNomDoc("RECU_REGLEMENT", "pdf"), afficherDoc=True):
         dictChampsFusion = {}
         
-        # Récupération des valeurs de base
+        # RÃ©cupÃ©ration des valeurs de base
         dictDonnees = DICT_DONNEES
 
-        # Récupération des infos sur l'organisme
+        # RÃ©cupÃ©ration des infos sur l'organisme
         DB = GestionDB.DB()
         req = """SELECT nom, rue, cp, ville, tel, fax, mail, site, num_agrement, num_siret, code_ape
         FROM organisateur
@@ -678,7 +678,7 @@ class Dialog(wx.Dialog):
         except :
             date_editionDD = ""
                 
-        # Insertion des données de base dans le dictValeurs
+        # Insertion des donnÃ©es de base dans le dictValeurs
         IDfamille = self.IDfamille
         dictValeurs = {
             "IDfamille" : self.IDfamille,
@@ -709,21 +709,21 @@ class Dialog(wx.Dialog):
             "{ORGANISATEUR_APE}" : dictOrganisme["code_ape"],
             }
 
-        # Récupération des infos de base individus et familles
+        # RÃ©cupÃ©ration des infos de base individus et familles
         self.infosIndividus = UTILS_Infos_individus.Informations() 
         dictValeurs.update(self.infosIndividus.GetDictValeurs(mode="famille", ID=IDfamille, formatChamp=True))
 
-        # Récupération des questionnaires
+        # RÃ©cupÃ©ration des questionnaires
         Questionnaires = UTILS_Questionnaires.ChampsEtReponses(type="famille")
         for dictReponse in Questionnaires.GetDonnees(IDfamille) :
             dictValeurs[dictReponse["champ"]] = dictReponse["reponse"]
             if dictReponse["controle"] == "codebarres" :
                 dictValeurs["{CODEBARRES_QUESTION_%d}" % dictReponse["IDquestion"]] = dictReponse["reponse"]
 
-        # Récupération du signataire
+        # RÃ©cupÃ©ration du signataire
         infosSignataire = self.ctrl_signataire.GetInfos()
         if infosSignataire == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun signataire !"), _(u"Annulation"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun signataire !"), _(u"Annulation"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -736,7 +736,7 @@ class Dialog(wx.Dialog):
         else:
             genreSignataire = u"e"
         
-        # Récupération et transformation du texte d'intro
+        # RÃ©cupÃ©ration et transformation du texte d'intro
         if self.ctrl_intro.GetValue() == True :
             textIntro = self.ctrl_texte_intro.GetValue()         
             textIntro = textIntro.replace("{GENRE}", genreSignataire)
@@ -748,7 +748,7 @@ class Dialog(wx.Dialog):
         else:
             dictValeurs["intro"] = None
     
-        # Envoi des informations sur le règlement
+        # Envoi des informations sur le rÃ¨glement
         for key, valeur in self.dictReglement.items() :
             dictValeurs[key] = valeur
         
@@ -771,13 +771,13 @@ class Dialog(wx.Dialog):
         else:
             dictValeurs["{DATE_DIFFERE}"] = ""
 
-        # Récupération liste des prestations
+        # RÃ©cupÃ©ration liste des prestations
         if self.ctrl_prestations.GetValue() == True :
             dictValeurs["prestations"] = self.GetPrestations() 
         else :
             dictValeurs["prestations"] = []
         
-        # Préparation des données pour une sauvegarde de l'attestation
+        # PrÃ©paration des donnÃ©es pour une sauvegarde de l'attestation
         self.dictSave = {}
         self.dictSave["numero"] = dictDonnees["numero"]
         self.dictSave["IDfamille"] = self.IDfamille
@@ -785,10 +785,10 @@ class Dialog(wx.Dialog):
         self.dictSave["IDutilisateur"] = UTILS_Identification.GetIDutilisateur()
         self.dictSave["IDreglement"] = self.IDreglement
         
-        # Récupération du modèle
+        # RÃ©cupÃ©ration du modÃ¨le
         IDmodele = self.ctrl_modele.GetID() 
         if IDmodele == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un modèle !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un modÃ¨le !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

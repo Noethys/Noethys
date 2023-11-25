@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -21,7 +21,7 @@ from Utils import UTILS_Titulaires
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 from Utils import UTILS_Utilisateurs
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 from Utils import UTILS_Interface
@@ -33,9 +33,9 @@ def DateEngFr(textDate):
     return text
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -46,7 +46,7 @@ def DateEngEnDateDD(dateEng):
 
 def Importation(date=None, afficherDebit=True, afficherCredit=True, afficherNul=True, afficherFactures=False):
     DB = GestionDB.DB()    
-    # Récupère les comptes payeurs
+    # RÃ©cupÃ¨re les comptes payeurs
     req = """SELECT IDcompte_payeur, IDfamille
     FROM comptes_payeurs
     ORDER BY IDcompte_payeur
@@ -54,7 +54,7 @@ def Importation(date=None, afficherDebit=True, afficherCredit=True, afficherNul=
     DB.ExecuterReq(req)
     listeComptes = DB.ResultatReq()
     
-    # Récupère la ventilation
+    # RÃ©cupÃ¨re la ventilation
     req = """SELECT IDcompte_payeur, SUM(montant) AS total_ventilations
     FROM ventilation
     GROUP BY IDcompte_payeur
@@ -66,7 +66,7 @@ def Importation(date=None, afficherDebit=True, afficherCredit=True, afficherNul=
     for IDcompte_payeur, total_ventilations in listeVentilations :
         dictVentilations[IDcompte_payeur] = total_ventilations
     
-    # Récupère les prestations
+    # RÃ©cupÃ¨re les prestations
     if afficherFactures == True :
         condition = "AND IDfacture IS NOT NULL"
     else :
@@ -83,7 +83,7 @@ def Importation(date=None, afficherDebit=True, afficherCredit=True, afficherNul=
     for IDcompte_payeur, total_prestations in listePrestations :
         dictPrestations[IDcompte_payeur] = total_prestations
 
-    # Récupère les règlements
+    # RÃ©cupÃ¨re les rÃ¨glements
     req = """SELECT IDcompte_payeur, SUM(montant) AS total_reglements
     FROM reglements
     WHERE date<='%s'
@@ -98,10 +98,10 @@ def Importation(date=None, afficherDebit=True, afficherCredit=True, afficherNul=
     
     DB.Close()
     
-    # Récupération des titulaires de familles
+    # RÃ©cupÃ©ration des titulaires de familles
     dictTitulaires = UTILS_Titulaires.GetTitulaires(inclure_archives=True)
     
-    # Traitement des données
+    # Traitement des donnÃ©es
     listeListeView = []
     for IDcompte_payeur, IDfamille in listeComptes :
         if IDcompte_payeur in dictVentilations :
@@ -121,7 +121,7 @@ def Importation(date=None, afficherDebit=True, afficherCredit=True, afficherNul=
         total_a_ventiler = min(total_reglements, total_prestations)
         reste_a_ventiler = total_a_ventiler - total_ventilations
         
-        # Mémorisation
+        # MÃ©morisation
         item = {"IDcompte_payeur" : IDcompte_payeur, "IDfamille" : IDfamille, 
                     "total_ventilations" : total_ventilations, "total_reglements" : total_reglements,
                     "total_prestations" : total_prestations, "solde" : solde, 
@@ -161,7 +161,7 @@ class Track(object):
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -215,8 +215,8 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Famille"), 'left', 300, "nomsTitulaires", typeDonnee="texte"),
             ColumnDefn(_(u"Solde"), 'right', 110, "solde", typeDonnee="montant", stringConverter=FormateSolde),
             ColumnDefn(_(u"Prestations"), 'right', 110, "total_prestations", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(_(u"Règlements"), 'right', 110, "total_reglements", typeDonnee="montant", stringConverter=FormateMontant),
-##            ColumnDefn(_(u"Ventilé"), 'right', 80, "total_ventilations", stringConverter=FormateMontant),
+            ColumnDefn(_(u"RÃ¨glements"), 'right', 110, "total_reglements", typeDonnee="montant", stringConverter=FormateMontant),
+##            ColumnDefn(_(u"VentilÃ©"), 'right', 80, "total_ventilations", stringConverter=FormateMontant),
 ##            ColumnDefn(_(u"A ventiler"), 'right', 80, "reste_a_ventiler", stringConverter=FormateMontant, imageGetter=GetImageVentilation),
             ]
         
@@ -236,7 +236,7 @@ class ListView(FastObjectListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """        
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ouverture fiche famille
@@ -248,7 +248,7 @@ class ListView(FastObjectListView):
         
         menuPop.AppendSeparator()
         
-        # Génération automatique des fonctions standards
+        # GÃ©nÃ©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
 
         self.PopupMenu(menuPop)
@@ -272,7 +272,7 @@ class ListView(FastObjectListView):
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune fiche famille à ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune fiche famille Ã  ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

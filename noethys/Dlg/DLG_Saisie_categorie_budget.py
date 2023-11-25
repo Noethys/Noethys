@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -37,7 +37,7 @@ class Hyperlien(Hyperlink.HyperLinkCtrl):
         self.Bind(Hyperlink.EVT_HYPERLINK_LEFT, self.OnLeftLink)
         
     def OnLeftLink(self, event):
-        # Récupération des consommations
+        # RÃ©cupÃ©ration des consommations
         DB = GestionDB.DB() 
         req = """SELECT IDunite, unites.nom, activites.nom
         FROM unites
@@ -50,11 +50,11 @@ class Hyperlien(Hyperlink.HyperLinkCtrl):
         listeChamps = []
         for IDunite, nomUnite, nomActivite in listeDonnees :
             nomChamp = u"{NBRE_UNITE_%d}" % IDunite
-            listeLabels.append(_(u"%s : Quantité de '%s' %s") % (nomActivite, nomUnite, nomChamp))
+            listeLabels.append(_(u"%s : QuantitÃ© de '%s' %s") % (nomActivite, nomUnite, nomChamp))
             listeChamps.append(nomChamp)
         DB.Close() 
         
-        dlg = wx.SingleChoiceDialog(None, _(u"Sélectionnez un champ à insérer :"), _(u"Insérer un champ"), listeLabels, wx.CHOICEDLG_STYLE)
+        dlg = wx.SingleChoiceDialog(None, _(u"SÃ©lectionnez un champ Ã  insÃ©rer :"), _(u"InsÃ©rer un champ"), listeLabels, wx.CHOICEDLG_STYLE)
         dlg.SetSize((600, 500))
         if dlg.ShowModal() == wx.ID_OK:
             champ = listeChamps[dlg.GetSelection()]
@@ -118,7 +118,7 @@ class Dialog(wx.Dialog):
         self.typeCategorie = typeCategorie
         self.IDcategorie_budget = None
 
-        self.label_categorie = wx.StaticText(self, wx.ID_ANY, _(u"Catégorie :"))
+        self.label_categorie = wx.StaticText(self, wx.ID_ANY, _(u"CatÃ©gorie :"))
         self.ctrl_categorie = CTRL_Categorie(self, typeCategorie=typeCategorie)
         self.bouton_categories = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
 
@@ -130,7 +130,7 @@ class Dialog(wx.Dialog):
         self.ctrl_formule = wx.TextCtrl(self, wx.ID_ANY, u"", style=wx.TE_MULTILINE)
         self.ctrl_formule.SetMinSize((400, 100)) 
         
-        self.hyper_champ = Hyperlien(self, label=_(u"Insérer un champ"), infobulle=_(u"Cliquez ici pour insérer un champ"), URL="")
+        self.hyper_champ = Hyperlien(self, label=_(u"InsÃ©rer un champ"), infobulle=_(u"Cliquez ici pour insÃ©rer un champ"), URL="")
         
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
@@ -146,20 +146,20 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
 
-        # Init contrôles
+        # Init contrÃ´les
         if self.track != None :
-            titre = _(u"Modification d'une catégorie budgétaire")
+            titre = _(u"Modification d'une catÃ©gorie budgÃ©taire")
             self.Importation()
         else :
-            titre = _(u"Saisie d'une catégorie budgétaire")
-        if self.typeCategorie == "credit" : titre += _(u" au crédit")
-        if self.typeCategorie == "debit" : titre += _(u" au débit")
+            titre = _(u"Saisie d'une catÃ©gorie budgÃ©taire")
+        if self.typeCategorie == "credit" : titre += _(u" au crÃ©dit")
+        if self.typeCategorie == "debit" : titre += _(u" au dÃ©bit")
         self.SetTitle(titre)
         self.OnRadioValeur(None)
 
     def __set_properties(self):
-        self.ctrl_categorie.SetToolTip(wx.ToolTip(_(u"Sélectionnez la catégorie comptable à associer")))
-        self.bouton_categories.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des catégories comptables")))
+        self.ctrl_categorie.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez la catÃ©gorie comptable Ã  associer")))
+        self.bouton_categories.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la gestion des catÃ©gories comptables")))
         self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez un montant plafonf (Ex : 200.00)")))
         self.ctrl_formule.SetToolTip(wx.ToolTip(_(u"Saisissez une formule de calcul du plafond (Ex : {NBRE_UNITE_1}*3.00)")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
@@ -246,7 +246,7 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event): 
         IDcategorie = self.ctrl_categorie.GetID()
         if IDcategorie == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une catégorie !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une catÃ©gorie !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_categorie.SetFocus()
@@ -274,7 +274,7 @@ class Dialog(wx.Dialog):
     
     def Importation(self):
         """ Importation depuis un track """
-        # Catégorie
+        # CatÃ©gorie
         self.IDcategorie_budget = self.track.IDcategorie_budget
         self.ctrl_categorie.SetID(self.track.IDcategorie)
         

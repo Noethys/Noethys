@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -48,7 +48,7 @@ class CTRL(HTL.HyperTreeList):
         from Utils import UTILS_Linux
         UTILS_Linux.AdaptePolice(self)
 
-        # CrÈation de l'ImageList
+        # Cr√©ation de l'ImageList
         il = wx.ImageList(16, 16)
         self.img_ecole = il.Add(wx.Bitmap(Chemins.GetStaticPath('Images/16x16/Ecole.png'), wx.BITMAP_TYPE_PNG))
         self.img_classe = il.Add(wx.Bitmap(Chemins.GetStaticPath('Images/16x16/Classe.png'), wx.BITMAP_TYPE_PNG))
@@ -61,7 +61,7 @@ class CTRL(HTL.HyperTreeList):
         self.SetColumnWidth(1, 120)
         self.SetMainColumn(0)
                                 
-        # CrÈation des branches
+        # Cr√©ation des branches
         self.root = self.AddRoot(_(u"Classes"))
         self.SetPyData(self.root, {"type" : "root", "ID" : None} )
         if 'phoenix' in wx.PlatformInfo:
@@ -78,14 +78,14 @@ class CTRL(HTL.HyperTreeList):
             self.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnSelectItem)
                         
     def MAJ(self, IDecole=None, selection=None):
-        """ Met ‡ jour (redessine) tout le contrÙle """
+        """ Met √† jour (redessine) tout le contr√¥le """
         self.IDecole = IDecole
         nbreBranches = 1#self.GetMainWindow().GetCount()
         if nbreBranches > 0 :
             self.DeleteChildren(self.root)
         if self.IDecole != None :
             self.CreationBranches()
-            # SÈlection
+            # S√©lection
             if selection != None :
                 branche = self.dictBranches[selection]
                 self.SelectItem(branche)
@@ -104,10 +104,10 @@ class CTRL(HTL.HyperTreeList):
         return dictNiveaux
 
     def CreationBranches(self):
-        """ Met uniquement ‡ jour le contenu du contrÙle """
+        """ Met uniquement √† jour le contenu du contr√¥le """
         self.dictBranches = {} 
         
-        # --- Importation des donnÈes ---
+        # --- Importation des donn√©es ---
         DB = GestionDB.DB()
         req = """SELECT IDclasse, nom, date_debut, date_fin, niveaux
         FROM classes 
@@ -143,7 +143,7 @@ class CTRL(HTL.HyperTreeList):
                         listeOrdresNiveaux.append(ordreNiveau)
                 txtNiveaux = ", ".join(txtTemp)
             
-            # CrÈation du dict Classes
+            # Cr√©ation du dict Classes
             if (saison in dictClasses) == False :
                 dictClasses[saison] = []
             
@@ -155,7 +155,7 @@ class CTRL(HTL.HyperTreeList):
         listeSaisons.sort() 
         
         
-        # CrÈation des saisons
+        # Cr√©ation des saisons
         indexSaison = 1
         for saison in listeSaisons :
             nomSaison = _(u"Du %s au %s") % (DateEngFr(str(saison[0])), DateEngFr(str(saison[1])) )
@@ -163,7 +163,7 @@ class CTRL(HTL.HyperTreeList):
             self.SetPyData(brancheSaison, {"type" : "saison", "ID" : saison, "nom" : nomSaison} )
             self.SetItemBold(brancheSaison, True)
             
-            # CrÈation des classes
+            # Cr√©ation des classes
             listeClasses = dictClasses[saison]
             listeClasses.sort() 
             
@@ -193,7 +193,7 @@ class CTRL(HTL.HyperTreeList):
         type = dictItem["type"]
         ID = dictItem["ID"]
         
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ajouter
@@ -242,7 +242,7 @@ class CTRL(HTL.HyperTreeList):
         IDclasse = dictItem["ID"]
         
         if type != "classe" : 
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune classe ‡ modifier !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune classe √† modifier !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return        
@@ -263,12 +263,12 @@ class CTRL(HTL.HyperTreeList):
         IDclasse = dictItem["ID"]
         
         if type != "classe" : 
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune classe ‡ supprimer !"), _(u"Erreur"), wx.OK | wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune classe √† supprimer !"), _(u"Erreur"), wx.OK | wx.ICON_QUESTION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # VÈrifie que cette classe n'a pas ÈtÈ attribuÈe ‡ un individu
+        # V√©rifie que cette classe n'a pas √©t√© attribu√©e √† un individu
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDclasse)
         FROM scolarite 
@@ -278,7 +278,7 @@ class CTRL(HTL.HyperTreeList):
         nbre = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbre > 0 :
-            dlg = wx.MessageDialog(self, _(u"Cette classe a dÈj‡ ÈtÈ attribuÈe %d fois.\n\nVous ne pouvez donc pas la supprimer !") % nbre, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cette classe a d√©j√† √©t√© attribu√©e %d fois.\n\nVous ne pouvez donc pas la supprimer !") % nbre, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

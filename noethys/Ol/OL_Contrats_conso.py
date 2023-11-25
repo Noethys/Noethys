@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -45,18 +45,18 @@ class Track(object):
         if self.heure_debut != None and self.heure_fin != None :
             self.texteDetail = "%s-%s" % (self.heure_debut, self.heure_fin)
         if self.quantite != None :
-            self.texteDetail += _(u" QtÈ=%d") % self.quantite
+            self.texteDetail += _(u" Qt√©=%d") % self.quantite
         
         if self.etat == "reservation" : 
-            self.texteEtat = _(u"RÈservation")
+            self.texteEtat = _(u"R√©servation")
         elif self.etat == "present" : 
-            self.texteEtat = _(u"PrÈsent")
+            self.texteEtat = _(u"Pr√©sent")
         elif self.etat == "attente" : 
             self.texteEtat = _(u"Attente")
         elif self.etat == "absenti" : 
-            self.texteEtat = _(u"Absence injustifiÈe")
+            self.texteEtat = _(u"Absence injustifi√©e")
         elif self.etat == "absentj" : 
-            self.texteEtat = _(u"Absence justifiÈe")
+            self.texteEtat = _(u"Absence justifi√©e")
         elif self.etat == "refus" : 
             self.texteEtat = _(u"Refus")
         else :
@@ -66,7 +66,7 @@ class Track(object):
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.IDactivite = kwds.pop("IDactivite", None)
         self.selectionID = None
         self.selectionTrack = None
@@ -86,7 +86,7 @@ class ListView(FastObjectListView):
         self.InitObjectListView()
 
     def Importation_unites(self):
-        # RÈcupÈration des unitÈs
+        # R√©cup√©ration des unit√©s
         DB = GestionDB.DB()
         req = """SELECT IDunite, nom, abrege, type, heure_debut, heure_fin
         FROM unites
@@ -98,7 +98,7 @@ class ListView(FastObjectListView):
         for IDunite, nom, abrege, type, heure_debut, heure_fin in listeDonnees :
             dictUnites[IDunite] = {"nom":nom, "abrege":abrege, "type":type, "heure_debut":heure_debut, "heure_fin":heure_fin, "unites_incompatibles" : []}
 
-        # RÈcupËre les incompatibilitÈs entre unitÈs
+        # R√©cup√®re les incompatibilit√©s entre unit√©s
         req = """SELECT IDunite_incompat, IDunite, IDunite_incompatible
         FROM unites_incompat;"""
         DB.ExecuterReq(req)
@@ -136,9 +136,9 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(_(u"IDconso"), "left", 0, "IDconso", typeDonnee="entier"),
             ColumnDefn(_(u"Date"), 'centre', 75, "date", typeDonnee="date", stringConverter=FormateDateCourt),
-            ColumnDefn(_(u"UnitÈ"), 'left', 70, "nomUnite", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(_(u"Unit√©"), 'left', 70, "nomUnite", typeDonnee="texte", isSpaceFilling=True),
             ColumnDefn(_(u"Etat"), 'left', 50, "texteEtat", typeDonnee="texte"),
-            ColumnDefn(_(u"DÈtail"), 'left', 100, "texteDetail", typeDonnee="texte"),
+            ColumnDefn(_(u"D√©tail"), 'left', 100, "texteDetail", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)
@@ -164,7 +164,7 @@ class ListView(FastObjectListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """        
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         if len(self.Selection()) == 0:
@@ -172,11 +172,11 @@ class ListView(FastObjectListView):
         else:
             noSelection = False
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
 ##        # Item Assistant
-##        item = wx.MenuItem(menuPop, 100, _(u"GÈnÈrer automatiquement des consommations"))
+##        item = wx.MenuItem(menuPop, 100, _(u"G√©n√©rer automatiquement des consommations"))
 ##        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Magique.png"), wx.BITMAP_TYPE_PNG)
 ##        item.SetBitmap(bmp)
 ##        menuPop.AppendItem(item)
@@ -216,8 +216,8 @@ class ListView(FastObjectListView):
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheTout, id=70)
 
-        # Item Tout dÈcocher
-        item = wx.MenuItem(menuPop, 80, _(u"Tout dÈcocher"))
+        # Item Tout d√©cocher
+        item = wx.MenuItem(menuPop, 80, _(u"Tout d√©cocher"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Decocher.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -226,7 +226,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -301,7 +301,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):  
         pass
 ##        if len(self.Selection()) == 0 :
-##            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune pÈriode ‡ modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+##            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune p√©riode √† modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
 ##            dlg.ShowModal()
 ##            dlg.Destroy()
 ##            return
@@ -315,7 +315,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):  
         if len(self.Selection()) == 0 and len(self.GetTracksCoches()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune consommation ‡ supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune consommation √† supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -323,7 +323,7 @@ class ListView(FastObjectListView):
         if len(self.GetTracksCoches()) > 0 :
             # Suppression multiple
             listeSelections = self.GetTracksCoches()
-            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer les consommations cochÈes ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer les consommations coch√©es ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -332,7 +332,7 @@ class ListView(FastObjectListView):
         else :
             # Suppression unique
             listeSelections = self.Selection()        
-            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la consommation sÈlectionnÈe ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la consommation s√©lectionn√©e ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -342,7 +342,7 @@ class ListView(FastObjectListView):
         listeSuppressions = []
         for track in listeSelections :
             if track.etat in ("present", "absenti", "absentj") :
-                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer la consommation '%s' du %s car elle est dÈj‡ pointÈe !") % (track.nomUnite, UTILS_Dates.DateDDEnFr(track.date)) , _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer la consommation '%s' du %s car elle est d√©j√† point√©e !") % (track.nomUnite, UTILS_Dates.DateDDEnFr(track.date)) , _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return

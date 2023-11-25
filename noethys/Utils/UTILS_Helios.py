@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -14,7 +14,7 @@ import datetime
 
 
 def GetLigne(dictDonnees={}) :
-    """ Création d'une line ROLMRE """
+    """ CrÃ©ation d'une line ROLMRE """
     ROLMVT = u"1"
     ROLCOL = dictDonnees["ROLCOL"]
     ROLNAT = dictDonnees["ROLNAT"]
@@ -109,7 +109,7 @@ def GetLigne(dictDonnees={}) :
     return "".join(listeZones) + u"\n"
     
 def GetCle_modulo11(elements=[]):
-    """ Calcul de la clé Modulo 11 """
+    """ Calcul de la clÃ© Modulo 11 """
 ##    elements = ("01", "04", "00", "0", "0000000900001")
 ##    elements = ("39", "01", "13", "0", "0000000000303")
 ##    elements = ("453267")
@@ -127,7 +127,7 @@ def GetCle_modulo11(elements=[]):
     return cle
 
 def GetCle_modulo23(elements=[]):
-    """ Calcul de la clé Modulo 23 """
+    """ Calcul de la clÃ© Modulo 23 """
 ##    elements = ("00", "0", "00", "0000000900001") 
     nombre = "".join(elements)
     K = (int(nombre) % 23) + 1

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -26,12 +26,12 @@ class Dialog(wx.Dialog):
         self.logo = None
 
         if self.IDcategorie == None :
-            self.SetTitle(_(u"Saisie d'une catégorie de produits"))
+            self.SetTitle(_(u"Saisie d'une catÃ©gorie de produits"))
         else :
-            self.SetTitle(_(u"Modification d'une catégorie de produits"))
+            self.SetTitle(_(u"Modification d'une catÃ©gorie de produits"))
 
-        # Généralités
-        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralités"))
+        # GÃ©nÃ©ralitÃ©s
+        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"GÃ©nÃ©ralitÃ©s"))
         self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
         self.label_observations = wx.StaticText(self, -1, _(u"Notes :"))
@@ -70,12 +70,12 @@ class Dialog(wx.Dialog):
         self.ctrl_nom.SetFocus()
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom de la catégorie de produits")))
-        self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez ici des observations éventuelles")))
-        self.ctrl_logo.SetToolTip(wx.ToolTip(_(u"Image de la catégorie de produits")))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom de la catÃ©gorie de produits")))
+        self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez ici des observations Ã©ventuelles")))
+        self.ctrl_logo.SetToolTip(wx.ToolTip(_(u"Image de la catÃ©gorie de produits")))
         self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter ou modifier l'image")))
         self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'image actuelle")))
-        self.bouton_visualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour visualiser l'image actuelle en taille réelle")))
+        self.bouton_visualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour visualiser l'image actuelle en taille rÃ©elle")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider la saisie")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
@@ -85,7 +85,7 @@ class Dialog(wx.Dialog):
 
         grid_sizer_haut = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
 
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         staticbox_generalites = wx.StaticBoxSizer(self.staticbox_generalites_staticbox, wx.VERTICAL)
         grid_sizer_generalites = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
         grid_sizer_generalites.Add(self.label_nom, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -146,7 +146,7 @@ class Dialog(wx.Dialog):
         observations = self.ctrl_observations.GetValue()
 
         if len(nom) == 0:
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour cette catégorie de produits !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour cette catÃ©gorie de produits !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
@@ -177,14 +177,14 @@ class Dialog(wx.Dialog):
 
         DB.Close()
 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def GetIDcategorie(self):
         return self.IDcategorie
 
     def Importation(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         db = GestionDB.DB()
         req = """SELECT nom, observations, image
         FROM produits_categories WHERE IDcategorie=%d;""" % self.IDcategorie
@@ -194,7 +194,7 @@ class Dialog(wx.Dialog):
         if len(listeDonnees) == 0 : return
         nom, observations, image = listeDonnees[0]
 
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         self.ctrl_nom.SetValue(nom)
         self.ctrl_observations.SetValue(observations)
 

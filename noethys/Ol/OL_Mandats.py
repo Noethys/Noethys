@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -36,7 +36,7 @@ class Track(object):
         self.rum = donnees[2]
         self.typeMandat = donnees[3]
         if self.typeMandat == "recurrent" :
-            self.typeMandatStr = _(u"RÈcurrent")
+            self.typeMandatStr = _(u"R√©current")
         else :
             self.typeMandatStr = _(u"Ponctuel")
         self.date = donnees[4]
@@ -52,7 +52,7 @@ class Track(object):
         self.bic = donnees[12]
         self.memo = donnees[13]
         
-        # SÈquence
+        # S√©quence
         self.sequence = donnees[14]
         self.sequenceStr = ""
         for label, code in LISTE_SEQUENCES :
@@ -85,7 +85,7 @@ class Track(object):
         else :
             self.titulairesFamille = u""
         
-        # Nbre prÈlËvements associÈs
+        # Nbre pr√©l√®vements associ√©s
         self.nbrePrelevementsSEPA = donnees[19]
         if self.nbrePrelevementsSEPA == None :
             self.nbrePrelevementsSEPA = 0
@@ -101,7 +101,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.IDfamille = kwds.pop("IDfamille", None)
         self.mode = kwds.pop("mode", "famille")
         self.selectionID = None
@@ -124,7 +124,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeID = None
         if self.mode == "famille" :
             criteres = "WHERE mandats.IDfamille=%d" % self.IDfamille
@@ -186,11 +186,11 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Date"), 'left', 75, "date", typeDonnee="date", stringConverter=FormateDateCourt),
             ColumnDefn(_(u"RUM"), 'left', 60, "rum", typeDonnee="texte"),
             ColumnDefn(_(u"Type"), 'left', 70, "typeMandatStr", typeDonnee="texte"),
-            ColumnDefn(_(u"Nbre prÈlËv."), 'center', 80, "nbrePrelevements", typeDonnee="entier"),
+            ColumnDefn(_(u"Nbre pr√©l√®v."), 'center', 80, "nbrePrelevements", typeDonnee="entier"),
             ColumnDefn(_(u"IBAN"), 'left', 180, "iban", typeDonnee="texte"),
             ColumnDefn(_(u"BIC"), 'left', 100, "bic", typeDonnee="texte"),
             ColumnDefn(_(u"Titulaire"), 'left', 110, "individu_nom_complet", typeDonnee="texte"),
-            ColumnDefn(_(u"SÈquence suiv."), 'left', 100, "sequenceStr", typeDonnee="texte"),
+            ColumnDefn(_(u"S√©quence suiv."), 'left', 100, "sequenceStr", typeDonnee="texte"),
             ColumnDefn(_(u"Observations"), 'left', 120, "memo", typeDonnee="texte"),
             ]
         
@@ -213,7 +213,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -232,7 +232,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDmandat
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         if self.mode == "famille" :
@@ -262,7 +262,7 @@ class ListView(FastObjectListView):
         
         menuPop.AppendSeparator()
             
-        # GÈnÈration automatique des fonctions standards
+        # G√©n√©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop, titre=_(u"Liste des mandats"), orientation=wx.LANDSCAPE)
 
         self.PopupMenu(menuPop)
@@ -281,14 +281,14 @@ class ListView(FastObjectListView):
         if self.IDfamille != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_mandats", "modifier") == False : return
         
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun mandat ‡ modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun mandat √† modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
 
         if track.nbrePrelevements > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce mandat a dÈj‡ ÈtÈ utilisÈ pour %d prÈlËvements. Souhaitez-vous tout de mÍme l'ouvrir ?\n\nAttention, il est dÈconseillÈ de modifier un mandat dÈj‡ utilisÈ.") % track.nbrePrelevements, _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce mandat a d√©j√† √©t√© utilis√© pour %d pr√©l√®vements. Souhaitez-vous tout de m√™me l'ouvrir ?\n\nAttention, il est d√©conseill√© de modifier un mandat d√©j√† utilis√©.") % track.nbrePrelevements, _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -304,15 +304,15 @@ class ListView(FastObjectListView):
         if self.IDfamille != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_mandats", "supprimer") == False : return
         
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun mandat ‡ supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun mandat √† supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
         
-        # Avertissement si appartient ‡ un prÈlËvement
+        # Avertissement si appartient √† un pr√©l√®vement
         if track.nbrePrelevements > 0 :
-            dlg = wx.MessageDialog(self, _(u"Suppression impossible ! \n\nCe mandat est dÈj‡ rattachÈ ‡ %d prÈlËvements.") % track.nbrePrelevements, _(u"Suppression impossible"), wx.OK|wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Suppression impossible ! \n\nCe mandat est d√©j√† rattach√© √† %d pr√©l√®vements.") % track.nbrePrelevements, _(u"Suppression impossible"), wx.OK|wx.ICON_ERROR)
             dlg.ShowModal() 
             dlg.Destroy()
             return
@@ -323,14 +323,14 @@ class ListView(FastObjectListView):
             DB = GestionDB.DB()
             DB.ReqDEL("mandats", "IDmandat", track.IDmandat)
 
-##            # MÈmorise l'action dans l'historique
-##            montant = u"%.2f §" % self.Selection()[0].montant
+##            # M√©morise l'action dans l'historique
+##            montant = u"%.2f ‚Ç¨" % self.Selection()[0].montant
 ##            texteMode = self.Selection()[0].nom_mode
 ##            textePayeur = self.Selection()[0].nom_payeur
 ##            UTILS_Historique.InsertActions([{
 ##                "IDfamille" : IDfamille,
 ##                "IDcategorie" : 8, 
-##                "action" : _(u"Suppression du rËglement ID%d : %s en %s payÈ par %s") % (IDreglement, montant, texteMode, textePayeur),
+##                "action" : _(u"Suppression du r√®glement ID%d : %s en %s pay√© par %s") % (IDreglement, montant, texteMode, textePayeur),
 ##                },])
             
             DB.Close()
@@ -342,7 +342,7 @@ class ListView(FastObjectListView):
     def OuvrirFicheFamille(self, event=None):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune fiche famille ‡ ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune fiche famille √† ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

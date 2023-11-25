@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -18,7 +18,7 @@ from Utils import UTILS_Dates
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 import datetime
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 from Utils import UTILS_Interface
@@ -36,7 +36,7 @@ class Track(object):
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.clsbase = kwds.pop("clsbase", None)
         self.selectionID = None
         self.selectionTrack = None
@@ -66,28 +66,28 @@ class ListView(FastObjectListView):
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucune donnée"))
+        self.SetEmptyListMsg(_(u"Aucune donnÃ©e"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(0)
         
     def MAJ(self):
         listeDonnees = [
-            {"label" : _(u"Nombre de jours prévus"), "code" : "nbre_dates", "format" : "entier", "suffixe" : _(u"jours"), "defaut" : 0},
-            {"label" : _(u"Nombre de semaines prévues"), "code" : "nbre_semaines", "format" : "entier", "suffixe" : _(u"semaines"), "defaut" : 0},
-            {"label" : _(u"Nombre de mois prévus"), "code" : "nbre_mois", "format" : "entier", "suffixe" : _(u"mois"), "defaut" : 0},
-            {"label" : _(u"Nombre moyen d'heures prévues par jour"), "code" : "moy_heures_jour", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
-            {"label" : _(u"Nombre moyen d'heures prévues par semaine"), "code" : "moy_heures_semaine", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
-            {"label" : _(u"Nombre moyen d'heures prévues par mois"), "code" : "moy_heures_mois", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
-            {"label" : _(u"Nombre d'heures prévues arrondies"), "code" : "duree_heures_brut", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
-            {"label" : _(u"Nombre d'heures RTT prévues"), "code" : "duree_absences_prevues", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
+            {"label" : _(u"Nombre de jours prÃ©vus"), "code" : "nbre_dates", "format" : "entier", "suffixe" : _(u"jours"), "defaut" : 0},
+            {"label" : _(u"Nombre de semaines prÃ©vues"), "code" : "nbre_semaines", "format" : "entier", "suffixe" : _(u"semaines"), "defaut" : 0},
+            {"label" : _(u"Nombre de mois prÃ©vus"), "code" : "nbre_mois", "format" : "entier", "suffixe" : _(u"mois"), "defaut" : 0},
+            {"label" : _(u"Nombre moyen d'heures prÃ©vues par jour"), "code" : "moy_heures_jour", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
+            {"label" : _(u"Nombre moyen d'heures prÃ©vues par semaine"), "code" : "moy_heures_semaine", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
+            {"label" : _(u"Nombre moyen d'heures prÃ©vues par mois"), "code" : "moy_heures_mois", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
+            {"label" : _(u"Nombre d'heures prÃ©vues arrondies"), "code" : "duree_heures_brut", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
+            {"label" : _(u"Nombre d'heures RTT prÃ©vues"), "code" : "duree_absences_prevues", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
             {"label" : _(u"Nombre d'heures RTT prises"), "code" : "duree_absences_prises", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
             {"label" : _(u"Nombre d'heures RTT restantes"), "code" : "duree_absences_solde", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
-            {"label" : _(u"Nombre d'heures de régularisation"), "code" : "duree_heures_regularisation", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
-            {"label" : _(u"Nombre total d'heures facturées"), "code" : "duree_heures_contrat", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
-            {"label" : _(u"Heures facturées chaque mois"), "code" : "forfait_horaire_mensuel", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
-            {"label" : _(u"Heures facturées le dernier mois"), "code" : "forfait_horaire_dernier_mois", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
-            {"label" : _(u"Nombre de mensualités"), "code" : "nbre_mensualites", "format" : "entier", "suffixe" : _(u"mensualités"), "defaut" : 0},
-            {"label" : _(u"Montant total facturé"), "code" : "total_mensualites", "format" : "montant", "suffixe" : "", "defaut" : FloatToDecimal(0.0)},
+            {"label" : _(u"Nombre d'heures de rÃ©gularisation"), "code" : "duree_heures_regularisation", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
+            {"label" : _(u"Nombre total d'heures facturÃ©es"), "code" : "duree_heures_contrat", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
+            {"label" : _(u"Heures facturÃ©es chaque mois"), "code" : "forfait_horaire_mensuel", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
+            {"label" : _(u"Heures facturÃ©es le dernier mois"), "code" : "forfait_horaire_dernier_mois", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
+            {"label" : _(u"Nombre de mensualitÃ©s"), "code" : "nbre_mensualites", "format" : "entier", "suffixe" : _(u"mensualitÃ©s"), "defaut" : 0},
+            {"label" : _(u"Montant total facturÃ©"), "code" : "total_mensualites", "format" : "montant", "suffixe" : "", "defaut" : FloatToDecimal(0.0)},
         ]
 
         self.donnees = []
@@ -118,7 +118,7 @@ class ListView(FastObjectListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """        
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         if len(self.Selection()) == 0:
@@ -126,11 +126,11 @@ class ListView(FastObjectListView):
         else:
             noSelection = False
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -164,21 +164,21 @@ class ListView(FastObjectListView):
             
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Récapitulatif des données du contrat"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"RÃ©capitulatif des donnÃ©es du contrat"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Récapitulatif des données du contrat"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"RÃ©capitulatif des donnÃ©es du contrat"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Récapitulatif des données du contrat"), autoriseSelections=False)
+        UTILS_Export.ExportTexte(self, titre=_(u"RÃ©capitulatif des donnÃ©es du contrat"), autoriseSelections=False)
         
     def ExportExcel(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Récapitulatif des données du contrat"), autoriseSelections=False)
+        UTILS_Export.ExportExcel(self, titre=_(u"RÃ©capitulatif des donnÃ©es du contrat"), autoriseSelections=False)
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------

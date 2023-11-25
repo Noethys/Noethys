@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -63,7 +63,7 @@ class GenerationFichier(Thread):
 
     def run(self): 
         self.parent.log.SetImage("upload")
-        self.parent.EcritLog(_(u"Génération du fichier de données"))
+        self.parent.EcritLog(_(u"GÃ©nÃ©ration du fichier de donnÃ©es"))
         try: 
             export = UTILS_Export_nomade.Export()
             nomFichier = export.Run() 
@@ -94,7 +94,7 @@ class Echo(Protocol):
         # Validation de l'IP
         if IP_AUTORISEES not in (None, "") :
             if self.IsIPinListe(IP_AUTORISEES, ip) == False :
-                self.EcritLog(_(u"Adresse IP non autorisée"))
+                self.EcritLog(_(u"Adresse IP non autorisÃ©e"))
                 self.transport.loseConnection()
 
         if IP_INTERDITES not in (None, "") :
@@ -143,7 +143,7 @@ class Echo(Protocol):
             self.FinEnvoi() 
             return
         
-        # Si JSON : Réception d'un fichier
+        # Si JSON : RÃ©ception d'un fichier
         if self.IdentificationJSON(data) :
             message = json.loads(data)
 
@@ -153,7 +153,7 @@ class Echo(Protocol):
                 tailleFichier = message["taille"]
                 nomInitial = message["nom"]
                 nomFinal = UTILS_Fichiers.GetRepSync(nomInitial)
-                self.EcritLog(_(u"Prêt à recevoir de l'appareil ") + nom_appareil + " le fichier " + nomInitial + " (" + FonctionsPerso.Formate_taille_octets(tailleFichier) + ")")
+                self.EcritLog(_(u"PrÃªt Ã  recevoir de l'appareil ") + nom_appareil + " le fichier " + nomInitial + " (" + FonctionsPerso.Formate_taille_octets(tailleFichier) + ")")
                 fichier = open(nomFinal, "wb")
                 self.dictFichierReception = {
                     "nom_initial" : nomInitial,
@@ -166,23 +166,23 @@ class Echo(Protocol):
                 if six.PY3:
                     texte = texte.encode('utf-8')
                 self.transport.write(texte)
-                self.EcritLog(_(u"Réception en cours")) 
+                self.EcritLog(_(u"RÃ©ception en cours")) 
                 self.log.SetImage("download")
                 return
         
-        # Réception des données d'un fichier
+        # RÃ©ception des donnÃ©es d'un fichier
         if self.dictFichierReception != None :
             self.dictFichierReception["fichier"].write(data)
         
             # Calcule de la taille de la partie telechargee
             self.dictFichierReception["taille_actuelle"] += len(data)
             pourcentage = int(100.0 * self.dictFichierReception["taille_actuelle"] / self.dictFichierReception["taille_totale"])
-            #self.EcritLog(_(u"Réception en cours...  ") + str(pourcentage) + u" %")
+            #self.EcritLog(_(u"RÃ©ception en cours...  ") + str(pourcentage) + u" %")
             self.log.SetGauge(pourcentage)
             return
 
-        # Si aucune data valide, on déconnecte
-        self.EcritLog(_(u"Aucune donnée valide reçue"))
+        # Si aucune data valide, on dÃ©connecte
+        self.EcritLog(_(u"Aucune donnÃ©e valide reÃ§ue"))
         self.transport.loseConnection()
     
     def IdentificationJSON(self, data):
@@ -210,7 +210,7 @@ class Echo(Protocol):
         if self.dictFichierReception != None:
             wx.CallLater(1000, self.log.SetGauge, 0)
             self.log.SetImage("on")
-            self.EcritLog(_(u"Clôture du fichier de réception"))
+            self.EcritLog(_(u"ClÃ´ture du fichier de rÃ©ception"))
             nomFichier = self.dictFichierReception["nom_initial"]
             self.dictFichierReception["fichier"].close()
             self.dictFichierReception = None
@@ -223,7 +223,7 @@ class Echo(Protocol):
 
 def StartServer(log=None):
     if IMPORT_TWISTED == False :
-        log.EcritLog(_(u"Erreur : Problème d'importation de Twisted"))
+        log.EcritLog(_(u"Erreur : ProblÃ¨me d'importation de Twisted"))
         return
     
     try :
@@ -260,10 +260,10 @@ def StartServer(log=None):
         log.EcritLog(_(u"Erreur dans le lancement du serveur Nomadhys [IP internet] :"))
         log.EcritLog(err)
 
-    log.EcritLog(_(u"Serveur prêt sur le port %d") % port)
+    log.EcritLog(_(u"Serveur prÃªt sur le port %d") % port)
     log.SetImage("on")
 
-    # Démarrage serveur
+    # DÃ©marrage serveur
     try :
         reactor.run()
     except Exception as err :
@@ -328,12 +328,12 @@ class Panel(wx.Panel):
     
     def MAJ(self):
         """ MAJ du bouton Analyser """
-        # Paramètres liste blanche et liste noire d'IP
+        # ParamÃ¨tres liste blanche et liste noire d'IP
         global IP_AUTORISEES, IP_INTERDITES
         IP_AUTORISEES = UTILS_Config.GetParametre("synchro_serveur_ip_autorisees", defaut=None)
         IP_INTERDITES = UTILS_Config.GetParametre("synchro_serveur_ip_interdites", defaut=None)
 
-        # Lecture des fichiers du répertoire SYNC
+        # Lecture des fichiers du rÃ©pertoire SYNC
         IDfichier = FonctionsPerso.GetIDfichier()
         listeFichiers = os.listdir(UTILS_Fichiers.GetRepSync())
         nbreFichiers = 0
@@ -343,15 +343,15 @@ class Panel(wx.Panel):
 
         # MAJ du bouton Analyser
         if nbreFichiers == 0 :
-            self.bouton_analyse.SetToolTip(wx.ToolTip(_(u"Aucun fichier à importer")))
+            self.bouton_analyse.SetToolTip(wx.ToolTip(_(u"Aucun fichier Ã  importer")))
             self.bouton_analyse.SetBackgroundColour(self.couleur_defaut)
             self.bouton_analyse.Enable(False)            
         elif nbreFichiers == 1 :
-            self.bouton_analyse.SetToolTip(wx.ToolTip(_(u"1 fichier à importer")))
+            self.bouton_analyse.SetToolTip(wx.ToolTip(_(u"1 fichier Ã  importer")))
             self.bouton_analyse.SetBackgroundColour((150, 255, 150))
             self.bouton_analyse.Enable(True)
         else :
-            self.bouton_analyse.SetToolTip(wx.ToolTip(_(u"%d fichiers à importer") % nbreFichiers))
+            self.bouton_analyse.SetToolTip(wx.ToolTip(_(u"%d fichiers Ã  importer") % nbreFichiers))
             self.bouton_analyse.SetBackgroundColour((150, 255, 150))
             self.bouton_analyse.Enable(True)
         
@@ -390,7 +390,7 @@ class Panel(wx.Panel):
         try :
             texte += u"[%s] %s" % (horodatage, message)
         except :
-            texte += u"[%s] %s" % (horodatage, str(message).decode("iso-8859-15"))
+            texte += u"[%s] %s" % (horodatage, str(message).decode("utf8"))
         self.log.AppendText(texte)
         
     def SetGauge(self, valeur=0):

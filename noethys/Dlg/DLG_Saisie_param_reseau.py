@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -24,13 +24,13 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         if intro == None :
-            intro = _(u"Veuillez saisir les paramètres de connexion :")
+            intro = _(u"Veuillez saisir les paramÃ¨tres de connexion :")
 
-        self.box_contenu_staticbox = wx.StaticBox(self, -1, _(u"Paramètres de connexion"))
+        self.box_contenu_staticbox = wx.StaticBox(self, -1, _(u"ParamÃ¨tres de connexion"))
         self.label_intro = wx.StaticText(self, -1, intro)
         self.label_port = wx.StaticText(self, -1, _(u"Port :"))
         self.ctrl_port = wx.TextCtrl(self, -1, u"3306")
-        self.label_hote = wx.StaticText(self, -1, _(u"Hôte :"))
+        self.label_hote = wx.StaticText(self, -1, _(u"HÃ´te :"))
         self.ctrl_hote = wx.TextCtrl(self, -1, u"")
         self.label_utilisateur = wx.StaticText(self, -1, _(u"Utilisateur :"))
         self.ctrl_utilisateur = wx.TextCtrl(self, -1, u"")
@@ -48,10 +48,10 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Paramètres de connexion"))
+        self.SetTitle(_(u"ParamÃ¨tres de connexion"))
         self.ctrl_port.SetMinSize((60, -1))
-        self.ctrl_port.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numéro de port")))
-        self.ctrl_hote.SetToolTip(wx.ToolTip(_(u"Saisissez ici l'hôte")))
+        self.ctrl_port.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numÃ©ro de port")))
+        self.ctrl_hote.SetToolTip(wx.ToolTip(_(u"Saisissez ici l'hÃ´te")))
         self.ctrl_utilisateur.SetToolTip(wx.ToolTip(_(u"Saisissez ici l'utilisateur")))
         self.ctrl_mdp.SetToolTip(wx.ToolTip(_(u"Saisissez ici le mot de passe")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
@@ -102,18 +102,18 @@ class Dialog(wx.Dialog):
         user = self.ctrl_utilisateur.GetValue()
         mdp = self.ctrl_mdp.GetValue()
         
-        # Vérification des infos saisies
+        # VÃ©rification des infos saisies
         try :
             port = int(port)
         except Exception as err:
-            dlg = wx.MessageDialog(self, _(u"Le numéro de port n'est pas valide. \n\nErreur : %s") % err, _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Le numÃ©ro de port n'est pas valide. \n\nErreur : %s") % err, _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_port.SetFocus()
             return
         
         if hote == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir un nom pour le serveur hôte."), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir un nom pour le serveur hÃ´te."), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_hote.SetFocus()
@@ -147,7 +147,7 @@ class Dialog(wx.Dialog):
       
     
 def TestConnexion(dictValeurs={}):
-    """ Test de connexion au réseau MySQL """
+    """ Test de connexion au rÃ©seau MySQL """
     hote = dictValeurs["hote"]
     utilisateur = dictValeurs["utilisateur"]
     motdepasse = dictValeurs["mdp"]

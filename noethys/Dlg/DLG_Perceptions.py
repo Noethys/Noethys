@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -26,11 +26,11 @@ class Dialog(wx.Dialog):
         self.mode = mode
         
         if self.mode == "selection" :
-            intro = _(u"Vous pouvez ici sélectionner une perception. Double-cliquez sur une ligne pour effectuer rapidement la sélection.")
-            titre = _(u"Sélection d'une perception")
-            self.SetTitle(_(u"Sélection d'une perception"))
+            intro = _(u"Vous pouvez ici sÃ©lectionner une perception. Double-cliquez sur une ligne pour effectuer rapidement la sÃ©lection.")
+            titre = _(u"SÃ©lection d'une perception")
+            self.SetTitle(_(u"SÃ©lection d'une perception"))
         else:
-            intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des perceptions. Celles-ci sont utilisées dans le cadre des prélèvements automatiques pour les collectivités publiques.")
+            intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des perceptions. Celles-ci sont utilisÃ©es dans le cadre des prÃ©lÃ¨vements automatiques pour les collectivitÃ©s publiques.")
             titre = _(u"Gestion des perceptions")
             self.SetTitle(_(u"Gestion des perceptions"))
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Banque.png")
@@ -65,8 +65,8 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une perception")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la perception sélectionnée dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la perception sélectionnée dans la iste")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la perception sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la perception sÃ©lectionnÃ©e dans la iste")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer")))
@@ -123,11 +123,11 @@ class Dialog(wx.Dialog):
     def OnBouton_ok(self, event):
         IDperception = self.GetIDperception()
         if IDperception == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune perception dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune perception dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def OnBoutonAide(self, event): 

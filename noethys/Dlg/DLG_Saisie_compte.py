@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -25,29 +25,29 @@ class Dialog(wx.Dialog):
         self.IDcompte = IDcompte
         self.defaut = defaut
         
-        # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralités"))
-        self.label_nom = wx.StaticText(self, -1, _(u"Intitulé :"))
+        # GÃ©nÃ©ralitÃ©s
+        self.box_generalites_staticbox = wx.StaticBox(self, -1, _(u"GÃ©nÃ©ralitÃ©s"))
+        self.label_nom = wx.StaticText(self, -1, _(u"IntitulÃ© :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
-        self.label_numero = wx.StaticText(self, -1, _(u"Numéro :"))
+        self.label_numero = wx.StaticText(self, -1, _(u"NumÃ©ro :"))
         self.ctrl_numero = wx.TextCtrl(self, -1, u"")
         
-        # Coordonnées bancaires
-        self.box_infos_staticbox = wx.StaticBox(self, -1, _(u"Coordonnées bancaires"))
+        # CoordonnÃ©es bancaires
+        self.box_infos_staticbox = wx.StaticBox(self, -1, _(u"CoordonnÃ©es bancaires"))
         self.label_raison = wx.StaticText(self, -1, _(u"Raison sociale :"))
         self.ctrl_raison = wx.TextCtrl(self, -1, u"")
         
-        self.label_etab = wx.StaticText(self, -1, _(u"N° Etab. :"))
+        self.label_etab = wx.StaticText(self, -1, _(u"NÂ° Etab. :"))
         self.ctrl_etab = wx.TextCtrl(self, -1, u"")
-        self.label_guichet = wx.StaticText(self, -1, _(u"N° Guichet :"))
+        self.label_guichet = wx.StaticText(self, -1, _(u"NÂ° Guichet :"))
         self.ctrl_guichet = wx.TextCtrl(self, -1, u"")
         
-        self.label_cle_rib = wx.StaticText(self, -1, _(u"Clé RIB :"))
+        self.label_cle_rib = wx.StaticText(self, -1, _(u"ClÃ© RIB :"))
         self.ctrl_cle_rib = wx.TextCtrl(self, -1, u"")
-        self.label_cle_iban = wx.StaticText(self, -1, _(u"Clé IBAN :"))
+        self.label_cle_iban = wx.StaticText(self, -1, _(u"ClÃ© IBAN :"))
         self.ctrl_cle_iban = wx.TextCtrl(self, -1, _(u"FR76"))
                 
-        self.label_iban = wx.StaticText(self, -1, _(u"N° IBAN :"))
+        self.label_iban = wx.StaticText(self, -1, _(u"NÂ° IBAN :"))
         self.ctrl_iban = wx.TextCtrl(self, -1, u"")
         self.ctrl_iban.Enable(False) 
 
@@ -55,19 +55,19 @@ class Dialog(wx.Dialog):
         self.image_nonvalide = wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Interdit2.png"), wx.BITMAP_TYPE_ANY)
         self.ctrl_controle_iban = wx.StaticBitmap(self, -1, self.image_nonvalide)
 
-        self.label_bic = wx.StaticText(self, -1, _(u"N° BIC :"))
+        self.label_bic = wx.StaticText(self, -1, _(u"NÂ° BIC :"))
         self.ctrl_bic = wx.TextCtrl(self, -1, u"")
         
-        self.label_nne = wx.StaticText(self, -1, _(u"N° NNE :"))
+        self.label_nne = wx.StaticText(self, -1, _(u"NÂ° NNE :"))
         self.ctrl_nne = wx.TextCtrl(self, -1, u"")
-        self.label_ics = wx.StaticText(self, -1, _(u"N° ICS :"))
+        self.label_ics = wx.StaticText(self, -1, _(u"NÂ° ICS :"))
         self.ctrl_ics = wx.TextCtrl(self, -1, u"")
 
         # Compte DFT
         self.box_dft_staticbox = wx.StaticBox(self, -1, _(u"Compte DFT"))
         self.label_dft_titulaire = wx.StaticText(self, -1, _(u"Titulaire du compte :"))
         self.ctrl_dft_titulaire = wx.TextCtrl(self, -1, u"")
-        self.label_dft_iban = wx.StaticText(self, -1, _(u"N° IBAN DFT :"))
+        self.label_dft_iban = wx.StaticText(self, -1, _(u"NÂ° IBAN DFT :"))
         self.ctrl_dft_iban = wx.TextCtrl(self, -1, u"")
 
         self.dft_image_valide = wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Ok4.png"), wx.BITMAP_TYPE_ANY)
@@ -91,7 +91,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_TEXT, self.MAJ_IBAN, self.ctrl_cle_iban)
         self.Bind(wx.EVT_TEXT, self.MAJ_DFT_IBAN, self.ctrl_dft_iban)
 
-        # Init contrôles
+        # Init contrÃ´les
         if self.IDcompte != None :
             self.Importation() 
             
@@ -101,20 +101,20 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'un compte bancaire"))
         self.ctrl_numero.SetMinSize((200, -1))
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un intitulé pour ce compte (Ex : 'Compte crèche')")))
-        self.ctrl_numero.SetToolTip(wx.ToolTip(_(u"Saisissez le numéro de compte")))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un intitulÃ© pour ce compte (Ex : 'Compte crÃ¨che')")))
+        self.ctrl_numero.SetToolTip(wx.ToolTip(_(u"Saisissez le numÃ©ro de compte")))
         self.ctrl_raison.SetToolTip(wx.ToolTip(_(u"Saisissez la raison sociale de l'organisme (Ex : 'Centre social'")))
-        self.ctrl_etab.SetToolTip(wx.ToolTip(_(u"Saisissez le code établissement du compte")))
+        self.ctrl_etab.SetToolTip(wx.ToolTip(_(u"Saisissez le code Ã©tablissement du compte")))
         self.ctrl_guichet.SetToolTip(wx.ToolTip(_(u"Saisissez le code guichet du compte")))
-        self.ctrl_cle_rib.SetToolTip(wx.ToolTip(_(u"Saisissez la clé RIB du compte")))
-        self.ctrl_cle_iban.SetToolTip(wx.ToolTip(_(u"Saisissez la clé IBAN du compte (FR76 pour la France)")))
-        self.ctrl_bic.SetToolTip(wx.ToolTip(_(u"Saisissez le numéro BIC du compte")))
-        self.ctrl_iban.SetToolTip(wx.ToolTip(_(u"Saisissez le numéro IBAN du compte")))
-        self.ctrl_controle_iban.SetToolTip(wx.ToolTip(_(u"Une coche verte apparaît si les coordonnées bancaires sont valides")))
-        self.ctrl_nne.SetToolTip(wx.ToolTip(_(u"Saisissez le code NNE de l'organisme (pour les prélèvements automatiques NATIONAUX - OBSOLETE)")))
-        self.ctrl_ics.SetToolTip(wx.ToolTip(_(u"Saisissez le code ICS de l'organisme (pour les prélèvements automatiques SEPA)")))
+        self.ctrl_cle_rib.SetToolTip(wx.ToolTip(_(u"Saisissez la clÃ© RIB du compte")))
+        self.ctrl_cle_iban.SetToolTip(wx.ToolTip(_(u"Saisissez la clÃ© IBAN du compte (FR76 pour la France)")))
+        self.ctrl_bic.SetToolTip(wx.ToolTip(_(u"Saisissez le numÃ©ro BIC du compte")))
+        self.ctrl_iban.SetToolTip(wx.ToolTip(_(u"Saisissez le numÃ©ro IBAN du compte")))
+        self.ctrl_controle_iban.SetToolTip(wx.ToolTip(_(u"Une coche verte apparaÃ®t si les coordonnÃ©es bancaires sont valides")))
+        self.ctrl_nne.SetToolTip(wx.ToolTip(_(u"Saisissez le code NNE de l'organisme (pour les prÃ©lÃ¨vements automatiques NATIONAUX - OBSOLETE)")))
+        self.ctrl_ics.SetToolTip(wx.ToolTip(_(u"Saisissez le code ICS de l'organisme (pour les prÃ©lÃ¨vements automatiques SEPA)")))
         self.ctrl_dft_titulaire.SetToolTip(wx.ToolTip(_(u"Saisissez le nom du titulaire du compte DFT")))
-        self.ctrl_dft_iban.SetToolTip(wx.ToolTip(_(u"Saisissez le numéro IBAN du compte DFT")))
+        self.ctrl_dft_iban.SetToolTip(wx.ToolTip(_(u"Saisissez le numÃ©ro IBAN du compte DFT")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -247,11 +247,11 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event): 
         if self.Sauvegarde()  == False :
             return
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
     
     def Sauvegarde(self):
-        """ Sauvegarde des données """
+        """ Sauvegarde des donnÃ©es """
         nom = self.ctrl_nom.GetValue() 
         numero = self.ctrl_numero.GetValue() 
         raison = self.ctrl_raison.GetValue() 
@@ -266,7 +266,7 @@ class Dialog(wx.Dialog):
         dft_titulaire = self.ctrl_dft_titulaire.GetValue()
         dft_iban = self.ctrl_dft_iban.GetValue()
         
-        # Validation des données saisies
+        # Validation des donnÃ©es saisies
         if nom == "" :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour ce compte !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -275,7 +275,7 @@ class Dialog(wx.Dialog):
             return False
 
         if numero == "" :
-            dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas saisir de numéro de compte ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Etes-vous sÃ»r de ne pas saisir de numÃ©ro de compte ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse !=  wx.ID_YES :

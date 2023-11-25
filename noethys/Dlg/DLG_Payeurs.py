@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -26,7 +26,7 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.IDcompte_payeur = IDcompte_payeur
         
-        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des payeurs d'une famille. Ils pourront ainsi être associés à des règlements.")
+        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des payeurs d'une famille. Ils pourront ainsi Ãªtre associÃ©s Ã  des rÃ¨glements.")
         titre = _(u"Gestion des payeurs")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Payeurs.png")
@@ -51,8 +51,8 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un payeur")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le payeur sélectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le payeur sélectionné dans la iste")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le payeur sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le payeur sÃ©lectionnÃ© dans la iste")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((600, 500))

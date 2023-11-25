@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -32,8 +32,8 @@ class Panel(wx.Panel):
         self.ctrl_questionnaire = CTRL_Questionnaire.CTRL(self, type="famille", IDdonnee=IDfamille)
         self.ctrl_questionnaire.SetMinSize((620, -1))
 
-        # Mémo
-        self.staticbox_memo = wx.StaticBox(self, -1, _(u"Mémo"))
+        # MÃ©mo
+        self.staticbox_memo = wx.StaticBox(self, -1, _(u"MÃ©mo"))
         self.ctrl_memo = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
         
         # Layout
@@ -84,7 +84,7 @@ class Panel(wx.Panel):
         self.majEffectuee = True
         
     def ValidationData(self):
-        """ Return True si les données sont valides et pretes à être sauvegardées """
+        """ Return True si les donnÃ©es sont valides et pretes Ã  Ãªtre sauvegardÃ©es """
         return True
     
     def Sauvegarde(self):
@@ -96,7 +96,7 @@ class Panel(wx.Panel):
         
         # Sauvegarde du questionnaire
         for IDquestion, reponse in valeurs.items():
-            # Si la réponse est différente de la réponse initiale
+            # Si la rÃ©ponse est diffÃ©rente de la rÃ©ponse initiale
             if reponse != dictValeursInitiales[IDquestion] or reponse == "##DOCUMENTS##" :
                 dirty = True
                 
@@ -105,14 +105,14 @@ class Panel(wx.Panel):
                 else:
                     IDreponse = None
                     
-                # Si c'est un document, on regarde s'il y a des docs à sauver
+                # Si c'est un document, on regarde s'il y a des docs Ã  sauver
                 sauvegarder = True
                 if reponse == "##DOCUMENTS##" :
                     nbreDocuments = self.ctrl_questionnaire.GetNbreDocuments(IDquestion)
                     if nbreDocuments == 0 :
                         sauvegarder = False
                 
-                # Sauvegarde la réponse
+                # Sauvegarde la rÃ©ponse
                 if sauvegarder == True :
                     listeDonnees = [    
                         ("IDquestion", IDquestion),
@@ -124,19 +124,19 @@ class Panel(wx.Panel):
                     else:
                         DB.ReqMAJ("questionnaire_reponses", listeDonnees, "IDreponse", IDreponse)
                 
-                # Sauvegarde du contrôle Porte-documents
+                # Sauvegarde du contrÃ´le Porte-documents
                 if reponse == "##DOCUMENTS##" :
                     nbreDocuments = self.ctrl_questionnaire.SauvegardeDocuments(IDquestion, IDreponse)
                     if nbreDocuments == 0 and IDreponse != None :
                         DB.ReqDEL("questionnaire_reponses", "IDreponse", IDreponse)
 
-        # Sauvegarde du mémo
+        # Sauvegarde du mÃ©mo
         memo = self.ctrl_memo.GetValue() 
         DB.ReqMAJ("familles", [("memo", memo),], "IDfamille", self.IDfamille)
 
         DB.Close()
         
-        # Sauvegarde les données si nouveautés
+        # Sauvegarde les donnÃ©es si nouveautÃ©s
         if dirty == True :
             self.ctrl_questionnaire.MAJ(importation=True)
         

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -41,11 +41,11 @@ from Utils import UTILS_Fichiers
 
 class Location():
     def __init__(self):
-        """ Récupération de toutes les données de base """
+        """ RÃ©cupÃ©ration de toutes les donnÃ©es de base """
 
         DB = GestionDB.DB()
 
-        # Récupération des infos sur l'organisme
+        # RÃ©cupÃ©ration des infos sur l'organisme
         req = """SELECT nom, rue, cp, ville, tel, fax, mail, site, num_agrement, num_siret, code_ape
         FROM organisateur
         WHERE IDorganisateur=1;"""
@@ -72,16 +72,16 @@ class Location():
         self.dictTitulaires = UTILS_Titulaires.GetTitulaires()
         self.dictIndividus = UTILS_Titulaires.GetIndividus()
 
-        # Récupération des infos de base individus et familles
+        # RÃ©cupÃ©ration des infos de base individus et familles
         self.infosIndividus = UTILS_Infos_individus.Informations()
 
-        # Récupération des questionnaires
+        # RÃ©cupÃ©ration des questionnaires
         self.Questionnaires_familles = UTILS_Questionnaires.ChampsEtReponses(type="famille")
         self.Questionnaires_locations = UTILS_Questionnaires.ChampsEtReponses(type="location")
         self.Questionnaires_produits = UTILS_Questionnaires.ChampsEtReponses(type="produit")
 
     def Supprime_accent(self, texte):
-        liste = [(u"é", u"e"), (u"è", u"e"), (u"ê", u"e"), (u"ë", u"e"), (u"à", u"a"), (u"û", u"u"), (u"ô", u"o"), (u"ç", u"c"), (u"î", u"i"), (u"ï", u"i"), ]
+        liste = [(u"Ã©", u"e"), (u"Ã¨", u"e"), (u"Ãª", u"e"), (u"Ã«", u"e"), (u"Ã ", u"a"), (u"Ã»", u"u"), (u"Ã´", u"o"), (u"Ã§", u"c"), (u"Ã®", u"i"), (u"Ã¯", u"i"), ]
         for a, b in liste:
             texte = texte.replace(a, b)
             texte = texte.replace(a.upper(), b.upper())
@@ -96,9 +96,9 @@ class Location():
 
     def GetDonneesImpression(self, listeLocations=[]):
         """ Impression des locations """
-        dlgAttente = wx.BusyInfo(_(u"Recherche des données..."), None)
+        dlgAttente = wx.BusyInfo(_(u"Recherche des donnÃ©es..."), None)
 
-        # Récupère les données de la facture
+        # RÃ©cupÃ¨re les donnÃ©es de la facture
         if len(listeLocations) == 0:
             conditions = "()"
         elif len(listeLocations) == 1:
@@ -190,7 +190,7 @@ class Location():
             # soldeStrLettres = UTILS_Conversion.trad(solde, MONNAIE_SINGULIER, MONNAIE_DIVISION)
 
 
-            # Mémorisation des données
+            # MÃ©morisation des donnÃ©es
             dictDonnee = {
                 "select": True,
                 "{IDLOCATION}": str(IDlocation),
@@ -238,7 +238,7 @@ class Location():
             if IDfamille != None:
                 dictDonnee.update(self.infosIndividus.GetDictValeurs(mode="famille", ID=IDfamille, formatChamp=True))
 
-            # Ajoute les réponses des questionnaires
+            # Ajoute les rÃ©ponses des questionnaires
             for dictReponse in self.Questionnaires_familles.GetDonnees(IDfamille):
                 dictDonnee[dictReponse["champ"]] = dictReponse["reponse"]
                 if dictReponse["controle"] == "codebarres":
@@ -269,16 +269,16 @@ class Location():
         """ Impression des locations """
         from Utils import UTILS_Impression_location
 
-        # Récupération des données à partir des IDlocation
+        # RÃ©cupÃ©ration des donnÃ©es Ã  partir des IDlocation
         resultat = self.GetDonneesImpression(listeLocations)
         if resultat == False:
             return False
         dictLocations, dictChampsFusion = resultat
 
-        # Récupération des paramètres d'affichage
+        # RÃ©cupÃ©ration des paramÃ¨tres d'affichage
         if dictOptions == None:
             if afficherDoc == False:
-                dlg = DLG_Apercu_location.Dialog(None, titre=_(u"Sélection des paramètres de la location"), intro=_(u"Sélectionnez ici les paramètres d'affichage de la location."))
+                dlg = DLG_Apercu_location.Dialog(None, titre=_(u"SÃ©lection des paramÃ¨tres de la location"), intro=_(u"SÃ©lectionnez ici les paramÃ¨tres d'affichage de la location."))
                 dlg.bouton_ok.SetImageEtTexte("Images/32x32/Valider.png", _("Ok"))
             else:
                 dlg = DLG_Apercu_location.Dialog(None)
@@ -289,10 +289,10 @@ class Location():
                 dlg.Destroy()
                 return False
 
-        # Création des PDF à l'unité
+        # CrÃ©ation des PDF Ã  l'unitÃ©
         def CreationPDFunique(repertoireCible=""):
             dictPieces = {}
-            dlgAttente = wx.BusyInfo(_(u"Génération des PDF à l'unité en cours..."), None)
+            dlgAttente = wx.BusyInfo(_(u"GÃ©nÃ©ration des PDF Ã  l'unitÃ© en cours..."), None)
             try:
                 index = 0
                 for IDlocation, dictLocation in dictLocations.items():
@@ -311,18 +311,18 @@ class Location():
             except Exception as err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
-                dlg = wx.MessageDialog(None, _(u"Désolé, le problème suivant a été rencontré dans l'édition des locations : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(None, _(u"DÃ©solÃ©, le problÃ¨me suivant a Ã©tÃ© rencontrÃ© dans l'Ã©dition des locations : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
 
-        # Répertoire souhaité par l'utilisateur
+        # RÃ©pertoire souhaitÃ© par l'utilisateur
         if repertoire != None:
             resultat = CreationPDFunique(repertoire)
             if resultat == False:
                 return False
 
-        # Répertoire TEMP (pour Emails)
+        # RÃ©pertoire TEMP (pour Emails)
         dictPieces = {}
         if repertoireTemp == True:
             dictPieces = CreationPDFunique(UTILS_Fichiers.GetRepTemp())
@@ -331,7 +331,7 @@ class Location():
 
         # Sauvegarde dans un porte-documents
         if dictOptions["questionnaire"] != None :
-            # Création des PDF
+            # CrÃ©ation des PDF
             if len(dictPieces) == 0 :
                 dictPieces = CreationPDFunique(UTILS_Fichiers.GetRepTemp())
 
@@ -351,7 +351,7 @@ class Location():
 
             DB = GestionDB.DB(suffixe="DOCUMENTS")
             for IDlocation, cheminFichier in dictPieces.items():
-                # Préparation du blob
+                # PrÃ©paration du blob
                 fichier = open(cheminFichier, "rb")
                 data = fichier.read()
                 fichier.close()
@@ -361,7 +361,7 @@ class Location():
                 if IDlocation in dictReponses:
                     IDreponse = dictReponses[IDlocation]
                 else :
-                    # Création d'une réponse de questionnaire
+                    # CrÃ©ation d'une rÃ©ponse de questionnaire
                     listeDonnees = [
                         ("IDquestion", IDquestion),
                         ("reponse", "##DOCUMENTS##"),
@@ -379,8 +379,8 @@ class Location():
 
         # Fabrication du PDF global
         if repertoireTemp == False:
-            dlgAttente = wx.BusyInfo(_(u"Création du PDF en cours..."), None)
-            self.EcritStatusbar(_(u"Création du PDF des locations en cours... veuillez patienter..."))
+            dlgAttente = wx.BusyInfo(_(u"CrÃ©ation du PDF en cours..."), None)
+            self.EcritStatusbar(_(u"CrÃ©ation du PDF des locations en cours... veuillez patienter..."))
             try:
                 UTILS_Impression_location.Impression(dictLocations, dictOptions, IDmodele=dictOptions["IDmodele"], ouverture=afficherDoc, nomFichier=nomDoc)
                 self.EcritStatusbar("")
@@ -388,7 +388,7 @@ class Location():
             except Exception as err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
-                dlg = wx.MessageDialog(None, u"Désolé, le problème suivant a été rencontré dans l'édition des locations : \n\n%s" % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(None, u"DÃ©solÃ©, le problÃ¨me suivant a Ã©tÃ© rencontrÃ© dans l'Ã©dition des locations : \n\n%s" % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -398,7 +398,7 @@ class Location():
 # -------------------------------------------------------------------------------------------------------------------------------------------
 
 def GetStockDisponible(DB=None, IDproduit=None, date_debut=None, date_fin=None, IDlocation_exception=None, IDlocation_portail_exception=None):
-    """ Recherche si un produit est disponible sur une période donnée """
+    """ Recherche si un produit est disponible sur une pÃ©riode donnÃ©e """
     if DB == None:
         DBT = GestionDB.DB()
     else:
@@ -423,7 +423,7 @@ def GetStockDisponible(DB=None, IDproduit=None, date_debut=None, date_fin=None, 
     if stock_initial == None :
         stock_initial = 1
 
-    # Recherche les locations du produit sur la période
+    # Recherche les locations du produit sur la pÃ©riode
     condition = ""
     if IDlocation_portail_exception:
         condition = "AND IDlocation_portail<>'%s'" % IDlocation_portail_exception
@@ -449,7 +449,7 @@ def GetStockDisponible(DB=None, IDproduit=None, date_debut=None, date_fin=None, 
     if DB == None:
         DBT.Close()
 
-    # Analyse des périodes de disponibilités
+    # Analyse des pÃ©riodes de disponibilitÃ©s
     listeDates.sort()
     dictPeriodes = {}
     for index in range(0, len(listeDates)-1) :
@@ -470,7 +470,7 @@ def GetStockDisponible(DB=None, IDproduit=None, date_debut=None, date_fin=None, 
 # -------------------------------------------------------------------------------------------------------------------------------------------
 
 def GetProduitsLoues(DB=None, date_reference=None):
-    """ Recherche les produits loués à la date de référence """
+    """ Recherche les produits louÃ©s Ã  la date de rÃ©fÃ©rence """
     if DB == None:
         DBT = GestionDB.DB()
     else:
@@ -479,7 +479,7 @@ def GetProduitsLoues(DB=None, date_reference=None):
     if date_reference == None :
         date_reference = datetime.datetime.now()
 
-    # Recherche les locations à la date de référence
+    # Recherche les locations Ã  la date de rÃ©fÃ©rence
     req = """SELECT IDlocation, IDproduit, IDfamille, date_debut, date_fin, quantite
     FROM locations
     WHERE date_debut<='%s' AND (date_fin IS NULL OR date_fin>='%s')
@@ -534,7 +534,7 @@ def GetPropositionsLocations(dictFiltresSelection={}, dictDemandeSelection=None,
         if quantite == None :
             quantite = 1
 
-        # Recherche les réponses au questionnaire du produit
+        # Recherche les rÃ©ponses au questionnaire du produit
         if IDproduit in dictReponses :
             reponses = dictReponses[IDproduit]
         else :
@@ -607,7 +607,7 @@ def GetPropositionsLocations(dictFiltresSelection={}, dictDemandeSelection=None,
     dictPositions = {}
     for demande in listeDemandes :
 
-        # Met les données dans un dict
+        # Met les donnÃ©es dans un dict
         if not isinstance(demande, dict) :
             categories = UTILS_Texte.ConvertStrToListe(demande[3], siVide=[])
             produits = UTILS_Texte.ConvertStrToListe(demande[4], siVide=[])
@@ -620,7 +620,7 @@ def GetPropositionsLocations(dictFiltresSelection={}, dictDemandeSelection=None,
 
         IDdemande = dictDemandeTemp["IDdemande"]
 
-        # Pré-sélection des produits à étudier
+        # PrÃ©-sÃ©lection des produits Ã  Ã©tudier
         listeProduitsTemp = []
 
         if dictDemandeTemp["categories"] != [] :
@@ -642,15 +642,15 @@ def GetPropositionsLocations(dictFiltresSelection={}, dictDemandeSelection=None,
         for dictProduit in listeProduitsTemp :
             valide = True
 
-            # # Vérifie si le produit est dans la liste des catégories souhaitées
+            # # VÃ©rifie si le produit est dans la liste des catÃ©gories souhaitÃ©es
             # if valide == True and dictDemandeTemp["categories"] != [] and dictProduit["IDcategorie"] not in dictDemandeTemp["categories"] :
             #     valide = False
             #
-            # # Vérifie si le produit est dans la liste des produits souhaités
+            # # VÃ©rifie si le produit est dans la liste des produits souhaitÃ©s
             # if valide == True and dictDemandeTemp["produits"] != [] and dictProduit["IDproduit"] not in dictDemandeTemp["produits"] :
             #     valide = False
 
-            # Vérifie si le produit répond aux filtres de la demande
+            # VÃ©rifie si le produit rÃ©pond aux filtres de la demande
             if valide == True and IDdemande in dictFiltres:
                 for dictFiltre in dictFiltres[IDdemande]:
                     for dictReponse in dictProduit["reponses"]:
@@ -658,7 +658,7 @@ def GetPropositionsLocations(dictFiltresSelection={}, dictDemandeSelection=None,
                         if resultat == False:
                             valide = False
 
-            # Mémorisation de la proposition
+            # MÃ©morisation de la proposition
             if valide == True :
 
                 # Position dans la liste du produit

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 
 # Copyright (C) 2009  Rickard Lindberg, Roger Lindberg
 #
@@ -54,8 +54,8 @@ DATA_INDICATOR_SIZE = 10
 
 LISTE_JOURS = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
 LISTE_JOURS_ABREGE = (_(u"Lun"), _(u"Mar"), _(u"Mer"), _(u"Jeu"), _(u"Ven"), _(u"Sam"), _(u"Dim"))
-LISTE_MOIS = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
-LISTE_MOIS_ABREGE = (_(u"Jan."), _(u"Fév."), _(u"Mars"), _(u"Avr."), _(u"Mai"), _(u"Juin"), _(u"Juil."), _(u"Août"), _(u"Sept."), _(u"Oct."), _(u"Nov."), _(u"Déc."))
+LISTE_MOIS = (_(u"Janvier"), _(u"fÃ©vrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"aoÃ»t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"DÃ©cembre"))
+LISTE_MOIS_ABREGE = (_(u"Jan."), _(u"fÃ©v."), _(u"Mars"), _(u"Avr."), _(u"Mai"), _(u"Juin"), _(u"Juil."), _(u"aoÃ»t"), _(u"Sept."), _(u"Oct."), _(u"Nov."), _(u"DÃ©c."))
 
 
 class Strip(object):
@@ -441,7 +441,7 @@ class DefaultDrawingAlgorithm(DrawingAlgorithm):
             (tw, th) = self.dc.GetTextExtent(label)
             middle = self.metrics.calc_x(tp.mean_time())
             middley = self.metrics.half_height
-            self.dc.DrawText(label, middle - tw / 2, middley - th)
+            self.dc.DrawText(label, int(middle - tw / 2), int(middley - th))
         # Major strips
         self.dc.SetFont(self.header_font)
         self.dc.SetPen(self.grey_solid_pen)
@@ -740,7 +740,7 @@ class DefaultDrawingAlgorithm(DrawingAlgorithm):
                                  (x_balloon, event_rect.Y),
                                 True)
         if icon != None:
-            self.dc.DrawBitmap(icon, x, y, False)
+            self.dc.DrawBitmap(icon, int(x), int(y), False)
             x += iw + BALLOON_RADIUS
         if lines != None:
             ty = y

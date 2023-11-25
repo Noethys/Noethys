@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -32,7 +32,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -53,7 +53,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT listes_diffusion.IDliste, listes_diffusion.nom, Count(abonnements.IDindividu) AS nbreAbonnes
@@ -86,7 +86,7 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(_(u"ID"), "left", 0, "IDliste", typeDonnee="entier"),
             ColumnDefn(_(u"Nom"), "left", 290, "nom", typeDonnee="texte"), 
-            ColumnDefn(_(u"Nbre d'abonnés"), "left", 110, "nbreAbonnes", typeDonnee="entier"), 
+            ColumnDefn(_(u"Nbre d'abonnÃ©s"), "left", 110, "nbreAbonnes", typeDonnee="entier"), 
             ]
         
         self.SetColumns(liste_Colonnes)
@@ -104,7 +104,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -121,7 +121,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDliste
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -162,7 +162,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -210,7 +210,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_listes_diffusion", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune liste de diffusion à modifier !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune liste de diffusion Ã  modifier !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -235,7 +235,7 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_listes_diffusion", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune liste de diffusion à supprimer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune liste de diffusion Ã  supprimer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -247,7 +247,7 @@ class ListView(FastObjectListView):
 
         nbreAbonnes = self.Selection()[0].nbreAbonnes
         if nbreAbonnes > 0 :
-            dlg = wx.MessageDialog(self, _(u"Cette liste contient déjà %d abonnés. Si vous supprimez cette liste, les abonnements seront également supprimés.\n\nSouhaitez-vous quand même supprimer cette liste de diffusion ?") % nbreAbonnes, _(u"Suppression"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cette liste contient dÃ©jÃ  %d abonnÃ©s. Si vous supprimez cette liste, les abonnements seront Ã©galement supprimÃ©s.\n\nSouhaitez-vous quand mÃªme supprimer cette liste de diffusion ?") % nbreAbonnes, _(u"Suppression"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -263,14 +263,14 @@ class ListView(FastObjectListView):
 
     def Vider(self, event):
         if len(self.Selection()) == 0:
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune liste de diffusion à vider !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune liste de diffusion Ã  vider !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         nbreAbonnes = self.Selection()[0].nbreAbonnes
         if nbreAbonnes == 0:
-            dlg = wx.MessageDialog(self, _(u"Il n'y a aucun abonnement lié à cette liste de diffusion !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucun abonnement liÃ© Ã  cette liste de diffusion !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

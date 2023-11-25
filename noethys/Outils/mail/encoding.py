@@ -184,7 +184,7 @@ def iri_to_uri(iri):
     little from the full method.
 
     Takes an IRI in UTF-8 bytes (e.g. '/I \xe2\x99\xa5 Django/') or unicode
-    (e.g. '/I ♥ Django/') and returns ASCII bytes containing the encoded result
+    (e.g. '/I â¥ Django/') and returns ASCII bytes containing the encoded result
     (e.g. '/I%20%E2%99%A5%20Django/').
     """
     # The list of safe characters here is constructed from the "reserved" and

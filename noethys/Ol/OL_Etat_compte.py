@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -20,7 +20,7 @@ import GestionDB
 import decimal
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 from Utils import UTILS_Utilisateurs
 
 from Utils import UTILS_Interface
@@ -46,7 +46,7 @@ class Track(object):
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.IDfamille = kwds.pop("IDfamille", None)
         self.selectionID = None
         self.selectionTrack = None
@@ -69,22 +69,22 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeID = None
         DB = GestionDB.DB()
 
-        # Préparation du dict de données
+        # PrÃ©paration du dict de donnÃ©es
         self.dictDonnees = {
             "nbrePrestations" : { "valeur" : 0, "label" : _(u"Nbre prestations"), "typeValeur" : "entier", "position" : 10, "afficher" : False } ,
             "totalPrestations" : { "valeur" : decimal.Decimal(str("0.0")), "label" : _(u"Total prestations"), "typeValeur" : "montant", "position" : 20, "afficher" : True } ,
-            "totalVentilation" : { "valeur" : decimal.Decimal(str("0.0")), "label" : _(u"Total ventilé"), "typeValeur" : "montant", "position" : 30, "afficher" : True } ,
-            "nbreReglements" : { "valeur" : 0, "label" : _(u"Nbre règlements"), "typeValeur" : "entier", "position" : 40, "afficher" : False } ,
-            "totalReglements" : { "valeur" : decimal.Decimal(str("0.0")), "label" : _(u"Total règlements"), "typeValeur" : "montant", "position" : 50, "afficher" : True } ,
+            "totalVentilation" : { "valeur" : decimal.Decimal(str("0.0")), "label" : _(u"Total ventilÃ©"), "typeValeur" : "montant", "position" : 30, "afficher" : True } ,
+            "nbreReglements" : { "valeur" : 0, "label" : _(u"Nbre rÃ¨glements"), "typeValeur" : "entier", "position" : 40, "afficher" : False } ,
+            "totalReglements" : { "valeur" : decimal.Decimal(str("0.0")), "label" : _(u"Total rÃ¨glements"), "typeValeur" : "montant", "position" : 50, "afficher" : True } ,
             "soldeJour" : { "valeur" : decimal.Decimal(str("0.0")), "label" : _(u"Solde du jour"), "typeValeur" : "montant", "position" : 60, "afficher" : True } ,
             "soldeFinal" : { "valeur" : decimal.Decimal(str("0.0")), "label" : _(u"Solde final"), "typeValeur" : "montant", "position" : 70, "afficher" : True } ,
             }
 
-        # Récupère la ventilation
+        # RÃ©cupÃ¨re la ventilation
         req = """SELECT IDprestation, montant
         FROM ventilation
         LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = ventilation.IDcompte_payeur
@@ -98,7 +98,7 @@ class ListView(FastObjectListView):
                 dictVentilations[IDprestation] = 0.0
             dictVentilations[IDprestation] += montant
 
-        # Récupération des prestations
+        # RÃ©cupÃ©ration des prestations
         req = """
         SELECT prestations.IDprestation, prestations.IDcompte_payeur, date, 
         prestations.montant, IDfacture
@@ -124,7 +124,7 @@ class ListView(FastObjectListView):
             if date <= datetime.date.today() :
                 self.dictDonnees["soldeJour"]["valeur"] += montant
                         
-        # Récupère les règlements
+        # RÃ©cupÃ¨re les rÃ¨glements
         req = """SELECT IDreglement, date, montant
         FROM reglements
         LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = reglements.IDcompte_payeur
@@ -143,7 +143,7 @@ class ListView(FastObjectListView):
         
         DB.Close()
         
-        # Traitement des données
+        # Traitement des donnÃ©es
         listeListeView = []
         for code, dictDonnee in self.dictDonnees.items()  :
             if dictDonnee["afficher"] == True :
@@ -202,7 +202,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -221,7 +221,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDfamille
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ouvrir fiche famille
@@ -234,7 +234,7 @@ class ListView(FastObjectListView):
 
         menuPop.AppendSeparator()
     
-        # Génération automatique des fonctions standards
+        # GÃ©nÃ©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop, titre=_(u"Liste des ventilations"))
 
         self.PopupMenu(menuPop)
@@ -243,7 +243,7 @@ class ListView(FastObjectListView):
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune fiche famille à ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune fiche famille Ã  ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -265,7 +265,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(_(u"Rechercher un règlement..."))
+        self.SetDescriptiveText(_(u"Rechercher un rÃ¨glement..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_reglements

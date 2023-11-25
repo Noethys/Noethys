@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -32,8 +32,8 @@ LARGEUR_COLONNE_GROUPE = 80
 class Choice_groupe(wx.Choice):
     def __init__(self, parent, IDactivite=None, IDindividu=None, listeGroupes=[], IDdefaut=None):
         """ typeIndividu = "A" ou "E" (adulte ou enfant) """
-        """ sexeIndividu = "M" ou "F" (masculin ou féminin) """
-        """ Lien = ID type lien par défaut """
+        """ sexeIndividu = "M" ou "F" (masculin ou fÃ©minin) """
+        """ Lien = ID type lien par dÃ©faut """
         wx.Choice.__init__(self, parent, id=-1, size=(LARGEUR_COLONNE_GROUPE-2, -1)) 
         self.parent = parent
 
@@ -48,10 +48,10 @@ class Choice_groupe(wx.Choice):
         self.MAJ()
         self.Bind(wx.EVT_CHOICE, self.OnChoice)
         self.SetToolTip(wx.ToolTip(
-u"""Le groupe par défaut est signalé par une *.\n 
-Vous pouvez sélectionner ponctuellement 
+u"""Le groupe par dÃ©faut est signalÃ© par une *.\n 
+Vous pouvez sÃ©lectionner ponctuellement 
 un autre groupe dans la liste. Le groupe par 
-défaut n'en sera pas pour autant modifié."""))
+dÃ©faut n'en sera pas pour autant modifiÃ©."""))
         
     def MAJ(self):
         index = 0
@@ -64,7 +64,7 @@ défaut n'en sera pas pour autant modifié."""))
             index += 1
                             
     def OnChoice(self, event):
-        """ Met à jour la grille """
+        """ Met Ã  jour la grille """
         self.parent.GetGrandParent().panel_grille.grille.MAJ() 
     
     def GetIDgroupe(self):
@@ -121,7 +121,7 @@ class CTRL_Activites(ULC.UltimateListCtrl):
             print("Erreur dans le SetListeSelectionIndividus du ultimatelistctrl.")
     
     def Importation(self, listeIDindividus=[]):
-        # Récupération des activités
+        # RÃ©cupÃ©ration des activitÃ©s
         listeActivites = []
         for IDindividu, dictIndividu in self.dictIndividus.items() :
             if IDindividu in self.listeSelectionIndividus :
@@ -138,7 +138,7 @@ class CTRL_Activites(ULC.UltimateListCtrl):
         listeNomsIndividus = self.GetListeIndividus() 
         self.dictInscriptions = self.GetDictInscriptions()
         
-        # Création des colonnes
+        # CrÃ©ation des colonnes
         self.InsertColumn(0, u"", width=LARGEUR_COLONNE_ACTIVITE)
         indexCol = 1
         for nomIndividu, IDindividu in listeNomsIndividus :
@@ -149,7 +149,7 @@ class CTRL_Activites(ULC.UltimateListCtrl):
         listeItems = []
         index = 0
         for nom, IDactivite in self.listeActivites :
-            # Ecrit le nom de l'activité
+            # Ecrit le nom de l'activitÃ©
             self.InsertStringItem(index, nom, it_kind=1)
             self.SetItemPyData(index, IDactivite)
             # Ecrit le wx.Choice pour chaque individu
@@ -183,7 +183,7 @@ class CTRL_Activites(ULC.UltimateListCtrl):
         self._mainWin.RecalculatePositions()
     
     def GetIDgroupe(self, IDactivite=None, IDindividu=None):
-        """ Permet de récupérer l'IDgroupe de l'individu à partir de la grille """
+        """ Permet de rÃ©cupÃ©rer l'IDgroupe de l'individu Ã  partir de la grille """
         if (IDactivite, IDindividu) in self.dictControles :
             controle = self.dictControles[(IDactivite, IDindividu)]
             return controle.GetIDgroupe() 
@@ -226,14 +226,14 @@ class CTRL_Activites(ULC.UltimateListCtrl):
         return None
 
     def OnCheck(self, event=None):
-        """ Quand une sélection d'activités est effectuée... """
+        """ Quand une sÃ©lection d'activitÃ©s est effectuÃ©e... """
         listeSelections = self.GetIDcoches()
         try :
             self.GetGrandParent().SetListeSelectionActivites(listeSelections)
             self.GetGrandParent().MAJ_grille(autoCocheActivites=False)
         except :
             print("Erreur dans le Check du ultimatelistctrl.", listeSelections)
-        # Déselectionne l'item après la coche
+        # DÃ©selectionne l'item aprÃ¨s la coche
         if event != None :
             itemIndex = event.m_itemIndex
             self.Select(itemIndex, False)
@@ -260,7 +260,7 @@ class CTRL_Activites(ULC.UltimateListCtrl):
                 item.Check(True)
     
     def CocheActivitesOuvertes(self, date_min=None, date_max=None):
-        """ Coche uniquement les activités ouvertes """
+        """ Coche uniquement les activitÃ©s ouvertes """
         listeIDactivites = []
         for index in range(0, len(self.listeActivites)):
             item = self.GetItem(index, 0)
@@ -286,7 +286,7 @@ class CTRL_Activites(ULC.UltimateListCtrl):
 ##        self.data = []
 ##        self.dictIndividus = dictIndividus
 ##        self.dictActivites = dictActivites
-##        self.SetToolTip(wx.ToolTip(_(u"Cochez les activités à afficher")))
+##        self.SetToolTip(wx.ToolTip(_(u"Cochez les activitÃ©s Ã  afficher")))
 ##        self.listeActivites = []
 ##        # Binds
 ##        self.Bind(wx.EVT_CHECKLISTBOX, self.OnCheck)
@@ -298,7 +298,7 @@ class CTRL_Activites(ULC.UltimateListCtrl):
 ##        self.SetListeChoix()
 ##    
 ##    def Importation(self, listeIDindividus=[]):
-##        # Récupération des activités
+##        # RÃ©cupÃ©ration des activitÃ©s
 ##        listeActivites = []
 ##        for IDindividu, dictIndividu in self.dictIndividus.iteritems() :
 ##            listeInscriptions = dictIndividu["inscriptions"]
@@ -341,7 +341,7 @@ class CTRL_Activites(ULC.UltimateListCtrl):
 ##            index += 1
 ##
 ##    def OnCheck(self, event):
-##        """ Quand une sélection d'activités est effectuée... """
+##        """ Quand une sÃ©lection d'activitÃ©s est effectuÃ©e... """
 ##        listeSelections = self.GetIDcoches()
 ##        try :
 ##            self.parent.SetListeSelectionActivites(listeSelections)
@@ -355,14 +355,14 @@ class CTRL_Activites(ULC.UltimateListCtrl):
 ##        self.parent = parent
 ##        
 ##        self.label_mode = wx.StaticText(self, -1, _(u"Mode de saisie :"))
-##        self.radio_reservation = wx.RadioButton(self, -1, _(u"Réservation"), style = wx.RB_GROUP )
+##        self.radio_reservation = wx.RadioButton(self, -1, _(u"RÃ©servation"), style = wx.RB_GROUP )
 ##        self.radio_attente = wx.RadioButton(self, -1, _(u"Attente") )
 ##        self.radio_refus = wx.RadioButton(self, -1, _(u"Refus") )
 ##        self.radio_reservation.SetValue(True)
 ##        
-##        self.radio_reservation.SetToolTip(wx.ToolTip(_(u"Le mode Réservation permet de saisir une réservation")))
+##        self.radio_reservation.SetToolTip(wx.ToolTip(_(u"Le mode RÃ©servation permet de saisir une rÃ©servation")))
 ##        self.radio_attente.SetToolTip(wx.ToolTip(_(u"Le mode Attente permet de saisir une place sur liste d'attente")))
-##        self.radio_refus.SetToolTip(wx.ToolTip(_(u"Le mode de refus permet de saisir une place sur liste d'attente qui a été refusée par l'individu. Cette saisie est juste utilisée à titre statistique")))
+##        self.radio_refus.SetToolTip(wx.ToolTip(_(u"Le mode de refus permet de saisir une place sur liste d'attente qui a Ã©tÃ© refusÃ©e par l'individu. Cette saisie est juste utilisÃ©e Ã  titre statistique")))
 ##        
 ##        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
 ##        grid_sizer_base.Add(self.label_mode, 0, wx.EXPAND, 0)

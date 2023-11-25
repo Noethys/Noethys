@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -104,14 +104,14 @@ class TrackIndividu(object):
         if self.IDindividu in self.listview.dictNumeros["individu"] :
             self.numero = self.listview.dictNumeros["individu"][self.IDindividu]
 
-        # Récupération des réponses des questionnaires
+        # RÃ©cupÃ©ration des rÃ©ponses des questionnaires
         for dictQuestion in self.listview.LISTE_QUESTIONS :
             setattr(self, "question_%d" % dictQuestion["IDquestion"], self.listview.GetReponse(dictQuestion["IDquestion"], self.IDindividu))
 
 
 
 def GetListeIndividus(listview=None, infosIndividus=None):
-    # Récupération des individus
+    # RÃ©cupÃ©ration des individus
     listeChamps = (
         "rattachements.IDindividu", "IDcivilite", "nom", "prenom", "num_secu", "IDnationalite",
         "date_naiss", "IDpays_naiss", "cp_naiss", "ville_naiss",
@@ -137,10 +137,10 @@ def GetListeIndividus(listview=None, infosIndividus=None):
 
     DB.Close() 
 
-    # Récupération des civilités
+    # RÃ©cupÃ©ration des civilitÃ©s
     dictCivilites = Civilites.GetDictCivilites()
     
-    # Récupération des adresses auto
+    # RÃ©cupÃ©ration des adresses auto
     GetDictInfosIndividus()
         
     listeListeView = []
@@ -152,7 +152,7 @@ def GetListeIndividus(listview=None, infosIndividus=None):
         for index in range(0, len(listeChamps)) :
             nomChamp = listeChamps[index]
             dictTemp[nomChamp] = valeurs[index]
-        # Infos sur la civilité
+        # Infos sur la civilitÃ©
         if dictTemp["IDcivilite"] == None or dictTemp["IDcivilite"] == "" :
             IDcivilite = 1
         else :
@@ -212,19 +212,19 @@ class TrackFamille(object):
         else :
             self.mail = None
 
-        # Numéro
+        # NumÃ©ro
         self.numero = None
         if self.IDfamille in self.listview.dictNumeros["famille"] :
             self.numero = self.listview.dictNumeros["famille"][self.IDfamille]
 
-        # Récupération des réponses des questionnaires
+        # RÃ©cupÃ©ration des rÃ©ponses des questionnaires
         for dictQuestion in self.listview.LISTE_QUESTIONS :
             setattr(self, "question_%d" % dictQuestion["IDquestion"], self.listview.GetReponse(dictQuestion["IDquestion"], self.IDfamille))
 
 
 def GetListeFamilles(listview=None, infosIndividus=None):
-    """ Récupération des infos familles """
-    # Récupération des régimes et num d'alloc pour chaque famille
+    """ RÃ©cupÃ©ration des infos familles """
+    # RÃ©cupÃ©ration des rÃ©gimes et num d'alloc pour chaque famille
     DB = GestionDB.DB()
     req = """
     SELECT 
@@ -247,7 +247,7 @@ def GetListeFamilles(listview=None, infosIndividus=None):
 
     DB.Close()
 
-    # Formatage des données
+    # Formatage des donnÃ©es
     listeListeView = []
     titulaires = UTILS_Titulaires.GetTitulaires() 
     for IDfamille, nomRegime, nomCaisse, numAlloc, IDcompte_payeur in listeFamilles :
@@ -283,7 +283,7 @@ def GetListeFamilles(listview=None, infosIndividus=None):
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.categorie = kwds.pop("categorie", "individu")
         self.IDunite = None
         self.masquer = False
@@ -304,14 +304,14 @@ class ListView(FastObjectListView):
             return
 
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune ligne dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune ligne dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
 
-        # Demande le numéro
-        dlg = wx.TextEntryDialog(self, _(u"Veuillez saisir un numéro pour la cotisation à créer :"), _(u"Numéro de cotisation"))
+        # Demande le numÃ©ro
+        dlg = wx.TextEntryDialog(self, _(u"Veuillez saisir un numÃ©ro pour la cotisation Ã  crÃ©er :"), _(u"NumÃ©ro de cotisation"))
         if track.numero != None :
             dlg.SetValue(track.numero)
         reponse = dlg.ShowModal()
@@ -321,23 +321,23 @@ class ListView(FastObjectListView):
         numero = dlg.GetValue()
         dlg.Destroy()
 
-        # Mémorise le numéro
+        # MÃ©morise le numÃ©ro
         self.dictNumeros[self.categorie][track.ID] = numero
         track.numero = numero
         self.RefreshObject(track)
 
 
     def InitModel(self):
-        # Récupération des questions
+        # RÃ©cupÃ©ration des questions
         self.LISTE_QUESTIONS = self.UtilsQuestionnaires.GetQuestions(type=self.categorie)
         
-        # Récupération des questionnaires
+        # RÃ©cupÃ©ration des questionnaires
         self.DICT_QUESTIONNAIRES = self.UtilsQuestionnaires.GetReponses(type=self.categorie)
 
-        # Récupération des infos de base individus et familles
+        # RÃ©cupÃ©ration des infos de base individus et familles
         self.infosIndividus = UTILS_Infos_individus.Informations() 
         
-        # Récupération des tracks
+        # RÃ©cupÃ©ration des tracks
         if self.categorie == "individu" :
             self.donnees = GetListeIndividus(self, self.infosIndividus)
         else:
@@ -364,7 +364,7 @@ class ListView(FastObjectListView):
             liste_Colonnes = [
                 ColumnDefn(u"ID", "left", 0, "IDindividu", typeDonnee="entier"),
                 ColumnDefn(_(u"Nom"), 'left', 100, "nom", typeDonnee="texte"),
-                ColumnDefn(_(u"Prénom"), "left", 100, "prenom", typeDonnee="texte"),
+                ColumnDefn(_(u"PrÃ©nom"), "left", 100, "prenom", typeDonnee="texte"),
                 ColumnDefn(_(u"Date naiss."), "left", 72, "date_naiss", typeDonnee="date", stringConverter=FormateDate),
                 ColumnDefn(_(u"Age"), "left", 50, "age", typeDonnee="entier", stringConverter=FormateAge),
                 ColumnDefn(_(u"Famille"), 'left', 200, "nomTitulaires", typeDonnee="texte"),
@@ -382,13 +382,13 @@ class ListView(FastObjectListView):
                 ColumnDefn(_(u"C.P."), "left", 45, "cp", typeDonnee="texte"),
                 ColumnDefn(_(u"Ville"), "left", 120, "ville", typeDonnee="texte"),
                 ColumnDefn(_(u"Email"), "left", 100, "mail", typeDonnee="texte"),
-                ColumnDefn(_(u"Régime"), "left", 130, "regime", typeDonnee="texte"),
+                ColumnDefn(_(u"RÃ©gime"), "left", 130, "regime", typeDonnee="texte"),
                 ColumnDefn(_(u"Caisse"), "left", 130, "caisse", typeDonnee="texte"),
-                ColumnDefn(_(u"Numéro Alloc."), "left", 120, "numAlloc", typeDonnee="texte"),
+                ColumnDefn(_(u"NumÃ©ro Alloc."), "left", 120, "numAlloc", typeDonnee="texte"),
                 ]        
 
         if self.afficher_colonne_numero == True :
-            liste_Colonnes.insert(1, ColumnDefn(_(u"Numéro"), "left", 90, "numero", typeDonnee="texte"))
+            liste_Colonnes.insert(1, ColumnDefn(_(u"NumÃ©ro"), "left", 90, "numero", typeDonnee="texte"))
 
         # Ajout des questions des questionnaires
         liste_Colonnes.extend(UTILS_Questionnaires.GetColonnesForOL(self.LISTE_QUESTIONS))
@@ -421,9 +421,9 @@ class ListView(FastObjectListView):
         label = u"%ss" % self.categorie.capitalize()
         nbreCoches = len(self.GetCheckedObjects())
         if nbreCoches == 1 :
-            label += _(u" (1 sélection)")
+            label += _(u" (1 sÃ©lection)")
         elif nbreCoches > 1 :
-            label += _(u" (%d sélections)") % nbreCoches
+            label += _(u" (%d sÃ©lections)") % nbreCoches
         self.GetParent().SetLabelBox(label)
 
     def SetAfficherColonneNumero(self, etat=False):
@@ -469,23 +469,23 @@ class ListView(FastObjectListView):
         
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """            
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
         
-        # Tout sélectionner
+        # Tout sÃ©lectionner
         item = wx.MenuItem(menuPop, 20, _(u"Tout cocher"))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheListeTout, id=20)
 
-        # Tout dé-sélectionner
-        item = wx.MenuItem(menuPop, 30, _(u"Tout décocher"))
+        # Tout dÃ©-sÃ©lectionner
+        item = wx.MenuItem(menuPop, 30, _(u"Tout dÃ©cocher"))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheListeRien, id=30)
         
         menuPop.AppendSeparator()
         
         # Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -519,7 +519,7 @@ class ListView(FastObjectListView):
 
     def Impression(self, mode="preview"):
         if self.donnees == None or len(self.donnees) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune donnée à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune donnÃ©e Ã  imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -557,7 +557,7 @@ class ListView(FastObjectListView):
                     label = u"%s, %s" % (track.nom, track.prenom)
                 else :
                     label = track.nomTitulaires
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un numéro de cotisation pour %s") % label, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un numÃ©ro de cotisation pour %s") % label, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False

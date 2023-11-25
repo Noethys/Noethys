@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -33,7 +33,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -54,7 +54,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT factures_prefixes.IDprefixe, nom, prefixe, COUNT(factures.IDfacture)
@@ -87,12 +87,12 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(u"", "left", 0, "IDprefixe", typeDonnee="entier"),
             ColumnDefn(_(u"Nom"), 'left', 200, "nom", typeDonnee="texte", isSpaceFilling=True),
-            ColumnDefn(_(u"PrÈfixe"), 'center', 150, "prefixe", typeDonnee="texte"),
-            ColumnDefn(_(u"Nbre factures associÈes"), 'center', 150, "nbre_factures", typeDonnee="entier"),
+            ColumnDefn(_(u"Pr√©fixe"), 'center', 150, "prefixe", typeDonnee="texte"),
+            ColumnDefn(_(u"Nbre factures associ√©es"), 'center', 150, "nbre_factures", typeDonnee="entier"),
             ]
 
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucun prÈfixe"))
+        self.SetEmptyListMsg(_(u"Aucun pr√©fixe"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -106,7 +106,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -124,7 +124,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDprefixe
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -155,7 +155,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -173,12 +173,12 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des prÈfixes de factures"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des pr√©fixes de factures"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des prÈfixes de factures"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des pr√©fixes de factures"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
 
@@ -192,14 +192,14 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_prefixes_factures", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun prÈfixe ‡ modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun pr√©fixe √† modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
 
         if track.nbre_factures > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce prÈfixe est dÈj‡ associÈ ‡ %d factures.\n\nIl sera donc uniquement possible de modifier le nom du prÈfixe.") % track.nbre_factures, _(u"Avertissement"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce pr√©fixe est d√©j√† associ√© √† %d factures.\n\nIl sera donc uniquement possible de modifier le nom du pr√©fixe.") % track.nbre_factures, _(u"Avertissement"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
 
@@ -211,13 +211,13 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_prefixes_factures", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun prÈfixe ‡ supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun pr√©fixe √† supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDprefixe = self.Selection()[0].IDprefixe
         
-        # VÈrifie que ce prÈfixe n'a pas dÈj‡ ÈtÈ attribuÈ ‡ une facture
+        # V√©rifie que ce pr√©fixe n'a pas d√©j√† √©t√© attribu√© √† une facture
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDfacture)
         FROM factures
@@ -227,13 +227,13 @@ class ListView(FastObjectListView):
         nbreFactures = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreFactures > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce prÈfixe a dÈj‡ ÈtÈ attribuÈ ‡ %d facture(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreFactures, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce pr√©fixe a d√©j√† √©t√© attribu√© √† %d facture(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreFactures, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         # Suppression
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce prÈfixe ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce pr√©fixe ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("factures_prefixes", "IDprefixe", IDprefixe)

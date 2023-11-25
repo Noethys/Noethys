@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -35,8 +35,8 @@ class Dialog(wx.Dialog):
             texte = _(u"de la famille")
 
         # Bandeau
-        intro = _(u"Vous pouvez ici exporter les donnÈes %s au format XML. Vous pouvez enregistrer le fichier gÈnÈrÈ dans le rÈpertoire souhaitÈ ou l'envoyer par email.") % texte
-        titre = _(u"Exporter les donnÈes %s") % texte
+        intro = _(u"Vous pouvez ici exporter les donn√©es %s au format XML. Vous pouvez enregistrer le fichier g√©n√©r√© dans le r√©pertoire souhait√© ou l'envoyer par email.") % texte
+        titre = _(u"Exporter les donn√©es %s") % texte
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Document_export.png")
 
@@ -100,19 +100,19 @@ class Dialog(wx.Dialog):
         return nomFichier
 
     def GenerationFichier(self, cheminFichier=""):
-        """ GÈnÈration du fichier XML """
+        """ G√©n√©ration du fichier XML """
         export = UTILS_Export_familles.Export(IDfamille=self.IDfamille)
         export.Enregistrer(cheminFichier)
 
     def OnBoutonEnregistrer(self, event):
         nomFichier = self.GetNomFichier()
 
-        # Demande ‡ l'utilisateur le nom de fichier et le rÈpertoire de destination
+        # Demande √† l'utilisateur le nom de fichier et le r√©pertoire de destination
         wildcard = "Fichier XML (*.xml)|*.xml| Tous les fichiers (*.*)|*.*"
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
         dlg = wx.FileDialog(
-            None, message = _(u"Veuillez sÈlectionner le rÈpertoire de destination et le nom du fichier"), defaultDir=cheminDefaut,
+            None, message = _(u"Veuillez s√©lectionner le r√©pertoire de destination et le nom du fichier"), defaultDir=cheminDefaut,
             defaultFile = nomFichier,
             wildcard = wildcard,
             style = wx.FD_SAVE
@@ -125,19 +125,19 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return
 
-        # Le fichier de destination existe dÈj‡ :
+        # Le fichier de destination existe d√©j√† :
         if os.path.isfile(cheminFichier) == True :
-            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe dÈj‡. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe d√©j√†. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse == wx.ID_NO :
                 return False
 
-        # GÈnÈration du fichier XML
+        # G√©n√©ration du fichier XML
         self.GenerationFichier(cheminFichier)
 
         # Propose l'ouverture du fichier XML
-        txtMessage = _(u"Le fichier XML a ÈtÈ crÈÈ avec succËs. Souhaitez-vous l'ouvrir dËs maintenant ?")
+        txtMessage = _(u"Le fichier XML a √©t√© cr√©√© avec succ√®s. Souhaitez-vous l'ouvrir d√®s maintenant ?")
         dlgConfirm = wx.MessageDialog(None, txtMessage, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
         reponse = dlgConfirm.ShowModal()
         dlgConfirm.Destroy()
@@ -149,10 +149,10 @@ class Dialog(wx.Dialog):
     def OnBoutonEmail(self, event):
         nomFichier = self.GetNomFichier()
 
-        # DÈfinit le chemin de stockage du fichier
+        # D√©finit le chemin de stockage du fichier
         cheminFichier = UTILS_Fichiers.GetRepTemp(fichier=nomFichier)
 
-        # GÈnÈration du fichier XML
+        # G√©n√©ration du fichier XML
         self.GenerationFichier(cheminFichier)
 
         # Ouverture de l'envoi d'email
@@ -174,7 +174,7 @@ class Dialog(wx.Dialog):
                 listeDonnees.append({"adresse": adresse, "pieces": [], "champs": {}, })
             dlg.SetDonnees(listeDonnees, modificationAutorisee=True)
 
-        # Ajout du fichier en piËce jointe
+        # Ajout du fichier en pi√®ce jointe
         dlg.SetPiecesJointes([cheminFichier,])
         dlg.ShowModal()
         dlg.Destroy()

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -20,13 +20,13 @@ else:
 
 
 def ParametresCategorie(mode="get", categorie="", dictParametres={}, nomFichier=""):
-    """ Pour mémoriser ou récupérer des paramètres dans la base de données """
-    """ Renseigner categorie et dictParametres obligatoirement !!!  (pour avoir les valeurs par défaut et deviner les types de valeur) """
+    """ Pour mÃ©moriser ou rÃ©cupÃ©rer des paramÃ¨tres dans la base de donnÃ©es """
+    """ Renseigner categorie et dictParametres obligatoirement !!!  (pour avoir les valeurs par dÃ©faut et deviner les types de valeur) """
     """ dictParametres = {nom:valeur, nom:valeur, ....} """
     # Recherche du parametre
     DB = GestionDB.DB(nomFichier=nomFichier)
     
-    # Si aucun fichier n'est chargé, on renvoie la valeur par défaut :
+    # Si aucun fichier n'est chargÃ©, on renvoie la valeur par dÃ©faut :
     if DB.echec == 1 :
         return dictParametres
 
@@ -44,7 +44,7 @@ def ParametresCategorie(mode="get", categorie="", dictParametres={}, nomFichier=
     # On boucle sur chaque valeur
     for nom, valeur in dictParametres.items() :
 
-        # Préparation de la valeur par défaut
+        # PrÃ©paration de la valeur par dÃ©faut
         type_parametre = type(valeur)
         if type_parametre == int : valeurTmp = str(valeur)
         elif six.PY2 and type_parametre == long : valeurTmp = str(valeur)
@@ -63,7 +63,7 @@ def ParametresCategorie(mode="get", categorie="", dictParametres={}, nomFichier=
             if mode == "get" :
                 # Un parametre existe :
                 valeur = dictDonnees[nom]
-                # On le formate pour le récupérer sous son vrai format
+                # On le formate pour le rÃ©cupÃ©rer sous son vrai format
                 try :
                     if type_parametre == int : valeur = int(valeur)
                     if six.PY2 and type_parametre == long : valeur = long(valeur)
@@ -80,13 +80,13 @@ def ParametresCategorie(mode="get", categorie="", dictParametres={}, nomFichier=
                 dictFinal[nom] = valeur
                 
             if mode == "set" :
-                # On modifie la valeur du paramètre
+                # On modifie la valeur du paramÃ¨tre
                 dictFinal[nom] = valeur
                 if dictDonnees[nom] != valeurTmp :
                     listeModifications.append((valeurTmp, categorie, nom))
                 
         else:
-            # Le parametre n'existe pas, on le créé :
+            # Le parametre n'existe pas, on le crÃ©Ã© :
             listeAjouts.append((categorie, nom, valeurTmp))
             dictFinal[nom] = valeur
 
@@ -110,11 +110,11 @@ def ParametresCategorie(mode="get", categorie="", dictParametres={}, nomFichier=
 # -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
 def Parametres(mode="get", categorie="", nom="", valeur=None, nomFichier=""):
-    """ Mémorise ou récupère un paramètre quelconque dans la base de données """
-    """ Le paramètre doit être str ou unicode obligatoirement """
-    """ si mode = 'get' : valeur est la valeur par défaut | si mode = 'set' : valeur est la valeur à donner au paramètre """
+    """ MÃ©morise ou rÃ©cupÃ¨re un paramÃ¨tre quelconque dans la base de donnÃ©es """
+    """ Le paramÃ¨tre doit Ãªtre str ou unicode obligatoirement """
+    """ si mode = 'get' : valeur est la valeur par dÃ©faut | si mode = 'set' : valeur est la valeur Ã  donner au paramÃ¨tre """
    
-    # Préparation de la valeur par défaut
+    # PrÃ©paration de la valeur par dÃ©faut
     type_parametre = type(valeur)
     if type_parametre == int : valeurTmp = str(valeur)
     elif six.PY2 and type_parametre == long : valeurTmp = str(valeur)
@@ -130,7 +130,7 @@ def Parametres(mode="get", categorie="", nom="", valeur=None, nomFichier=""):
     # Recherche du parametre
     DB = GestionDB.DB(nomFichier=nomFichier)
     
-    # Si aucun fichier n'est chargé, on renvoie la valeur par défaut :
+    # Si aucun fichier n'est chargÃ©, on renvoie la valeur par dÃ©faut :
     if DB.echec == 1 :
         return valeur
 
@@ -141,7 +141,7 @@ def Parametres(mode="get", categorie="", nom="", valeur=None, nomFichier=""):
         if mode == "get" :
             # Un parametre existe :
             valeurTmp = listeDonnees[0][1]
-            # On le formate pour le récupérer sous son vrai format
+            # On le formate pour le rÃ©cupÃ©rer sous son vrai format
             if type_parametre == int : valeurTmp = int(valeurTmp)
             if six.PY2 and type_parametre == long : valeurTmp = long(valeurTmp)
             if type_parametre == float : valeurTmp = float(valeurTmp)
@@ -152,13 +152,13 @@ def Parametres(mode="get", categorie="", nom="", valeur=None, nomFichier=""):
             if type_parametre == dict : valeurTmp = eval(valeurTmp)
             if type_parametre == bool : valeurTmp = eval(valeurTmp)
         else:
-            # On modifie la valeur du paramètre
+            # On modifie la valeur du paramÃ¨tre
             IDparametre = listeDonnees[0][0]
             listeDonnees = [("categorie",  categorie), ("nom",  nom), ("parametre",  valeurTmp),]
             DB.ReqMAJ("parametres", listeDonnees, "IDparametre", IDparametre)
             valeurTmp = valeur
     else:
-        # Le parametre n'existe pas, on le créé :
+        # Le parametre n'existe pas, on le crÃ©Ã© :
         listeDonnees = [("categorie",  categorie), ("nom",  nom), ("parametre",  valeurTmp),]
         newID = DB.ReqInsert("parametres", listeDonnees)
         valeurTmp = valeur
@@ -167,7 +167,7 @@ def Parametres(mode="get", categorie="", nom="", valeur=None, nomFichier=""):
 
 
 def TestParametre(categorie="", nom="", valeur=None, nomFichier=""):
-    """ Vérifie si un paramètre existe dans le fichier """
+    """ VÃ©rifie si un paramÃ¨tre existe dans le fichier """
     DB = GestionDB.DB(nomFichier=nomFichier)
     req = u"""SELECT IDparametre, parametre FROM parametres WHERE categorie="%s" AND nom="%s" ;""" % (categorie, nom)
     DB.ExecuterReq(req)
@@ -181,7 +181,7 @@ def TestParametre(categorie="", nom="", valeur=None, nomFichier=""):
 
 # ----------------------- TESTS --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 if __name__ == u"__main__":
-    #print(ParametresCategorie(mode="get", categorie="parametres_grille_conso", dictParametres={"affiche_colonne_memo":True, "test":u"ça marche !"}, nomFichier=""))
+    #print(ParametresCategorie(mode="get", categorie="parametres_grille_conso", dictParametres={"affiche_colonne_memo":True, "test":u"Ã§a marche !"}, nomFichier=""))
     reponse = Parametres(mode="get", categorie="dlg_ouvertures", nom="afficher_tous_groupes", valeur=False)
     print(reponse, type(reponse))
     

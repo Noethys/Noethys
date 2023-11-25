@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -25,8 +25,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Vous pouvez consulter ici la liste des opÈrations budgÈtaires. Il s'agit d'opÈrations qui n'apparaissent pas directement dans la trÈsorerie mais qui ont un impact dans le bugdet. Ajoutez rapidement des opÈrations gr‚ce aux boutons raccourcis situÈs au-dessus de la liste.")
-        titre = _(u"Liste des opÈrations budgÈtaires")
+        intro = _(u"Vous pouvez consulter ici la liste des op√©rations budg√©taires. Il s'agit d'op√©rations qui n'apparaissent pas directement dans la tr√©sorerie mais qui ont un impact dans le bugdet. Ajoutez rapidement des op√©rations gr√¢ce aux boutons raccourcis situ√©s au-dessus de la liste.")
+        titre = _(u"Liste des op√©rations budg√©taires")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Operations.png")
         
@@ -43,11 +43,11 @@ class Dialog(wx.Dialog):
         ID_AJOUTER_DEBIT = wx.Window.NewControlId()
         ID_AJOUTER_CREDIT = wx.Window.NewControlId()
 
-        self.barreOutils.AddLabelTool(ID_AJOUTER_DEBIT, label=_(u"Ajouter un dÈbit"), bitmap=wx.Bitmap(Chemins.GetStaticPath("Images/22x22/Addition.png"), wx.BITMAP_TYPE_PNG), shortHelp=_(u"Ajouter une opÈration au dÈbit"), longHelp=_(u"Ajouter une opÈration au dÈbit"))
-        self.barreOutils.AddLabelTool(ID_AJOUTER_CREDIT, label=_(u"Ajouter un crÈdit"), bitmap=wx.Bitmap(Chemins.GetStaticPath("Images/22x22/Addition.png"), wx.BITMAP_TYPE_PNG), shortHelp=_(u"Ajouter une opÈration au crÈdit"), longHelp=_(u"Ajouter une opÈration au crÈdit"))
+        self.barreOutils.AddLabelTool(ID_AJOUTER_DEBIT, label=_(u"Ajouter un d√©bit"), bitmap=wx.Bitmap(Chemins.GetStaticPath("Images/22x22/Addition.png"), wx.BITMAP_TYPE_PNG), shortHelp=_(u"Ajouter une op√©ration au d√©bit"), longHelp=_(u"Ajouter une op√©ration au d√©bit"))
+        self.barreOutils.AddLabelTool(ID_AJOUTER_CREDIT, label=_(u"Ajouter un cr√©dit"), bitmap=wx.Bitmap(Chemins.GetStaticPath("Images/22x22/Addition.png"), wx.BITMAP_TYPE_PNG), shortHelp=_(u"Ajouter une op√©ration au cr√©dit"), longHelp=_(u"Ajouter une op√©ration au cr√©dit"))
         self.barreOutils.Realize()
 
-        # Liste des opÈrations
+        # Liste des op√©rations
         self.ctrl_operations = OL_Operations_budgetaires.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.barreRecherche = OL_Operations_budgetaires.CTRL_Outils(self, self.ctrl_operations)
         
@@ -77,15 +77,15 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.ctrl_operations.Supprimer, self.bouton_supprimer)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
-        # Init contrÙles
+        # Init contr√¥les
         self.ctrl_operations.MAJ()
         
 
     def __set_properties(self):
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une opÈration")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'opÈration sÈlectionnÈe dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'opÈration sÈlectionnÈ dans la liste")))
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÈer un aperÁu de la liste")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une op√©ration")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'op√©ration s√©lectionn√©e dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'op√©ration s√©lectionn√© dans la liste")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour cr√©er un aper√ßu de la liste")))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
         self.bouton_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Texte")))
         self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
@@ -144,15 +144,15 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Listedesoperationsbudgetaires")
                     
     def Ajouter(self, event=None):
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
         
-        item = wx.MenuItem(menuPop, 10, _(u"Ajouter une opÈration au dÈbit"))
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter une op√©ration au d√©bit"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Addition.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ctrl_operations.AjouterDebit, id=10)
 
-        item = wx.MenuItem(menuPop, 20, _(u"Ajouter une opÈration au crÈdit"))
+        item = wx.MenuItem(menuPop, 20, _(u"Ajouter une op√©ration au cr√©dit"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Addition.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ctrl_operations.AjouterCredit, id=20)

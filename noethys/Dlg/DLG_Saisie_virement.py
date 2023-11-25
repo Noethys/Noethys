@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -78,17 +78,17 @@ class Dialog(wx.Dialog):
         self.IDoperation_debit = None
         self.IDoperation_credit = None
         
-        # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Généralités"))
+        # GÃ©nÃ©ralitÃ©s
+        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"GÃ©nÃ©ralitÃ©s"))
         
         self.label_date = wx.StaticText(self, wx.ID_ANY, _(u"Date :"))
         self.ctrl_date = CTRL_Saisie_date.Date2(self)
         self.ctrl_date.SetDate(datetime.date.today())
 
-        self.label_compte_debit = wx.StaticText(self, wx.ID_ANY, _(u"Compte débiteur :"))
+        self.label_compte_debit = wx.StaticText(self, wx.ID_ANY, _(u"Compte dÃ©biteur :"))
         self.ctrl_compte_debit = CTRL_Compte(self)
         
-        self.label_compte_credit = wx.StaticText(self, wx.ID_ANY, _(u"Compte créditeur :"))
+        self.label_compte_credit = wx.StaticText(self, wx.ID_ANY, _(u"Compte crÃ©diteur :"))
         self.ctrl_compte_credit = CTRL_Compte(self)
         
         self.label_montant = wx.StaticText(self, wx.ID_ANY, _(u"Montant :"))
@@ -97,10 +97,10 @@ class Dialog(wx.Dialog):
         # Options
         self.box_options_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Options"))
 
-        self.label_releve_debit = wx.StaticText(self, wx.ID_ANY, _(u"Relevé débiteur :"))
+        self.label_releve_debit = wx.StaticText(self, wx.ID_ANY, _(u"RelevÃ© dÃ©biteur :"))
         self.ctrl_releve_debit = CTRL_Saisie_releve_bancaire.CTRL(self)
         
-        self.label_releve_credit = wx.StaticText(self, wx.ID_ANY, _(u"Relevé créditeur :"))
+        self.label_releve_credit = wx.StaticText(self, wx.ID_ANY, _(u"RelevÃ© crÃ©diteur :"))
         self.ctrl_releve_credit = CTRL_Saisie_releve_bancaire.CTRL(self)
         
         self.label_observations = wx.StaticText(self, wx.ID_ANY, _(u"Notes :"))
@@ -122,7 +122,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
-        # Importation de l'opération
+        # Importation de l'opÃ©ration
         if self.IDvirement != None :
             self.Importation()
             titre = _(u"Modification d'un virement")
@@ -136,9 +136,9 @@ class Dialog(wx.Dialog):
                 
 
     def __set_properties(self):
-        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Saisissez la date de l'opération")))
-        self.ctrl_compte_debit.SetToolTip(wx.ToolTip(_(u"Sélectionnez le compte à débiter")))
-        self.ctrl_compte_credit.SetToolTip(wx.ToolTip(_(u"Sélectionnez le compte à créditer")))
+        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Saisissez la date de l'opÃ©ration")))
+        self.ctrl_compte_debit.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le compte Ã  dÃ©biter")))
+        self.ctrl_compte_credit.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le compte Ã  crÃ©diter")))
         self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez le montant du virement")))
         self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez des observations")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
@@ -149,7 +149,7 @@ class Dialog(wx.Dialog):
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(3, 1, 10, 10)
 
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         box_generalites = wx.StaticBoxSizer(self.box_generalites_staticbox, wx.VERTICAL)
         grid_sizer_generalites = wx.FlexGridSizer(7, 2, 10, 10)
         
@@ -261,7 +261,7 @@ class Dialog(wx.Dialog):
         IDreleve_credit = self.ctrl_releve_credit.GetID() 
         montant = self.ctrl_montant.GetMontant()
         
-        # Validation des données saisies
+        # Validation des donnÃ©es saisies
         if date == None :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date valide !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -270,14 +270,14 @@ class Dialog(wx.Dialog):
             return False
 
         if IDcompte_debit == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un compte débiteur !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un compte dÃ©biteur !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_compte_debit.SetFocus()
             return False
 
         if IDcompte_credit == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un compte créditeur !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un compte crÃ©diteur !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_compte_credit.SetFocus()
@@ -294,7 +294,7 @@ class Dialog(wx.Dialog):
         nomCompteCredit = self.ctrl_compte_credit.GetStringSelection()
         libelle = _(u"Virement %s -> %s") % (nomCompteDebit, nomCompteCredit)
 
-        # Sauvegarde de l'opération
+        # Sauvegarde de l'opÃ©ration
         DB = GestionDB.DB()
         
         # DEBIT

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -27,8 +27,8 @@ from Ctrl import CTRL_Selection_jours
 class Page_introduction(Assistant.Page):
     def __init__(self, parent):
         Assistant.Page.__init__(self, parent)
-        self.Ajouter_question(titre=_(u"Bienvenue dans l'assistant de génération d'une activité annuelle de type culturelle ou sportive (gym, yoga, art floral, foot, etc...)"))
-        self.Ajouter_question(titre=_(u"Cliquez sur le bouton Suite pour commencer la saisie des données..."))
+        self.Ajouter_question(titre=_(u"Bienvenue dans l'assistant de gÃ©nÃ©ration d'une activitÃ© annuelle de type culturelle ou sportive (gym, yoga, art floral, foot, etc...)"))
+        self.Ajouter_question(titre=_(u"Cliquez sur le bouton Suite pour commencer la saisie des donnÃ©es..."))
 
     def Suite(self):
         return Page_generalites
@@ -38,17 +38,17 @@ class Page_introduction(Assistant.Page):
 class Page_generalites(Assistant.Page):
     def __init__(self, parent):
         Assistant.Page.__init__(self, parent)
-        self.Ajouter_rubrique(titre=_(u"Généralités"))
-        self.Ajouter_question(code="nom", titre=_(u"Quel est le nom de l'activité ?"), commentaire=_(u"Exemple : 'Yoga - Saison 2017-18'"), ctrl=Assistant.CTRL_Texte, obligatoire=True)
-        self.Ajouter_question(code="date_debut", titre=_(u"Quelle est la date de début de l'activité ?"), commentaire=None, ctrl=Assistant.CTRL_Date, obligatoire=True)
-        self.Ajouter_question(code="date_fin", titre=_(u"Quelle est la date de fin de l'activité ?"), commentaire=None, ctrl=Assistant.CTRL_Date, obligatoire=True)
+        self.Ajouter_rubrique(titre=_(u"GÃ©nÃ©ralitÃ©s"))
+        self.Ajouter_question(code="nom", titre=_(u"Quel est le nom de l'activitÃ© ?"), commentaire=_(u"Exemple : 'Yoga - Saison 2017-18'"), ctrl=Assistant.CTRL_Texte, obligatoire=True)
+        self.Ajouter_question(code="date_debut", titre=_(u"Quelle est la date de dÃ©but de l'activitÃ© ?"), commentaire=None, ctrl=Assistant.CTRL_Date, obligatoire=True)
+        self.Ajouter_question(code="date_fin", titre=_(u"Quelle est la date de fin de l'activitÃ© ?"), commentaire=None, ctrl=Assistant.CTRL_Date, obligatoire=True)
         self.Ajouter_question(code="nbre_inscrits_max", titre=_(u"Quel est le nombre maximal d'inscrits sur la saison ?"), commentaire=_(u"S'il n'y aucune limitation du nombre d'inscrits global, conservez la valeur 0."), ctrl=Assistant.CTRL_Nombre)
-        self.Ajouter_question(code="groupes_activites", titre=_(u"Cochez les groupes d'activités associés à cette activité :"), commentaire=_(u"Les groupes d'activités permettent une sélection plus rapide dans certaines fenêtres de Noethys."), ctrl=Assistant.CTRL_Groupes_activite)
+        self.Ajouter_question(code="groupes_activites", titre=_(u"Cochez les groupes d'activitÃ©s associÃ©s Ã  cette activitÃ© :"), commentaire=_(u"Les groupes d'activitÃ©s permettent une sÃ©lection plus rapide dans certaines fenÃªtres de Noethys."), ctrl=Assistant.CTRL_Groupes_activite)
 
     def Suite(self):
-        # Validation des dates du séjour
+        # Validation des dates du sÃ©jour
         if self.parent.dict_valeurs["date_debut"] > self.parent.dict_valeurs["date_fin"]:
-            dlg = wx.MessageDialog(self, _(u"La date de fin de l'activité doit être supérieure à la date du début !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de fin de l'activitÃ© doit Ãªtre supÃ©rieure Ã  la date du dÃ©but !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -69,11 +69,11 @@ class Page_groupes(Assistant.Page):
     def __init__(self, parent):
         Assistant.Page.__init__(self, parent)
         self.Ajouter_rubrique(titre=_(u"Groupes"))
-        self.Ajouter_question(code="has_groupes", titre=_(u"Cette activité est-elle composée de plusieurs groupes ou plusieurs séances ?"), commentaire=_(u"Exemples : Groupe du 'lundi soir', 'jeudi 18h15', 'Séniors', etc..."), ctrl=Assistant.CTRL_Oui_non, defaut=False)
-        self.Ajouter_question(code="has_consommations", titre=_(u"Souhaitez-vous pouvoir faire du pointage à chaque séance ?"), commentaire=_(u"Noethys enregistrera alors des consommations pour chaque séance. Si vous ne savez pas, sélectionnez Non."), ctrl=Assistant.CTRL_Oui_non, defaut=False)
+        self.Ajouter_question(code="has_groupes", titre=_(u"Cette activitÃ© est-elle composÃ©e de plusieurs groupes ou plusieurs sÃ©ances ?"), commentaire=_(u"Exemples : Groupe du 'lundi soir', 'jeudi 18h15', 'SÃ©niors', etc..."), ctrl=Assistant.CTRL_Oui_non, defaut=False)
+        self.Ajouter_question(code="has_consommations", titre=_(u"Souhaitez-vous pouvoir faire du pointage Ã  chaque sÃ©ance ?"), commentaire=_(u"Noethys enregistrera alors des consommations pour chaque sÃ©ance. Si vous ne savez pas, sÃ©lectionnez Non."), ctrl=Assistant.CTRL_Oui_non, defaut=False)
 
     def Suite(self):
-        # Si pointage demandé, vérifie que les vacances ont bien été paramétrées
+        # Si pointage demandÃ©, vÃ©rifie que les vacances ont bien Ã©tÃ© paramÃ©trÃ©es
         if self.parent.dict_valeurs["has_consommations"] == True:
             if (self.parent.dict_valeurs["date_fin"] - self.parent.dict_valeurs["date_debut"]).days > 50 :
                 DB = GestionDB.DB()
@@ -85,7 +85,7 @@ class Page_groupes(Assistant.Page):
                 listeDonnees = DB.ResultatReq()
                 DB.Close()
                 if len(listeDonnees) == 0 :
-                    dlg = wx.MessageDialog(self, _(u"Attention, il semblerait que les périodes de vacances n'aient pas été paramétrées !\n\nSouhaitez-vous quand même continuer ? \n\nSinon, cliquez sur Non et allez dans Menu Paramétrage > Calendrier > Vacances."), _(u"Avertissement"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Attention, il semblerait que les pÃ©riodes de vacances n'aient pas Ã©tÃ© paramÃ©trÃ©es !\n\nSouhaitez-vous quand mÃªme continuer ? \n\nSinon, cliquez sur Non et allez dans Menu ParamÃ©trage > Calendrier > Vacances."), _(u"Avertissement"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
                     reponse = dlg.ShowModal()
                     dlg.Destroy()
                     if reponse != wx.ID_YES:
@@ -103,8 +103,8 @@ class Page_groupes(Assistant.Page):
 class Page_jours(Assistant.Page):
     def __init__(self, parent):
         Assistant.Page.__init__(self, parent)
-        self.Ajouter_rubrique(titre=_(u"Groupes ou séances"))
-        self.Ajouter_question(code="jours_groupe#1", titre=_(u"La séance a lieu quel jour de la semaine ?"), commentaire=_(u"Noethys va créer des consommations sur chaque jour d'ouverture de la séance durant toute la durée de l'activité."), ctrl=Assistant.CTRL_Jours, obligatoire=False)
+        self.Ajouter_rubrique(titre=_(u"Groupes ou sÃ©ances"))
+        self.Ajouter_question(code="jours_groupe#1", titre=_(u"La sÃ©ance a lieu quel jour de la semaine ?"), commentaire=_(u"Noethys va crÃ©er des consommations sur chaque jour d'ouverture de la sÃ©ance durant toute la durÃ©e de l'activitÃ©."), ctrl=Assistant.CTRL_Jours, obligatoire=False)
 
     def Suite(self):
         return Page_renseignements
@@ -113,8 +113,8 @@ class Page_jours(Assistant.Page):
 class Page_groupes_nombre(Assistant.Page):
     def __init__(self, parent):
         Assistant.Page.__init__(self, parent)
-        self.Ajouter_rubrique(titre=_(u"Groupes ou séances"))
-        self.Ajouter_question(code="nbre_groupes", titre=_(u"Quel est le nombre de groupes ou de séances ?"), commentaire=None, ctrl=Assistant.CTRL_Nombre, obligatoire=True)
+        self.Ajouter_rubrique(titre=_(u"Groupes ou sÃ©ances"))
+        self.Ajouter_question(code="nbre_groupes", titre=_(u"Quel est le nombre de groupes ou de sÃ©ances ?"), commentaire=None, ctrl=Assistant.CTRL_Nombre, obligatoire=True)
 
     def Suite(self):
         return Page_groupes_liste
@@ -125,10 +125,10 @@ class Page_groupes_liste(Assistant.Page):
         Assistant.Page.__init__(self, parent)
         self.Ajouter_rubrique(titre=_(u"Groupes"))
         for index in range(1, self.parent.dict_valeurs["nbre_groupes"]+1) :
-            self.Ajouter_question(code="nom_groupe#%d" % index, titre=_(u"Quel est le nom du groupe ou de la séances n°%d ?") % index, commentaire=_(u"Exemples : 'Lundi 18h15', 'Samedi 10h', 'Séniors', etc..."), ctrl=Assistant.CTRL_Texte, obligatoire=True)
-            self.Ajouter_question(code="capacite_max_groupe#%d" % index, titre=_(u"Quel est le nombre d'inscrits maximal du groupe ou de la séance n°%d ?") % index, commentaire=_(u"S'il n'y aucune limitation du nombre d'inscrits sur le groupe ou la séance, conservez la valeur 0."), ctrl=Assistant.CTRL_Nombre, obligatoire=False)
+            self.Ajouter_question(code="nom_groupe#%d" % index, titre=_(u"Quel est le nom du groupe ou de la sÃ©ances nÂ°%d ?") % index, commentaire=_(u"Exemples : 'Lundi 18h15', 'Samedi 10h', 'SÃ©niors', etc..."), ctrl=Assistant.CTRL_Texte, obligatoire=True)
+            self.Ajouter_question(code="capacite_max_groupe#%d" % index, titre=_(u"Quel est le nombre d'inscrits maximal du groupe ou de la sÃ©ance nÂ°%d ?") % index, commentaire=_(u"S'il n'y aucune limitation du nombre d'inscrits sur le groupe ou la sÃ©ance, conservez la valeur 0."), ctrl=Assistant.CTRL_Nombre, obligatoire=False)
             if self.parent.dict_valeurs["has_consommations"] == True:
-                self.Ajouter_question(code="jours_groupe#%d" % index, titre=_(u"La séance n°%d a lieu quel jour de la semaine ?") % index, commentaire=_(u"Noethys va créer des consommations sur chaque jour d'ouverture de la séance durant toute la durée de l'activité."), ctrl=Assistant.CTRL_Jours, obligatoire=False)
+                self.Ajouter_question(code="jours_groupe#%d" % index, titre=_(u"La sÃ©ance nÂ°%d a lieu quel jour de la semaine ?") % index, commentaire=_(u"Noethys va crÃ©er des consommations sur chaque jour d'ouverture de la sÃ©ance durant toute la durÃ©e de l'activitÃ©."), ctrl=Assistant.CTRL_Jours, obligatoire=False)
 
     def Suite(self):
         return Page_renseignements
@@ -179,8 +179,8 @@ class Page_categories_tarifs(Assistant.Page):
     def __init__(self, parent):
         Assistant.Page.__init__(self, parent)
         self.Ajouter_rubrique(titre=_(u"Tarifs"))
-        self.Ajouter_question(code="gratuit", titre=_(u"Cette activité est-elle gratuite ?"), ctrl=Assistant.CTRL_Oui_non, defaut=False)
-        self.Ajouter_question(code="has_categories_tarifs", titre=_(u"Avez-vous plusieurs catégories de tarifs ?"), commentaire=_(u"On retrouve par exemple souvent 'Commune' et 'Hors commune'."), ctrl=Assistant.CTRL_Oui_non, defaut=False)
+        self.Ajouter_question(code="gratuit", titre=_(u"Cette activitÃ© est-elle gratuite ?"), ctrl=Assistant.CTRL_Oui_non, defaut=False)
+        self.Ajouter_question(code="has_categories_tarifs", titre=_(u"Avez-vous plusieurs catÃ©gories de tarifs ?"), commentaire=_(u"On retrouve par exemple souvent 'Commune' et 'Hors commune'."), ctrl=Assistant.CTRL_Oui_non, defaut=False)
 
     def Suite(self):
         if self.parent.dict_valeurs["gratuit"] == True:
@@ -196,11 +196,11 @@ class Page_categories_tarifs_nombre(Assistant.Page):
     def __init__(self, parent):
         Assistant.Page.__init__(self, parent)
         self.Ajouter_rubrique(titre=_(u"Tarifs"))
-        self.Ajouter_question(code="nbre_categories_tarifs", titre=_(u"Quel est le nombre de catégories de tarifs ?"), commentaire=None, ctrl=Assistant.CTRL_Nombre, obligatoire=True)
+        self.Ajouter_question(code="nbre_categories_tarifs", titre=_(u"Quel est le nombre de catÃ©gories de tarifs ?"), commentaire=None, ctrl=Assistant.CTRL_Nombre, obligatoire=True)
 
     def Suite(self):
         if self.parent.dict_valeurs["nbre_categories_tarifs"] < 2 :
-            dlg = wx.MessageDialog(self, _(u"Le nombre de catégories doit être supérieur à 1 !\n\nSinon sélectionnez Non à la question précédente."), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Le nombre de catÃ©gories doit Ãªtre supÃ©rieur Ã  1 !\n\nSinon sÃ©lectionnez Non Ã  la question prÃ©cÃ©dente."), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -212,16 +212,16 @@ class Page_tarifs(Assistant.Page):
     def __init__(self, parent):
         Assistant.Page.__init__(self, parent)
 
-        # Si une seule catégorie de tarif
+        # Si une seule catÃ©gorie de tarif
         if self.parent.dict_valeurs["has_categories_tarifs"] == False :
             self.Ajouter_rubrique(titre=_(u"Tarif"))
-            self.Ajouter_question(code="tarif", titre=_(u"Quel est le tarif à appliquer ?"), commentaire=_(u"Sélectionnez une méthode puis saisissez les paramètres demandés."), ctrl=Assistant.CTRL_Tarif)
-        # Si plusieurs catégories de tarifs
+            self.Ajouter_question(code="tarif", titre=_(u"Quel est le tarif Ã  appliquer ?"), commentaire=_(u"SÃ©lectionnez une mÃ©thode puis saisissez les paramÃ¨tres demandÃ©s."), ctrl=Assistant.CTRL_Tarif)
+        # Si plusieurs catÃ©gories de tarifs
         else :
             for index in range(1, self.parent.dict_valeurs["nbre_categories_tarifs"]+1):
-                self.Ajouter_rubrique(titre=_(u"Tarif n°%d") % index)
-                self.Ajouter_question(code="nom_categorie_tarif#%d" % index, titre=_(u"Quel est le nom de la catégorie de tarifs n°%d ?") % index, commentaire=_(u"Exemples : 'Commune' ou 'Hors commune'."), ctrl=Assistant.CTRL_Texte, obligatoire=False)
-                self.Ajouter_question(code="tarif#%d" % index, titre=_(u"Quel est le tarif à appliquer à la catégorie n°%d ?") % index, commentaire=_(u"Sélectionnez une méthode puis saisissez les paramètres demandés."), ctrl=Assistant.CTRL_Tarif)
+                self.Ajouter_rubrique(titre=_(u"Tarif nÂ°%d") % index)
+                self.Ajouter_question(code="nom_categorie_tarif#%d" % index, titre=_(u"Quel est le nom de la catÃ©gorie de tarifs nÂ°%d ?") % index, commentaire=_(u"Exemples : 'Commune' ou 'Hors commune'."), ctrl=Assistant.CTRL_Texte, obligatoire=False)
+                self.Ajouter_question(code="tarif#%d" % index, titre=_(u"Quel est le tarif Ã  appliquer Ã  la catÃ©gorie nÂ°%d ?") % index, commentaire=_(u"SÃ©lectionnez une mÃ©thode puis saisissez les paramÃ¨tres demandÃ©s."), ctrl=Assistant.CTRL_Tarif)
 
     def Suite(self):
         return Page_conclusion
@@ -230,8 +230,8 @@ class Page_tarifs(Assistant.Page):
 class Page_conclusion(Assistant.Page):
     def __init__(self, parent):
         Assistant.Page.__init__(self, parent)
-        self.Ajouter_question(titre=_(u"Félicitations, vous avez terminé de paramétrer votre activité annuelle !"))
-        self.Ajouter_question(titre=_(u"Cliquez maintenant sur le bouton Valider pour générer cette activité."))
+        self.Ajouter_question(titre=_(u"FÃ©licitations, vous avez terminÃ© de paramÃ©trer votre activitÃ© annuelle !"))
+        self.Ajouter_question(titre=_(u"Cliquez maintenant sur le bouton Valider pour gÃ©nÃ©rer cette activitÃ©."))
 
     def Suite(self):
         DB = GestionDB.DB()
@@ -241,11 +241,11 @@ class Page_conclusion(Assistant.Page):
         # Consommations
         if self.parent.dict_valeurs["has_consommations"] == True:
 
-            # Unités de consommation
+            # UnitÃ©s de consommation
             listeIDunite = []
             listeDonnees = [
                 ("IDactivite", IDactivite),
-                ("nom", _(u"Séance")),
+                ("nom", _(u"SÃ©ance")),
                 ("abrege", _(u"SEANCE")),
                 ("type", "Unitaire"),
                 ("date_debut", "1977-01-01"),
@@ -256,11 +256,11 @@ class Page_conclusion(Assistant.Page):
             IDunite = DB.ReqInsert("unites", listeDonnees)
             listeIDunite.append(IDunite)
 
-            # Unité de remplissage
+            # UnitÃ© de remplissage
             listeIDuniteRemplissage = []
             listeDonnees = [
                 ("IDactivite", IDactivite),
-                ("nom", _(u"Séance")),
+                ("nom", _(u"SÃ©ance")),
                 ("abrege", _(u"SEANCE")),
                 ("seuil_alerte", 5),
                 ("date_debut", "1977-01-01"),
@@ -310,18 +310,18 @@ class Page_conclusion(Assistant.Page):
                 listeDonnees = [("IDactivite", IDactivite), ("nom", nom_tarif)]
                 IDnom_tarif = DB.ReqInsert("noms_tarifs", listeDonnees)
 
-            # Catégories de tarifs
+            # CatÃ©gories de tarifs
             listeCategoriesEtTarifs = []
 
-            # Si catégorie unique
+            # Si catÃ©gorie unique
             if self.parent.dict_valeurs["has_categories_tarifs"] == False:
-                listeDonnees = [("IDactivite", IDactivite), ("nom", _(u"Catégorie unique"))]
+                listeDonnees = [("IDactivite", IDactivite), ("nom", _(u"CatÃ©gorie unique"))]
                 IDcategorie_tarif = DB.ReqInsert("categories_tarifs", listeDonnees)
                 if self.parent.dict_valeurs["gratuit"] == False:
                     track_tarif = self.parent.dict_valeurs["tarif"]
                     listeCategoriesEtTarifs.append((IDcategorie_tarif, track_tarif))
 
-            # Si plusieurs catégories
+            # Si plusieurs catÃ©gories
             if self.parent.dict_valeurs["has_categories_tarifs"] == True :
                 nbre_categories_tarifs = self.parent.dict_valeurs["nbre_categories_tarifs"]
                 for index in range(1, nbre_categories_tarifs+1):
@@ -331,7 +331,7 @@ class Page_conclusion(Assistant.Page):
                     track_tarif = self.parent.dict_valeurs["tarif#%d" % index]
                     listeCategoriesEtTarifs.append((IDcategorie_tarif, track_tarif))
 
-            # Création de conso ?
+            # CrÃ©ation de conso ?
             if self.parent.dict_valeurs["has_consommations"] == True:
                 options = "calendrier"
             else :

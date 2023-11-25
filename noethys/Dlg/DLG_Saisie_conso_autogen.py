@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -70,7 +70,7 @@ class Hyperlien(Hyperlink.HyperLinkCtrl):
         listeLabels = []
         for code, label in self.parent.listeChamps :
             listeLabels.append(u"%s (%s)" % (label, code))
-        dlg = wx.SingleChoiceDialog(None, _(u"Sélectionnez un champ à insérer :"), _(u"Insérer un champ"), listeLabels, wx.CHOICEDLG_STYLE)
+        dlg = wx.SingleChoiceDialog(None, _(u"SÃ©lectionnez un champ Ã  insÃ©rer :"), _(u"InsÃ©rer un champ"), listeLabels, wx.CHOICEDLG_STYLE)
         dlg.SetSize((580, 500))
         dlg.CenterOnScreen()
         if dlg.ShowModal() == wx.ID_OK:
@@ -94,7 +94,7 @@ class DLG_Saisie_formule(wx.Dialog):
 
         self.label_formule = wx.StaticText(self, -1, _(u"Saisissez une formule :"))
         self.ctrl_formule = wx.TextCtrl(self, -1, formule, style=wx.TE_MULTILINE)
-        self.hyper_formule = Hyperlien(self, label=_(u"Insérer un champ"), infobulle=_(u"Cliquez ici pour insérer un champ"), URL="")
+        self.hyper_formule = Hyperlien(self, label=_(u"InsÃ©rer un champ"), infobulle=_(u"Cliquez ici pour insÃ©rer un champ"), URL="")
 
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
@@ -209,7 +209,7 @@ class CTRL_Conditions(wx.ListBox):
         valeur = self.GetStringSelection()
         index = self.GetSelection()
         if index == -1 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune condition à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune condition Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -224,7 +224,7 @@ class CTRL_Conditions(wx.ListBox):
         valeur = self.GetStringSelection()
         index = self.GetSelection()
         if index == -1 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune condition à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune condition Ã  supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -245,9 +245,9 @@ class CTRL_Choix_etat(wx.Choice):
         self.listeEtats = [
             #(None, _(u"Ne pas modifier")),
             ("reservation", _(u"Pointage en attente")),
-            ("present", _(u"Présence")),
-            ("absentj", _(u"Absence justifiée")),
-            ("absenti", _(u"Absence injustifiée")),
+            ("present", _(u"PrÃ©sence")),
+            ("absentj", _(u"Absence justifiÃ©e")),
+            ("absenti", _(u"Absence injustifiÃ©e")),
             ]
         self.MAJ()
 
@@ -278,7 +278,7 @@ class Dialog(wx.Dialog):
         self.IDactivite = IDactivite
         self.IDunite = IDunite
 
-        # Importation des unités
+        # Importation des unitÃ©s
         self.listeUnites = self.ImportationUnites()
 
         # Conditions
@@ -289,10 +289,10 @@ class Dialog(wx.Dialog):
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
 
-        # Paramètres de la consommation
-        self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres de la consommation"))
+        # ParamÃ¨tres de la consommation
+        self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, _(u"ParamÃ¨tres de la consommation"))
 
-        self.label_heure_debut = wx.StaticText(self, -1, _(u"Heure de début :"))
+        self.label_heure_debut = wx.StaticText(self, -1, _(u"Heure de dÃ©but :"))
         self.radio_heure_debut_fixe = wx.RadioButton(self, -1, _(u"Fixe"), style=wx.RB_GROUP)
         self.ctrl_heure_debut = CTRL_Saisie_heure.Heure(self)
         self.radio_heure_debut_formule = wx.RadioButton(self, -1, _(u"Formule"))
@@ -310,7 +310,7 @@ class Dialog(wx.Dialog):
         self.label_etat = wx.StaticText(self, -1, _(u"Etat :"))
         self.ctrl_etat = CTRL_Choix_etat(self)
 
-        self.label_quantite = wx.StaticText(self, -1, _(u"Quantité :"))
+        self.label_quantite = wx.StaticText(self, -1, _(u"QuantitÃ© :"))
         self.ctrl_quantite = wx.SpinCtrl(self, -1, "1", min=1, max=500, size=(80, -1))
 
         self.label_etiquettes = wx.StaticText(self, -1, _(u"Etiquettes :"))
@@ -338,19 +338,19 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
 
-        # Init contrôle
+        # Init contrÃ´le
         self.OnRadioHeureDebut(None)
         self.OnRadioHeureFin(None)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Paramètres de l'auto-génération"))
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer une nouvelle condition")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la condition sélectionnée dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la condition sélectionnée dans la liste")))
+        self.SetTitle(_(u"ParamÃ¨tres de l'auto-gÃ©nÃ©ration"))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er une nouvelle condition")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la condition sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la condition sÃ©lectionnÃ©e dans la liste")))
         self.bouton_heure_debut_formule.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la formule")))
         self.bouton_heure_fin_formule.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la formule")))
-        self.ctrl_etat.SetToolTip(wx.ToolTip(_(u"Sélectionnez un état")))
-        self.ctrl_quantite.SetToolTip(wx.ToolTip(_(u"Saisir une quantité (1 par défaut)")))
+        self.ctrl_etat.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un Ã©tat")))
+        self.ctrl_quantite.SetToolTip(wx.ToolTip(_(u"Saisir une quantitÃ© (1 par dÃ©faut)")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -374,11 +374,11 @@ class Dialog(wx.Dialog):
         staticbox_conditions.Add(grid_sizer_conditions, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(staticbox_conditions, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
 
-        # Paramètres
+        # ParamÃ¨tres
         staticbox_parametres = wx.StaticBoxSizer(self.staticbox_parametres_staticbox, wx.VERTICAL)
         grid_sizer_parametres = wx.FlexGridSizer(rows=5, cols=2, vgap=10, hgap=10)
 
-        # Heure début
+        # Heure dÃ©but
         grid_sizer_parametres.Add(self.label_heure_debut, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
 
         grid_sizer_heure_debut = wx.FlexGridSizer(rows=1, cols=6, vgap=5, hgap=5)
@@ -468,19 +468,19 @@ class Dialog(wx.Dialog):
         self.bouton_heure_fin_formule.Enable(self.radio_heure_fin_formule.GetValue())
 
     def GetChamps(self):
-        """ Création de la liste des champs """
+        """ CrÃ©ation de la liste des champs """
         listeCodes = [
-            ("DUREE", _(u"Durée")),
-            ("HEUREDEBUT", _(u"Heure de début")),
+            ("DUREE", _(u"DurÃ©e")),
+            ("HEUREDEBUT", _(u"Heure de dÃ©but")),
             ("HEUREFIN", _(u"Heure de fin")),
-            ("QUANTITE", _(u"Quantité")),
+            ("QUANTITE", _(u"QuantitÃ©")),
             ("ETAT", _(u"Etat")),
         ]
         listeChamps = []
         for dictUnite in self.listeUnites :
             for code, label in listeCodes :
                 codeChamp = "%s_UNITE%d" % (code, dictUnite["IDunite"])
-                nomChamp = u"%s de l'unité '%s'" % (label, dictUnite["nom"])
+                nomChamp = u"%s de l'unitÃ© '%s'" % (label, dictUnite["nom"])
                 listeChamps.append((codeChamp, nomChamp))
         return listeChamps
 
@@ -508,14 +508,14 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)        
 
     def OnBoutonOk(self, event):
-        # Vérification des données
-        # TODO : Vérification données saisie paramètres conso autogen à coder !!!!!!!!!!!
+        # VÃ©rification des donnÃ©es
+        # TODO : VÃ©rification donnÃ©es saisie paramÃ¨tres conso autogen Ã  coder !!!!!!!!!!!
 
         # Fermeture
         self.EndModal(wx.ID_OK)
 
     def GetDonnees(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         conditions = self.ctrl_conditions.GetValeur()
 
         if self.radio_heure_debut_fixe.GetValue() == True :
@@ -558,7 +558,7 @@ class Dialog(wx.Dialog):
         listeTemp = (etiquettesStr, etatStr, quantiteStr, heure_debutStr, heure_finStr)
         parametres = "##".join(listeTemp)
 
-        # Mémorisation
+        # MÃ©morisation
         dictDonnees = {
             "heure_debut" : heure_debut,
             "heure_fin" : heure_fin,
@@ -620,7 +620,7 @@ class Dialog(wx.Dialog):
                     if heure_fin not in (None, "") :
                         self.ctrl_heure_fin.SetHeure(heure_fin)
 
-        # Init contrôles
+        # Init contrÃ´les
         self.OnRadioHeureDebut(None)
         self.OnRadioHeureFin(None)
 

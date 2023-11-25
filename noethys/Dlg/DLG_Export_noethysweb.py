@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-20 Ivan LUCAS
@@ -29,9 +29,9 @@ class CTRL_Options(wx.CheckListBox):
         self.listeOptions = [
             ("individus", _(u"Individus et familles")),
             ("questionnaires", _(u"Questionnaires familiaux et individuels")),
-            ("pieces", _(u"Pièces et types de pièces")),
+            ("pieces", _(u"PiÃ¨ces et types de piÃ¨ces")),
             ("cotisations", _(u"Cotisations")),
-            ("activites", _(u"Activités")),
+            ("activites", _(u"ActivitÃ©s")),
             ("inscriptions", _(u"Inscriptions")),
             ("consommations", _(u"Consommations et prestations")),
             ("facturation", _(u"Facturation : factures, attestations, devis...")),
@@ -65,8 +65,8 @@ class Dialog(wx.Dialog):
         self.parent = parent
 
         # Bandeau
-        intro = _(u"Utilisez cette fonctionnalité pour convertir votre base de données au format Noethysweb. Saisissez un mot de passe deux fois et cliquez sur le bouton Générer.")
-        titre = _(u"Exporter les données vers Noethysweb")
+        intro = _(u"Utilisez cette fonctionnalitÃ© pour convertir votre base de donnÃ©es au format Noethysweb. Saisissez un mot de passe deux fois et cliquez sur le bouton GÃ©nÃ©rer.")
+        titre = _(u"Exporter les donnÃ©es vers Noethysweb")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Document_export.png")
 
@@ -76,7 +76,7 @@ class Dialog(wx.Dialog):
         nom_fichier = _(u"Noethysweb_%s") % datetime.datetime.now().strftime("%Y%m%d_%H%M")
         self.ctrl_nom = wx.TextCtrl(self, -1, nom_fichier)
 
-        self.label_repertoire = wx.StaticText(self, -1, u"Répertoire :")
+        self.label_repertoire = wx.StaticText(self, -1, u"RÃ©pertoire :")
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
         self.ctrl_repertoire = wx.TextCtrl(self, -1, cheminDefaut)
@@ -90,16 +90,16 @@ class Dialog(wx.Dialog):
         self.ctrl_confirmation = wx.TextCtrl(self, -1, u"", style=wx.TE_PASSWORD)
 
         # Options
-        self.box_options_staticbox = wx.StaticBox(self, -1, _(u"Données à transférer"))
+        self.box_options_staticbox = wx.StaticBox(self, -1, _(u"DonnÃ©es Ã  transfÃ©rer"))
         self.ctrl_options = CTRL_Options(self)
         self.ctrl_options.SetMinSize((-1, 160))
 
-        # CTRL Editeur d'Emails pour récupérer la version HTML d'un texte XML
+        # CTRL Editeur d'Emails pour rÃ©cupÃ©rer la version HTML d'un texte XML
         self.ctrl_editeur = CTRL_Editeur_email.CTRL(self)
         self.ctrl_editeur.Show(False)
 
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_generer = CTRL_Bouton_image.CTRL(self, texte=_(u"Générer"), cheminImage="Images/32x32/Sauvegarder.png")
+        self.bouton_generer = CTRL_Bouton_image.CTRL(self, texte=_(u"GÃ©nÃ©rer"), cheminImage="Images/32x32/Sauvegarder.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
@@ -111,11 +111,11 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom du fichier de sauvegarde")))
-        self.ctrl_mdp.SetToolTip(wx.ToolTip(_(u"Saisissez le mot de passe qui sera utilisée pour crypter la sauvegarde")))
+        self.ctrl_mdp.SetToolTip(wx.ToolTip(_(u"Saisissez le mot de passe qui sera utilisÃ©e pour crypter la sauvegarde")))
         self.ctrl_confirmation.SetToolTip(wx.ToolTip(_(u"Confirmez le mot de passe")))
         self.ctrl_repertoire.SetMinSize((350, -1))
-        self.ctrl_repertoire.SetToolTip(wx.ToolTip(_(u"Saisissez ici le répertoire de destination")))
-        self.bouton_repertoire.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner un répertoire de destination")))
+        self.ctrl_repertoire.SetToolTip(wx.ToolTip(_(u"Saisissez ici le rÃ©pertoire de destination")))
+        self.bouton_repertoire.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner un rÃ©pertoire de destination")))
 
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Obtenir de l'aide")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Annuler")))
@@ -193,7 +193,7 @@ class Dialog(wx.Dialog):
                 cheminDefaut = ""
         else:
             cheminDefaut = ""
-        dlg = wx.DirDialog(self, _(u"Veuillez sélectionner un répertoire de destination :"), defaultPath=cheminDefaut, style=wx.DD_DEFAULT_STYLE | wx.DD_DIR_MUST_EXIST)
+        dlg = wx.DirDialog(self, _(u"Veuillez sÃ©lectionner un rÃ©pertoire de destination :"), defaultPath=cheminDefaut, style=wx.DD_DEFAULT_STYLE | wx.DD_DIR_MUST_EXIST)
         if dlg.ShowModal() == wx.ID_OK:
             self.ctrl_repertoire.SetValue(dlg.GetPath())
         dlg.Destroy()
@@ -218,7 +218,7 @@ class Dialog(wx.Dialog):
         #     self.ctrl_mdp.SetFocus()
         #     return False
         if motdepasse != confirmation:
-            dlg = wx.MessageDialog(self, _(u"Le mot de passe n'a pas été confirmé à l'identique !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Le mot de passe n'a pas Ã©tÃ© confirmÃ© Ã  l'identique !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_confirmation.SetFocus()
@@ -228,17 +228,17 @@ class Dialog(wx.Dialog):
         #     motdepasse = six.binary_type(motdepasse, "utf-8")
         # motdepasse = base64.b64encode(motdepasse)
 
-        # Répertoire
+        # RÃ©pertoire
         repertoire = self.ctrl_repertoire.GetValue()
         if repertoire == "":
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un répertoire de destination !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un rÃ©pertoire de destination !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_repertoire.SetFocus()
             return False
-        # Vérifie que le répertoire existe
+        # VÃ©rifie que le rÃ©pertoire existe
         if not os.path.isdir(repertoire):
-            dlg = wx.MessageDialog(self, _(u"Le répertoire de destination que vous avez saisi n'existe pas !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Le rÃ©pertoire de destination que vous avez saisi n'existe pas !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_repertoire.SetFocus()
@@ -247,17 +247,17 @@ class Dialog(wx.Dialog):
         # Options
         options = self.ctrl_options.GetIDcoches()
 
-        # Vérifications
+        # VÃ©rifications
         if not UTILS_Export_noethysweb.Verifications(parent=self):
             return False
 
-        # Générer du fichier de données
-        dlgAttente = wx.BusyInfo(_(u"Cette opération peut prendre quelques minutes. Veuillez patienter..."), self)
+        # GÃ©nÃ©rer du fichier de donnÃ©es
+        dlgAttente = wx.BusyInfo(_(u"Cette opÃ©ration peut prendre quelques minutes. Veuillez patienter..."), self)
         UTILS_Export_noethysweb.Export_all(dlg=self, nom_fichier=os.path.join(repertoire, nom + ".nweb"), mdp=motdepasse, options=options)
         del dlgAttente
 
-        # Confirmation de réussite
-        dlg = wx.MessageDialog(self, _(u"Le fichier a été généré avec succès."), _(u"Confirmation"), wx.OK | wx.ICON_INFORMATION)
+        # Confirmation de rÃ©ussite
+        dlg = wx.MessageDialog(self, _(u"Le fichier a Ã©tÃ© gÃ©nÃ©rÃ© avec succÃ¨s."), _(u"Confirmation"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         return True

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -36,7 +36,7 @@ class Track(object):
         self.bmp = self.GetImage()
 
     def GetImage(self):
-        """ Récupère une image """            
+        """ RÃ©cupÃ¨re une image """            
         # Recherche de l'image
         if self.bufferImage != None :
             io = six.BytesIO(self.bufferImage)
@@ -48,7 +48,7 @@ class Track(object):
             bmp = bmp.ConvertToBitmap()
             return bmp
         else:
-            # Si aucune image est trouvée, on prend l'image par défaut
+            # Si aucune image est trouvÃ©e, on prend l'image par dÃ©faut
             bmp = self.GetImageDefaut() 
             return bmp
     
@@ -85,7 +85,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT IDemetteur, emetteurs.IDmode, nom, emetteurs.image, modes_reglements.label
@@ -116,7 +116,7 @@ class ListView(FastObjectListView):
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
         
-        # Création du imageList avec une taille personnalisée
+        # CrÃ©ation du imageList avec une taille personnalisÃ©e
         dictImages = {}
         imageList = wx.ImageList(TAILLE_IMAGE[0], TAILLE_IMAGE[1])
         for track in self.donnees :
@@ -130,12 +130,12 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(_(u"IDemetteur"), "left", 0, "IDemetteur", typeDonnee="entier"),
             ColumnDefn(_(u"Image"), 'left', TAILLE_IMAGE[0]+1, "", imageGetter=GetImage),
-            ColumnDefn(_(u"Mode de règlement"), 'left', 0, "label_mode", typeDonnee="texte"),
-            ColumnDefn(_(u"Nom de l'émetteur"), 'left', 410, "nom", typeDonnee="texte"),
+            ColumnDefn(_(u"Mode de rÃ¨glement"), 'left', 0, "label_mode", typeDonnee="texte"),
+            ColumnDefn(_(u"Nom de l'Ã©metteur"), 'left', 410, "nom", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucun émetteur"))
+        self.SetEmptyListMsg(_(u"Aucun Ã©metteur"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[2])
         self.SetObjects(self.donnees)
@@ -154,7 +154,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -171,7 +171,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDemetteur
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -202,7 +202,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -220,18 +220,18 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des émetteurs"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des Ã©metteurs"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des émetteurs"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des Ã©metteurs"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def Ajouter(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_emetteurs", "creer") == False : return
         if self.IDmode == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner un mode de règlement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sÃ©lectionner un mode de rÃ¨glement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -245,7 +245,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_emetteurs", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun émetteur à modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun Ã©metteur Ã  modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -258,13 +258,13 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_emetteurs", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun émetteur à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun Ã©metteur Ã  supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDemetteur = self.Selection()[0].IDemetteur
         
-        # Vérifie que l'émetteur n'a pas déjà été attribué à un règlement
+        # VÃ©rifie que l'Ã©metteur n'a pas dÃ©jÃ  Ã©tÃ© attribuÃ© Ã  un rÃ¨glement
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDreglement)
         FROM reglements 
@@ -274,7 +274,7 @@ class ListView(FastObjectListView):
         nbreReglements = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreReglements > 0 :
-            message = _(u"Attention, cet émetteur a déjà été attribué à %d règlement(s). Si vous le supprimez, il sera également dissocié des règlements associés !\n\nSouhaitez-vous tout de même le supprimer ?") % nbreReglements
+            message = _(u"Attention, cet Ã©metteur a dÃ©jÃ  Ã©tÃ© attribuÃ© Ã  %d rÃ¨glement(s). Si vous le supprimez, il sera Ã©galement dissociÃ© des rÃ¨glements associÃ©s !\n\nSouhaitez-vous tout de mÃªme le supprimer ?") % nbreReglements
             dlg = wx.MessageDialog(self, message, _(u"Suppression"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
@@ -282,7 +282,7 @@ class ListView(FastObjectListView):
                 return False
 
         # Suppression
-        dlg = wx.MessageDialog(self, _(u"Confirmez-vous vraiment la suppression de cet émetteur ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Confirmez-vous vraiment la suppression de cet Ã©metteur ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("emetteurs", "IDemetteur", IDemetteur)

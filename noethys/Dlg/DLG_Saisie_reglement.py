@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -30,7 +30,7 @@ from Utils import UTILS_Titulaires
 from Utils import UTILS_Gestion
 import GestionDB
 
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Saisie_date
@@ -45,9 +45,9 @@ def DateEngFr(textDate):
     return text
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -78,7 +78,7 @@ class CTRL_Image(wx.StaticBitmap):
         self.SetBitmap(bmp)    
 
     def GetPhoto(self, table="", key="", IDkey=None, imageDefaut=None):
-        """ Récupère une image """            
+        """ RÃ©cupÃ¨re une image """            
         # Recherche de l'image
         if IDkey != None : 
             DB = GestionDB.DB()
@@ -87,7 +87,7 @@ class CTRL_Image(wx.StaticBitmap):
             listeDonnees = DB.ResultatReq()
             DB.Close()
             if len(listeDonnees) > 0 :
-                # Si une image est trouvée
+                # Si une image est trouvÃ©e
                 bmpBuffer = listeDonnees[0][0]
                 if bmpBuffer != None :
                     io = six.BytesIO(bmpBuffer)
@@ -99,7 +99,7 @@ class CTRL_Image(wx.StaticBitmap):
                     bmp = bmp.ConvertToBitmap()
                     return bmp
         
-        # Si aucune image est trouvée, on prend l'image par défaut
+        # Si aucune image est trouvÃ©e, on prend l'image par dÃ©faut
         if imageDefaut != None :
             bmp = self.GetImageDefaut(imageDefaut) 
             return bmp
@@ -256,15 +256,15 @@ class CTRL_Payeurs(wx.ListBox):
     def Modifier(self, event=None):
         IDpayeur = self.GetID()
         if IDpayeur == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun payeur à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun payeur Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # Vérifie si payeur rattaché
+        # VÃ©rifie si payeur rattachÃ©
         nbreReglements = self.GetNbreReglements(IDpayeur)
         if nbreReglements > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce payeur a déjà été associé à %d règlement(s).\n\nSouhaitez-vous tout de même le modifier ?") % nbreReglements, _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce payeur a dÃ©jÃ  Ã©tÃ© associÃ© Ã  %d rÃ¨glement(s).\n\nSouhaitez-vous tout de mÃªme le modifier ?") % nbreReglements, _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             if dlg.ShowModal() != wx.ID_YES :
                 dlg.Destroy()
                 return
@@ -291,15 +291,15 @@ class CTRL_Payeurs(wx.ListBox):
     def Supprimer(self, event=None):
         IDpayeur = self.GetID()
         if IDpayeur == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun payeur à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun payeur Ã  supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # Vérifie si payeur rattaché
+        # VÃ©rifie si payeur rattachÃ©
         nbreReglements = self.GetNbreReglements(IDpayeur)
         if nbreReglements > 0 :
-            dlg = wx.MessageDialog(self, _(u"Impossible de supprimer ce payeur.\n\n Il a déjà été attribué à %d règlement(s) !") % nbreReglements, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Impossible de supprimer ce payeur.\n\n Il a dÃ©jÃ  Ã©tÃ© attribuÃ© Ã  %d rÃ¨glement(s) !") % nbreReglements, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -375,7 +375,7 @@ class CTRL_Mode(wx.Choice):
         return self.dictDonnees[index]["ID"]
     
     def GetInfosMode(self):
-        """ Récupère les infos sur le mode sélectionné """
+        """ RÃ©cupÃ¨re les infos sur le mode sÃ©lectionnÃ© """
         index = self.GetSelection()
         if index == -1 : return None
         return self.dictDonnees[index]
@@ -482,7 +482,7 @@ class CTRL_Frais(Hyperlink.HyperLinkCtrl):
         self.SetLabel(label)
     
     def GetDonnees(self):
-        """ Récupère données sur frais de gestion saisis """
+        """ RÃ©cupÃ¨re donnÃ©es sur frais de gestion saisis """
         typeFrais = self.dictFrais["frais_gestion"]
         if typeFrais == None :
             # Aucun
@@ -571,7 +571,7 @@ class Dialog(wx.Dialog):
             listeDonnees = DB.ResultatReq()
             self.IDcompte_payeur = listeDonnees[0][0]
             
-            # Recherche si reçu édité
+            # Recherche si reÃ§u Ã©ditÃ©
             req = """SELECT numero, date_edition, IDutilisateur
             FROM recus
             WHERE IDreglement=%d
@@ -589,8 +589,8 @@ class Dialog(wx.Dialog):
         self.IDdepot = None
         
         # Bandeau
-        intro = _(u"Vous pouvez ici saisir un règlement pour une famille. Commencez par saisir la date, sélectionnez le mode de règlement et si besoin l'émetteur associé, saisissez le numéro de pièce (si chèque) puis le montant et sélectionnez un nom de payeur. Enfin, vous devez obligatoirement ventiler le règlement sur les différentes prestations disponibles ci-dessous.")
-        titre = _(u"Saisie d'un règlement")
+        intro = _(u"Vous pouvez ici saisir un rÃ¨glement pour une famille. Commencez par saisir la date, sÃ©lectionnez le mode de rÃ¨glement et si besoin l'Ã©metteur associÃ©, saisissez le numÃ©ro de piÃ¨ce (si chÃ¨que) puis le montant et sÃ©lectionnez un nom de payeur. Enfin, vous devez obligatoirement ventiler le rÃ¨glement sur les diffÃ©rentes prestations disponibles ci-dessous.")
+        titre = _(u"Saisie d'un rÃ¨glement")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Reglement.png")
         
         # Infos
@@ -600,8 +600,8 @@ class Dialog(wx.Dialog):
         self.ctrl_image = CTRL_Image(self, style=wx.SUNKEN_BORDER)
         self.ctrl_infos = CTRL_Infos(self, couleurFond="#FFFFFF", style=wx.SUNKEN_BORDER ) #F0FBED
         
-        # Généralités
-        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralites"))
+        # GÃ©nÃ©ralitÃ©s
+        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"GÃ©nÃ©ralites"))
         self.label_date = wx.StaticText(self, -1, _(u"Date :"))
         self.ctrl_date = CTRL_Saisie_date.Date(self)
         self.ctrl_date.SetDate(datetime.date.today())
@@ -609,7 +609,7 @@ class Dialog(wx.Dialog):
         self.ctrl_mode = CTRL_Mode(self)
         self.label_emetteur = wx.StaticText(self, -1, _(u"Emetteur :"))
         self.ctrl_emetteur = CTRL_Emetteur(self)
-        self.label_numero = wx.StaticText(self, -1, _(u"N° Pièce :"))
+        self.label_numero = wx.StaticText(self, -1, _(u"NÂ° PiÃ¨ce :"))
         self.ctrl_numero = wx.TextCtrl(self, -1, u"")
         self.label_montant = wx.StaticText(self, -1, _(u"Montant :"))
         font = wx.Font(14, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.BOLD, 0, u"")
@@ -629,9 +629,9 @@ class Dialog(wx.Dialog):
         self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
         self.label_observations = wx.StaticText(self, -1, _(u"Observations :"))
         self.ctrl_observations = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
-        self.label_quittancier = wx.StaticText(self, -1, _(u"N° Quittancier :"))
+        self.label_quittancier = wx.StaticText(self, -1, _(u"NÂ° Quittancier :"))
         self.ctrl_quittancier = wx.TextCtrl(self, -1, u"")
-        self.label_recu = wx.StaticText(self, -1, _(u"Edition reçu :"))
+        self.label_recu = wx.StaticText(self, -1, _(u"Edition reÃ§u :"))
         self.ctrl_recu = wx.CheckBox(self, -1, u"")
         self.label_frais = wx.StaticText(self, -1, _(u"Frais de gestion :"))
         self.hyperlien_frais = CTRL_Frais(self, label=_(u"Aucun frais"), infobulle=_(u"Cliquez ici pour appliquer des frais de gestion"), URL="")
@@ -643,7 +643,7 @@ class Dialog(wx.Dialog):
         self.staticbox_encaissement_staticbox = wx.StaticBox(self, -1, _(u"Encaissement"))
         self.label_compte = wx.StaticText(self, -1, _(u"Compte :"))
         self.ctrl_compte = CTRL_Compte(self)
-        self.label_differe = wx.StaticText(self, -1, _(u"Différé :"))
+        self.label_differe = wx.StaticText(self, -1, _(u"DiffÃ©rÃ© :"))
         self.ctrl_check_differe = wx.CheckBox(self, -1, u"")
         self.label_differe_2 = wx.StaticText(self, -1, _(u"A partir du"))
         self.ctrl_differe = CTRL_Saisie_date.Date(self)
@@ -686,41 +686,41 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         
-        # Récupération du nom des titulaires
+        # RÃ©cupÃ©ration du nom des titulaires
         try :
             dictTitulaires = UTILS_Titulaires.GetTitulaires(listeIDfamille=[self.IDcompte_payeur,])
             nomsTitulaires = dictTitulaires[self.IDcompte_payeur]["titulairesSansCivilite"]
         except :
             nomsTitulaires = None
         
-        # Importation des données
+        # Importation des donnÃ©es
         if nomsTitulaires != None and nomsTitulaires != "" :
             titreFamille = _(u"pour la famille de %s") % nomsTitulaires
         else:
             titreFamille = u""
         if self.IDreglement != None :
             self.Importation() 
-            self.SetTitle(_(u"Saisie d'un règlement %s") % titreFamille)
+            self.SetTitle(_(u"Saisie d'un rÃ¨glement %s") % titreFamille)
         else:
-            self.SetTitle(_(u"Modification d'un règlement %s") % titreFamille)
+            self.SetTitle(_(u"Modification d'un rÃ¨glement %s") % titreFamille)
 
-        # Périodes de gestion
+        # PÃ©riodes de gestion
         self.gestion = UTILS_Gestion.Gestion(None)
 
-        # Initialisation des contrôles
+        # Initialisation des contrÃ´les
         self.OnCheckDiffere(None)
         self.MAJinfos() 
 ##        self.ctrl_ventilation.MAJ() 
         
         if self.IDreglement == None :
             self.OnChoixMode(None)
-            # Importe les dernières valeurs
+            # Importe les derniÃ¨res valeurs
             self.ImportationDernierReglement() 
 
         # Verrouillage
         self.Verrouillage()
         
-        # Paramètres
+        # ParamÃ¨tres
         self.ctrl_ventilation.ctrl_ventilation.bloquer_ventilation = UTILS_Config.GetParametre("ventilation_bloquer", True)
         
         # Focus
@@ -729,30 +729,30 @@ class Dialog(wx.Dialog):
                 
 
     def __set_properties(self):
-        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Saisissez la date d'émission du règlement")))
-        self.ctrl_mode.SetToolTip(wx.ToolTip(_(u"Sélectionnez le mode de règlement")))
-        self.ctrl_emetteur.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'émetteur du règlement (banque ou organisme)")))
-        self.ctrl_numero.SetToolTip(wx.ToolTip(_(u"Saisissez le numéro de la pièce")))
+        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Saisissez la date d'Ã©mission du rÃ¨glement")))
+        self.ctrl_mode.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le mode de rÃ¨glement")))
+        self.ctrl_emetteur.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez l'Ã©metteur du rÃ¨glement (banque ou organisme)")))
+        self.ctrl_numero.SetToolTip(wx.ToolTip(_(u"Saisissez le numÃ©ro de la piÃ¨ce")))
         self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez un montant en %s") % SYMBOLE))
-        self.bouton_calendrier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner la date dans un calendrier")))
-        self.bouton_mode.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter, modifier ou supprimer un mode de règlement")))
-        self.bouton_emetteur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter, modifier ou supprimer un émetteur de règlement")))
+        self.bouton_calendrier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner la date dans un calendrier")))
+        self.bouton_mode.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter, modifier ou supprimer un mode de rÃ¨glement")))
+        self.bouton_emetteur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter, modifier ou supprimer un Ã©metteur de rÃ¨glement")))
         self.ctrl_attente.SetToolTip(wx.ToolTip(_(u"Cochez cette case si vous souhaitez laisser l'encaissement en attente")))
-        self.ctrl_compte.SetToolTip(wx.ToolTip(_(u"Sélectionner le compte bancaire sur lequel encaisser ce règlement")))
+        self.ctrl_compte.SetToolTip(wx.ToolTip(_(u"SÃ©lectionner le compte bancaire sur lequel encaisser ce rÃ¨glement")))
         self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez ici les observations de votre choix")))
-        self.ctrl_quittancier.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numéro de quittancier si vous en utilisez un")))
-        self.ctrl_recu.SetToolTip(wx.ToolTip(_(u"Cochez cette case si vous souhaitez éditer un reçu pour ce règlement juste après la validation de celui-ci")))
+        self.ctrl_quittancier.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numÃ©ro de quittancier si vous en utilisez un")))
+        self.ctrl_recu.SetToolTip(wx.ToolTip(_(u"Cochez cette case si vous souhaitez Ã©diter un reÃ§u pour ce rÃ¨glement juste aprÃ¨s la validation de celui-ci")))
         self.bouton_ajouter_payeur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un payeur")))
-        self.bouton_modifier_payeur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le payeur sélectionné")))
-        self.bouton_supprimer_payeur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le payeur sélectionné")))
-        self.ctrl_check_differe.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour préciser une date d'encaissement ultérieure")))
-        self.bouton_calendrier_differe.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner une date d'encaissement différé dans un calendrier")))
-        self.bouton_options.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux options")))
+        self.bouton_modifier_payeur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le payeur sÃ©lectionnÃ©")))
+        self.bouton_supprimer_payeur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le payeur sÃ©lectionnÃ©")))
+        self.ctrl_check_differe.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour prÃ©ciser une date d'encaissement ultÃ©rieure")))
+        self.bouton_calendrier_differe.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner une date d'encaissement diffÃ©rÃ© dans un calendrier")))
+        self.bouton_options.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der aux options")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_calculatrice.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la calculatrice installée par défaut sur votre ordinateur")))
+        self.bouton_calculatrice.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la calculatrice installÃ©e par dÃ©faut sur votre ordinateur")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
-        self.ctrl_differe.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date d'encaissement souhaitée")))
+        self.ctrl_differe.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date d'encaissement souhaitÃ©e")))
         self.ctrl_mode.SetMinSize((200, -1))
         self.ctrl_montant.SetMinSize((-1, 30))
         self.ctrl_compte.SetMinSize((200, 21))
@@ -777,7 +777,7 @@ class Dialog(wx.Dialog):
         staticbox_infos.Add(grid_sizer_infos, 1, wx.ALL|wx.EXPAND, 0)
         grid_sizer_haut.Add(staticbox_infos, 1, wx.EXPAND, 0)
         
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         staticbox_generalites = wx.StaticBoxSizer(self.staticbox_generalites_staticbox, wx.VERTICAL)
         grid_sizer_generalites = wx.FlexGridSizer(rows=6, cols=2, vgap=5, hgap=5)
         grid_sizer_generalites.Add(self.label_date, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -804,7 +804,7 @@ class Dialog(wx.Dialog):
         grid_sizer_emetteur.AddGrowableCol(0)
         grid_sizer_generalites.Add(grid_sizer_emetteur, 1, wx.EXPAND, 0)
         
-        # Numéro
+        # NumÃ©ro
         grid_sizer_generalites.Add(self.label_numero, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_generalites.Add(self.ctrl_numero, 0, 0, 0)
         
@@ -898,7 +898,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base.AddGrowableCol(0)
         self.Layout()
         
-        # Détermine la taille de la fenêtre
+        # DÃ©termine la taille de la fenÃªtre
         taille_fenetre = UTILS_Config.GetParametre("taille_fenetre_reglement")
         if taille_fenetre == None :
             self.SetSize((840, 700))
@@ -914,11 +914,11 @@ class Dialog(wx.Dialog):
     def Verrouillage(self):
         verrou = False
 
-        # Verrou si période de gestion verrouillée
+        # Verrou si pÃ©riode de gestion verrouillÃ©e
         if self.IDreglement != None and self.gestion.Verification("reglements", self.ctrl_date.GetDate()) == False:
             verrou = True
 
-        # Verrou si règlement dans dépôt
+        # Verrou si rÃ¨glement dans dÃ©pÃ´t
         if self.IDdepot != None :
             verrou = True
 
@@ -944,15 +944,15 @@ class Dialog(wx.Dialog):
     
     def MAJinfos(self):
         texte = u""
-        # IDrèglement
+        # IDrÃ¨glement
         if self.IDreglement != None :
-            texte += _(u"Règlement n°%d<BR>") % self.IDreglement
+            texte += _(u"RÃ¨glement nÂ°%d<BR>") % self.IDreglement
         else:
             DB = GestionDB.DB()
             prochainID = DB.GetProchainID("reglements")
             DB.Close()
             if prochainID != None :
-                texte += _(u"Règlement n°%d<BR>") % prochainID
+                texte += _(u"RÃ¨glement nÂ°%d<BR>") % prochainID
         # Date saisie
         texte += _(u"Saisi le %s<BR>") % DateEngFr(str(self.date_saisie))
         # Nom Utilisateur
@@ -961,20 +961,20 @@ class Dialog(wx.Dialog):
             if dictUtilisateur != None :
                 nomUtilisateur = u"%s %s" % (dictUtilisateur["nom"], dictUtilisateur["prenom"])
             else:
-                nomUtilisateur = u"n°%d" % self.IDutilisateur
+                nomUtilisateur = u"nÂ°%d" % self.IDutilisateur
         else:
             nomUtilisateur = _(u"Utilisateur inconnu")
         texte += _(u"Par l'utilisateur %s<BR>") % nomUtilisateur
         # Compte payeur
-        texte += _(u"Compte payeur n°%d<BR>") % self.IDcompte_payeur
-        # Dépôt
+        texte += _(u"Compte payeur nÂ°%d<BR>") % self.IDcompte_payeur
+        # DÃ©pÃ´t
         if self.IDdepot != None :
-            texte += _(u"Dépôt n°%d<BR>") % self.IDdepot
+            texte += _(u"DÃ©pÃ´t nÂ°%d<BR>") % self.IDdepot
         else :
-            texte += _(u"Non déposé<BR>")
-        # Dernier reçu
+            texte += _(u"Non dÃ©posÃ©<BR>")
+        # Dernier reÃ§u
         if self.dernierRecu == None :
-            texte += _(u"Aucun reçu édité<BR>")
+            texte += _(u"Aucun reÃ§u Ã©ditÃ©<BR>")
         else :
             numero = self.dernierRecu["numero"]
             date_edition = DateEngFr(str(self.dernierRecu["date_edition"]))
@@ -983,13 +983,13 @@ class Dialog(wx.Dialog):
                 if dictUtilisateur != None :
                     nomUtilisateur = u"%s %s" % (dictUtilisateur["nom"], dictUtilisateur["prenom"])
                 else:
-                    nomUtilisateur = u"n°%d" % self.IDutilisateur
+                    nomUtilisateur = u"nÂ°%d" % self.IDutilisateur
             else:
                 nomUtilisateur = _(u"Utilisateur inconnu")
-            texte += _(u"Reçu n°%s édité le %s par %s<BR>") % (numero, date_edition, nomUtilisateur)
-        # Avis de dépôt
+            texte += _(u"ReÃ§u nÂ°%s Ã©ditÃ© le %s par %s<BR>") % (numero, date_edition, nomUtilisateur)
+        # Avis de dÃ©pÃ´t
         if self.avis_depot != None :
-            texte += _(u"Avis de dépôt envoyé par Email le %s<BR>") % DateEngFr(str(self.avis_depot))
+            texte += _(u"Avis de dÃ©pÃ´t envoyÃ© par Email le %s<BR>") % DateEngFr(str(self.avis_depot))
             
         self.ctrl_infos.SetLabel(texte)
 
@@ -1057,18 +1057,18 @@ class Dialog(wx.Dialog):
         event.Skip()
         
     def FormateNumPiece(self):
-        """ Formate le numéro de pièce en fonction du paramétrage du mode de règlement """
+        """ Formate le numÃ©ro de piÃ¨ce en fonction du paramÃ©trage du mode de rÃ¨glement """
         dictInfosMode = self.ctrl_mode.GetInfosMode()
         if dictInfosMode == None : return
         numero_piece = dictInfosMode["numero_piece"]
         nbre_chiffres = dictInfosMode["nbre_chiffres"]
-        # Si aucun numéro de pièce
+        # Si aucun numÃ©ro de piÃ¨ce
         if numero_piece == None : 
             self.ctrl_numero.Enable(False)
-        # Si alphanumérique :
+        # Si alphanumÃ©rique :
         if numero_piece == "ALPHA" :
             self.ctrl_numero.Enable(True)
-        # Si numérique
+        # Si numÃ©rique
         if numero_piece == "NUM" :
             self.ctrl_numero.Enable(True)
             if nbre_chiffres != None:
@@ -1079,7 +1079,7 @@ class Dialog(wx.Dialog):
                     pass
 
     def SetFraisGestion(self):
-        # Récupération des infos par défaut du règlement
+        # RÃ©cupÃ©ration des infos par dÃ©faut du rÃ¨glement
         dictInfosMode = self.ctrl_mode.GetInfosMode()
         if dictInfosMode == None : return
         dictFrais = {  
@@ -1125,12 +1125,12 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Rglements1")
 
     def OnBoutonOptions(self, event):
-        # Création du menu Options
+        # CrÃ©ation du menu Options
         menuPop = UTILS_Adaptations.Menu()
 
         ID_OPTION_BLOQUER_VENTILATION = wx.Window.NewControlId()
 
-        item = wx.MenuItem(menuPop, ID_OPTION_BLOQUER_VENTILATION, _(u"Bloquer la ventilation lorsque le crédit est épuisé"), _(u"Bloquer la ventilation lorsque le crédit est épuisé"), wx.ITEM_CHECK)
+        item = wx.MenuItem(menuPop, ID_OPTION_BLOQUER_VENTILATION, _(u"Bloquer la ventilation lorsque le crÃ©dit est Ã©puisÃ©"), _(u"Bloquer la ventilation lorsque le crÃ©dit est Ã©puisÃ©"), wx.ITEM_CHECK)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.On_option_bloquer_ventilation, id=ID_OPTION_BLOQUER_VENTILATION)
         if self.ctrl_ventilation.ctrl_ventilation.bloquer_ventilation == True : item.Check(True)
@@ -1145,12 +1145,12 @@ class Dialog(wx.Dialog):
         FonctionsPerso.OuvrirCalculatrice() 
         
     def OnBoutonOk(self, event): 
-        # Sauvegarde des données
+        # Sauvegarde des donnÃ©es
         valide = self.Sauvegarde()
         if valide == False :
             return
         
-        # Recherche si la famille est abonnée à l'envoi du reçu par Email
+        # Recherche si la famille est abonnÃ©e Ã  l'envoi du reÃ§u par Email
         email_envoye = False
         DB = GestionDB.DB()
         req = """SELECT familles.IDfamille, email_recus 
@@ -1164,7 +1164,7 @@ class Dialog(wx.Dialog):
         if email_recus != None and self.nouveauReglement == True :
 
             icone = wx.Bitmap(Chemins.GetStaticPath(u"Images/32x32/Emails_exp.png"), wx.BITMAP_TYPE_ANY)
-            dlg = DLG_Messagebox.Dialog(self, titre=_(u"Envoi du reçu par Email"), introduction=_(u"Cette famille est abonnée au service d'envoi automatique des reçus de règlements par Email."), conclusion=_(u"Confirmez-vous l'envoi du reçu maintenant ?"), icone=icone, boutons=[_(u"Envoyer"), _(u"Accéder aux paramètres d'envoi"), _(u"Ne pas envoyer")])
+            dlg = DLG_Messagebox.Dialog(self, titre=_(u"Envoi du reÃ§u par Email"), introduction=_(u"Cette famille est abonnÃ©e au service d'envoi automatique des reÃ§us de rÃ¨glements par Email."), conclusion=_(u"Confirmez-vous l'envoi du reÃ§u maintenant ?"), icone=icone, boutons=[_(u"Envoyer"), _(u"AccÃ©der aux paramÃ¨tres d'envoi"), _(u"Ne pas envoyer")])
             reponse = dlg.ShowModal()
             dlg.Destroy()
 
@@ -1192,7 +1192,7 @@ class Dialog(wx.Dialog):
                         pass
                 
                 if adresse == None :
-                    dlg = wx.MessageDialog(self, _(u"L'adresse Email enregistrée ne semble pas valide. Renseignez une nouvelle adresse valide pour cette famille..."), _(u"Erreur d'adresse Email"), wx.OK | wx.ICON_ERROR)
+                    dlg = wx.MessageDialog(self, _(u"L'adresse Email enregistrÃ©e ne semble pas valide. Renseignez une nouvelle adresse valide pour cette famille..."), _(u"Erreur d'adresse Email"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
                     #return False
@@ -1205,7 +1205,7 @@ class Dialog(wx.Dialog):
                     dlg1.listeAdresses = [adresse,]
                     
                     if reponse == 1 :
-                        # Accès aux paramètres
+                        # AccÃ¨s aux paramÃ¨tres
                         dlg1.ShowModal() 
                         dlg1.Destroy() 
                     
@@ -1237,15 +1237,15 @@ class Dialog(wx.Dialog):
                         except :
                             pass
                         
-                        # Mémorisation de l'édition du reçu
+                        # MÃ©morisation de l'Ã©dition du reÃ§u
                         if succes == True :
                             dlg1.Sauvegarder(demander=False)
                         dlg1.Destroy() 
 
-        # Mémorisation du paramètre de la taille d'écran
+        # MÃ©morisation du paramÃ¨tre de la taille d'Ã©cran
         UTILS_Config.SetParametre("ventilation_bloquer", self.ctrl_ventilation.ctrl_ventilation.bloquer_ventilation)
 
-        # Edition d'un reçu
+        # Edition d'un reÃ§u
         if self.ctrl_recu.GetValue() == True and email_envoye == False :
             from Dlg import DLG_Impression_recu
             dlg = DLG_Impression_recu.Dialog(self, IDreglement=self.IDreglement) 
@@ -1278,7 +1278,7 @@ class Dialog(wx.Dialog):
         
         IDcompte_payeur, date, IDmode, IDemetteur, numero_piece, montant, IDpayeur, observations, numero_quittancier, IDprestation_frais, IDcompte, date_differe, encaissement_attente, IDdepot, date_saisie, IDutilisateur, avis_depot = listeDonnees[0]
         
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         self.ctrl_date.SetDate(date)
         self.ctrl_mode.SetID(IDmode)
         self.OnChoixMode(None)
@@ -1345,19 +1345,19 @@ class Dialog(wx.Dialog):
         # Date
         date = self.ctrl_date.GetDate()
         if date == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date d'émission du règlement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date d'Ã©mission du rÃ¨glement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date.SetFocus()
             return False
 
-        # Vérifie que le règlement n'est pas dans une période de gestion
+        # VÃ©rifie que le rÃ¨glement n'est pas dans une pÃ©riode de gestion
         if self.gestion.Verification("reglements", date) == False: return False
 
         # Mode
         IDmode = self.ctrl_mode.GetID()
         if IDmode == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un mode de règlement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un mode de rÃ¨glement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_mode.SetFocus()
@@ -1366,17 +1366,17 @@ class Dialog(wx.Dialog):
         # Emetteur
         IDemetteur = self.ctrl_emetteur.GetID()
         if self.ctrl_emetteur.IsEnabled() and IDemetteur == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un émetteur !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un Ã©metteur !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_emetteur.SetFocus()
             return False
         
-        # Numéro de pièce
+        # NumÃ©ro de piÃ¨ce
         numero_piece = self.ctrl_numero.GetValue()
         if self.ctrl_numero.IsEnabled() :
             if numero_piece == "" :
-                dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas vouloir saisir de numéro de pièce ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+                dlg = wx.MessageDialog(self, _(u"Etes-vous sÃ»r de ne pas vouloir saisir de numÃ©ro de piÃ¨ce ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
                 reponse = dlg.ShowModal()
                 dlg.Destroy()
                 if reponse !=  wx.ID_YES :
@@ -1394,7 +1394,7 @@ class Dialog(wx.Dialog):
             return False
 
         if montant == 0.0 :
-            dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de vouloir conserver un montant nul ?"), _(u"Confirmation"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Etes-vous sÃ»r de vouloir conserver un montant nul ?"), _(u"Confirmation"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES:
@@ -1403,7 +1403,7 @@ class Dialog(wx.Dialog):
         # Payeur
         IDpayeur = self.ctrl_payeur.GetID() 
         if IDpayeur == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un payeur dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un payeur dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_payeur.SetFocus()
@@ -1416,18 +1416,18 @@ class Dialog(wx.Dialog):
         # Compte d'encaissement
         IDcompte = self.ctrl_compte.GetID()
         if IDcompte == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un compte bancaire dans la liste ! S'il n'y en aucun, vous devez en paramétrer un à partir du menu Paramétrage de la fenêtre d'accueil..."), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un compte bancaire dans la liste ! S'il n'y en aucun, vous devez en paramÃ©trer un Ã  partir du menu ParamÃ©trage de la fenÃªtre d'accueil..."), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_compte.SetFocus()
             return False
         
-        # Encaissement différé
+        # Encaissement diffÃ©rÃ©
         date_differe = None
         if self.ctrl_check_differe.GetValue() == True :
             date_differe = self.ctrl_differe.GetDate()
             if date_differe == None :
-                dlg = wx.MessageDialog(self, _(u"La date d'encaissement différé n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La date d'encaissement diffÃ©rÃ© n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_differe.SetFocus()
@@ -1448,7 +1448,7 @@ class Dialog(wx.Dialog):
         # Utilisateur
         IDutilisateur = self.IDutilisateur
         
-        # Récupère IDfamille
+        # RÃ©cupÃ¨re IDfamille
         DB = GestionDB.DB()
         req = """SELECT IDfamille
         FROM comptes_payeurs
@@ -1457,17 +1457,17 @@ class Dialog(wx.Dialog):
         DB.ExecuterReq(req)
         IDfamille = DB.ResultatReq()[0][0]
 
-        # Récupère des frais de gestion
+        # RÃ©cupÃ¨re des frais de gestion
         donneesFrais = self.hyperlien_frais.GetDonnees() 
         if donneesFrais[0] != None and donneesFrais[0] != 0.0 :
-            dlg = wx.MessageDialog(self, _(u"Confirmez-vous pour ce règlement la facturation de frais de gestion d'un montant de %.2f %s ?") % (donneesFrais[0], SYMBOLE), _(u"Avertissement"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Confirmez-vous pour ce rÃ¨glement la facturation de frais de gestion d'un montant de %.2f %s ?") % (donneesFrais[0], SYMBOLE), _(u"Avertissement"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
                 DB.Close()
                 return False
 
-        # --- Sauvegarde du règlement ---
+        # --- Sauvegarde du rÃ¨glement ---
         listeDonnees = [    
                 ("IDcompte_payeur", self.IDcompte_payeur),
                 ("date", date),
@@ -1523,7 +1523,7 @@ class Dialog(wx.Dialog):
         
         DB.Close() 
         
-        # --- Mémorise l'action dans l'historique ---
+        # --- MÃ©morise l'action dans l'historique ---
         if self.nouveauReglement == True :
             IDcategorie = 6
             categorie = "Saisie"
@@ -1536,7 +1536,7 @@ class Dialog(wx.Dialog):
         else:
             texteEmetteur = u""
         if self.ctrl_numero.GetValue() != "" :
-            texteNumpiece = u" n°%s" % self.ctrl_numero.GetValue()
+            texteNumpiece = u" nÂ°%s" % self.ctrl_numero.GetValue()
         else:
             texteNumpiece = u""
         if texteEmetteur == "" and texteNumpiece == "" :
@@ -1548,7 +1548,7 @@ class Dialog(wx.Dialog):
         UTILS_Historique.InsertActions([{
             "IDfamille" : IDfamille,
             "IDcategorie" : IDcategorie, 
-            "action" : _(u"%s du règlement ID%d : %s en %s %spayé par %s") % (categorie, self.IDreglement, montant, texteMode, texteDetail, textePayeur),
+            "action" : _(u"%s du rÃ¨glement ID%d : %s en %s %spayÃ© par %s") % (categorie, self.IDreglement, montant, texteMode, texteDetail, textePayeur),
             },])
         
         return True
@@ -1558,7 +1558,7 @@ class Dialog(wx.Dialog):
         event.Skip() 
         
     def MemoriseTailleFenetre(self):
-        # Mémorisation du paramètre de la taille d'écran
+        # MÃ©morisation du paramÃ¨tre de la taille d'Ã©cran
         if self.IsMaximized() == True :
             taille_fenetre = (0, 0)
         else:

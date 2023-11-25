@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -20,7 +20,7 @@ def Parser_voie(texte=""):
     if not texte:
         return {}
     texte = texte.replace(",", "")
-    types_voies = [u"rue", u"avenue", u"boulevard", u"bd", u"bvd", u"lieu dit", u"lieu-dit", u"route", u"clos", u"ldt", u"square", u"impasse", u"cours", u"esplanade", u"allée", u"résidence", u"chemin", u"place", u"cité", u"hameau", u"coteau"]
+    types_voies = [u"rue", u"avenue", u"boulevard", u"bd", u"bvd", u"lieu dit", u"lieu-dit", u"route", u"clos", u"ldt", u"square", u"impasse", u"cours", u"esplanade", u"allÃ©e", u"rÃ©sidence", u"chemin", u"place", u"citÃ©", u"hameau", u"coteau"]
     liste_types_voies = []
     for type_voie in types_voies:
         liste_types_voies.extend([u"%s des" % type_voie, u"%s de la" % type_voie, u"%s de" % type_voie, u"%s du" % type_voie, type_voie])
@@ -39,7 +39,7 @@ def Parser_voie(texte=""):
 
 
 def Supprime_accent(texte):
-    liste = [ (u"é", u"e"), (u"è", u"e"), (u"ê", u"e"), (u"ë", u"e"), (u"à", u"a"), (u"û", u"u"), (u"ô", u"o"), (u"ç", u"c"), (u"î", u"i"), (u"ï", u"i"),]
+    liste = [ (u"Ã©", u"e"), (u"Ã¨", u"e"), (u"Ãª", u"e"), (u"Ã«", u"e"), (u"Ã ", u"a"), (u"Ã»", u"u"), (u"Ã´", u"o"), (u"Ã§", u"c"), (u"Ã®", u"i"), (u"Ã¯", u"i"),]
     for a, b in liste :
         texte = texte.replace(a, b)
         texte = texte.replace(a.upper(), b.upper())

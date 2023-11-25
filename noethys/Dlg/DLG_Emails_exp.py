@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-19 Ivan LUCAS
@@ -24,8 +24,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, name="DLG_Emails_exp", style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER | wx.MAXIMIZE_BOX | wx.MINIMIZE_BOX)
         self.parent = parent
 
-        intro = _(u"Vous pouvez ici créer, modifier ou supprimer les adresses d'expéditions d'Emails. Celles-ci sont obligatoires pour pouvoir envoyer des Emails à partir du système de messagerie intégré à Noethys.")
-        titre = _(u"Gestion des adresses d'expédition d'Emails")
+        intro = _(u"Vous pouvez ici crÃ©er, modifier ou supprimer les adresses d'expÃ©ditions d'Emails. Celles-ci sont obligatoires pour pouvoir envoyer des Emails Ã  partir du systÃ¨me de messagerie intÃ©grÃ© Ã  Noethys.")
+        titre = _(u"Gestion des adresses d'expÃ©dition d'Emails")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Emails_exp.png")
 
@@ -52,9 +52,9 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une adresse")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'adresse sélectionnée dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'adresse sélectionnée dans la iste")))
-        self.bouton_defaut.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour définir l'adresse sélectionnée comme celle par défaut")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'adresse sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'adresse sÃ©lectionnÃ©e dans la iste")))
+        self.bouton_defaut.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dÃ©finir l'adresse sÃ©lectionnÃ©e comme celle par dÃ©faut")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((750, 500))

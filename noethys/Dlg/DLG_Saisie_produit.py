@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -36,7 +36,7 @@ class CTRL_Categorie(wx.Choice):
         self.SetItems(listeItems)
 
     def GetListeDonnees(self):
-        # Importation des catégories
+        # Importation des catÃ©gories
         DB = GestionDB.DB()
         req = """SELECT IDcategorie, nom
         FROM produits_categories
@@ -90,7 +90,7 @@ class CTRL_Parametres(wx.Notebook):
             self.dictImages[dictPage["code"]] = il.Add(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s" % dictPage["image"]), wx.BITMAP_TYPE_PNG))
         self.AssignImageList(il)
 
-        # Création des pages
+        # CrÃ©ation des pages
         self.dictPages = {}
         index = 0
         for dictPage in self.listePages:
@@ -112,7 +112,7 @@ class CTRL_Parametres(wx.Notebook):
             index += 1
 
     def OnPageChanged(self, event):
-        """ Quand une page du notebook est sélectionnée """
+        """ Quand une page du notebook est sÃ©lectionnÃ©e """
         if event.GetOldSelection() == -1: return
         indexPage = event.GetSelection()
         page = self.GetPage(indexPage)
@@ -171,9 +171,9 @@ class Page_Stock(wx.Panel):
         self.parent = parent
         self.IDproduit = IDproduit
 
-        self.label_quantite = wx.StaticText(self, -1, _(u"Quantité fixe :"))
+        self.label_quantite = wx.StaticText(self, -1, _(u"QuantitÃ© fixe :"))
         self.ctrl_quantite = wx.SpinCtrl(self, -1, min=0, max=99999)
-        self.ctrl_quantite.SetToolTip(wx.ToolTip(_(u"Saisissez une quantité")))
+        self.ctrl_quantite.SetToolTip(wx.ToolTip(_(u"Saisissez une quantitÃ©")))
         self.ctrl_quantite.SetValue(1)
 
         self.label_partage = wx.StaticText(self, -1, _(u"Autoriser partage :"))
@@ -221,8 +221,8 @@ class Page_Tarification(wx.Panel):
         self.label_montant = wx.StaticText(self, -1, _(u"Montant fixe :"))
         self.ctrl_montant = CTRL_Saisie_euros.CTRL(self)
 
-        # Tarification avancée
-        self.radio_tarification_tarif = wx.RadioButton(self, -1, _(u"Tarification avancée :"))
+        # Tarification avancÃ©e
+        self.radio_tarification_tarif = wx.RadioButton(self, -1, _(u"Tarification avancÃ©e :"))
         self.ctrl_tarifs = OL_Produits_tarifs.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_tarifs.SetMinSize((50, 50))
         self.ctrl_tarifs.MAJ()
@@ -232,13 +232,13 @@ class Page_Tarification(wx.Panel):
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
 
         # Properties
-        self.radio_tarification_aucune.SetToolTip(wx.ToolTip(_(u"Aucune tarification spécifique pour ce produit")))
-        self.radio_tarification_montant.SetToolTip(wx.ToolTip(_(u"Un montant fixe est associé à ce produit")))
-        self.radio_tarification_tarif.SetToolTip(wx.ToolTip(_(u"Un ou plusieurs tarifs avancés sont associés à ce produit")))
+        self.radio_tarification_aucune.SetToolTip(wx.ToolTip(_(u"Aucune tarification spÃ©cifique pour ce produit")))
+        self.radio_tarification_montant.SetToolTip(wx.ToolTip(_(u"Un montant fixe est associÃ© Ã  ce produit")))
+        self.radio_tarification_tarif.SetToolTip(wx.ToolTip(_(u"Un ou plusieurs tarifs avancÃ©s sont associÃ©s Ã  ce produit")))
         self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez un montant fixe pour ce produit")))
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un tarif")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le tarif sélectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le tarif sélectionné dans la liste")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le tarif sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le tarif sÃ©lectionnÃ© dans la liste")))
 
         # Bind
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioTarification, self.radio_tarification_aucune)
@@ -264,7 +264,7 @@ class Page_Tarification(wx.Panel):
         grid_sizer_tarification_simple.Add(self.ctrl_montant, 0, 0, 0)
         grid_sizer_base.Add(grid_sizer_tarification_simple, 0, 0, 0)
 
-        # Tarification avancée
+        # Tarification avancÃ©e
         grid_sizer_base.Add(self.radio_tarification_tarif, 0, 0, 0)
 
         grid_sizer_tarification_avancee = wx.FlexGridSizer(rows=1, cols=3, vgap=5, hgap=5)
@@ -303,7 +303,7 @@ class Page_Tarification(wx.Panel):
         if self.radio_tarification_montant.GetValue() == True :
             montant = self.ctrl_montant.GetMontant()
 
-        # Tarification avancée
+        # Tarification avancÃ©e
         liste_tarifs = []
         if self.radio_tarification_tarif.GetValue() == True :
             liste_tarifs = self.ctrl_tarifs.GetTracksTarifs()
@@ -350,11 +350,11 @@ class Dialog(wx.Dialog):
         else :
             self.SetTitle(_(u"Modification d'un produit"))
 
-        # Généralités
-        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralités"))
+        # GÃ©nÃ©ralitÃ©s
+        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"GÃ©nÃ©ralitÃ©s"))
         self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
-        self.label_categorie = wx.StaticText(self, -1, _(u"Catégorie :"))
+        self.label_categorie = wx.StaticText(self, -1, _(u"CatÃ©gorie :"))
         self.ctrl_categorie = CTRL_Categorie(self)
         self.bouton_categories = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
         self.label_observations = wx.StaticText(self, -1, _(u"Notes :"))
@@ -367,7 +367,7 @@ class Dialog(wx.Dialog):
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_visualiser = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Loupe.png"), wx.BITMAP_TYPE_ANY))
 
-        # Paramètres
+        # ParamÃ¨tres
         self.ctrl_parametres = CTRL_Parametres(self, self.IDproduit)
         self.ctrl_parametres.SetMinSize((650, 270))
 
@@ -397,13 +397,13 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom du produit")))
-        self.ctrl_categorie.SetToolTip(wx.ToolTip(_(u"Sélectionnez la catégorie associée au produit")))
-        self.bouton_categories.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des catégories de produits")))
-        self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez ici des observations éventuelles")))
+        self.ctrl_categorie.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez la catÃ©gorie associÃ©e au produit")))
+        self.bouton_categories.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la gestion des catÃ©gories de produits")))
+        self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez ici des observations Ã©ventuelles")))
         self.ctrl_logo.SetToolTip(wx.ToolTip(_(u"Image du produit")))
         self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter ou modifier l'image")))
         self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'image actuelle")))
-        self.bouton_visualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour visualiser l'image actuelle en taille réelle")))
+        self.bouton_visualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour visualiser l'image actuelle en taille rÃ©elle")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider la saisie")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
@@ -413,7 +413,7 @@ class Dialog(wx.Dialog):
 
         grid_sizer_haut = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
 
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         staticbox_generalites = wx.StaticBoxSizer(self.staticbox_generalites_staticbox, wx.VERTICAL)
         grid_sizer_generalites = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=10)
         grid_sizer_generalites.Add(self.label_nom, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -451,7 +451,7 @@ class Dialog(wx.Dialog):
         grid_sizer_haut.AddGrowableRow(0)
         grid_sizer_base.Add(grid_sizer_haut, 1, wx.TOP|wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
 
-        # Paramètres
+        # ParamÃ¨tres
         grid_sizer_base.Add(self.ctrl_parametres, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
 
         # Boutons
@@ -497,7 +497,7 @@ class Dialog(wx.Dialog):
             return
 
         if IDcategorie == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une catégorie pour ce produit !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une catÃ©gorie pour ce produit !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_categorie.SetFocus()
@@ -507,7 +507,7 @@ class Dialog(wx.Dialog):
         if self.ctrl_parametres.Validation() == False :
             return
 
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         dictParametres = self.ctrl_parametres.GetDonnees()
 
         # Sauvegarde
@@ -540,7 +540,7 @@ class Dialog(wx.Dialog):
         # Sauvegarde des tarifs
         tarifs = dictParametres["tarifs"]
 
-        # Récupération du prochain IDtarif
+        # RÃ©cupÃ©ration du prochain IDtarif
         prochainIDtarif = DB.GetProchainID("tarifs")
 
         # Pour contrer bug sur table tarifs_lignes
@@ -630,7 +630,7 @@ class Dialog(wx.Dialog):
                     listeDonnees.append(listeTemp)
                 DB.Executermany("UPDATE %s SET %s WHERE %s=?" % (track.nom_table, track.Get_interrogations_et_variables_pour_db(), track.champ_cle), listeDonnees, commit=False)
 
-        # Recherche les suppressions à effectuer
+        # Recherche les suppressions Ã  effectuer
         for nom_table, dictTemp in dict_suppressions.items():
             liste_suppressions = []
             for ID in self.dict_donnees_initiales[nom_table]:
@@ -648,14 +648,14 @@ class Dialog(wx.Dialog):
 
         DB.Close()
 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def GetIDproduit(self):
         return self.IDproduit
 
     def Importation(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         DB = GestionDB.DB()
         req = """SELECT nom, observations, image, IDcategorie, quantite, montant, activation_partage
         FROM produits WHERE IDproduit=%d;""" % self.IDproduit
@@ -666,7 +666,7 @@ class Dialog(wx.Dialog):
             return
         nom, observations, image, IDcategorie, quantite, montant, activation_partage = listeDonnees[0]
 
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         self.ctrl_nom.SetValue(nom)
         self.ctrl_categorie.SetID(IDcategorie)
         self.ctrl_observations.SetValue(observations)
@@ -720,16 +720,16 @@ class Dialog(wx.Dialog):
             dictLignes[dictLigne["IDtarif"]].append(dictLigne)
             self.dict_donnees_initiales["tarifs_lignes"].append(dictLigne["IDligne"])
 
-        # Mémorisation des tarifs
+        # MÃ©morisation des tarifs
         for IDtarif, IDactivite, date_debut, date_fin, methode, type, categories_tarifs, groupes, etiquettes, cotisations, caisses, description, jours_scolaires, jours_vacances, observations, tva, code_compta, IDtype_quotient, label_prestation, IDproduit in listeDonneesTarifs:
 
-            # Récupération des filtres du tarif
+            # RÃ©cupÃ©ration des filtres du tarif
             if IDtarif in dictFiltres:
                 liste_filtres = dictFiltres[IDtarif]
             else:
                 liste_filtres = []
 
-            # Récupération des lignes du tarif
+            # RÃ©cupÃ©ration des lignes du tarif
             if IDtarif in dictLignes:
                 liste_lignes = dictLignes[IDtarif]
             else:
@@ -747,7 +747,7 @@ class Dialog(wx.Dialog):
 
         DB.Close()
 
-        # Paramètres
+        # ParamÃ¨tres
         dictDonnees = {"quantite" : quantite, "partage": activation_partage, "montant" : montant, "tarifs" : liste_tarifs}
         self.ctrl_parametres.SetDonnees(dictDonnees)
 

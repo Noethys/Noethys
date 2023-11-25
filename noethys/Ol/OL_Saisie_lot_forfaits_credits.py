@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -21,7 +21,7 @@ from Utils import UTILS_Dates
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 from Utils import UTILS_Titulaires
 from Utils import UTILS_Utilisateurs
@@ -55,7 +55,7 @@ class Track(object):
         # Prestations
         self.montant = donnees["montant"]
         
-        # Unités de conso
+        # UnitÃ©s de conso
         for IDunite, temp in parent.dictUnitesConso.items() :
             setattr(self, "unite%d" % IDunite, 0)
             
@@ -93,7 +93,7 @@ class ListView(FastObjectListView):
         if self.date_debut == None or self.date_fin == None :
             return listeListeView
         
-        # Récupération des données        
+        # RÃ©cupÃ©ration des donnÃ©es        
         DB = GestionDB.DB()
         
         # Liste des inscrits
@@ -141,12 +141,12 @@ class ListView(FastObjectListView):
         dictConso = {}
         for IDconso, IDindividu, IDfamille, IDcompte_payeur, date, IDunite, nomUnite, abregeUnite, ordreUnite in listeConso :
             
-            # Mémorisation de l'unité de conso
+            # MÃ©morisation de l'unitÃ© de conso
             if (IDunite in self.dictUnitesConso) == False :
                 self.dictUnitesConso[IDunite] = {"nom" : nomUnite, "abrege" : abregeUnite, "ordre" : ordreUnite, "quantite" : 0}
             self.dictUnitesConso[IDunite]["quantite"] += 1
                 
-            # Mémorisation de la conso
+            # MÃ©morisation de la conso
             key = (IDindividu, IDfamille)
             if (key in dictConso) == False :
                 dictConso[key] = {}
@@ -171,7 +171,7 @@ class ListView(FastObjectListView):
             else :
                 dictConsoIndividu = {}
             
-            # Mémorisation
+            # MÃ©morisation
             dictTemp = {
                 "IDindividu" : IDindividu, "nom" : nom, "prenom" : prenom, "IDfamille" : IDfamille, "IDcompte_payeur" : IDcompte_payeur,
                 "IDcategorie_tarif" : IDcategorie_tarif, "nomCategorieTarif" : nomCategorieTarif, "montant" : montant, "conso" : dictConsoIndividu,
@@ -206,20 +206,20 @@ class ListView(FastObjectListView):
         self.oddRowsBackColor = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
         self.evenRowsBackColor = "#FFFFFF" # Vert
         
-        # Paramètres ListView
+        # ParamÃ¨tres ListView
         self.useExpansionColumn = True
         
-        # Préparation des colonnes
+        # PrÃ©paration des colonnes
         listeColonnes = [
             ColumnDefn(u"", "left", 0, "IDindividu", typeDonnee="entier"),
             ColumnDefn(_(u""), "left", 20, "statut", typeDonnee="texte", imageGetter=GetImageStatut),
             ColumnDefn(_(u"Individu"), "left", 170, "nomCompletIndividu", typeDonnee="texte"),
             ColumnDefn(_(u"Famille"), "left", 250, "titulaires", typeDonnee="texte"),
-            ColumnDefn(_(u"Catégorie de tarif"), "left", 110, "nom_categorie_tarif", typeDonnee="texte"),
+            ColumnDefn(_(u"CatÃ©gorie de tarif"), "left", 110, "nom_categorie_tarif", typeDonnee="texte"),
             ColumnDefn(_(u"Montant"), "right", 80, "montant", typeDonnee="montant", stringConverter=FormateMontant),
             ]
         
-        # Ajout des colonnes unités de conso
+        # Ajout des colonnes unitÃ©s de conso
         listeUnites = []
         for IDunite, dictTemp in self.dictUnitesConso.items() :
             listeUnites.append((dictTemp["ordre"], dictTemp["nom"], dictTemp["abrege"], dictTemp["quantite"], IDunite))
@@ -268,7 +268,7 @@ class ListView(FastObjectListView):
         if len(self.Selection()) > 0 :
             ID = self.Selection()[0].IDfamille
         
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ouverture fiche famille
@@ -288,8 +288,8 @@ class ListView(FastObjectListView):
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheTout, id=70)
 
-        # Item Tout décocher
-        item = wx.MenuItem(menuPop, 80, _(u"Tout décocher"))
+        # Item Tout dÃ©cocher
+        item = wx.MenuItem(menuPop, 80, _(u"Tout dÃ©cocher"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Decocher.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -298,7 +298,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -368,7 +368,7 @@ class ListView(FastObjectListView):
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune fiche famille à ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune fiche famille Ã  ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

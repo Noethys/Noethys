@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -40,7 +40,7 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Vous pouvez ici consulter et imprimer la liste des comptes internet. Vous pouvez utiliser les fonctions Activer et Désactiver disponibles à droite de la liste pour modifier l'activation des comptes cochés.")
+        intro = _(u"Vous pouvez ici consulter et imprimer la liste des comptes internet. Vous pouvez utiliser les fonctions Activer et DÃ©sactiver disponibles Ã  droite de la liste pour modifier l'activation des comptes cochÃ©s.")
         titre = _(u"Liste des comptes internet")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Connecthys.png")
 
@@ -66,7 +66,7 @@ class Dialog(wx.Dialog):
 
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_email = CTRL_Bouton_image.CTRL(self, texte=_(u"Envoyer les codes internet par Email"), cheminImage="Images/32x32/Emails_exp.png")
-        self.bouton_reinit_passwords = CTRL_Bouton_image.CTRL(self, texte=_(u"Réinitialiser les mots de passe"), cheminImage="Images/32x32/Actualiser.png")
+        self.bouton_reinit_passwords = CTRL_Bouton_image.CTRL(self, texte=_(u"RÃ©initialiser les mots de passe"), cheminImage="Images/32x32/Actualiser.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
@@ -94,18 +94,18 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Liste des comptes internet"))
-        self.bouton_ouvrir_fiche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la fiche famille sélectionnée dans la liste")))
+        self.bouton_ouvrir_fiche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la fiche famille sÃ©lectionnÃ©e dans la liste")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu de la liste")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er un aperÃ§u de la liste")))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
         self.bouton_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Texte")))
         self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
-        self.bouton_actif.SetToolTip(wx.ToolTip(_(u"Cliquez ici activer les comptes cochés dans la liste")))
-        self.bouton_inactif.SetToolTip(wx.ToolTip(_(u"Cliquez ici désactiver les comptes cochés dans la liste")))
+        self.bouton_actif.SetToolTip(wx.ToolTip(_(u"Cliquez ici activer les comptes cochÃ©s dans la liste")))
+        self.bouton_inactif.SetToolTip(wx.ToolTip(_(u"Cliquez ici dÃ©sactiver les comptes cochÃ©s dans la liste")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer un email contenant des codes internet aux familles cochées")))
-        self.bouton_reinit_passwords.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour réinitialiser les mots de passe des familles cochées")))
+        self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer un email contenant des codes internet aux familles cochÃ©es")))
+        self.bouton_reinit_passwords.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rÃ©initialiser les mots de passe des familles cochÃ©es")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((850, 700))
 
@@ -200,10 +200,10 @@ class Dialog(wx.Dialog):
 
     def EnvoyerEmail(self, event):
         """ Envoi par Email des codes internet """
-        # Validation des données saisies
+        # Validation des donnÃ©es saisies
         tracks = self.ctrl_listview.GetTracksCoches()
         if len(tracks) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune famille dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune famille dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -222,7 +222,7 @@ class Dialog(wx.Dialog):
                 }
                 liste_donnees.append({"adresse" : adresse, "pieces" : [], "champs" : champs})
 
-        # Transfert des données vers DLG Mailer
+        # Transfert des donnÃ©es vers DLG Mailer
         from Dlg import DLG_Mailer
         dlg = DLG_Mailer.Dialog(self, categorie="portail")
         dlg.SetDonnees(liste_donnees, modificationAutorisee=False)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -41,8 +41,8 @@ class CTRL_Avertissement(wx.Panel):
 
         texte = _(u"""
             <FONT SIZE=-1>
-            Lorsque vous traduisez un texte, veillez à conserver le même formatage du texte : Notamment les caractères spéciaux, espaces et balises.
-            Leur suppression pourrait entraîner un dysfonctionnement du logiciel.
+            Lorsque vous traduisez un texte, veillez Ã  conserver le mÃªme formatage du texte : Notamment les caractÃ¨res spÃ©ciaux, espaces et balises.
+            Leur suppression pourrait entraÃ®ner un dysfonctionnement du logiciel.
             Exemples : %s %d %.2f \\n <para> <font>... 
             </FONT>
             """)
@@ -142,7 +142,7 @@ class Dialog(wx.Dialog):
         return self.ctrl_traduction.GetValue() 
         
     def OnBoutonOk(self, event): 
-        # Vérification de la traduction
+        # VÃ©rification de la traduction
         balises = [u"\n", u"%s", "%d", "%.2f", ]
         differences = []
         for balise in balises :
@@ -155,13 +155,13 @@ class Dialog(wx.Dialog):
                 differences.append(u"%s  -> %s" % (balise, detail))
                 
         if len(differences) > 0 :
-            dlg = DLG_Messagebox.Dialog(self, titre=_(u"Avertissement"), introduction=_(u"Attention, les éléments suivants du texte original n'apparaissent pas\ndans la traduction : "), detail="\n".join(differences), conclusion=_(u"Il est très fortement conseillé de les insérer dans la traduction !"), icone=wx.ICON_EXCLAMATION, boutons=[_(u"Valider quand même"), _(u"Annuler")])
+            dlg = DLG_Messagebox.Dialog(self, titre=_(u"Avertissement"), introduction=_(u"Attention, les Ã©lÃ©ments suivants du texte original n'apparaissent pas\ndans la traduction : "), detail="\n".join(differences), conclusion=_(u"Il est trÃ¨s fortement conseillÃ© de les insÃ©rer dans la traduction !"), icone=wx.ICON_EXCLAMATION, boutons=[_(u"Valider quand mÃªme"), _(u"Annuler")])
             reponse = dlg.ShowModal() 
             dlg.Destroy() 
             if reponse == 1 :
                 return False
             
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
         
         
@@ -171,7 +171,7 @@ class Dialog(wx.Dialog):
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    texte = u"Ceci est un texte\nmultiligne. Le %s est là ainsi que le %s..."
+    texte = u"Ceci est un texte\nmultiligne. Le %s est lÃ  ainsi que le %s..."
     dialog_1 = Dialog(None, texte=texte)
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()

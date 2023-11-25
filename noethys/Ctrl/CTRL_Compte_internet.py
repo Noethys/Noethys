@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -43,10 +43,10 @@ class CTRL(html.HtmlWindow):
 
     def MAJ(self):
         if self.dictDonnees["internet_actif"] == 1 :
-            activation = _(u"Compte internet activé")
+            activation = _(u"Compte internet activÃ©")
             image = "Ok4"
         else :
-            activation = _(u"Compte internet désactivé")
+            activation = _(u"Compte internet dÃ©sactivÃ©")
             image = "Interdit2"
         identifiant = self.dictDonnees["internet_identifiant"]
         if identifiant == None :
@@ -58,7 +58,7 @@ class CTRL(html.HtmlWindow):
             mdp = UTILS_Internet.DecrypteMDP(mdp)
 
         if mdp.startswith("custom"):
-            mdp = _(u"********<BR><FONT SIZE=1>(Mot de passe personnalisé)</FONT>")
+            mdp = _(u"********<BR><FONT SIZE=1>(Mot de passe personnalisÃ©)</FONT>")
         self.SetPage(u"""
         <FONT SIZE=2>
         <BR><BR>
@@ -93,7 +93,7 @@ class CTRL(html.HtmlWindow):
         dlg.Destroy()
 
     def Envoyer_pressepapiers(self, event):
-        # Mémorisation des codes dans le presse-papiers
+        # MÃ©morisation des codes dans le presse-papiers
         codes = _(u"Identifiant : %s / Mot de passe : %s") % (self.GetIdentifiant(), self.GetMdp())
         clipdata = wx.TextDataObject()
         clipdata.SetText(codes)
@@ -101,7 +101,7 @@ class CTRL(html.HtmlWindow):
         wx.TheClipboard.SetData(clipdata)
         wx.TheClipboard.Close()
 
-        dlg = wx.MessageDialog(self, _(u"Les codes ont été copiés dans le presse-papiers."), u"Presse-papiers", wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Les codes ont Ã©tÃ© copiÃ©s dans le presse-papiers."), u"Presse-papiers", wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 

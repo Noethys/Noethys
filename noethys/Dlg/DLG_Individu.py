@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -66,18 +66,18 @@ class Notebook(wx.Notebook):
         
         self.listePages = [
             ("informations", _(u"Informations"), u"DLG_Individu_informations.Panel(self, IDindividu=IDindividu, dictFamillesRattachees=dictFamillesRattachees)", "Information.png"),
-            ("identite", _(u"Identité"), u"DLG_Individu_identite.Panel_identite(self, IDindividu=IDindividu)", "Identite.png"),
+            ("identite", _(u"IdentitÃ©"), u"DLG_Individu_identite.Panel_identite(self, IDindividu=IDindividu)", "Identite.png"),
             ("liens", _(u"Liens"), u"DLG_Individu_liens.Panel_liens(self, IDindividu=IDindividu)", "Famille.png"),
             ("questionnaire", _(u"Questionnaire"), u"DLG_Individu_questionnaire.Panel(self, IDindividu=IDindividu)", "Questionnaire.png"),
-            ("coords", _(u"Coordonnées"), u"DLG_Individu_coords.Panel_coords(self, IDindividu=IDindividu)", "Maison.png"),
-            ("activites", _(u"Activités"), u"DLG_Individu_inscriptions.Panel(self, IDindividu=IDindividu, dictFamillesRattachees=dictFamillesRattachees)", "Activite.png"),
-            ("scolarite", _(u"Scolarité"), u"DLG_Individu_scolarite.Panel(self, IDindividu=IDindividu, dictFamillesRattachees=dictFamillesRattachees)", "Classe.png"),
-            ("pieces", _(u"Pièces"), u"DLG_Individu_pieces.Panel(self, IDindividu=IDindividu, dictFamillesRattachees=dictFamillesRattachees)", "Dupliquer.png"),
+            ("coords", _(u"CoordonnÃ©es"), u"DLG_Individu_coords.Panel_coords(self, IDindividu=IDindividu)", "Maison.png"),
+            ("activites", _(u"ActivitÃ©s"), u"DLG_Individu_inscriptions.Panel(self, IDindividu=IDindividu, dictFamillesRattachees=dictFamillesRattachees)", "Activite.png"),
+            ("scolarite", _(u"ScolaritÃ©"), u"DLG_Individu_scolarite.Panel(self, IDindividu=IDindividu, dictFamillesRattachees=dictFamillesRattachees)", "Classe.png"),
+            ("pieces", _(u"PiÃ¨ces"), u"DLG_Individu_pieces.Panel(self, IDindividu=IDindividu, dictFamillesRattachees=dictFamillesRattachees)", "Dupliquer.png"),
             ("transports", _(u"Transports"), u"DLG_Individu_transports.Panel(self, IDindividu=IDindividu, dictFamillesRattachees=dictFamillesRattachees)", "Transport.png"),
-            ("medical", _(u"Médical"), u"DLG_Individu_medical.Panel(self, IDindividu=IDindividu)", "Medical.png"),
+            ("medical", _(u"MÃ©dical"), u"DLG_Individu_medical.Panel(self, IDindividu=IDindividu)", "Medical.png"),
             ]
 
-        # Pages à afficher obligatoirement
+        # Pages Ã  afficher obligatoirement
         self.pagesObligatoires = ["informations", "identite", "coords"]
 
         # ImageList pour le NoteBook
@@ -88,7 +88,7 @@ class Notebook(wx.Notebook):
             index += 1
         self.AssignImageList(il)
 
-        # Création des pages
+        # CrÃ©ation des pages
         dictParametres = self.GetParametres()
 
         index = 0
@@ -113,7 +113,7 @@ class Notebook(wx.Notebook):
         self.SetSelection(indexPage)
 
     def OnPageChanged(self, event):
-        """ Quand une page du notebook est sélectionnée """
+        """ Quand une page du notebook est sÃ©lectionnÃ©e """
         if event.GetOldSelection()==-1: return
         indexPage = event.GetSelection()
         page = self.GetPage(indexPage)
@@ -134,7 +134,7 @@ class Notebook(wx.Notebook):
         return dictParametres
 
     def SelectionParametresPages(self):
-        # Préparation de l'affichage des pages
+        # PrÃ©paration de l'affichage des pages
         dictParametres = self.GetParametres()
         listeLabels = []
         listeSelections = []
@@ -149,8 +149,8 @@ class Notebook(wx.Notebook):
                 listeCodes.append(codePage)
                 index += 1
 
-        # Demande la sélection des pages
-        dlg = wx.MultiChoiceDialog( self, _(u"Cochez ou décochez les onglets à afficher ou à masquer :"), _(u"Afficher/masquer des onglets"), listeLabels)
+        # Demande la sÃ©lection des pages
+        dlg = wx.MultiChoiceDialog( self, _(u"Cochez ou dÃ©cochez les onglets Ã  afficher ou Ã  masquer :"), _(u"Afficher/masquer des onglets"), listeLabels)
         dlg.SetSelections(listeSelections)
         dlg.SetSize((300, 350))
         dlg.CenterOnScreen()
@@ -160,7 +160,7 @@ class Notebook(wx.Notebook):
         if reponse != wx.ID_OK :
             return False
 
-        # Mémorisation des pages cochées
+        # MÃ©morisation des pages cochÃ©es
         dictParametres = {}
         index = 0
         for codePage in listeCodes:
@@ -172,7 +172,7 @@ class Notebook(wx.Notebook):
         UTILS_Config.SetParametre("fiche_individu_pages", dictParametres)
 
         # Info
-        dlg = wx.MessageDialog(self, _(u"Fermez cette fiche pour appliquer les modifications demandées !"), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Fermez cette fiche pour appliquer les modifications demandÃ©es !"), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 
@@ -194,22 +194,22 @@ class Dialog(wx.Dialog):
 
         if IDindividu == None and len(self.dictInfosNouveau) > 0 :
             self.nouvelleFiche = True
-            # Création de l'IDindividu
+            # CrÃ©ation de l'IDindividu
             self.CreateIDindividu()
-            # Création du rattachement à la famille
+            # CrÃ©ation du rattachement Ã  la famille
             self.RattacherIndividu(self.dictInfosNouveau["IDfamille"], self.dictInfosNouveau["IDcategorie"], self.dictInfosNouveau["titulaire"])
         
-        # Recherche des familles rattachées
+        # Recherche des familles rattachÃ©es
         if self.IDindividu != None :
             self.dictFamillesRattachees = self.GetFamillesRattachees()
         else:
             self.dictFamillesRattachees = {}
         
-        self.ctrl_ID = wx.StaticText(self, -1, _(u"Rattaché à aucune famille | ID : %d") % self.IDindividu)
+        self.ctrl_ID = wx.StaticText(self, -1, _(u"RattachÃ© Ã  aucune famille | ID : %d") % self.IDindividu)
         self.ctrl_ligne = wx.StaticLine(self, -1)
-        self.ctrl_nom = wx.StaticText(self, -1, _(u"NOM, Prénom"))
+        self.ctrl_nom = wx.StaticText(self, -1, _(u"NOM, PrÃ©nom"))
         self.ctrl_datenaiss = wx.StaticText(self, -1, _(u"Date de naissance inconnue"))
-        self.ctrl_adresse = wx.StaticText(self, -1, _(u"Lieu de résidence inconnu"))
+        self.ctrl_adresse = wx.StaticText(self, -1, _(u"Lieu de rÃ©sidence inconnu"))
         couleurFond = self.ctrl_adresse.GetBackgroundColour() #wx.SystemSettings.GetColour(30)
         self.ctrl_liens = CTRL_header_rattachement(self, couleurFond=couleurFond) #wx.StaticText(self, -1, _(u"Aucun rattachement"))
         self.ctrl_photo = CTRL_Photo.CTRL_Photo(self, style=wx.SUNKEN_BORDER)
@@ -232,7 +232,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         
-        # Importation des données
+        # Importation des donnÃ©es
 ##        if self.nouvelleFiche == False :
 ##            listePages = ("identite", "coords")
 ##            for codePage in listePages :
@@ -241,7 +241,7 @@ class Dialog(wx.Dialog):
         self.ctrl_notebook.GetPageAvecCode("identite").MAJ()
         self.ctrl_notebook.GetPageAvecCode("coords").MAJ()
 
-        # Saisie des infos par défaut pour la nouvelle fiche
+        # Saisie des infos par dÃ©faut pour la nouvelle fiche
         if self.nouvelleFiche == True :
             pageIdentite = self.ctrl_notebook.GetPageAvecCode("identite")
             pageIdentite.SetValeursDefaut(
@@ -255,14 +255,14 @@ class Dialog(wx.Dialog):
                 pageCoords = self.ctrl_notebook.GetPageAvecCode("coords")
                 pageCoords.radio_adresse_manuelle.SetValue(True)
                 pageCoords.OnRadioAdresse(None)
-            # On met à jour les pages spéciales autre que "Identité"
+            # On met Ã  jour les pages spÃ©ciales autre que "IdentitÃ©"
 ##            listePages = ("liens", "coords")
 ##            for codePage in listePages :
 ##                page = self.ctrl_notebook.GetPageAvecCode(codePage)
 ##                page.MAJ() 
 ##                page.majEffectuee = True
                 
-        # Mise à jour du header
+        # Mise Ã  jour du header
         self.MAJtexteRattachementHeader() 
         
         # MAJ de l'onglet Informations
@@ -272,13 +272,13 @@ class Dialog(wx.Dialog):
         
     def __set_properties(self):
         if self.IDindividu != None :
-            self.SetTitle(_(u"Fiche individuelle n°%d") % self.IDindividu)
+            self.SetTitle(_(u"Fiche individuelle nÂ°%d") % self.IDindividu)
         self.ctrl_ID.SetFont(wx.Font(7, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.NORMAL, 0, ""))
         self.ctrl_nom.SetFont(wx.Font(16, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))
-        self.ctrl_photo.SetToolTip(wx.ToolTip(_(u"Cliquez sur le bouton droit de la souris\npour accéder aux outils photo")))
+        self.ctrl_photo.SetToolTip(wx.ToolTip(_(u"Cliquez sur le bouton droit de la souris\npour accÃ©der aux outils photo")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_options.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux options")))
-        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux outils")))
+        self.bouton_options.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der aux options")))
+        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der aux outils")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer la fiche")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler la\nsaisie et fermer la fiche")))
 
@@ -318,7 +318,7 @@ class Dialog(wx.Dialog):
         self.CentreOnScreen()
 
     def Set_Header(self, nomLigne="", texte=""):
-        """ Met à jour les lignes du header """
+        """ Met Ã  jour les lignes du header """
         # nomLigne = ID | nom | datenaiss | adresse | liens
         if nomLigne == "ID" : self.ctrl_ID.SetLabel(texte)
         if nomLigne == "nom" : self.ctrl_nom.SetLabel(texte)
@@ -337,11 +337,11 @@ class Dialog(wx.Dialog):
         self.ctrl_notebook.SelectionParametresPages()
 
     def OnBoutonOutils(self, event):
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
-        # Item Edition d'étiquettes et de badges
-        item = wx.MenuItem(menuPop, 30, _(u"Edition d'étiquettes et de badges"))
+        # Item Edition d'Ã©tiquettes et de badges
+        item = wx.MenuItem(menuPop, 30, _(u"Edition d'Ã©tiquettes et de badges"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Etiquette2.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -370,26 +370,26 @@ class Dialog(wx.Dialog):
         self.Annuler()
 
     def OnBoutonOk(self, event):
-        # Validation des données avant sauvegarde
+        # Validation des donnÃ©es avant sauvegarde
         listePages = ("identite", "liens", "questionnaire", "coords")
         for codePage in listePages :
             page = self.ctrl_notebook.GetPageAvecCode(codePage)
             if page != None and page.majEffectuee == True and page.ValidationData() == False :
                 self.ctrl_notebook.AffichePage(codePage)
                 return
-        # Sauvegarde des données
+        # Sauvegarde des donnÃ©es
         for codePage in listePages :
             page = self.ctrl_notebook.GetPageAvecCode(codePage)
             if page != None and page.majEffectuee == True :
                 page.Sauvegarde()
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         try :
             self.EndModal(wx.ID_OK)
         except :
             pass
 
     def GetFamillesRattachees(self):
-        # Recherche des familles rattachées
+        # Recherche des familles rattachÃ©es
         db = GestionDB.DB()
         req = """SELECT IDrattachement, rattachements.IDfamille, IDcategorie, titulaire, IDcompte_payeur
         FROM rattachements 
@@ -400,7 +400,7 @@ class Dialog(wx.Dialog):
         listeRattachements = db.ResultatReq()
         dictFamilles = {}
         for IDrattachement, IDfamille, IDcategorie, titulaire, IDcompte_payeur in listeRattachements :
-            if IDcategorie == 1 : nomCategorie = _(u"représentant")
+            if IDcategorie == 1 : nomCategorie = _(u"reprÃ©sentant")
             if IDcategorie == 2 : nomCategorie = _(u"enfant")
             if IDcategorie == 3 : nomCategorie = _(u"contact")
             dictFamilles[IDfamille] = {"nomsTitulaires" : u"", "listeNomsTitulaires" : [], "IDcategorie" : IDcategorie, "nomCategorie" : nomCategorie, "IDcompte_payeur" : IDcompte_payeur }
@@ -440,7 +440,7 @@ class Dialog(wx.Dialog):
             for IDfamille, dictFamille in self.dictFamillesRattachees.items() :
                 nomsTitulaires = dictFamille["nomsTitulaires"]
                 nomCategorie = dictFamille["nomCategorie"]
-                texte += _(u"Est rattaché à la famille de <A HREF='%s'>%s</A> en tant que %s.<BR>") % (str(IDfamille), nomsTitulaires, nomCategorie)
+                texte += _(u"Est rattachÃ© Ã  la famille de <A HREF='%s'>%s</A> en tant que %s.<BR>") % (str(IDfamille), nomsTitulaires, nomCategorie)
             if nbreFamilles > 0 :
                 texte = texte[:-4]
         # Envoie du texte au header
@@ -448,17 +448,17 @@ class Dialog(wx.Dialog):
     
         # MAJ du header ID
         if len(self.dictFamillesRattachees) == 0 :
-            texteID = _(u"Rattaché à aucune famille | ID : %d") % self.IDindividu
+            texteID = _(u"RattachÃ© Ã  aucune famille | ID : %d") % self.IDindividu
         if len(self.dictFamillesRattachees) == 1 :
-            texteID = _(u"Rattaché à 1 famille | ID : %d") % self.IDindividu
+            texteID = _(u"RattachÃ© Ã  1 famille | ID : %d") % self.IDindividu
         if len(self.dictFamillesRattachees) > 1 :
-            texteID = _(u"Rattaché à %d familles | ID : %d") % (len(self.dictFamillesRattachees), self.IDindividu)
+            texteID = _(u"RattachÃ© Ã  %d familles | ID : %d") % (len(self.dictFamillesRattachees), self.IDindividu)
         self.Set_Header("ID", texteID)
             
                 
         
     def CreateIDindividu(self):
-        """ Crée la fiche individu dans la base de données afin d'obtenir un IDindividu """
+        """ CrÃ©e la fiche individu dans la base de donnÃ©es afin d'obtenir un IDindividu """
         DB = GestionDB.DB()
         date_creation = str(datetime.date.today())
         listeDonnees = [
@@ -468,11 +468,11 @@ class Dialog(wx.Dialog):
             ]
         self.IDindividu = DB.ReqInsert("individus", listeDonnees)
         DB.Close()
-        # Mémorise l'action dans l'historique
+        # MÃ©morise l'action dans l'historique
         UTILS_Historique.InsertActions([{
                 "IDindividu" : self.IDindividu,
                 "IDcategorie" : 11, 
-                "action" : _(u"Création de l'individu ID%d") % self.IDindividu,
+                "action" : _(u"CrÃ©ation de l'individu ID%d") % self.IDindividu,
                 },])
                 
     def RattacherIndividu(self, IDfamille=None, IDcategorie=None, titulaire=0):
@@ -486,15 +486,15 @@ class Dialog(wx.Dialog):
             ]
         IDrattachement = DB.ReqInsert("rattachements", listeDonnees)
         DB.Close()
-        # Mémorise l'action dans l'historique
-        if IDcategorie == 1 : labelCategorie = _(u"représentant")
+        # MÃ©morise l'action dans l'historique
+        if IDcategorie == 1 : labelCategorie = _(u"reprÃ©sentant")
         if IDcategorie == 2 : labelCategorie = _(u"enfant")
         if IDcategorie == 3 : labelCategorie = _(u"contact")
         UTILS_Historique.InsertActions([{
                 "IDindividu" : self.IDindividu,
                 "IDfamille" : IDfamille,
                 "IDcategorie" : 13, 
-                "action" : _(u"Rattachement de l'individu ID%d à la famille ID%d en tant que %s") % (self.IDindividu, IDfamille, labelCategorie),
+                "action" : _(u"Rattachement de l'individu ID%d Ã  la famille ID%d en tant que %s") % (self.IDindividu, IDfamille, labelCategorie),
                 },])
         return True
         
@@ -502,10 +502,10 @@ class Dialog(wx.Dialog):
         """ Annulation des modifications """
         if self.nouvelleFiche == True and self.IDindividu != None :
             
-            # Vérifie si des informations non supprimables
+            # VÃ©rifie si des informations non supprimables
             DB = GestionDB.DB()
         
-            # Vérifie si des pièces n'existent pas
+            # VÃ©rifie si des piÃ¨ces n'existent pas
             req = """
             SELECT IDpiece, IDtype_piece
             FROM pieces
@@ -514,13 +514,13 @@ class Dialog(wx.Dialog):
             DB.ExecuterReq(req)
             listeDonnees = DB.ResultatReq()
             if len(listeDonnees) > 0 :
-                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas détacher cette fiche car %d pièce(s) existent déjà pour cet individu sur cette fiche famille.\n\nSupprimez les pièces avant la suppression de l'individu !") % len(listeDonnees), _(u"Détachement impossible"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas dÃ©tacher cette fiche car %d piÃ¨ce(s) existent dÃ©jÃ  pour cet individu sur cette fiche famille.\n\nSupprimez les piÃ¨ces avant la suppression de l'individu !") % len(listeDonnees), _(u"DÃ©tachement impossible"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 DB.Close()
                 return False
 
-            # Vérifie si des cotisations n'existent pas
+            # VÃ©rifie si des cotisations n'existent pas
             req = """
             SELECT IDcotisation, IDfamille
             FROM cotisations
@@ -529,13 +529,13 @@ class Dialog(wx.Dialog):
             DB.ExecuterReq(req)
             listeDonnees = DB.ResultatReq()
             if len(listeDonnees) > 0 :
-                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas détacher cette fiche car %d cotisation(s) individuelle(s) existe(nt) déjà pour cet individu sur cette fiche famille.\n\nSupprimez les cotisations avant la suppression de l'individu !") % len(listeDonnees), _(u"Détachement impossible"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas dÃ©tacher cette fiche car %d cotisation(s) individuelle(s) existe(nt) dÃ©jÃ  pour cet individu sur cette fiche famille.\n\nSupprimez les cotisations avant la suppression de l'individu !") % len(listeDonnees), _(u"DÃ©tachement impossible"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 DB.Close()
                 return False
             
-            # Vérifie si des inscriptions n'existent pas
+            # VÃ©rifie si des inscriptions n'existent pas
             req = """
             SELECT IDinscription, IDactivite
             FROM inscriptions
@@ -544,7 +544,7 @@ class Dialog(wx.Dialog):
             DB.ExecuterReq(req)
             listeDonnees = DB.ResultatReq()
             if len(listeDonnees) > 0 :
-                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas détacher cette fiche car cet individu est déjà inscrit à %d activité(s) sur cette fiche famille.\n\nSupprimez l'inscription avant la suppression de l'individu !") % len(listeDonnees), _(u"Détachement impossible"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas dÃ©tacher cette fiche car cet individu est dÃ©jÃ  inscrit Ã  %d activitÃ©(s) sur cette fiche famille.\n\nSupprimez l'inscription avant la suppression de l'individu !") % len(listeDonnees), _(u"DÃ©tachement impossible"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 DB.Close()
@@ -553,7 +553,7 @@ class Dialog(wx.Dialog):
             DB.Close()
             
             # Demande de confirmation
-            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment annuler la création de cette nouvelle fiche ?"), _(u"Annulation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment annuler la crÃ©ation de cette nouvelle fiche ?"), _(u"Annulation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             if dlg.ShowModal() == wx.ID_YES :
                 # Efface de la base la fiche individu 
                 DB = GestionDB.DB()
@@ -573,14 +573,14 @@ class Dialog(wx.Dialog):
                 DB.ReqDEL("photos", "IDindividu", self.IDindividu)
                 DB.Close()
                 dlg.Destroy()
-                # Ferme la fenêtre
+                # Ferme la fenÃªtre
                 self.Destroy()
             else:
                 # annulation de la fermeture
                 dlg.Destroy()
                 return
         else:
-            # Ferme la fenêtre
+            # Ferme la fenÃªtre
             try :
                 self.Destroy()
             except :

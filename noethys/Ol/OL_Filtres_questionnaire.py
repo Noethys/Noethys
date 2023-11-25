@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -35,8 +35,8 @@ def GetCondition(filtre="", choix="", criteres=""):
     
     # TEXTE
     if filtre == "texte" :
-        if choix == "EGAL" : description = _(u"Est égal à '%s'") % criteres
-        if choix == "DIFFERENT" : description = _(u"Est différent de '%s'") % criteres
+        if choix == "EGAL" : description = _(u"Est Ã©gal Ã  '%s'") % criteres
+        if choix == "DIFFERENT" : description = _(u"Est diffÃ©rent de '%s'") % criteres
         if choix == "CONTIENT" : description = _(u"Contient '%s'") % criteres
         if choix == "CONTIENTPAS" : description = _(u"Ne contient pas '%s'") % criteres
         if choix == "VIDE" : description = _(u"Est vide")
@@ -44,22 +44,22 @@ def GetCondition(filtre="", choix="", criteres=""):
     
     # ENTIER
     if filtre == "entier" :
-        if choix == "EGAL" : description = _(u"Est égal à '%s'") % criteres
-        if choix == "DIFFERENT" : description = _(u"Est différent de '%s'") % criteres
-        if choix == "SUP" : description = _(u"Est supérieur à '%s'") % criteres
-        if choix == "SUPEGAL" : description = _(u"Est supérieur ou égal à '%s'") % criteres
-        if choix == "INF" : description = _(u"Est inférieur à '%s'") % criteres
-        if choix == "INFEGAL" : description = _(u"Est inférieur ou égal à '%s'") % criteres
+        if choix == "EGAL" : description = _(u"Est Ã©gal Ã  '%s'") % criteres
+        if choix == "DIFFERENT" : description = _(u"Est diffÃ©rent de '%s'") % criteres
+        if choix == "SUP" : description = _(u"Est supÃ©rieur Ã  '%s'") % criteres
+        if choix == "SUPEGAL" : description = _(u"Est supÃ©rieur ou Ã©gal Ã  '%s'") % criteres
+        if choix == "INF" : description = _(u"Est infÃ©rieur Ã  '%s'") % criteres
+        if choix == "INFEGAL" : description = _(u"Est infÃ©rieur ou Ã©gal Ã  '%s'") % criteres
         if choix == "COMPRIS" : description = _(u"Est compris entre '%s' et '%s'") % (criteres.split(";")[0], criteres.split(";")[1])
 
     # DATE
     if filtre == "date" :
-        if choix == "EGAL" : description = _(u"Est égal au '%s'") % DateEngFr(criteres)
-        if choix == "DIFFERENT" : description = _(u"Est différent du '%s'") % DateEngFr(criteres)
-        if choix == "SUP" : description = _(u"Est supérieur au '%s'") % DateEngFr(criteres)
-        if choix == "SUPEGAL" : description = _(u"Est supérieur ou égal au '%s'") % DateEngFr(criteres)
-        if choix == "INF" : description = _(u"Est inférieur au '%s'") % DateEngFr(criteres)
-        if choix == "INFEGAL" : description = _(u"Est inférieur ou égal au '%s'") % DateEngFr(criteres)
+        if choix == "EGAL" : description = _(u"Est Ã©gal au '%s'") % DateEngFr(criteres)
+        if choix == "DIFFERENT" : description = _(u"Est diffÃ©rent du '%s'") % DateEngFr(criteres)
+        if choix == "SUP" : description = _(u"Est supÃ©rieur au '%s'") % DateEngFr(criteres)
+        if choix == "SUPEGAL" : description = _(u"Est supÃ©rieur ou Ã©gal au '%s'") % DateEngFr(criteres)
+        if choix == "INF" : description = _(u"Est infÃ©rieur au '%s'") % DateEngFr(criteres)
+        if choix == "INFEGAL" : description = _(u"Est infÃ©rieur ou Ã©gal au '%s'") % DateEngFr(criteres)
         if choix == "COMPRIS" : description = _(u"Est compris entre le '%s' et le '%s'") % (DateEngFr(criteres.split(";")[0]), DateEngFr(criteres.split(";")[1]))
 
     # COCHE
@@ -78,7 +78,7 @@ def GetCondition(filtre="", choix="", criteres=""):
                 pass
             if IDchoix in DICT_CHOIX :
                 listeLabelsChoix.append("'%s'" % DICT_CHOIX[IDchoix]["label"])
-        description = _(u"Doit être %s") % _(u" ou ").join(listeLabelsChoix)
+        description = _(u"Doit Ãªtre %s") % _(u" ou ").join(listeLabelsChoix)
 
     return description
 
@@ -96,16 +96,16 @@ class Track(object):
         self.controle = DICT_QUESTIONS[self.IDquestion]["controle"]
         self.filtre = DICT_CONTROLES[self.controle]["filtre"]
         
-        # Création du label de la question
+        # CrÃ©ation du label de la question
         self.label = DICT_QUESTIONS[self.IDquestion]["label"]
         
-        # Création de la description
+        # CrÃ©ation de la description
         self.condition = GetCondition(self.filtre, self.choix, self.criteres)
 
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.listeDonnees = kwds.pop("listeDonnees", [])
         self.listeTypes = kwds.pop("listeTypes", ("famille", "individu"))
         self.CallFonctionOnMAJ = kwds.pop("CallFonctionOnMAJ", None)
@@ -155,7 +155,7 @@ class ListView(FastObjectListView):
         for IDchoix, IDquestion, label in listeChoix :
             DICT_CHOIX[IDchoix] = {"label":label, "IDquestion":IDquestion, }
         
-        # Importation des contrôles
+        # Importation des contrÃ´les
         DICT_CONTROLES = {}
         for controle in LISTE_CONTROLES :
             DICT_CONTROLES[controle["code"]] = controle
@@ -167,7 +167,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeID = None
         listeListeView = []
         
@@ -207,7 +207,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -226,7 +226,7 @@ class ListView(FastObjectListView):
         else:
             noSelection = False
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -257,7 +257,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -308,7 +308,7 @@ class ListView(FastObjectListView):
         UTILS_Export.ExportExcel(self, titre=_(u"Liste des filtres"))
 
     def Ajouter(self, event=None):
-        # Ouverture de la fenêtre de saisie
+        # Ouverture de la fenÃªtre de saisie
         from Dlg import DLG_Saisie_filtre_questionnaire
         dlg = DLG_Saisie_filtre_questionnaire.Dialog(self, listeTypes=self.listeTypes)
         if dlg.ShowModal() == wx.ID_OK:
@@ -321,7 +321,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event=None):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun filtre à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun filtre Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -340,7 +340,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event=None):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun filtre à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun filtre Ã  supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-20 Ivan LUCAS
@@ -19,7 +19,7 @@ from Utils import UTILS_Utilisateurs
 from Utils import UTILS_Gestion
 from Utils import UTILS_Config
 from Utils import UTILS_Titulaires
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 from Utils import UTILS_Interface, UTILS_Dates, UTILS_Questionnaires
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
@@ -48,20 +48,20 @@ class Track(object):
         self.montant_prestation = donnees[17]
         self.IDindividu = donnees[18]
 
-        # Récupération du nom des titulaires
+        # RÃ©cupÃ©ration du nom des titulaires
         try :
             self.nomTitulaires = self.parent.dict_titulaires[self.IDfamille]["titulairesSansCivilite"]
         except :
             self.nomTitulaires = _(" ")
 
-        # Récupération des réponses des questionnaires
+        # RÃ©cupÃ©ration des rÃ©ponses des questionnaires
         for dictQuestion in self.parent.LISTE_QUESTIONS :
             setattr(self, "question_%d" % dictQuestion["IDquestion"], self.parent.GetReponse(dictQuestion["IDquestion"], self.IDindividu))
 
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -82,14 +82,14 @@ class ListView(FastObjectListView):
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
 
     def InitModel(self):
-        # Récupération des questionnaires
+        # RÃ©cupÃ©ration des questionnaires
         self.LISTE_QUESTIONS = self.UtilsQuestionnaires.GetQuestions(type="individu")
         self.DICT_QUESTIONNAIRES = self.UtilsQuestionnaires.GetReponses(type="individu")
 
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         criteres = ""
 
         # Filtres
@@ -144,17 +144,17 @@ class ListView(FastObjectListView):
                 return UTILS_Dates.DateEngFr(str(dateDD))
 
         def Formate_forfait(forfait):
-            if forfait == 1: return "Forfait non verrouillé"
-            if forfait == 2: return "Forfait verrouillé"
+            if forfait == 1: return "Forfait non verrouillÃ©"
+            if forfait == 2: return "Forfait verrouillÃ©"
             return ""
 
         def FormateEtat(etat):
-            if etat == "reservation": return _(u"Réservation")
+            if etat == "reservation": return _(u"RÃ©servation")
             if etat == "attente": return _(u"Attente")
             if etat == "refus": return _(u"Refus")
-            if etat == "present": return _(u"Présent")
-            if etat == "absentj": return _(u"Absence justifiée")
-            if etat == "absenti": return _(u"Absence injustifiée")
+            if etat == "present": return _(u"PrÃ©sent")
+            if etat == "absentj": return _(u"Absence justifiÃ©e")
+            if etat == "absenti": return _(u"Absence injustifiÃ©e")
 
         def FormateMontant(montant):
             if montant == None : return u""
@@ -163,18 +163,18 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(_(u"ID"), "left", 0, "IDconso", typeDonnee="entier"),
             ColumnDefn(_(u"Date"), 'left', 90, "date", typeDonnee="date", stringConverter=FormateDateCourt),
-            ColumnDefn(_(u"Activité"), 'left', 120, "nom_activite", typeDonnee="texte"),
-            ColumnDefn(_(u"Unité"), 'left', 100, "nom_unite", typeDonnee="texte"),
+            ColumnDefn(_(u"ActivitÃ©"), 'left', 120, "nom_activite", typeDonnee="texte"),
+            ColumnDefn(_(u"UnitÃ©"), 'left', 100, "nom_unite", typeDonnee="texte"),
             ColumnDefn(_(u"Etat"), 'left', 100, "etat", typeDonnee="texte", stringConverter=FormateEtat),
             ColumnDefn(_(u"Groupe"), 'left', 100, "nom_groupe", typeDonnee="texte"),
             ColumnDefn(_(u"Nom"), 'left', 120, "nom", typeDonnee="texte"),
-            ColumnDefn(_(u"Prénom"), 'left', 120, "prenom", typeDonnee="texte"),
+            ColumnDefn(_(u"PrÃ©nom"), 'left', 120, "prenom", typeDonnee="texte"),
             ColumnDefn(_(u"Famille"), 'left', 160, "nomTitulaires", typeDonnee="texte"),
             ColumnDefn(_(u"Date de saisie"), 'left', 90, "date", typeDonnee="date_saisie", stringConverter=FormateDateCourt),
-            ColumnDefn(_(u"Début"), 'left', 60, "heure_debut", typeDonnee="texte"),
+            ColumnDefn(_(u"DÃ©but"), 'left', 60, "heure_debut", typeDonnee="texte"),
             ColumnDefn(_(u"Fin"), 'left', 60, "heure_fin", typeDonnee="texte"),
             ColumnDefn(_(u"Forfait"), 'left', 100, "forfait", typeDonnee="texte", stringConverter=Formate_forfait),
-            ColumnDefn(_(u"Evénement"), 'left', 110, "evenement", typeDonnee="texte"),
+            ColumnDefn(_(u"EvÃ©nement"), 'left', 110, "evenement", typeDonnee="texte"),
             ColumnDefn(_(u"IDprestation"), "left", 80, "IDprestation", typeDonnee="entier"),
             ColumnDefn(_(u"Label prestation"), 'left', 140, "label_prestation", typeDonnee="texte"),
             ColumnDefn(_(u"Montant prestation"), 'left', 120, "montant_prestation", typeDonnee="montant", stringConverter=FormateMontant),
@@ -198,7 +198,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -223,7 +223,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDconso
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Supprimer
@@ -235,7 +235,7 @@ class ListView(FastObjectListView):
 
         menuPop.AppendSeparator()
     
-        # Génération automatique des fonctions standards
+        # GÃ©nÃ©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
 
         self.PopupMenu(menuPop)
@@ -253,26 +253,26 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune consommation à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune consommation Ã  supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
 
-        # Vérifie l'état
+        # VÃ©rifie l'Ã©tat
         if track.etat in ("present", "absenti", "absentj"):
-            dlg = wx.MessageDialog(self, _(u"Cette consommation ne peut pas être supprimée car elle a déjà été pointée !"), _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cette consommation ne peut pas Ãªtre supprimÃ©e car elle a dÃ©jÃ  Ã©tÃ© pointÃ©e !"), _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # Vérifie que le règlement n'est pas dans une période de gestion
+        # VÃ©rifie que le rÃ¨glement n'est pas dans une pÃ©riode de gestion
         gestion = UTILS_Gestion.Gestion(None)
         if gestion.Verification("consommations", track.date) == False: return False
 
-        # Demande confirmation si prestation associée
+        # Demande confirmation si prestation associÃ©e
         if track.IDprestation:
-            dlg = wx.MessageDialog(self, _(u"Attention, cette consommation est associée à la prestation ID%d %s. Cette prestation ne sera pas supprimée automatiquement. Souhaitez-vous tout de même continuer ?") % (track.IDprestation, track.label_prestation), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Attention, cette consommation est associÃ©e Ã  la prestation ID%d %s. Cette prestation ne sera pas supprimÃ©e automatiquement. Souhaitez-vous tout de mÃªme continuer ?") % (track.IDprestation, track.label_prestation), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             if dlg.ShowModal() != wx.ID_YES:
                 return False
 
@@ -282,7 +282,7 @@ class ListView(FastObjectListView):
             DB = GestionDB.DB()
             DB.ReqDEL("consommations", "IDconso", track.IDconso)
             DB.Close()
-            # Mémorise l'action dans l'historique
+            # MÃ©morise l'action dans l'historique
             UTILS_Historique.InsertActions([{
                 "IDfamille": track.IDfamille,
                 "IDcategorie": 10,

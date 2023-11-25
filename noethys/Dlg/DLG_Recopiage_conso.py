@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -44,7 +44,7 @@ class CTRL_Unite(wx.Choice):
         listeDonnees = DB.ResultatReq()
         DB.Close()
 
-        listeItems = [_(u"-- Sélectionnez une unité --")]
+        listeItems = [_(u"-- SÃ©lectionnez une unitÃ© --")]
         self.dictDonnees = {}
         self.dictDonnees[0] = None
 
@@ -52,13 +52,13 @@ class CTRL_Unite(wx.Choice):
         IDactiviteTemp = None
         for IDunite, unite_nom, unite_type, IDactivite, activite_nom in listeDonnees :
             if IDactivite != IDactiviteTemp :
-                # Création d'une ligne activité
+                # CrÃ©ation d'une ligne activitÃ©
                 self.dictDonnees[index] = None
                 listeItems.append(activite_nom)
                 IDactiviteTemp = IDactivite
                 index += 1
 
-            # Création d'une ligne unité
+            # CrÃ©ation d'une ligne unitÃ©
             self.dictDonnees[index] = {"ID" : IDunite, "unite_nom" : unite_nom, "IDactivite" : IDactivite, "activite_nom" : activite_nom}
             listeItems.append(u"    %s" % unite_nom)
             index += 1
@@ -97,26 +97,26 @@ class Dialog(wx.Dialog):
         # Bandeau
         titre = _(u"Recopier des consommations")
         self.SetTitle(titre)
-        intro = _(u"Vous pouvez ici recopier les consommations d'une unité sur une autre unité. Sélectionnez les unités à impacter puis cliquez sur Ok.")
+        intro = _(u"Vous pouvez ici recopier les consommations d'une unitÃ© sur une autre unitÃ©. SÃ©lectionnez les unitÃ©s Ã  impacter puis cliquez sur Ok.")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Calendrier_modifier.png")
 
-        # Unités
-        self.staticbox_unites = wx.StaticBox(self, -1, _(u"Unités"))
+        # UnitÃ©s
+        self.staticbox_unites = wx.StaticBox(self, -1, _(u"UnitÃ©s"))
         self.ctrl_unite_origine = CTRL_Unite(self)
         self.ctrl_image_recopiage = wx.StaticBitmap(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Fleche_droite2.png"), wx.BITMAP_TYPE_ANY))
         self.ctrl_unite_destination = CTRL_Unite(self)
 
-        # Paramètres
-        self.staticbox_parametres = wx.StaticBox(self, -1, _(u"Informations à recopier"))
+        # ParamÃ¨tres
+        self.staticbox_parametres = wx.StaticBox(self, -1, _(u"Informations Ã  recopier"))
         self.check_param_horaires = wx.CheckBox(self, -1, _(u"Horaires"))
-        self.check_param_quantite = wx.CheckBox(self, -1, _(u"Quantité"))
+        self.check_param_quantite = wx.CheckBox(self, -1, _(u"QuantitÃ©"))
         self.check_param_etiquettes = wx.CheckBox(self, -1, _(u"Etiquettes"))
         self.check_param_etat = wx.CheckBox(self, -1, _(u"Etat"))
 
         # Options
         self.staticbox_options = wx.StaticBox(self, -1, _(u"Options"))
-        self.radio_lignes_affichees = wx.RadioButton(self, -1, _(u"Toutes les lignes affichées"), style=wx.RB_GROUP)
-        self.radio_lignes_selectionnees = wx.RadioButton(self, -1, _(u"Toutes les lignes sélectionnées"))
+        self.radio_lignes_affichees = wx.RadioButton(self, -1, _(u"Toutes les lignes affichÃ©es"), style=wx.RB_GROUP)
+        self.radio_lignes_selectionnees = wx.RadioButton(self, -1, _(u"Toutes les lignes sÃ©lectionnÃ©es"))
 
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
@@ -148,14 +148,14 @@ class Dialog(wx.Dialog):
         self.OnChoixUnite(None)
 
     def __set_properties(self):
-        self.ctrl_unite_origine.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'unité à recopier")))
-        self.ctrl_unite_destination.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'unité sur laquelle effectuer le recopiage")))
+        self.ctrl_unite_origine.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez l'unitÃ© Ã  recopier")))
+        self.ctrl_unite_destination.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez l'unitÃ© sur laquelle effectuer le recopiage")))
         self.check_param_horaires.SetToolTip(wx.ToolTip(_(u"Cochez cette option pour recopier les horaires")))
-        self.check_param_quantite.SetToolTip(wx.ToolTip(_(u"Cochez cette option pour recopier la quantité")))
-        self.check_param_etiquettes.SetToolTip(wx.ToolTip(_(u"Cochez cette option pour recopier les étiquettes. Cette option n'est disponible que lorsque les unités sélectionnées appartiennent à la même activité.")))
-        self.check_param_etat.SetToolTip(wx.ToolTip(_(u"Cochez cette option pour recopier l'état")))
-        self.radio_lignes_affichees.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour appliquer le recopiage sur toutes les lignes affichées")))
-        self.radio_lignes_selectionnees.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour appliquer le recopiage uniquement sur les lignes sélectionnées")))
+        self.check_param_quantite.SetToolTip(wx.ToolTip(_(u"Cochez cette option pour recopier la quantitÃ©")))
+        self.check_param_etiquettes.SetToolTip(wx.ToolTip(_(u"Cochez cette option pour recopier les Ã©tiquettes. Cette option n'est disponible que lorsque les unitÃ©s sÃ©lectionnÃ©es appartiennent Ã  la mÃªme activitÃ©.")))
+        self.check_param_etat.SetToolTip(wx.ToolTip(_(u"Cochez cette option pour recopier l'Ã©tat")))
+        self.radio_lignes_affichees.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez cette option pour appliquer le recopiage sur toutes les lignes affichÃ©es")))
+        self.radio_lignes_selectionnees.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez cette option pour appliquer le recopiage uniquement sur les lignes sÃ©lectionnÃ©es")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -166,7 +166,7 @@ class Dialog(wx.Dialog):
 
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
         
-        # Unités
+        # UnitÃ©s
         staticbox_unites = wx.StaticBoxSizer(self.staticbox_unites, wx.VERTICAL)
         grid_sizer_unites = wx.FlexGridSizer(rows=1, cols=3, vgap=10, hgap=10)
         grid_sizer_unites.Add(self.ctrl_unite_origine, 1, wx.EXPAND, 0)
@@ -175,7 +175,7 @@ class Dialog(wx.Dialog):
         staticbox_unites.Add(grid_sizer_unites, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(staticbox_unites, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
 
-        # Paramètres
+        # ParamÃ¨tres
         staticbox_parametres = wx.StaticBoxSizer(self.staticbox_parametres, wx.VERTICAL)
         grid_sizer_parametres = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
         grid_sizer_parametres.Add(self.check_param_horaires, 1, wx.EXPAND, 0)
@@ -227,24 +227,24 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Lagrilledesconsommations")
 
     def OnBoutonOk(self, event):
-        # Vérification des données saisies
+        # VÃ©rification des donnÃ©es saisies
         if self.ctrl_unite_origine.GetValeur() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une unité à recopier !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une unitÃ© Ã  recopier !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         if self.ctrl_unite_destination.GetValeur() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner l'unité vers laquelle recopier !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner l'unitÃ© vers laquelle recopier !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         if self.ctrl_unite_origine.GetValeur() == self.ctrl_unite_destination.GetValeur()  :
-            dlg = wx.MessageDialog(self, _(u"Les deux unités sélectionnées doivent être différentes !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Les deux unitÃ©s sÃ©lectionnÃ©es doivent Ãªtre diffÃ©rentes !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # Mémorisation des paramètres
+        # MÃ©morisation des paramÃ¨tres
         UTILS_Parametres.Parametres(mode="set", categorie="recopiage_conso", nom="unite_origine", valeur=self.ctrl_unite_origine.GetValeur())
         UTILS_Parametres.Parametres(mode="set", categorie="recopiage_conso", nom="unite_destination", valeur=self.ctrl_unite_destination.GetValeur())
         UTILS_Parametres.Parametres(mode="set", categorie="recopiage_conso", nom="param_horaires", valeur=self.check_param_horaires.GetValue())
@@ -257,7 +257,7 @@ class Dialog(wx.Dialog):
         if self.radio_lignes_selectionnees.GetValue() == True :
             UTILS_Parametres.Parametres(mode="set", categorie="recopiage_conso", nom="option_lignes", valeur="lignes_selectionnees")
 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
     
     def GetDonnees(self):

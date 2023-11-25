@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -33,25 +33,25 @@ class Dialog(wx.Dialog):
         self.IDmodele = IDmodele     
         self.defaut = 0   
         
-        # Généralités
-        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralités"))
+        # GÃ©nÃ©ralitÃ©s
+        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"GÃ©nÃ©ralitÃ©s"))
         self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
         self.label_description = wx.StaticText(self, -1, _(u"Description :"))
         self.ctrl_description = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
         
-        # Mots-clés
+        # Mots-clÃ©s
         self.listeMotsCles = []
         listeMotscles = CTRL_Editeur_email.GetMotscles(self.categorie)
         for motCle, code in listeMotscles :
             self.listeMotsCles.append(motCle)
 
-        self.staticbox_motscles_staticbox = wx.StaticBox(self, -1, _(u"Mots-clés disponibles"))
+        self.staticbox_motscles_staticbox = wx.StaticBox(self, -1, _(u"Mots-clÃ©s disponibles"))
         self.ctrl_motscles = wx.ListBox(self, -1, choices=self.listeMotsCles, style=wx.SIMPLE_BORDER)
         self.ctrl_motscles.SetBackgroundColour("#F0FBED")
         
-        # Expéditeur
-        self.label_exp = wx.StaticText(self, -1, _(u"Expéditeur :"))
+        # ExpÃ©diteur
+        self.label_exp = wx.StaticText(self, -1, _(u"ExpÃ©diteur :"))
         self.ctrl_exp = CTRL_Editeur_email.Panel_Expediteur(self)
         
         # Objet
@@ -76,17 +76,17 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         
         if self.IDmodele != None :
-            self.SetTitle(_(u"Modification d'un modèle d'Email"))
+            self.SetTitle(_(u"Modification d'un modÃ¨le d'Email"))
             self.Importation()
         else:
-            self.SetTitle(_(u"Saisie d'un modèle d'Email"))
+            self.SetTitle(_(u"Saisie d'un modÃ¨le d'Email"))
         
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour ce modèle")))
-        self.ctrl_description.SetToolTip(wx.ToolTip(_(u"Saisissez une description pour ce modèle [Optionnel]")))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour ce modÃ¨le")))
+        self.ctrl_description.SetToolTip(wx.ToolTip(_(u"Saisissez une description pour ce modÃ¨le [Optionnel]")))
         self.ctrl_objet.SetToolTip(wx.ToolTip(_(u"Saisissez l'objet du message")))
-        self.ctrl_motscles.SetToolTip(wx.ToolTip(_(u"Double-cliquez sur un mot-clé pour l'insérer dans le texte\nou recopiez-le directement (avec ses accolades).")))
+        self.ctrl_motscles.SetToolTip(wx.ToolTip(_(u"Double-cliquez sur un mot-clÃ© pour l'insÃ©rer dans le texte\nou recopiez-le directement (avec ses accolades).")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -96,7 +96,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
         
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         staticbox_generalites = wx.StaticBoxSizer(self.staticbox_generalites_staticbox, wx.VERTICAL)
         grid_sizer_generalites = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
         
@@ -109,7 +109,7 @@ class Dialog(wx.Dialog):
         staticbox_generalites.Add(grid_sizer_generalites, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(staticbox_generalites, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
 
-        # Mots-clés
+        # Mots-clÃ©s
         staticbox_motscles = wx.StaticBoxSizer(self.staticbox_motscles_staticbox, wx.VERTICAL)
         staticbox_motscles.Add(self.ctrl_motscles, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_contenu.Add(staticbox_motscles, 1, wx.EXPAND, 0)
@@ -161,10 +161,10 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("ModlesdEmails")
 
     def OnBoutonOk(self, event):     
-        # Vérification des données
+        # VÃ©rification des donnÃ©es
         nom = self.ctrl_nom.GetValue()
         if nom == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour ce modèle !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour ce modÃ¨le !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
@@ -176,7 +176,7 @@ class Dialog(wx.Dialog):
         # Adresse Exp
         IDadresse = self.ctrl_exp.GetID()
         if IDadresse == None :
-            dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas vouloir sélectionner d'adresse d'expéditeur pour ce modèle ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Etes-vous sÃ»r de ne pas vouloir sÃ©lectionner d'adresse d'expÃ©diteur pour ce modÃ¨le ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             if dlg.ShowModal() != wx.ID_YES :
                 dlg.Destroy()
                 return
@@ -185,13 +185,13 @@ class Dialog(wx.Dialog):
         # Objet
         objet = self.ctrl_objet.GetValue()
         if objet == "" :
-            dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas vouloir saisir d'objet de message pour ce modèle ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Etes-vous sÃ»r de ne pas vouloir saisir d'objet de message pour ce modÃ¨le ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             if dlg.ShowModal() != wx.ID_YES :
                 dlg.Destroy()
                 return
             dlg.Destroy()
         
-        # Récupération du texte
+        # RÃ©cupÃ©ration du texte
         texteStr = self.ctrl_editeur.GetValue() 
         texteXML = self.ctrl_editeur.GetXML()
         if len(texteStr) == 0 :
@@ -218,7 +218,7 @@ class Dialog(wx.Dialog):
             DB.ReqMAJ("modeles_emails", listeDonnees, "IDmodele", self.IDmodele)
         DB.Close()
 
-        # Fermeture fenêtre
+        # Fermeture fenÃªtre
         self.EndModal(wx.ID_OK)
     
     def GetIDmodele(self):

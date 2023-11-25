@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -46,15 +46,15 @@ def FormatDuree(duree):
         textMois = _(u"%d mois") % mois
         listItems.append(textMois)
     if annees == 1:
-        textAnnees = _(u"%d annÈe") % annees
+        textAnnees = _(u"%d ann√©e") % annees
         listItems.append(textAnnees)
     if annees > 1:
-        textAnnees = _(u"%d annÈes") % annees
+        textAnnees = _(u"%d ann√©es") % annees
         listItems.append(textAnnees)
 
     nbreItems = len(listItems)
     if nbreItems == 0:
-        resultat = _(u"ValiditÈ illimitÈe")
+        resultat = _(u"Validit√© illimit√©e")
     else:
         if nbreItems == 1:
             resultat = listItems[0]
@@ -71,10 +71,10 @@ class Track(object):
     def __init__(self, donnees):
         self.IDtype_vaccin = donnees[0]
         self.nom = donnees[1]
-        # DurÈe de validitÈ
+        # Dur√©e de validit√©
         self.duree_validite = donnees[2]
         self.txt_duree_validite = FormatDuree(self.duree_validite)
-        # Maladies associÈes
+        # Maladies associ√©es
         self.txt_maladies_associees = ""
         if self.IDtype_vaccin in DICT_LIENS_MALADIES :
             self.listeMaladiesAssociees = DICT_LIENS_MALADIES[self.IDtype_vaccin]
@@ -89,7 +89,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -112,7 +112,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT IDtype_vaccin, nom, duree_validite
@@ -172,8 +172,8 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(_(u"ID"), "left", 0, "IDtype_vaccin", typeDonnee="entier"),
             ColumnDefn(_(u"Nom du vaccin"), 'left', 200, "nom", typeDonnee="texte"),
-            ColumnDefn(_(u"DurÈe de validitÈ"), "left", 140, "txt_duree_validite", typeDonnee="texte"), 
-            ColumnDefn(_(u"Maladies associÈes"), "left", 220, "txt_maladies_associees", typeDonnee="texte"), 
+            ColumnDefn(_(u"Dur√©e de validit√©"), "left", 140, "txt_duree_validite", typeDonnee="texte"), 
+            ColumnDefn(_(u"Maladies associ√©es"), "left", 220, "txt_maladies_associees", typeDonnee="texte"), 
             ]
         
         self.SetColumns(liste_Colonnes)
@@ -191,7 +191,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -208,7 +208,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDtype_vaccin
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -239,7 +239,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -278,7 +278,7 @@ class ListView(FastObjectListView):
             DB = GestionDB.DB()
             listeDonnees = [("nom", nom ), ("duree_validite", validite),]
             IDtype_vaccin = DB.ReqInsert("types_vaccins", listeDonnees)
-            # Sauvegarde Maladies associÈes
+            # Sauvegarde Maladies associ√©es
             for IDtype_maladie in listeIDmaladies :
                 listeDonnees = [("IDtype_vaccin", IDtype_vaccin), ("IDtype_maladie", IDtype_maladie),]
                 IDvaccins_maladies = DB.ReqInsert("vaccins_maladies", listeDonnees)
@@ -289,7 +289,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_vaccins", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun vaccin dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun vaccin dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -310,12 +310,12 @@ class ListView(FastObjectListView):
             DB = GestionDB.DB()
             listeDonnees = [("nom", nom ), ("duree_validite", validite),]
             DB.ReqMAJ("types_vaccins", listeDonnees, "IDtype_vaccin", IDtype_vaccin)
-            # Sauvegarde NOUVELLES Maladies associÈes
+            # Sauvegarde NOUVELLES Maladies associ√©es
             for IDtype_maladie in nouvelleListeMaladies :
                 if IDtype_maladie not in ancienneListeMaladies :
                     listeDonnees = [("IDtype_vaccin", IDtype_vaccin), ("IDtype_maladie", IDtype_maladie),]
                     IDvaccins_maladies = DB.ReqInsert("vaccins_maladies", listeDonnees)
-            # Effacement des anciennes maladies plus associÈes
+            # Effacement des anciennes maladies plus associ√©es
             for IDtype_maladie in ancienneListeMaladies :
                 if IDtype_maladie not in nouvelleListeMaladies :
                     req = "DELETE FROM vaccins_maladies WHERE IDtype_maladie=%d AND IDtype_vaccin=%d" % (IDtype_maladie, IDtype_vaccin)
@@ -328,13 +328,13 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_vaccins", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun vaccin dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun vaccin dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDtype_vaccin = self.Selection()[0].IDtype_vaccin
         
-        # VÈrifie que ce type de vaccin n'a pas dÈj‡ ÈtÈ attribuÈ ‡ un individu
+        # V√©rifie que ce type de vaccin n'a pas d√©j√† √©t√© attribu√© √† un individu
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDvaccin)
         FROM vaccins 
@@ -344,7 +344,7 @@ class ListView(FastObjectListView):
         nbreVaccins = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreVaccins > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce vaccin a dÈj‡ ÈtÈ attribuÈ %d fois.\n\nVous ne pouvez donc pas le supprimer !") % nbreVaccins, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce vaccin a d√©j√† √©t√© attribu√© %d fois.\n\nVous ne pouvez donc pas le supprimer !") % nbreVaccins, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

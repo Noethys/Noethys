@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -51,9 +51,9 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.SetTitle(_(u"Gestion des postes analytiques"))
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un poste analytique")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le poste sélectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le poste sélectionné dans la liste")))
-        self.bouton_defaut.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour définir le poste sélectionné comme celui par défaut")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le poste sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le poste sÃ©lectionnÃ© dans la liste")))
+        self.bouton_defaut.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dÃ©finir le poste sÃ©lectionnÃ© comme celui par dÃ©faut")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((700, 550))

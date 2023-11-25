@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -27,17 +27,17 @@ from Dlg.DLG_Saisie_reglement import CTRL_Mode, CTRL_Compte
 
 from Utils import UTILS_Texte
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 def GetSolde(IDcompte_payeur):
-    """ Récupère le solde de la famille """
+    """ RÃ©cupÃ¨re le solde de la famille """
     # Ventilation automatique
     VentilationAuto(IDcompte_payeur)
 
     DB = GestionDB.DB()
 
-    # Récupère les prestations
+    # RÃ©cupÃ¨re les prestations
     req = """SELECT IDcompte_payeur, SUM(montant) AS total_prestations
     FROM prestations
     WHERE IDcompte_payeur=%d
@@ -49,7 +49,7 @@ def GetSolde(IDcompte_payeur):
     else :
         total_prestations = 0.0
 
-    # Récupère les règlements
+    # RÃ©cupÃ¨re les rÃ¨glements
     req = """SELECT IDcompte_payeur, SUM(montant) AS total_reglements
     FROM reglements
     WHERE IDcompte_payeur=%d
@@ -147,12 +147,12 @@ class Dialog(wx.Dialog):
         self.solde = solde
 
         titre = _(u"Saisir un remboursement")
-        intro = _(u"Cette fonctionnalité permet de rembourser un avoir. Deux prestations et un règlement fictif seront générés automatiquement afin de régulariser le compte.")
+        intro = _(u"Cette fonctionnalitÃ© permet de rembourser un avoir. Deux prestations et un rÃ¨glement fictif seront gÃ©nÃ©rÃ©s automatiquement afin de rÃ©gulariser le compte.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Remboursement.png")
 
-        # Généralités
-        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralités"))
+        # GÃ©nÃ©ralitÃ©s
+        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"GÃ©nÃ©ralitÃ©s"))
 
         self.label_montant = wx.StaticText(self, -1, _(u"Montant :"))
         self.ctrl_montant = CTRL_Saisie_euros.CTRL(self)
@@ -161,7 +161,7 @@ class Dialog(wx.Dialog):
         self.ctrl_observations = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE)
 
         # Options
-        self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
+        self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"ParamÃ¨tres"))
 
         self.label_compte = wx.StaticText(self, -1, _(u"Compte bancaire :"))
         self.ctrl_compte = CTRL_Compte(self)
@@ -170,12 +170,12 @@ class Dialog(wx.Dialog):
         self.ctrl_payeur = CTRL_Payeurs(self, self.IDcompte_payeur)
         self.bouton_payeurs = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
 
-        self.label_mode = wx.StaticText(self, -1, _(u"Mode de règlement :"))
+        self.label_mode = wx.StaticText(self, -1, _(u"Mode de rÃ¨glement :"))
         self.ctrl_mode = CTRL_Mode(self)
         self.ctrl_mode.SetMinSize((200, -1))
         self.bouton_modes = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
 
-        self.hyper_creer_mode = Hyperlien(self, label=_(u"Créer un mode 'Remboursement'"), infobulle=_(u"Si vous n'avez pas de mode 'Remboursement' dans la liste des modes, cliquez ici pour en créer automatiquement."), URL="creer_mode")
+        self.hyper_creer_mode = Hyperlien(self, label=_(u"CrÃ©er un mode 'Remboursement'"), infobulle=_(u"Si vous n'avez pas de mode 'Remboursement' dans la liste des modes, cliquez ici pour en crÃ©er automatiquement."), URL="creer_mode")
 
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
@@ -201,12 +201,12 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez ici le montant du remboursement")))
-        self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez ici des observations [Optionnel]. Vous pouvez par exemple saisir le numéro de chèque qui a été utilisé pour le remboursement, etc...")))
-        self.ctrl_payeur.SetToolTip(wx.ToolTip(_(u"Sélectionnez le payeur qui sera utilisé dans l'enregistrement du règlement fictif")))
+        self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez ici des observations [Optionnel]. Vous pouvez par exemple saisir le numÃ©ro de chÃ¨que qui a Ã©tÃ© utilisÃ© pour le remboursement, etc...")))
+        self.ctrl_payeur.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le payeur qui sera utilisÃ© dans l'enregistrement du rÃ¨glement fictif")))
         self.bouton_payeurs.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter, modifier ou supprimer un payeur")))
-        self.ctrl_mode.SetToolTip(wx.ToolTip(_(u"Sélectionnez le mode de règlement qui sera utilisé. Si un mode 'Remboursement' n'existe pas, créez-le.")))
-        self.bouton_modes.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter, modifier ou supprimer un mode de règlement")))
-        self.ctrl_compte.SetToolTip(wx.ToolTip(_(u"Sélectionnez le compte bancaire qui sera utilisé pour le remboursement")))
+        self.ctrl_mode.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le mode de rÃ¨glement qui sera utilisÃ©. Si un mode 'Remboursement' n'existe pas, crÃ©ez-le.")))
+        self.bouton_modes.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter, modifier ou supprimer un mode de rÃ¨glement")))
+        self.ctrl_compte.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le compte bancaire qui sera utilisÃ© pour le remboursement")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
@@ -215,7 +215,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
 
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         staticbox_generalites = wx.StaticBoxSizer(self.staticbox_generalites_staticbox, wx.VERTICAL)
 
         grid_sizer_generalites = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
@@ -279,8 +279,8 @@ class Dialog(wx.Dialog):
                 self.ctrl_mode.SetID(dictTemp["ID"])
 
     def CreerMode(self):
-        """ Créer un mode 'Remboursement' """
-        # Vérifie si un mode Remboursement n'existe pas déjà
+        """ CrÃ©er un mode 'Remboursement' """
+        # VÃ©rifie si un mode Remboursement n'existe pas dÃ©jÃ 
         DB = GestionDB.DB()
         req = """SELECT IDmode, label FROM modes_reglements;"""
         DB.ExecuterReq(req)
@@ -292,14 +292,14 @@ class Dialog(wx.Dialog):
                 present = True
 
         if present == True :
-            dlg = wx.MessageDialog(self, _(u"Il semblerait qu'un mode 'Remboursement' soit déjà présent.\n\nSouhaitez-vous quand même créer un nouveau mode ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il semblerait qu'un mode 'Remboursement' soit dÃ©jÃ  prÃ©sent.\n\nSouhaitez-vous quand mÃªme crÃ©er un nouveau mode ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES :
                 return
 
         # Confirmation
-        dlg = wx.MessageDialog(self, _(u"Confirmez-vous la création d'un mode de règlement 'Remboursement' ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Confirmez-vous la crÃ©ation d'un mode de rÃ¨glement 'Remboursement' ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -314,7 +314,7 @@ class Dialog(wx.Dialog):
 
         DB.Close()
 
-        # MAJ Contrôle Modes
+        # MAJ ContrÃ´le Modes
         self.ctrl_mode.MAJ()
         self.SelectModeRemboursement()
 
@@ -350,14 +350,14 @@ class Dialog(wx.Dialog):
             return
 
         if montant < 0.0 :
-            dlg = wx.MessageDialog(self, _(u"Le montant doit obligatoirement être positif !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Le montant doit obligatoirement Ãªtre positif !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_montant.SetFocus()
             return
 
         if self.solde != None and FloatToDecimal(montant) > FloatToDecimal(self.solde) :
-            dlg = wx.MessageDialog(self, _(u"Le montant du remboursement ne doit pas être supérieur au solde du compte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Le montant du remboursement ne doit pas Ãªtre supÃ©rieur au solde du compte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_montant.SetFocus()
@@ -365,21 +365,21 @@ class Dialog(wx.Dialog):
 
         IDcompte = self.ctrl_compte.GetID()
         if IDcompte == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un compte bancaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un compte bancaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_compte.SetFocus()
 
         IDpayeur = self.ctrl_payeur.GetID()
         if IDpayeur == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un payeur !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un payeur !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_payeur.SetFocus()
 
         IDmode = self.ctrl_mode.GetID()
         if IDmode == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un mode de règlement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un mode de rÃ¨glement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_mode.SetFocus()
@@ -390,7 +390,7 @@ class Dialog(wx.Dialog):
 
         DB = GestionDB.DB()
 
-        # Récupère IDfamille
+        # RÃ©cupÃ¨re IDfamille
         req = """SELECT IDfamille
         FROM comptes_payeurs
         WHERE IDcompte_payeur=%d
@@ -415,7 +415,7 @@ class Dialog(wx.Dialog):
         VentilationAuto(self.IDcompte_payeur)
 
 
-        # Enregistrement de la prestation négative
+        # Enregistrement de la prestation nÃ©gative
         listeDonnees = [
             ("IDcompte_payeur", self.IDcompte_payeur),
             ("date", str(datetime.date.today())),
@@ -428,7 +428,7 @@ class Dialog(wx.Dialog):
             ]
         IDprestation_negative = DB.ReqInsert("prestations", listeDonnees)
 
-        # Enregistrement du règlement négatif
+        # Enregistrement du rÃ¨glement nÃ©gatif
         listeDonnees = [
             ("IDcompte_payeur", self.IDcompte_payeur),
             ("date", str(datetime.date.today())),
@@ -442,7 +442,7 @@ class Dialog(wx.Dialog):
             ]
         IDreglement = DB.ReqInsert("reglements", listeDonnees)
 
-        # Ventilation de la prestation négative sur le règlement
+        # Ventilation de la prestation nÃ©gative sur le rÃ¨glement
         listeDonnees = [
             ("IDreglement", IDreglement),
             ("IDcompte_payeur", self.IDcompte_payeur),

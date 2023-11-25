@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -30,12 +30,12 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Vous pouvez ici consulter la liste des familles pour lesquelles il est possible de ventiler un ou plusieurs règlements. Cette opération est nécessaire avant l'édition de documents tels que les factures ou les attestations de présence. Double-cliquez sur une ligne pour ouvrir la fiche famille correspondante.")
-        titre = _(u"Vérification de la ventilation")
+        intro = _(u"Vous pouvez ici consulter la liste des familles pour lesquelles il est possible de ventiler un ou plusieurs rÃ¨glements. Cette opÃ©ration est nÃ©cessaire avant l'Ã©dition de documents tels que les factures ou les attestations de prÃ©sence. Double-cliquez sur une ligne pour ouvrir la fiche famille correspondante.")
+        titre = _(u"VÃ©rification de la ventilation")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Repartition.png")
 
         # Lignes
-        self.staticbox_lignes_staticbox = wx.StaticBox(self, -1, _(u"Résultats"))
+        self.staticbox_lignes_staticbox = wx.StaticBox(self, -1, _(u"RÃ©sultats"))
         self.listviewAvecFooter = OL_Verification_ventilation.ListviewAvecFooter(self, kwargs={"tracks" : tracks, "IDcompte_payeur" : IDcompte_payeur, "onlyNonVentiles" : True}) 
         self.ctrl_reglements = self.listviewAvecFooter.GetListview()
         self.ctrl_reglements.MAJ()
@@ -46,9 +46,9 @@ class Dialog(wx.Dialog):
 
         # Actions
         self.staticbox_actions_staticbox = wx.StaticBox(self, -1, _(u"Ventilation automatique"))
-        self.bouton_selection = CTRL_Bouton_image.CTRL(self, texte=_(u"Uniquement la ligne sélectionnée"), cheminImage="Images/32x32/Magique.png")
-        self.bouton_coches = CTRL_Bouton_image.CTRL(self, texte=_(u"Uniquement les lignes cochées"), cheminImage="Images/32x32/Magique.png")
-        self.bouton_toutes = CTRL_Bouton_image.CTRL(self, texte=_(u"Toutes les lignes affichées"), cheminImage="Images/32x32/Magique.png")
+        self.bouton_selection = CTRL_Bouton_image.CTRL(self, texte=_(u"Uniquement la ligne sÃ©lectionnÃ©e"), cheminImage="Images/32x32/Magique.png")
+        self.bouton_coches = CTRL_Bouton_image.CTRL(self, texte=_(u"Uniquement les lignes cochÃ©es"), cheminImage="Images/32x32/Magique.png")
+        self.bouton_toutes = CTRL_Bouton_image.CTRL(self, texte=_(u"Toutes les lignes affichÃ©es"), cheminImage="Images/32x32/Magique.png")
 
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
@@ -64,11 +64,11 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Vérification de la ventilation"))
-        self.bouton_ouvrir_fiche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la fiche famille sélectionnée dans la liste")))
-        self.bouton_selection.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ventiler automatiquement la ligne sélectionnée")))
-        self.bouton_coches.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ventiler automatiquement les lignes cochées")))
-        self.bouton_toutes.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ventiler automatiquement toutes les lignes affichées")))
+        self.SetTitle(_(u"VÃ©rification de la ventilation"))
+        self.bouton_ouvrir_fiche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la fiche famille sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_selection.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ventiler automatiquement la ligne sÃ©lectionnÃ©e")))
+        self.bouton_coches.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ventiler automatiquement les lignes cochÃ©es")))
+        self.bouton_toutes.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ventiler automatiquement toutes les lignes affichÃ©es")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((800, 600))

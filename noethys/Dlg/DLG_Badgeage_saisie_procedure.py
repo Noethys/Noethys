@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -106,7 +106,7 @@ class CTRL_Activite(wx.CheckListBox):
         index = 0
         for ID, label, checked in listeValeurs:
             if label == None :
-                label = _(u"Activité inconnue")
+                label = _(u"ActivitÃ© inconnue")
             self.data.append((ID, label))
             self.Append(label)
             if checked == True :
@@ -150,18 +150,18 @@ class CTRL_Interface(wx.Panel):
         self.box_interface_staticbox = wx.StaticBox(self, -1, _(u"Interface"))
         self.label_style = wx.StaticText(self, -1, _(u"Style :"))
         self.ctrl_style = CTRL_Style(self)
-        self.label_theme = wx.StaticText(self, -1, _(u"Thème :"))
+        self.label_theme = wx.StaticText(self, -1, _(u"ThÃ¨me :"))
         self.ctrl_theme = CTRL_Theme(self)
         self.label_image = wx.StaticText(self, -1, _(u"Image :"))
         self.ctrl_image = wx.TextCtrl(self, -1, u"")
         self.bouton_image = wx.Button(self, -1, u"...", size=(20, 20))
         
         # Identification
-        self.box_identification_staticbox = wx.StaticBox(self, -1, _(u"Système d'identification"))
-        self.radio_barre = wx.RadioButton(self, -1, _(u"Barre numérique"), style=wx.RB_GROUP)
-        self.radio_clavier = wx.RadioButton(self, -1, _(u"Barre et clavier numérique"))
+        self.box_identification_staticbox = wx.StaticBox(self, -1, _(u"SystÃ¨me d'identification"))
+        self.radio_barre = wx.RadioButton(self, -1, _(u"Barre numÃ©rique"), style=wx.RB_GROUP)
+        self.radio_clavier = wx.RadioButton(self, -1, _(u"Barre et clavier numÃ©rique"))
         self.radio_liste = wx.RadioButton(self, -1, _(u"Liste des individus"))
-        self.check_activites = wx.CheckBox(self, -1, _(u"Activer uniquement les inscrits aux activités :"))
+        self.check_activites = wx.CheckBox(self, -1, _(u"Activer uniquement les inscrits aux activitÃ©s :"))
         self.ctrl_activites = CTRL_Activite(self)
 
         self.__set_properties()
@@ -174,19 +174,19 @@ class CTRL_Interface(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonImage, self.bouton_image)
         self.Bind(wx.EVT_LISTBOX, self.OnChoixTheme, self.ctrl_theme)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.OnChoixTheme(None)
         self.OnChoixIdentification(None)
 
     def __set_properties(self):
-        self.ctrl_style.SetToolTip(wx.ToolTip(_(u"Sélectionnez un style d'interface")))
-        self.ctrl_theme.SetToolTip(wx.ToolTip(_(u"Sélectionnez un thème")))
-        self.radio_barre.SetToolTip(wx.ToolTip(_(u"Recommandé pour la saisie avec lecteur de code-barres")))
-        self.radio_clavier.SetToolTip(wx.ToolTip(_(u"Recommandé pour la saisie avec écrans tactiles")))
-        self.radio_liste.SetToolTip(wx.ToolTip(_(u"Recommandé pour la saisie avec écrans tactiles")))
-        self.check_activites.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer uniquement les inscrits aux activités sélectionnées")))
-        self.ctrl_activites.SetToolTip(wx.ToolTip(_(u"Cochez les activités")))
-        self.bouton_image.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner une image personnalisée")))
+        self.ctrl_style.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un style d'interface")))
+        self.ctrl_theme.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un thÃ¨me")))
+        self.radio_barre.SetToolTip(wx.ToolTip(_(u"RecommandÃ© pour la saisie avec lecteur de code-barres")))
+        self.radio_clavier.SetToolTip(wx.ToolTip(_(u"RecommandÃ© pour la saisie avec Ã©crans tactiles")))
+        self.radio_liste.SetToolTip(wx.ToolTip(_(u"RecommandÃ© pour la saisie avec Ã©crans tactiles")))
+        self.check_activites.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer uniquement les inscrits aux activitÃ©s sÃ©lectionnÃ©es")))
+        self.ctrl_activites.SetToolTip(wx.ToolTip(_(u"Cochez les activitÃ©s")))
+        self.bouton_image.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner une image personnalisÃ©e")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
@@ -238,16 +238,16 @@ class CTRL_Interface(wx.Panel):
         self.bouton_image.Enable(etat)
 
     def OnBoutonImage(self, event):
-        # Sélection d'une image
+        # SÃ©lection d'une image
         wildcard = "Toutes les images (*.jpg, *.png, *.gif)|*.jpg;*.png;*.gif|"     \
                         "Images JPEG (*.jpg)|*.jpg|"     \
                         "Images PNG (*.png)|*.png|"     \
                         "Images GIF (*.gif)|*.gif|"     \
                         "All files (*.*)|*.*"
-        # Récupération du chemin des documents
+        # RÃ©cupÃ©ration du chemin des documents
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
-        # Ouverture de la fenêtre de dialogue
+        # Ouverture de la fenÃªtre de dialogue
         dlg = wx.FileDialog(
             self, message=_(u"Choisissez une image"),
             defaultDir=cheminDefaut, 
@@ -277,20 +277,20 @@ class CTRL_Interface(wx.Panel):
         if self.ctrl_theme.GetID() == "personnalise" :
             chemin = self.ctrl_image.GetValue()
             if chemin == "" :
-                dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné le thème 'personnalisé' mais vous n'avez sélectionné aucune image !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous avez sÃ©lectionnÃ© le thÃ¨me 'personnalisÃ©' mais vous n'avez sÃ©lectionnÃ© aucune image !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
 ##            try :
 ##                testBmp = wx.Bitmap(Chemins.GetStaticPath(chemin), wx.BITMAP_TYPE_ANY)
 ##            except :
-##                dlg = wx.MessageDialog(self, _(u"L'image personnalisée que vous avez sélectionné ne semble pas valide !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+##                dlg = wx.MessageDialog(self, _(u"L'image personnalisÃ©e que vous avez sÃ©lectionnÃ© ne semble pas valide !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
 ##                dlg.ShowModal()
 ##                dlg.Destroy()
 ##                return False
         
         if self.check_activites.GetValue() and len(self.ctrl_activites.GetIDcoches()) == 0 :
-                dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné l'activation des inscrits mais sans sélectionner d'activités !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous avez sÃ©lectionnÃ© l'activation des inscrits mais sans sÃ©lectionner d'activitÃ©s !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -310,8 +310,8 @@ class Dialog(wx.Dialog):
         self.listeInitialeActions = []
         self.listeInitialeMessages = []
         
-        # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralités"))
+        # GÃ©nÃ©ralitÃ©s
+        self.box_generalites_staticbox = wx.StaticBox(self, -1, _(u"GÃ©nÃ©ralitÃ©s"))
         self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
 
@@ -320,10 +320,10 @@ class Dialog(wx.Dialog):
 
         # Options
         self.box_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
-        self.check_vocal = wx.CheckBox(self, -1, _(u"Activer la synthèse vocale"))
+        self.check_vocal = wx.CheckBox(self, -1, _(u"Activer la synthÃ¨se vocale"))
         self.check_vocal.SetValue(True)
         self.check_tutoiement = wx.CheckBox(self, -1, _(u"Activer le tutoiement"))
-        self.check_confirmation = wx.CheckBox(self, -1, _(u"Demander une confirmation de l'identité"))
+        self.check_confirmation = wx.CheckBox(self, -1, _(u"Demander une confirmation de l'identitÃ©"))
 
         # Actions
         self.box_actions_staticbox = wx.StaticBox(self, -1, _(u"Actions"))
@@ -358,16 +358,16 @@ class Dialog(wx.Dialog):
             self.Importation() 
 
     def __set_properties(self):
-        self.SetTitle(_(u"Saisie d'une procédure"))
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour cette procédure")))
-        self.check_vocal.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer la synthèse vocale dans cette procédure")))
+        self.SetTitle(_(u"Saisie d'une procÃ©dure"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour cette procÃ©dure")))
+        self.check_vocal.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer la synthÃ¨se vocale dans cette procÃ©dure")))
         self.check_tutoiement.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour utiliser le tutoiement au lieu du vouvoiement")))
-        self.check_confirmation.SetToolTip(wx.ToolTip(_(u"Noethys demandera la confirmation de l'identité de l'individu après son identification")))
+        self.check_confirmation.SetToolTip(wx.ToolTip(_(u"Noethys demandera la confirmation de l'identitÃ© de l'individu aprÃ¨s son identification")))
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une action")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'action sélectionnée")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'action sélectionnée")))
-        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour faire monter l'action sélectionnée")))
-        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour faire descendre l'action sélectionnée")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'action sÃ©lectionnÃ©e")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'action sÃ©lectionnÃ©e")))
+        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour faire monter l'action sÃ©lectionnÃ©e")))
+        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour faire descendre l'action sÃ©lectionnÃ©e")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -376,7 +376,7 @@ class Dialog(wx.Dialog):
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
         
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         box_generalites = wx.StaticBoxSizer(self.box_generalites_staticbox, wx.VERTICAL)
         grid_sizer_generalites = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
         grid_sizer_generalites.Add(self.label_nom, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -454,10 +454,10 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
 
     def OnBoutonOk(self, event): 
-        # Vérification de la saisie
+        # VÃ©rification de la saisie
         nom_procedure = self.ctrl_nom.GetValue()
         if nom_procedure == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom de procédure !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom de procÃ©dure !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
@@ -470,7 +470,7 @@ class Dialog(wx.Dialog):
         # Actions
         listeActions = self.ctrl_actions.GetDonnees()
         if len(listeActions) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas vouloir saisir d'action ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Etes-vous sÃ»r de ne pas vouloir saisir d'action ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse !=  wx.ID_YES :
@@ -481,14 +481,14 @@ class Dialog(wx.Dialog):
         if etat == False :
             return False
         
-        # Fermeture fenêtre
+        # Fermeture fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def Importation(self):
-        """Importation des données """
+        """Importation des donnÃ©es """
         DB = GestionDB.DB()
         
-        # Importation de la procédure
+        # Importation de la procÃ©dure
         req = """SELECT nom, style, theme, image, systeme, activites, confirmation, vocal, tutoiement
         FROM badgeage_procedures
         WHERE IDprocedure=%d;
@@ -567,7 +567,7 @@ class Dialog(wx.Dialog):
 
 
     def Sauvegarde(self):
-        """ Sauvegarde de la procédure et des actions """
+        """ Sauvegarde de la procÃ©dure et des actions """
         DB = GestionDB.DB()
 
         nom = self.ctrl_nom.GetValue()
@@ -588,7 +588,7 @@ class Dialog(wx.Dialog):
         vocal = int(self.check_vocal.GetValue())
         tutoiement = int(self.check_tutoiement.GetValue())
         
-        # Sauvegarde de la procédure
+        # Sauvegarde de la procÃ©dure
         listeDonnees = [    
                 ("nom", nom),
                 ("defaut", self.defaut),
@@ -619,7 +619,7 @@ class Dialog(wx.Dialog):
         for dictAction in listeActions :
             IDaction = dictAction["IDaction"]
             
-            # Création de l'enregistrement
+            # CrÃ©ation de l'enregistrement
             listeDonnees = [("IDprocedure", self.IDprocedure), ("ordre", ordre), ]
             for code in listeChamps :
                 if code not in ("IDaction", "IDprocedure", "ordre") :
@@ -649,7 +649,7 @@ class Dialog(wx.Dialog):
             
             ordre += 1
             
-        # Suppression des actions et des messages supprimés
+        # Suppression des actions et des messages supprimÃ©s
         for IDaction in self.listeInitialeActions :
             if IDaction not in listeIDaction :
                 DB.ReqDEL("badgeage_actions", "IDaction", IDaction)

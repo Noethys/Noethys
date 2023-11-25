@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -28,7 +28,7 @@ class Panel(wx.Panel):
         self.IDactivite = IDactivite
                 
         # Ouvertures
-        self.staticbox_ouvertures_staticbox = wx.StaticBox(self, -1, _(u"Calendrier des ouvertures et des évènements"))
+        self.staticbox_ouvertures_staticbox = wx.StaticBox(self, -1, _(u"Calendrier des ouvertures et des Ã©vÃ¨nements"))
         self.ctrl_ouvertures = CTRL_Calendrier_ouvertures.Calendrier(self, IDactivite=self.IDactivite)
         self.ctrl_ouvertures.Initialisation() 
         self.bouton_ouvertures_modifier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
@@ -39,8 +39,8 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOuvertures_Modifier, self.bouton_ouvertures_modifier)
 
     def __set_properties(self):
-        self.ctrl_ouvertures.SetToolTip(wx.ToolTip(_(u"Calendrier des ouvertures et des évènements")))
-        self.bouton_ouvertures_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le calendrier des ouvertures et des évènements")))
+        self.ctrl_ouvertures.SetToolTip(wx.ToolTip(_(u"Calendrier des ouvertures et des Ã©vÃ¨nements")))
+        self.bouton_ouvertures_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le calendrier des ouvertures et des Ã©vÃ¨nements")))
         
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)

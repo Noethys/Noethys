@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -64,14 +64,14 @@ class PanelGraph(wx.Panel):
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.GetPath()
             self.canvas.print_figure(path, dpi=300)
-            message = _(u"Le graphe a été sauvegardé avec succès")
+            message = _(u"Le graphe a Ã©tÃ© sauvegardÃ© avec succÃ¨s")
             dlg = wx.MessageDialog(self, message, _(u"Sauvegarde"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
                 
     def Clipboard_image(self):
         self.canvas.Copy_to_Clipboard()
-        message = _(u"Le graphe a été envoyé dans le presse-papiers.")
+        message = _(u"Le graphe a Ã©tÃ© envoyÃ© dans le presse-papiers.")
         dlg = wx.MessageDialog(self, message, _(u"Presse-papiers"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
@@ -79,7 +79,7 @@ class PanelGraph(wx.Panel):
     def Imprimer_image(self):
         # Enregistrement de l'image dans repertoire Temp
         self.canvas.print_figure(UTILS_Fichiers.GetRepTemp(fichier="grapheTemp.png"), dpi=300)
-        # Création du PDF
+        # CrÃ©ation du PDF
         from reportlab.pdfgen import canvas as canvasPDF
         from reportlab.lib.pagesizes import A4
         hauteur, largeur = A4
@@ -182,7 +182,7 @@ if __name__ == u"__main__":
     t = arange(0.0,3.0,0.01)
     s = sin(2*pi*t)
     ax.plot(t,s)
-    title = ax.set_title(_(u"Répartition par activité professionnelle"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
+    title = ax.set_title(_(u"RÃ©partition par activitÃ© professionnelle"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
     matplotlib.pyplot.setp(title, rotation=0, fontsize=9)
     
     dialog_1 = Dialog(None, figure=figure)

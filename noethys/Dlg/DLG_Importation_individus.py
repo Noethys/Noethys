@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -38,8 +38,8 @@ from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import ObjectListView, FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 TYPES_IMPORTATION = [
-    {"code":"familles", "label":_(u"Familles"), "infos":_(u"Sélectionnez ce type d'importation si votre fichier de données comporte une famille par ligne.\nNoethys créera alors une fiche famille pour chaque ligne ainsi que les fiches individuelles correspondantes.")},
-    {"code":"individus", "label":_(u"Individus"), "infos":_(u"Sélectionnez ce type d'importation si votre fichier de données comporte un individu par ligne.\nNoethys créera alors pour chaque individu une fiche individuelle non rattachée.")},
+    {"code":"familles", "label":_(u"Familles"), "infos":_(u"SÃ©lectionnez ce type d'importation si votre fichier de donnÃ©es comporte une famille par ligne.\nNoethys crÃ©era alors une fiche famille pour chaque ligne ainsi que les fiches individuelles correspondantes.")},
+    {"code":"individus", "label":_(u"Individus"), "infos":_(u"SÃ©lectionnez ce type d'importation si votre fichier de donnÃ©es comporte un individu par ligne.\nNoethys crÃ©era alors pour chaque individu une fiche individuelle non rattachÃ©e.")},
     ]
 
 
@@ -47,105 +47,105 @@ DICT_COLONNES = {
 
     "familles" : [
 
-                        {"code":"famille_rue_resid", "label":_(u"Rue de résidence de la famille"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : 10 rue des oiseaux.")},
-                        {"code":"famille_cp_resid", "label":_(u"CP ville de résidence de la famille"), "format":"codepostal", "obligatoire":False, "infos":_(u"Format : xxxxx (Exemple : 29870)")},
-                        {"code":"famille_ville_resid", "label":_(u"Ville de résidence de la famille"), "format":"ville", "obligatoire":False, "infos":_(u"Exemples : LANNILIS, BREST...")},
-                        {"code":"famille_secteur", "label":_(u"Secteur de résidence de la famille"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : Brest Nord...")},
-                        {"code":"famille_tel_domicile", "label":_(u"Numéro de tél. du domicile famille"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)")},
-                        {"code":"famille_caisse", "label":_(u"Nom de caisse de la famille"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : CAF, MSA (Doit être présent dans base).")},
-                        {"code":"famille_num_allocataire", "label":_(u"Numéro d'allocataire de la famille"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : 7798769X.")},
-                        {"code":"famille_allocataire", "label":_(u"Allocataire titulaire de la famille"), "format":"texte", "obligatoire":False, "infos":_(u"Valeurs possibles = Père, P, Mère, M.")},
-                        {"code":"famille_memo", "label":_(u"Mémo de la famille"), "format":"texte", "obligatoire":False, "infos":_(u"Texte libre.")},
+                        {"code":"famille_rue_resid", "label":_(u"Rue de rÃ©sidence de la famille"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : 10 rue des oiseaux.")},
+                        {"code":"famille_cp_resid", "label":_(u"CP ville de rÃ©sidence de la famille"), "format":"codepostal", "obligatoire":False, "infos":_(u"Format : xxxxx (Exemple : 29870)")},
+                        {"code":"famille_ville_resid", "label":_(u"Ville de rÃ©sidence de la famille"), "format":"ville", "obligatoire":False, "infos":_(u"Exemples : LANNILIS, BREST...")},
+                        {"code":"famille_secteur", "label":_(u"Secteur de rÃ©sidence de la famille"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : Brest Nord...")},
+                        {"code":"famille_tel_domicile", "label":_(u"NumÃ©ro de tÃ©l. du domicile famille"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)")},
+                        {"code":"famille_caisse", "label":_(u"Nom de caisse de la famille"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : CAF, MSA (Doit Ãªtre prÃ©sent dans base).")},
+                        {"code":"famille_num_allocataire", "label":_(u"NumÃ©ro d'allocataire de la famille"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : 7798769X.")},
+                        {"code":"famille_allocataire", "label":_(u"Allocataire titulaire de la famille"), "format":"texte", "obligatoire":False, "infos":_(u"Valeurs possibles = PÃ¨re, P, MÃ¨re, M.")},
+                        {"code":"famille_memo", "label":_(u"MÃ©mo de la famille"), "format":"texte", "obligatoire":False, "infos":_(u"Texte libre.")},
 
-                        {"code":"pere_nom", "label":_(u"Nom de famille du père"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : DUPOND, DURAND...")},
-                        {"code":"pere_prenom", "label":_(u"Prénom du père"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : Gérard, Xavier...")},
-                        {"code":"pere_date_naiss", "label":_(u"Date de naissance du père"), "format":"date", "obligatoire":False, "infos":_(u"Format : jj/mm/aaa (Exemple : 01/02/2003)")},
-                        {"code":"pere_cp_naiss", "label":_(u"CP de la ville de naissance du père"), "format":"codepostal", "obligatoire":False, "infos":_(u"Format : xxxxx (Exemple : 29870)")},
-                        {"code":"pere_ville_naiss", "label":_(u"Ville de naissance du père"), "format":"ville", "obligatoire":False, "infos":_(u"Exemples : LANNILIS, BREST...")},
-                        {"code":"pere_tel_mobile", "label":_(u"Numéro de mobile du père"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)")},
-                        {"code":"pere_email", "label":_(u"Email du père"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : monadressemail@test.com.")},
-                        {"code":"pere_categorie", "label":_(u"Catégorie socio-pro. du père"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : Employé (Doit être présent dans base)")},
-                        {"code":"pere_profession", "label":_(u"Profession du père"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : Charpentier, Secrétaire...")},
-                        {"code":"pere_employeur", "label":_(u"Employeur du père"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : SNCF, France Télécom...")},
-                        {"code":"pere_tel_travail", "label":_(u"Numéro de travail du père"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)")},
-                        {"code":"pere_memo", "label":_(u"Mémo du père"), "format":"texte", "obligatoire":False, "infos":_(u"Texte libre.")},
+                        {"code":"pere_nom", "label":_(u"Nom de famille du pÃ¨re"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : DUPOND, DURAND...")},
+                        {"code":"pere_prenom", "label":_(u"PrÃ©nom du pÃ¨re"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : GÃ©rard, Xavier...")},
+                        {"code":"pere_date_naiss", "label":_(u"Date de naissance du pÃ¨re"), "format":"date", "obligatoire":False, "infos":_(u"Format : jj/mm/aaa (Exemple : 01/02/2003)")},
+                        {"code":"pere_cp_naiss", "label":_(u"CP de la ville de naissance du pÃ¨re"), "format":"codepostal", "obligatoire":False, "infos":_(u"Format : xxxxx (Exemple : 29870)")},
+                        {"code":"pere_ville_naiss", "label":_(u"Ville de naissance du pÃ¨re"), "format":"ville", "obligatoire":False, "infos":_(u"Exemples : LANNILIS, BREST...")},
+                        {"code":"pere_tel_mobile", "label":_(u"NumÃ©ro de mobile du pÃ¨re"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)")},
+                        {"code":"pere_email", "label":_(u"Email du pÃ¨re"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : monadressemail@test.com.")},
+                        {"code":"pere_categorie", "label":_(u"CatÃ©gorie socio-pro. du pÃ¨re"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : EmployÃ© (Doit Ãªtre prÃ©sent dans base)")},
+                        {"code":"pere_profession", "label":_(u"Profession du pÃ¨re"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : Charpentier, SecrÃ©taire...")},
+                        {"code":"pere_employeur", "label":_(u"Employeur du pÃ¨re"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : SNCF, France TÃ©lÃ©com...")},
+                        {"code":"pere_tel_travail", "label":_(u"NumÃ©ro de travail du pÃ¨re"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)")},
+                        {"code":"pere_memo", "label":_(u"MÃ©mo du pÃ¨re"), "format":"texte", "obligatoire":False, "infos":_(u"Texte libre.")},
 
-                        {"code":"mere_nom", "label":_(u"Nom de famille de la mère"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : DUPOND, DURAND...")},
-                        {"code":"mere_nom_jfille", "label":_(u"Nom de jeune fille de la mère"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : DUPOND, DURAND...")},
-                        {"code":"mere_prenom", "label":_(u"Prénom de la mère"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : Marie, Sophie...")},
-                        {"code":"mere_date_naiss", "label":_(u"Date de naissance de la mère"), "format":"date", "obligatoire":False, "infos":_(u"Format : jj/mm/aaa (Exemple : 01/02/2003)")},
-                        {"code":"mere_cp_naiss", "label":_(u"CP de la ville de naissance de la mère"), "format":"codepostal", "obligatoire":False, "infos":_(u"Format : xxxxx (Exemple : 29870)")},
-                        {"code":"mere_ville_naiss", "label":_(u"Ville de naissance de la mère"), "format":"ville", "obligatoire":False, "infos":_(u"Exemples : LANNILIS, BREST...")},
-                        {"code":"mere_tel_mobile", "label":_(u"Numéro de mobile de la mère"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)")},
-                        {"code":"mere_email", "label":_(u"Email de la mère"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : monadressemail@test.com.")},
-                        {"code":"mere_categorie", "label":_(u"Catégorie socio-pro. de la mère"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : Employé (Doit être présent dans base)")},
-                        {"code":"mere_profession", "label":_(u"Profession de la mère"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : Charpentier, Secrétaire...")},
-                        {"code":"mere_employeur", "label":_(u"Employeur de la mère"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : SNCF, France Télécom...")},
-                        {"code":"mere_tel_travail", "label":_(u"Numéro de travail de la mère"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)")},
-                        {"code":"mere_memo", "label":_(u"Mémo de la mère"), "format":"texte", "obligatoire":False, "infos":_(u"Texte libre.")},
+                        {"code":"mere_nom", "label":_(u"Nom de famille de la mÃ¨re"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : DUPOND, DURAND...")},
+                        {"code":"mere_nom_jfille", "label":_(u"Nom de jeune fille de la mÃ¨re"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : DUPOND, DURAND...")},
+                        {"code":"mere_prenom", "label":_(u"PrÃ©nom de la mÃ¨re"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : Marie, Sophie...")},
+                        {"code":"mere_date_naiss", "label":_(u"Date de naissance de la mÃ¨re"), "format":"date", "obligatoire":False, "infos":_(u"Format : jj/mm/aaa (Exemple : 01/02/2003)")},
+                        {"code":"mere_cp_naiss", "label":_(u"CP de la ville de naissance de la mÃ¨re"), "format":"codepostal", "obligatoire":False, "infos":_(u"Format : xxxxx (Exemple : 29870)")},
+                        {"code":"mere_ville_naiss", "label":_(u"Ville de naissance de la mÃ¨re"), "format":"ville", "obligatoire":False, "infos":_(u"Exemples : LANNILIS, BREST...")},
+                        {"code":"mere_tel_mobile", "label":_(u"NumÃ©ro de mobile de la mÃ¨re"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)")},
+                        {"code":"mere_email", "label":_(u"Email de la mÃ¨re"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : monadressemail@test.com.")},
+                        {"code":"mere_categorie", "label":_(u"CatÃ©gorie socio-pro. de la mÃ¨re"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : EmployÃ© (Doit Ãªtre prÃ©sent dans base)")},
+                        {"code":"mere_profession", "label":_(u"Profession de la mÃ¨re"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : Charpentier, SecrÃ©taire...")},
+                        {"code":"mere_employeur", "label":_(u"Employeur de la mÃ¨re"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : SNCF, France TÃ©lÃ©com...")},
+                        {"code":"mere_tel_travail", "label":_(u"NumÃ©ro de travail de la mÃ¨re"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)")},
+                        {"code":"mere_memo", "label":_(u"MÃ©mo de la mÃ¨re"), "format":"texte", "obligatoire":False, "infos":_(u"Texte libre.")},
                         
-                        {"code":"enfant1_civilite", "label":_(u"Civilité de l'enfant 1"), "format":"texte", "obligatoire":False, "infos":_(u"Garçon = M, m, Mr, M., Masculin, H, h, Homme, G, g, Garçon.<BR>Fille = F, f, Féminin, Femme, Fille.")},
+                        {"code":"enfant1_civilite", "label":_(u"CivilitÃ© de l'enfant 1"), "format":"texte", "obligatoire":False, "infos":_(u"GarÃ§on = M, m, Mr, M., Masculin, H, h, Homme, G, g, GarÃ§on.<BR>Fille = F, f, FÃ©minin, Femme, Fille.")},
                         {"code":"enfant1_nom", "label":_(u"Nom de famille de l'enfant 1"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : DUPOND, DURAND...")},
-                        {"code":"enfant1_prenom", "label":_(u"Prénom de l'enfant 1"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : Kévin, Sophie...")},
+                        {"code":"enfant1_prenom", "label":_(u"PrÃ©nom de l'enfant 1"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : KÃ©vin, Sophie...")},
                         {"code":"enfant1_date_naiss", "label":_(u"Date de naissance de l'enfant 1"), "format":"date", "obligatoire":False, "infos":_(u"Format : jj/mm/aaa (Exemple : 01/02/2003)")},
                         {"code":"enfant1_cp_naiss", "label":_(u"CP de la ville de naiss. de l'enfant 1"), "format":"codepostal", "obligatoire":False, "infos":_(u"Format : xxxxx (Exemple : 29870)")},
                         {"code":"enfant1_ville_naiss", "label":_(u"Ville de naissance de l'enfant 1"), "format":"ville", "obligatoire":False, "infos":_(u"Exemples : LANNILIS, BREST...")},
-                        {"code":"enfant1_tel_mobile", "label":_(u"Numéro de mobile de l'enfant 1"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)")},
+                        {"code":"enfant1_tel_mobile", "label":_(u"NumÃ©ro de mobile de l'enfant 1"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)")},
                         {"code":"enfant1_email", "label":_(u"Email de l'enfant 1"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : monadressemail@test.com.")},
-                        {"code":"enfant1_memo", "label":_(u"Mémo de l'enfant 1"), "format":"texte", "obligatoire":False, "infos":_(u"Texte libre.")},
+                        {"code":"enfant1_memo", "label":_(u"MÃ©mo de l'enfant 1"), "format":"texte", "obligatoire":False, "infos":_(u"Texte libre.")},
 
-                        {"code":"enfant2_civilite", "label":_(u"Civilité de l'enfant 2"), "format":"texte", "obligatoire":False, "infos":_(u"Garçon = M, m, Mr, M., Masculin, H, h, Homme, G, g, Garçon.<BR>Fille = F, f, Féminin, Femme, Fille.")},
+                        {"code":"enfant2_civilite", "label":_(u"CivilitÃ© de l'enfant 2"), "format":"texte", "obligatoire":False, "infos":_(u"GarÃ§on = M, m, Mr, M., Masculin, H, h, Homme, G, g, GarÃ§on.<BR>Fille = F, f, FÃ©minin, Femme, Fille.")},
                         {"code":"enfant2_nom", "label":_(u"Nom de famille de l'enfant 2"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : DUPOND, DURAND...")},
-                        {"code":"enfant2_prenom", "label":_(u"Prénom de l'enfant 2"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : Kévin, Sophie...")},
+                        {"code":"enfant2_prenom", "label":_(u"PrÃ©nom de l'enfant 2"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : KÃ©vin, Sophie...")},
                         {"code":"enfant2_date_naiss", "label":_(u"Date de naissance de l'enfant 2"), "format":"date", "obligatoire":False, "infos":_(u"Format : jj/mm/aaa (Exemple : 02/02/2003)")},
                         {"code":"enfant2_cp_naiss", "label":_(u"CP de la ville de naiss. de l'enfant 2"), "format":"codepostal", "obligatoire":False, "infos":_(u"Format : xxxxx (Exemple : 29870)")},
                         {"code":"enfant2_ville_naiss", "label":_(u"Ville de naissance de l'enfant 2"), "format":"ville", "obligatoire":False, "infos":_(u"Exemples : LANNILIS, BREST...")},
-                        {"code":"enfant2_tel_mobile", "label":_(u"Numéro de mobile de l'enfant 2"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 02.02.03.04.05.)")},
+                        {"code":"enfant2_tel_mobile", "label":_(u"NumÃ©ro de mobile de l'enfant 2"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 02.02.03.04.05.)")},
                         {"code":"enfant2_email", "label":_(u"Email de l'enfant 2"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : monadressemail@test.com.")},
-                        {"code":"enfant2_memo", "label":_(u"Mémo de l'enfant 2"), "format":"texte", "obligatoire":False, "infos":_(u"Texte libre.")},
+                        {"code":"enfant2_memo", "label":_(u"MÃ©mo de l'enfant 2"), "format":"texte", "obligatoire":False, "infos":_(u"Texte libre.")},
 
-                        {"code":"enfant3_civilite", "label":_(u"Civilité de l'enfant 3"), "format":"texte", "obligatoire":False, "infos":_(u"Garçon = M, m, Mr, M., Masculin, H, h, Homme, G, g, Garçon.<BR>Fille = F, f, Féminin, Femme, Fille.")},
+                        {"code":"enfant3_civilite", "label":_(u"CivilitÃ© de l'enfant 3"), "format":"texte", "obligatoire":False, "infos":_(u"GarÃ§on = M, m, Mr, M., Masculin, H, h, Homme, G, g, GarÃ§on.<BR>Fille = F, f, FÃ©minin, Femme, Fille.")},
                         {"code":"enfant3_nom", "label":_(u"Nom de famille de l'enfant 3"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : DUPOND, DURAND...")},
-                        {"code":"enfant3_prenom", "label":_(u"Prénom de l'enfant 3"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : Kévin, Sophie...")},
+                        {"code":"enfant3_prenom", "label":_(u"PrÃ©nom de l'enfant 3"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : KÃ©vin, Sophie...")},
                         {"code":"enfant3_date_naiss", "label":_(u"Date de naissance de l'enfant 3"), "format":"date", "obligatoire":False, "infos":_(u"Format : jj/mm/aaa (Exemple : 03/02/2003)")},
                         {"code":"enfant3_cp_naiss", "label":_(u"CP de la ville de naiss. de l'enfant 3"), "format":"codepostal", "obligatoire":False, "infos":_(u"Format : xxxxx (Exemple : 29870)")},
                         {"code":"enfant3_ville_naiss", "label":_(u"Ville de naissance de l'enfant 3"), "format":"ville", "obligatoire":False, "infos":_(u"Exemples : LANNILIS, BREST...")},
-                        {"code":"enfant3_tel_mobile", "label":_(u"Numéro de mobile de l'enfant 3"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 03.02.03.04.05.)")},
+                        {"code":"enfant3_tel_mobile", "label":_(u"NumÃ©ro de mobile de l'enfant 3"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 03.02.03.04.05.)")},
                         {"code":"enfant3_email", "label":_(u"Email de l'enfant 3"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : monadressemail@test.com.")},
-                        {"code":"enfant3_memo", "label":_(u"Mémo de l'enfant 3"), "format":"texte", "obligatoire":False, "infos":_(u"Texte libre.")},
+                        {"code":"enfant3_memo", "label":_(u"MÃ©mo de l'enfant 3"), "format":"texte", "obligatoire":False, "infos":_(u"Texte libre.")},
 
-                        {"code":"enfant4_civilite", "label":_(u"Civilité de l'enfant 4"), "format":"texte", "obligatoire":False, "infos":_(u"Garçon = M, m, Mr, M., Masculin, H, h, Homme, G, g, Garçon.<BR>Fille = F, f, Féminin, Femme, Fille.")},
+                        {"code":"enfant4_civilite", "label":_(u"CivilitÃ© de l'enfant 4"), "format":"texte", "obligatoire":False, "infos":_(u"GarÃ§on = M, m, Mr, M., Masculin, H, h, Homme, G, g, GarÃ§on.<BR>Fille = F, f, FÃ©minin, Femme, Fille.")},
                         {"code":"enfant4_nom", "label":_(u"Nom de famille de l'enfant 4"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : DUPOND, DURAND...")},
-                        {"code":"enfant4_prenom", "label":_(u"Prénom de l'enfant 4"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : Kévin, Sophie...")},
+                        {"code":"enfant4_prenom", "label":_(u"PrÃ©nom de l'enfant 4"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : KÃ©vin, Sophie...")},
                         {"code":"enfant4_date_naiss", "label":_(u"Date de naissance de l'enfant 4"), "format":"date", "obligatoire":False, "infos":_(u"Format : jj/mm/aaa (Exemple : 04/02/2003)")},
                         {"code":"enfant4_cp_naiss", "label":_(u"CP de la ville de naiss. de l'enfant 4"), "format":"codepostal", "obligatoire":False, "infos":_(u"Format : xxxxx (Exemple : 29870)")},
                         {"code":"enfant4_ville_naiss", "label":_(u"Ville de naissance de l'enfant 4"), "format":"ville", "obligatoire":False, "infos":_(u"Exemples : LANNILIS, BREST...")},
-                        {"code":"enfant4_tel_mobile", "label":_(u"Numéro de mobile de l'enfant 4"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 04.02.03.04.05.)")},
+                        {"code":"enfant4_tel_mobile", "label":_(u"NumÃ©ro de mobile de l'enfant 4"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 04.02.03.04.05.)")},
                         {"code":"enfant4_email", "label":_(u"Email de l'enfant 4"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : monadressemail@test.com.")},
-                        {"code":"enfant4_memo", "label":_(u"Mémo de l'enfant 4"), "format":"texte", "obligatoire":False, "infos":_(u"Texte libre.")},
+                        {"code":"enfant4_memo", "label":_(u"MÃ©mo de l'enfant 4"), "format":"texte", "obligatoire":False, "infos":_(u"Texte libre.")},
 
                         ],
 
     "individus" : [
-                        {"code":"individu_civilite", "label":_(u"Civilité"), "format":"texte", "obligatoire":True, "infos":_(u"Monsieur = M, m, Mr, M., Monsieur, H, h, homme.<BR>Melle = Melle, Mademoiselle.<BR>Mme = Mme, Madame, Femme.<BR>Garçon = G, g, Garçon.<BR>Fille = F, f, Fille.<BR>Autres = Collectivité, Association, Organisme, Entreprise.")},
+                        {"code":"individu_civilite", "label":_(u"CivilitÃ©"), "format":"texte", "obligatoire":True, "infos":_(u"Monsieur = M, m, Mr, M., Monsieur, H, h, homme.<BR>Melle = Melle, Mademoiselle.<BR>Mme = Mme, Madame, Femme.<BR>GarÃ§on = G, g, GarÃ§on.<BR>Fille = F, f, Fille.<BR>Autres = CollectivitÃ©, Association, Organisme, Entreprise.")},
                         {"code":"individu_nom", "label":_(u"Nom de famille"), "format":"texte", "obligatoire":True, "infos":_(u"Exemples : DUPOND, DURAND...")},
                         {"code":"individu_nom_jfille", "label":_(u"Nom de jeune fille"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : DUPOND, DURAND...")},
-                        {"code":"individu_prenom", "label":_(u"Prénom"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : Kévin, Sophie...")},
+                        {"code":"individu_prenom", "label":_(u"PrÃ©nom"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : KÃ©vin, Sophie...")},
                         {"code":"individu_date_naiss", "label":_(u"Date de naissance"), "format":"date", "obligatoire":False, "infos":_(u"Format : jj/mm/aaa (Exemple : 01/02/2003)")},
                         {"code":"individu_cp_naiss", "label":_(u"Code postal de la ville de naissance"), "format":"codepostal", "obligatoire":False, "infos":_(u"Format : xxxxx (Exemple : 29870)")},
                         {"code":"individu_ville_naiss", "label":_(u"Ville de naissance"), "format":"ville", "obligatoire":False, "infos":_(u"Exemples : LANNILIS, BREST...")},
-                        {"code":"individu_rue_resid", "label":_(u"Rue de résidence"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : 10 rue des oiseaux.")},
-                        {"code":"individu_cp_resid", "label":_(u"Code postal de la ville de résidence"), "format":"codepostal", "obligatoire":False, "infos":_(u"Format : xxxxx (Exemple : 29870)")},
-                        {"code":"individu_ville_resid", "label":_(u"Ville de résidence"), "format":"ville", "obligatoire":False, "infos":_(u"Exemples : LANNILIS, BREST...")},
-                        {"code":"individu_secteur", "label":_(u"Secteur de résidence"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : Brest Nord...")},
-                        {"code":"individu_tel_domicile", "label":_(u"Numéro de domicile"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)")},
-                        {"code":"individu_tel_mobile", "label":_(u"Numéro de mobile"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)")},
+                        {"code":"individu_rue_resid", "label":_(u"Rue de rÃ©sidence"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : 10 rue des oiseaux.")},
+                        {"code":"individu_cp_resid", "label":_(u"Code postal de la ville de rÃ©sidence"), "format":"codepostal", "obligatoire":False, "infos":_(u"Format : xxxxx (Exemple : 29870)")},
+                        {"code":"individu_ville_resid", "label":_(u"Ville de rÃ©sidence"), "format":"ville", "obligatoire":False, "infos":_(u"Exemples : LANNILIS, BREST...")},
+                        {"code":"individu_secteur", "label":_(u"Secteur de rÃ©sidence"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : Brest Nord...")},
+                        {"code":"individu_tel_domicile", "label":_(u"NumÃ©ro de domicile"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)")},
+                        {"code":"individu_tel_mobile", "label":_(u"NumÃ©ro de mobile"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)")},
                         {"code":"individu_email", "label":_(u"Email"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : monadressemail@test.com.")},
-                        {"code":"individu_categorie", "label":_(u"Catégorie socio-professionnelle"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : Employé (Doit être présent dans base)")},
-                        {"code":"individu_profession", "label":_(u"Profession"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : Charpentier, Secrétaire...")},
-                        {"code":"individu_employeur", "label":_(u"Employeur"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : SNCF, France Télécom...")},
-                        {"code":"individu_tel_travail", "label":_(u"Numéro de travail"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)")},
-                        {"code":"individu_memo", "label":_(u"Mémo"), "format":"texte", "obligatoire":False, "infos":_(u"Texte libre.")},
+                        {"code":"individu_categorie", "label":_(u"CatÃ©gorie socio-professionnelle"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : EmployÃ© (Doit Ãªtre prÃ©sent dans base)")},
+                        {"code":"individu_profession", "label":_(u"Profession"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : Charpentier, SecrÃ©taire...")},
+                        {"code":"individu_employeur", "label":_(u"Employeur"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : SNCF, France TÃ©lÃ©com...")},
+                        {"code":"individu_tel_travail", "label":_(u"NumÃ©ro de travail"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)")},
+                        {"code":"individu_memo", "label":_(u"MÃ©mo"), "format":"texte", "obligatoire":False, "infos":_(u"Texte libre.")},
                         ],
 
     }
@@ -168,21 +168,21 @@ class Importation_Excel() :
         self.feuille = self.SelectionFeuille() 
     
     def SelectionFeuille(self):
-        """ Sélection de la feuille qui comporte les données """
+        """ SÃ©lection de la feuille qui comporte les donnÃ©es """
         feuille = None
         feuilles = self.classeur.sheet_names()
         if len(feuilles) == 1 :
             feuille = self.classeur.sheet_by_index(0)
         else :
-            # Demande la feuille à ouvrir
-            dlg = wx.SingleChoiceDialog(None, _(u"Veuillez sélectionner la feuille du classeur qui comporte les données à importer :"), _(u"Sélection d'une feuille"), feuilles, wx.CHOICEDLG_STYLE)
+            # Demande la feuille Ã  ouvrir
+            dlg = wx.SingleChoiceDialog(None, _(u"Veuillez sÃ©lectionner la feuille du classeur qui comporte les donnÃ©es Ã  importer :"), _(u"SÃ©lection d'une feuille"), feuilles, wx.CHOICEDLG_STYLE)
             if dlg.ShowModal() == wx.ID_OK:
                 feuille = self.classeur.sheet_by_index(dlg.GetSelection())
             dlg.Destroy()
         return feuille
     
     def GetDonnees(self, colonnes=[]):
-        """ Récupération des données de la feuille """
+        """ RÃ©cupÃ©ration des donnÃ©es de la feuille """
         listeDonnees = []
         if self.feuille == None : return listeDonnees
         try :
@@ -211,10 +211,10 @@ class Importation_CSV() :
     def __init__(self, nomFichier=""):
         self.fichierValide = True
         
-        # Demande le caractère de séparation
+        # Demande le caractÃ¨re de sÃ©paration
         listeLabels = [_(u"Virgule (,)"), _(u"Point-virgule (;)"), _(u"Tabulation")]
         listeSeparations = [",", ";", "\t"]
-        dlg = wx.SingleChoiceDialog(None, _(u"Veuillez sélectionner le caractère de séparation utilisé dans ce fichier :"), _(u"Sélection du caractère de séparation"), listeLabels, wx.CHOICEDLG_STYLE)
+        dlg = wx.SingleChoiceDialog(None, _(u"Veuillez sÃ©lectionner le caractÃ¨re de sÃ©paration utilisÃ© dans ce fichier :"), _(u"SÃ©lection du caractÃ¨re de sÃ©paration"), listeLabels, wx.CHOICEDLG_STYLE)
         if dlg.ShowModal() == wx.ID_OK:
             separation = listeSeparations[dlg.GetSelection()]
         else :
@@ -224,12 +224,12 @@ class Importation_CSV() :
         # Ouverture du fichier
         if self.fichierValide == True :
             try :
-                self.fichier = csv.reader(open(nomFichier,"rb"), encoding="iso-8859-15", delimiter=separation)
+                self.fichier = csv.reader(open(nomFichier,"rb"), encoding="utf8", delimiter=separation)
             except :
                 self.fichierValide = False
                 
     def GetDonnees(self, colonnes=[]):
-        """ Récupération des données de la feuille """
+        """ RÃ©cupÃ©ration des donnÃ©es de la feuille """
         listeDonnees = []
         try :
             for donnees_ligne in self.fichier :
@@ -284,7 +284,7 @@ class CTRL_Type_donnee(wx.Choice):
         UTILS_Linux.AdaptePolice(self)
 
         self.MAJ()
-        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez le type de donnée qui se trouve dans cette colonne")))
+        self.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le type de donnÃ©e qui se trouve dans cette colonne")))
         
     def MAJ(self):
         index = 0
@@ -319,7 +319,7 @@ class CTRL_Colonnes(ULC.UltimateListCtrl):
     def SetDonnees(self, listeDonnees=[], supprimerEntetes=False):
         self.listeDonnees = listeDonnees
         self.supprimerEntetes = supprimerEntetes
-        # Supprimer première ligne du fichier
+        # Supprimer premiÃ¨re ligne du fichier
         if self.supprimerEntetes == True :
             self.listeDonnees = self.listeDonnees[1:]
         # Transformation du listeDonnees en colonnes
@@ -340,13 +340,13 @@ class CTRL_Colonnes(ULC.UltimateListCtrl):
         if len(self.listeDonnees) == 0 :
             return
         
-        # Création des colonnes
+        # CrÃ©ation des colonnes
         largeurColonneDonnee = 300
         self.InsertColumn(0, _(u"Colonne"), width=100)
-        self.InsertColumn(1, _(u"Aperçu des données"), width=250)
-        self.InsertColumn(2, _(u"Type de donnée"), width=largeurColonneDonnee)
+        self.InsertColumn(1, _(u"AperÃ§u des donnÃ©es"), width=250)
+        self.InsertColumn(2, _(u"Type de donnÃ©e"), width=largeurColonneDonnee)
 
-        # Création des lignes
+        # CrÃ©ation des lignes
         index = 0
         for colonne in self.listeColonnes :
             
@@ -355,7 +355,7 @@ class CTRL_Colonnes(ULC.UltimateListCtrl):
             self.InsertStringItem(index, label, it_kind=1)
             self.SetItemPyData(index, index)
             
-            # Aperçu des données
+            # AperÃ§u des donnÃ©es
             listeTemp = []
             for valeur in colonne[:20] :
                 if type(valeur) == datetime.date :
@@ -364,7 +364,7 @@ class CTRL_Colonnes(ULC.UltimateListCtrl):
             apercu = ", ".join(listeTemp)
             self.SetStringItem(index, 1, label=u"%s..." % apercu[:100])
 
-            # Type de donnée
+            # Type de donnÃ©e
             item = self.GetItem(index, 2)
             ctrl = CTRL_Type_donnee(self, largeur=largeurColonneDonnee-4)
             item.SetWindow(ctrl)
@@ -380,7 +380,7 @@ class CTRL_Colonnes(ULC.UltimateListCtrl):
         self.Layout() 
 
     def OnCheck(self, event):
-        """ Quand une sélection d'activités est effectuée... """
+        """ Quand une sÃ©lection d'activitÃ©s est effectuÃ©e... """
         index = event.m_itemIndex
         self.SetEtatCtrl(index)
         
@@ -390,7 +390,7 @@ class CTRL_Colonnes(ULC.UltimateListCtrl):
             self.dictControles[index]["ctrl"].Enable(True)
         else :
             self.dictControles[index]["ctrl"].Enable(False)
-        # Déselectionne l'item après la coche
+        # DÃ©selectionne l'item aprÃ¨s la coche
         self.Select(index, False)
 
     def CocherTout(self):
@@ -436,8 +436,8 @@ class CTRL_Donnees(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """        
-        # Récupération des paramètres
+        """ RÃ©cupÃ©ration des donnÃ©es """        
+        # RÃ©cupÃ©ration des paramÃ¨tres
         dictDonnees = self.GetGrandParent().dictDonnees
         self.typeImportation = dictDonnees["typeImportation"]
         supprimerEntetes = dictDonnees["supprimerEntetes"]
@@ -446,7 +446,7 @@ class CTRL_Donnees(FastObjectListView):
 
         self.validation = ValidationDonnees(self.typeImportation) 
 
-        # Récupération des colonnes
+        # RÃ©cupÃ©ration des colonnes
         self.listeColonnesImportation = []
         self.listeColonnesDonnees = []
         dictColonnes = {}
@@ -455,7 +455,7 @@ class CTRL_Donnees(FastObjectListView):
             self.listeColonnesDonnees.append(colonne["donnee"])
             dictColonnes[colonne["colonne"]] = colonne["donnee"]
         
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         if supprimerEntetes == True :
             donnees = donnees[1:]
         
@@ -468,7 +468,7 @@ class CTRL_Donnees(FastObjectListView):
                 if index in self.listeColonnesImportation :
                     code = dictColonnes[index]
                     
-                    # Validation et formatage des données
+                    # Validation et formatage des donnÃ©es
                     ligneValide, code, valeur, anomalie, label = self.validation.Validation(code, valeur)
                     dictTemp[code] = {"valeur":valeur, "anomalie":anomalie, "label":label}
                     if ligneValide == False :
@@ -504,7 +504,7 @@ class CTRL_Donnees(FastObjectListView):
         def GetImage(track):
             if track.ligneValide == False :
                 return self.imgNon
-            # Vérifie s'il ya une anomalie dans le track
+            # VÃ©rifie s'il ya une anomalie dans le track
             for code, dictValeurs in track.dictLigne.items() :
                 if dictValeurs["anomalie"] != None :
                     return self.imgAttention
@@ -530,7 +530,7 @@ class CTRL_Donnees(FastObjectListView):
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
         
-        # Création des colonnes
+        # CrÃ©ation des colonnes
         dictColonnesTemp = {}
         for dictColonne in DICT_COLONNES[self.typeImportation] :
             dictColonnesTemp[dictColonne["code"]] = dictColonne
@@ -549,7 +549,7 @@ class CTRL_Donnees(FastObjectListView):
         
         self.SetColumns(listeColonnes)
         self.CreateCheckStateColumn(0)
-        self.SetEmptyListMsg(_(u"Aucune donnée"))
+        self.SetEmptyListMsg(_(u"Aucune donnÃ©e"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[0])
         self.SetObjects(self.donnees)
@@ -593,13 +593,13 @@ class Page_intro(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, name="page_intro", style=wx.TAB_TRAVERSAL)
         self.parent = parent
                 
-        # Création du texte d'intro HTML
+        # CrÃ©ation du texte d'intro HTML
         TEXTE_INTRO = u"""
-            Cette fonctionnalité vous permet d'importer des individus ou des familles dans votre fichier de données Noethys depuis un fichier EXCEL ou CSV.
-            Vous devrez sélectionner l'un des types d'importation proposés ci-dessous puis formater les données de votre fichier en fonction des formats exigés.
+            Cette fonctionnalitÃ© vous permet d'importer des individus ou des familles dans votre fichier de donnÃ©es Noethys depuis un fichier EXCEL ou CSV.
+            Vous devrez sÃ©lectionner l'un des types d'importation proposÃ©s ci-dessous puis formater les donnÃ©es de votre fichier en fonction des formats exigÃ©s.
             <BR><BR>
-            Utilisez le mode "Familles" pour créer une ou plusieurs fiches individuelles et les rattacher automatiquement à une fiche famille (Une ligne par famille, qui doit comporter au moins un adulte : le père ou la mère).      
-            Ou utilisez le mode "Individus" pour créer uniquement des fiches individuelles non rattachées (Une ligne par individu, qui doit comporter au moins la civilité et le nom de famille).      
+            Utilisez le mode "Familles" pour crÃ©er une ou plusieurs fiches individuelles et les rattacher automatiquement Ã  une fiche famille (Une ligne par famille, qui doit comporter au moins un adulte : le pÃ¨re ou la mÃ¨re).      
+            Ou utilisez le mode "Individus" pour crÃ©er uniquement des fiches individuelles non rattachÃ©es (Une ligne par individu, qui doit comporter au moins la civilitÃ© et le nom de famille).      
             <BR><BR>
             """
         
@@ -630,7 +630,7 @@ class Page_intro(wx.Panel):
             TEXTE_INTRO += u"""</TABLE><BR><BR>"""
             index += 1
                 
-        # Contrôles
+        # ContrÃ´les
         self.ctrl_intro = wx.html.HtmlWindow(self, -1, style=wx.NO_FULL_REPAINT_ON_RESIZE | wx.SUNKEN_BORDER)
         self.ctrl_intro.SetPage(u"<FONT SIZE=-1>%s</FONT>" % TEXTE_INTRO)
         self.ctrl_intro.SetBackgroundColour(wx.Colour(240, 251, 237))
@@ -669,13 +669,13 @@ class Page_fichier(wx.Panel):
             getattr(self, "label_type_%d" % index).SetForegroundColour(wx.Colour(128, 128, 128))
             index += 1
         
-        self.box_fichier_staticbox = wx.StaticBox(self, -1, _(u"2. Sélection du fichier"))
-        self.label_fichier = wx.StaticText(self, -1, _(u"Cliquez sur le bouton 'Sélectionner' pour sélectionner le fichier de données :"))
+        self.box_fichier_staticbox = wx.StaticBox(self, -1, _(u"2. SÃ©lection du fichier"))
+        self.label_fichier = wx.StaticText(self, -1, _(u"Cliquez sur le bouton 'SÃ©lectionner' pour sÃ©lectionner le fichier de donnÃ©es :"))
         wildcard = _(u"Fichiers Excel ou csv|*.xls;*.csv|Fichiers Excel (*.xls)|*.xls|Fichiers csv (*.csv)|*.csv|All files (*.*)|*.*")
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
-        self.ctrl_fichier = filebrowse.FileBrowseButton(self, -1, labelText=_(u"Fichier à importer :"), buttonText=_(u"Sélectionner"), toolTip=_(u"Cliquez ici pour sélectionner un fichier de données"), dialogTitle=_(u"Sélectionner un fichier"), fileMask=wildcard, startDirectory=cheminDefaut)
-        self.label_fichier2 = wx.StaticText(self, -1, _(u"Formats acceptés :\n   - Fichiers Excel (.xls - versions 2003, 2002, XP, 2000, 97, 95, 5.0, 4.0, 3.0) \n   - Fichiers CSV (.csv)"))
+        self.ctrl_fichier = filebrowse.FileBrowseButton(self, -1, labelText=_(u"Fichier Ã  importer :"), buttonText=_(u"SÃ©lectionner"), toolTip=_(u"Cliquez ici pour sÃ©lectionner un fichier de donnÃ©es"), dialogTitle=_(u"SÃ©lectionner un fichier"), fileMask=wildcard, startDirectory=cheminDefaut)
+        self.label_fichier2 = wx.StaticText(self, -1, _(u"Formats acceptÃ©s :\n   - Fichiers Excel (.xls - versions 2003, 2002, XP, 2000, 97, 95, 5.0, 4.0, 3.0) \n   - Fichiers CSV (.csv)"))
         self.label_fichier2.SetForegroundColour(wx.Colour(128, 128, 128))
         
         # Layout
@@ -718,7 +718,7 @@ class Page_fichier(wx.Panel):
     def Validation(self):
         nomFichier = self.ctrl_fichier.GetValue()
         if len(nomFichier) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un fichier de données à importer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un fichier de donnÃ©es Ã  importer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -742,10 +742,10 @@ class Page_fichier(wx.Panel):
             dlg.Destroy()
             return False
         
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         donnees = importation.GetDonnees()
         if donnees == None :
-            dlg = wx.MessageDialog(self, _(u"Noethys n'a pas réussi à lire les données !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Noethys n'a pas rÃ©ussi Ã  lire les donnÃ©es !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -763,14 +763,14 @@ class Page_colonnes(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, name="page_colonnes", style=wx.TAB_TRAVERSAL)
         self.parent = parent
 
-        # Contrôles
-        self.label_colonnes = wx.StaticText(self, -1, _(u"Sélectionnez les colonnes à importer et indiquez pour chacune d'entre elles le type de donnée qu'elle contient :"))
+        # ContrÃ´les
+        self.label_colonnes = wx.StaticText(self, -1, _(u"SÃ©lectionnez les colonnes Ã  importer et indiquez pour chacune d'entre elles le type de donnÃ©e qu'elle contient :"))
         self.ctrl_colonnes = CTRL_Colonnes(self)
-        self.check_supprimerEntetes = wx.CheckBox(self, -1, _(u"Enlever la première ligne du fichier (Titres de colonnes)"))
-        self.check_supprimerEntetes.SetToolTip(wx.ToolTip(_(u"Cochez cette case si le fichier de données contient une première ligne d'entêtes de colonnes")))
+        self.check_supprimerEntetes = wx.CheckBox(self, -1, _(u"Enlever la premiÃ¨re ligne du fichier (Titres de colonnes)"))
+        self.check_supprimerEntetes.SetToolTip(wx.ToolTip(_(u"Cochez cette case si le fichier de donnÃ©es contient une premiÃ¨re ligne d'entÃªtes de colonnes")))
         self.hyper_tout = Hyperlien(self, label=_(u"Tout cocher"), infobulle=_(u"Cliquez ici pour tout cocher"), URL="tout")
         self.label_separation = wx.StaticText(self, -1, u"|")
-        self.hyper_rien = Hyperlien(self, label=_(u"Tout décocher"), infobulle=_(u"Cliquez ici pour tout décocher"), URL="rien")
+        self.hyper_rien = Hyperlien(self, label=_(u"Tout dÃ©cocher"), infobulle=_(u"Cliquez ici pour tout dÃ©cocher"), URL="rien")
         
         # Layout
         box = wx.BoxSizer(wx.VERTICAL)
@@ -806,7 +806,7 @@ class Page_colonnes(wx.Panel):
     def Validation(self):
         listeColonnes = self.ctrl_colonnes.GetCoches() 
         
-        # Vérifie que le type de donnée à été renseigné pour chaque colonne cochée
+        # VÃ©rifie que le type de donnÃ©e Ã  Ã©tÃ© renseignÃ© pour chaque colonne cochÃ©e
         listeTemp = []
         dictTemp = {}
         for colonne in listeColonnes :
@@ -817,20 +817,20 @@ class Page_colonnes(wx.Panel):
             if colonne["donnee"] == None :
                 listeTemp.append(colonne["colonne"])
         if len(listeTemp) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez pas sélectionné le type de donnée pour %d colonnes cochées !") % len(listeTemp), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez pas sÃ©lectionnÃ© le type de donnÃ©e pour %d colonnes cochÃ©es !") % len(listeTemp), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
-        # Vérifie si pas de doublons dans les types de données
+        # VÃ©rifie si pas de doublons dans les types de donnÃ©es
         for code, nbre in dictTemp.items() :
             if nbre > 1 :
-                dlg = wx.MessageDialog(self, _(u"Un type de donnée ne peut pas être sélectionné plus d'une fois !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Un type de donnÃ©e ne peut pas Ãªtre sÃ©lectionnÃ© plus d'une fois !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
         
-        # Vérifie si les colonnes obligatoires sont présentes :
+        # VÃ©rifie si les colonnes obligatoires sont prÃ©sentes :
         listeOublis = []
         typeImportation = self.parent.dictDonnees["typeImportation"]
         for dictColonne in DICT_COLONNES[typeImportation] :
@@ -845,7 +845,7 @@ class Page_colonnes(wx.Panel):
             dlg.Destroy()
             return False
         
-        # Mémorisation des données
+        # MÃ©morisation des donnÃ©es
         self.parent.dictDonnees["supprimerEntetes"] = self.check_supprimerEntetes.GetValue()
         self.parent.dictDonnees["colonnes"] = listeColonnes
         return True
@@ -859,20 +859,20 @@ class Page_analyse(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, name="page_analyse", style=wx.TAB_TRAVERSAL)
         self.parent = parent
 
-        # Contrôles
-        self.label_donnees = wx.StaticText(self, -1, _(u"Cochez les données à importer et cliquez sur le bouton VALIDER pour lancer l'importation."))
+        # ContrÃ´les
+        self.label_donnees = wx.StaticText(self, -1, _(u"Cochez les donnÃ©es Ã  importer et cliquez sur le bouton VALIDER pour lancer l'importation."))
         self.ctrl_donnees = CTRL_Donnees(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
 
         self.image_ok = wx.StaticBitmap(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Ok.png"), wx.BITMAP_TYPE_ANY))
         self.label_ok = wx.StaticText(self, -1, _(u"Ligne valide"))
         self.image_attention = wx.StaticBitmap(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Attention.png"), wx.BITMAP_TYPE_ANY))
-        self.label_attention = wx.StaticText(self, -1, _(u"Ligne valide mais des données non valides"))
+        self.label_attention = wx.StaticText(self, -1, _(u"Ligne valide mais des donnÃ©es non valides"))
         self.image_non = wx.StaticBitmap(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Interdit.png"), wx.BITMAP_TYPE_ANY))
         self.label_non = wx.StaticText(self, -1, _(u"Ligne non valide"))
         
         self.hyper_tout = Hyperlien(self, label=_(u"Tout cocher"), infobulle=_(u"Cliquez ici pour tout cocher"), URL="tout")
         self.label_separation = wx.StaticText(self, -1, u"|")
-        self.hyper_rien = Hyperlien(self, label=_(u"Tout décocher"), infobulle=_(u"Cliquez ici pour tout décocher"), URL="rien")
+        self.hyper_rien = Hyperlien(self, label=_(u"Tout dÃ©cocher"), infobulle=_(u"Cliquez ici pour tout dÃ©cocher"), URL="rien")
 
         # Layout
         box = wx.BoxSizer(wx.VERTICAL)
@@ -917,7 +917,7 @@ class Page_analyse(wx.Panel):
             if track.ligneValide == False :
                 nbreInvalides += 1
         if nbreInvalides > 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas sélectionner des lignes non valides !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas sÃ©lectionner des lignes non valides !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -935,7 +935,7 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.dictDonnees = {}
         
-        intro = _(u"Cet assistant permet d'importer facilement depuis un fichier Excel ou CSV des individus ou des familles dans votre fichier de données Noethys.")
+        intro = _(u"Cet assistant permet d'importer facilement depuis un fichier Excel ou CSV des individus ou des familles dans votre fichier de donnÃ©es Noethys.")
         titre = _(u"Assistant d'importation d'individus")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Document_import.png")
@@ -966,7 +966,7 @@ class Dialog(wx.Dialog):
         self.nbrePages = len(self.listePages)    
         self.pageVisible = 1
                         
-        # Création des pages
+        # CrÃ©ation des pages
         self.Creation_Pages()
         
         wx.CallAfter(self.AfficheAvertissement)
@@ -983,8 +983,8 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_retour.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour revenir à la page précédente")))
-        self.bouton_suite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour passer à l'étape suivante")))
+        self.bouton_retour.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour revenir Ã  la page prÃ©cÃ©dente")))
+        self.bouton_suite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour passer Ã  l'Ã©tape suivante")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez pour annuler")))
         self.SetMinSize((730, 620))
 
@@ -1023,15 +1023,15 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Importerdesfamillesoudesindividu")
 
     def Onbouton_retour(self, event):
-        # rend invisible la page affichée
+        # rend invisible la page affichÃ©e
         pageCible = eval("self.page"+str(self.pageVisible))
         pageCible.Show(False)
-        # Fait apparaître nouvelle page
+        # Fait apparaÃ®tre nouvelle page
         self.pageVisible -= 1
         pageCible = eval("self.page"+str(self.pageVisible))
         pageCible.Show(True)
         self.sizer_pages.Layout()
-        # Si on quitte l'avant-dernière page, on active le bouton Suivant
+        # Si on quitte l'avant-derniÃ¨re page, on active le bouton Suivant
         if self.pageVisible == self.nbrePages :
             self.bouton_suite.Enable(True)
             self.bouton_suite.SetImage(Chemins.GetStaticPath("Images/32x32/Valider.png"))
@@ -1040,35 +1040,35 @@ class Dialog(wx.Dialog):
             self.bouton_suite.Enable(True)
             self.bouton_suite.SetImage(Chemins.GetStaticPath("Images/32x32/Fleche_droite.png"))
             self.bouton_suite.SetTexte(_(u"Suite"))
-        # Si on revient à la première page, on désactive le bouton Retour
+        # Si on revient Ã  la premiÃ¨re page, on dÃ©sactive le bouton Retour
         if self.pageVisible == 1 :
             self.bouton_retour.Enable(False)
         # On active le bouton annuler
         self.bouton_annuler.Enable(True)
 
     def Onbouton_suite(self, event):
-        # Vérifie que les données de la page en cours sont valides
+        # VÃ©rifie que les donnÃ©es de la page en cours sont valides
         validation = self.ValidationPages()
         if validation == False : return
-        # Si on est déjà sur la dernière page : on termine
+        # Si on est dÃ©jÃ  sur la derniÃ¨re page : on termine
         if self.pageVisible == self.nbrePages :
             self.Terminer()
             return
-        # Rend invisible la page affichée
+        # Rend invisible la page affichÃ©e
         pageCible = eval("self.page"+str(self.pageVisible))
         pageCible.Show(False)
-        # Fait apparaître nouvelle page
+        # Fait apparaÃ®tre nouvelle page
         self.pageVisible += 1
         pageCible = eval("self.page"+str(self.pageVisible))
         pageCible.Show(True)
         pageCible.MAJ()
         self.sizer_pages.Layout()
-        # Si on arrive à la dernière page, on désactive le bouton Suivant
+        # Si on arrive Ã  la derniÃ¨re page, on dÃ©sactive le bouton Suivant
         if self.pageVisible == self.nbrePages :
             self.bouton_suite.SetImage(Chemins.GetStaticPath("Images/32x32/Valider.png"))
             self.bouton_suite.SetTexte(_(u"Valider"))
             self.bouton_annuler.Enable(False)
-        # Si on quitte la première page, on active le bouton Retour
+        # Si on quitte la premiÃ¨re page, on active le bouton Retour
         if self.pageVisible > 1 :
             self.bouton_retour.Enable(True)
 
@@ -1082,7 +1082,7 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
 
     def ValidationPages(self) :
-        """ Validation des données avant changement de pages """
+        """ Validation des donnÃ©es avant changement de pages """
         validation = getattr(self, "page%s" % self.pageVisible).Validation()
         return validation
     
@@ -1094,17 +1094,17 @@ class Dialog(wx.Dialog):
             self.EndModal(wx.ID_OK)
     
     def Importation(self):
-        """ Importation des données """
-        # Récupération des paramètres
+        """ Importation des donnÃ©es """
+        # RÃ©cupÃ©ration des paramÃ¨tres
         typeImportation = self.dictDonnees["typeImportation"]
         validation = ValidationDonnees(typeImportation) 
         
-        # Récupération des codes des colonnes
+        # RÃ©cupÃ©ration des codes des colonnes
         listeCodesColonnes = []
         for dictColonne in self.dictDonnees["colonnes"] :
             listeCodesColonnes.append(dictColonne["donnee"])
                 
-        # Lecture des données
+        # Lecture des donnÃ©es
         listeAnomalies = []
         listeValeurs = []
         index = 0
@@ -1115,25 +1115,25 @@ class Dialog(wx.Dialog):
             for dictColonne in DICT_COLONNES[typeImportation] :
                 code = dictColonne["code"]
                 
-                # Récupération de la valeur
+                # RÃ©cupÃ©ration de la valeur
                 if code in track.dictLigne :
                     valeur = track.dictLigne[code]["valeur"]
                 else :
                     ligneValideTmp, code, valeur, anomalie, label = validation.Validation(code, None)
                 
-                # Mémorisation de la valeur
+                # MÃ©morisation de la valeur
                 dictValeurs[code] = valeur
                 
-            # Mémorise la ligne si elle est valide
+            # MÃ©morise la ligne si elle est valide
             if ligneValide == True :
                 listeValeurs.append(dictValeurs)
             index += 1
         
-        # Enregistrement des données
+        # Enregistrement des donnÃ©es
         DB = GestionDB.DB()
 
         def CreationIndividu(dictValeurs):
-            # Vérification des données
+            # VÃ©rification des donnÃ©es
             valide = True
             if ("individu_nom" in dictValeurs) == True :
                 if dictValeurs["individu_nom"] in ("", None) :
@@ -1214,7 +1214,7 @@ class Dialog(wx.Dialog):
                     IDrattachement = DB.ReqInsert("rattachements", listeDonnees)
             
 
-                # Père
+                # PÃ¨re
                 dictTemp = {}
                 dictTemp["individu_civilite"] = 1
                 dictTemp["individu_nom"] = dictValeurs["pere_nom"]
@@ -1240,7 +1240,7 @@ class Dialog(wx.Dialog):
                 if dictIDindividus["pere"] != None :
                     EnregistreRattachement(IDindividu=dictIDindividus["pere"], IDcategorie=1, titulaire=1)
                                 
-                # Mère
+                # MÃ¨re
                 dictTemp = {}
                 dictTemp["individu_civilite"] = 3
                 dictTemp["individu_nom"] = dictValeurs["mere_nom"]
@@ -1271,7 +1271,7 @@ class Dialog(wx.Dialog):
                 if dictIDindividus["mere"] != None :
                     EnregistreRattachement(IDindividu=dictIDindividus["mere"], IDcategorie=1, titulaire=1)
                     
-                # Récupération de l'adresse auto
+                # RÃ©cupÃ©ration de l'adresse auto
                 if dictIDindividus["pere"] != None :
                     adresse_auto = dictIDindividus["pere"]
                 else :
@@ -1304,7 +1304,7 @@ class Dialog(wx.Dialog):
                     if key in dictValeurs :
                         valeur = dictValeurs[key]
                         
-                        # Spécificité de l'allocataire titulaire
+                        # SpÃ©cificitÃ© de l'allocataire titulaire
                         if key == "famille_allocataire" :
                             valeur = None
                             if dictValeurs[key] == "pere" and dictIDindividus["pere"] != None :
@@ -1328,7 +1328,7 @@ class Dialog(wx.Dialog):
         DB.Close()
         
         # Message de confirmation
-        dlg = wx.MessageDialog(self, _(u"%d lignes ont été importées avec succès !") % index, _(u"Confirmation"), wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"%d lignes ont Ã©tÃ© importÃ©es avec succÃ¨s !") % index, _(u"Confirmation"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         
@@ -1345,11 +1345,11 @@ class Dialog(wx.Dialog):
 <FONT SIZE=2>
 <B>Avertissement</B>
 <BR><BR>
-Cette nouvelle fonctionnalité est expérimentale.
+Cette nouvelle fonctionnalitÃ© est expÃ©rimentale.
 <BR><BR>
-Il est conseillé de tester son efficacité et sa stabilité dans un fichier test avant de l'utiliser dans votre fichier de données. 
+Il est conseillÃ© de tester son efficacitÃ© et sa stabilitÃ© dans un fichier test avant de l'utiliser dans votre fichier de donnÃ©es. 
 <BR><BR>
-Merci de signaler tout bug rencontré dans la rubrique "Signaler un bug " du forum de Noethys.
+Merci de signaler tout bug rencontrÃ© dans la rubrique "Signaler un bug " du forum de Noethys.
 </FONT>
 </CENTER>
 """ % Chemins.GetStaticPath("Images/32x32/Information.png")
@@ -1366,22 +1366,22 @@ class ValidationDonnees():
     def __init__(self, typeImportation=""):
         self.typeImportation = typeImportation
         
-        # Récupération des villes
+        # RÃ©cupÃ©ration des villes
         listeNomsVilles, self.listeVilles, dictRegions, dictDepartements = CTRL_Saisie_adresse.Importation_donnees()
         
         DB = GestionDB.DB()
 
-        # Récupération des secteurs géographiques
+        # RÃ©cupÃ©ration des secteurs gÃ©ographiques
         req = """SELECT IDsecteur, nom FROM secteurs ORDER BY nom;"""
         DB.ExecuterReq(req)
         self.listeSecteurs = DB.ResultatReq()
 
-        # Récupération des catégories de travail
+        # RÃ©cupÃ©ration des catÃ©gories de travail
         req = """SELECT IDcategorie, nom FROM categories_travail ORDER BY nom;"""
         DB.ExecuterReq(req)
         self.listeCategories = DB.ResultatReq()
         
-        # Récupération des caisses
+        # RÃ©cupÃ©ration des caisses
         req = """SELECT IDcaisse, nom FROM caisses ORDER BY nom;"""
         DB.ExecuterReq(req)
         self.listeCaisses = DB.ResultatReq()
@@ -1389,17 +1389,17 @@ class ValidationDonnees():
         DB.Close()
     
     def Validation(self, code="", valeur=""):
-        """ Vérifie et formate une valeur """
+        """ VÃ©rifie et formate une valeur """
         anomalie = None
         ligneValide = True
         label = valeur
         
-        # Civilité
+        # CivilitÃ©
         if code.endswith("_civilite") :
-            if "enfant" in code and valeur in (u"M", u"m", _(u"Mr"), "M.", _(u"Monsieur"), _(u"Masculin"), u"H", u"h", _(u"Homme"), u"G", u"g", _(u"Garçon")) :
+            if "enfant" in code and valeur in (u"M", u"m", _(u"Mr"), "M.", _(u"Monsieur"), _(u"Masculin"), u"H", u"h", _(u"Homme"), u"G", u"g", _(u"GarÃ§on")) :
                 valeur = 4
-                label = _(u"Garçon")
-            elif "enfant" in code and valeur in (u"F", u"f", _(u"Madame"), _(u"Mme"), _(u"Féminin"), _(u"Femme"), _(u"Fille")) :
+                label = _(u"GarÃ§on")
+            elif "enfant" in code and valeur in (u"F", u"f", _(u"Madame"), _(u"Mme"), _(u"FÃ©minin"), _(u"Femme"), _(u"Fille")) :
                 valeur = 5
                 label = _(u"Fille")
             elif "individu" in code and valeur in (u"M", u"m", _(u"Mr"), "M.", _(u"Monsieur"), _(u"Masculin"), u"H", u"h", _(u"Homme")) :
@@ -1411,15 +1411,15 @@ class ValidationDonnees():
             elif "individu" in code and valeur in (_(u"Madame"), _(u"Mme"), _(u"Femme")) :
                 valeur = 3
                 label = _(u"Madame")
-            elif "individu" in code and valeur in (u"G", u"g", _(u"Garçon")) :
+            elif "individu" in code and valeur in (u"G", u"g", _(u"GarÃ§on")) :
                 valeur = 4
-                label = _(u"Garçon")
+                label = _(u"GarÃ§on")
             elif "individu" in code and valeur in (u"F", u"f", _(u"Fille")) :
                 valeur = 5
                 label = _(u"Fille")
-            elif "individu" in code and valeur == _(u"Collectivité") :
+            elif "individu" in code and valeur == _(u"CollectivitÃ©") :
                 valeur = 6
-                label = _(u"Collectivité")
+                label = _(u"CollectivitÃ©")
             elif "individu" in code and valeur == _(u"Association") :
                 valeur = 7
                 label = _(u"Association")
@@ -1430,7 +1430,7 @@ class ValidationDonnees():
                 valeur = 9
                 label = _(u"Entreprise")
             else :
-                anomalie = _(u"Anomalie : Civilité non valide")
+                anomalie = _(u"Anomalie : CivilitÃ© non valide")
                 if valeur == "" :
                     label = u""
                 else :
@@ -1456,7 +1456,7 @@ class ValidationDonnees():
                 valeur = ""
             label = valeur
 
-        # Prénom
+        # PrÃ©nom
         if code.endswith("_prenom") :
             if valeur == None : valeur = ""
             label = valeur
@@ -1496,7 +1496,7 @@ class ValidationDonnees():
                         valide = True
                         break
                 if valide == False :
-                    anomalie = _(u"Anomalie : Code postal absent de la base de données")
+                    anomalie = _(u"Anomalie : Code postal absent de la base de donnÃ©es")
                     valeur = None
                     label = anomalie
     
@@ -1515,7 +1515,7 @@ class ValidationDonnees():
                         valide = True
                         break
                 if valide == False :
-                    anomalie = _(u"Anomalie : Ville absente de la base de données")
+                    anomalie = _(u"Anomalie : Ville absente de la base de donnÃ©es")
                     valeur = None
                     label = anomalie
 
@@ -1531,11 +1531,11 @@ class ValidationDonnees():
                         valeur = IDsecteur
                         valide = True
                 if valide == False :
-                    anomalie = _(u"Anomalie : Secteur géographique absent de la base de données")
+                    anomalie = _(u"Anomalie : Secteur gÃ©ographique absent de la base de donnÃ©es")
                     valeur = None
                     label = anomalie
 
-        # Catégorie
+        # CatÃ©gorie
         if code.endswith("_categorie") :
             label = valeur
             if valeur == "" : 
@@ -1547,7 +1547,7 @@ class ValidationDonnees():
                         valeur = IDcategorie
                         valide = True
                 if valide == False :
-                    anomalie = _(u"Anomalie : Catégorie socioprofessionnelle absente de la base de données")
+                    anomalie = _(u"Anomalie : CatÃ©gorie socioprofessionnelle absente de la base de donnÃ©es")
                     valeur = None
                     label = anomalie
     
@@ -1562,7 +1562,7 @@ class ValidationDonnees():
             if valeur == None : valeur = ""
             label = valeur
 
-        # Téléphone
+        # TÃ©lÃ©phone
         if "_tel_" in code :
             label = valeur
             valide = True
@@ -1576,7 +1576,7 @@ class ValidationDonnees():
                         if c not in (".", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9") :
                             valide = False
                 if valide == False :
-                    anomalie = _(u"Anomalie : Numéro de téléphone non valide")
+                    anomalie = _(u"Anomalie : NumÃ©ro de tÃ©lÃ©phone non valide")
                     valeur = None
                     label = anomalie
 
@@ -1586,7 +1586,7 @@ class ValidationDonnees():
                 valeur = None
             label = valeur
 
-        # Mémo
+        # MÃ©mo
         if code.endswith("_memo") :
             if valeur == None : 
                 valeur = ""
@@ -1604,18 +1604,18 @@ class ValidationDonnees():
                         valeur = IDcaisse
                         valide = True
                 if valide == False :
-                    anomalie = _(u"Anomalie : Caisse absente de la base de données")
+                    anomalie = _(u"Anomalie : Caisse absente de la base de donnÃ©es")
                     valeur = None
                     label = anomalie
         
         # Allocataire titulaire
         if code.endswith("famille_allocataire") :
-            if valeur in (_(u"Père"), _(u"père"), u"P") :
+            if valeur in (_(u"PÃ¨re"), _(u"pÃ¨re"), u"P") :
                 valeur = "pere"
-                label = _(u"Père")
-            elif valeur in (_(u"Mère"), _(u"mère"), u"M") :
+                label = _(u"PÃ¨re")
+            elif valeur in (_(u"MÃ¨re"), _(u"mÃ¨re"), u"M") :
                 valeur = "mere"
-                label = _(u"Mère")
+                label = _(u"MÃ¨re")
             else :
                 anomalie = _(u"Anomalie : Allocataire titulaire non valide")
                 if valeur == "" :
@@ -1639,8 +1639,8 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         listeDonnees = [
-            [_(u"DUPOND"), _(u"Gérard"), datetime.date(1999, 12, 25), _(u"Rue des étés ensoleillés"), u"29870", _(u"LANNILIS")],
-            [_(u"DUPOND"), _(u"Sophie"), datetime.date(1999, 12, 24), _(u"Rue des étés ensoleillés"), u"29870", _(u"LANNILIS")],
+            [_(u"DUPOND"), _(u"GÃ©rard"), datetime.date(1999, 12, 25), _(u"Rue des Ã©tÃ©s ensoleillÃ©s"), u"29870", _(u"LANNILIS")],
+            [_(u"DUPOND"), _(u"Sophie"), datetime.date(1999, 12, 24), _(u"Rue des Ã©tÃ©s ensoleillÃ©s"), u"29870", _(u"LANNILIS")],
             ]
         self.ctrl= CTRL_Colonnes(panel, listeDonnees)
         sizer_2 = wx.BoxSizer(wx.VERTICAL)

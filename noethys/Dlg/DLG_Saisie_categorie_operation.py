@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -73,7 +73,7 @@ class Dialog(wx.Dialog):
         self.label_nom = wx.StaticText(self, wx.ID_ANY, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, wx.ID_ANY, u"")
         
-        self.label_abrege = wx.StaticText(self, wx.ID_ANY, _(u"Abrégé :"))
+        self.label_abrege = wx.StaticText(self, wx.ID_ANY, _(u"AbrÃ©gÃ© :"))
         self.ctrl_abrege = wx.TextCtrl(self, wx.ID_ANY, u"")
 
         self.label_compte = wx.StaticText(self, wx.ID_ANY, _(u"Compte :"))
@@ -96,21 +96,21 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
 
-        # Init contrôles
+        # Init contrÃ´les
         if self.IDcategorie != None :
-            titre = _(u"Modification d'une catégorie")
+            titre = _(u"Modification d'une catÃ©gorie")
             self.Importation() 
         else :
-            titre = _(u"Saisie d'une catégorie")
-        if self.typeCategorie == "credit" : titre += _(u" de crédit")
-        if self.typeCategorie == "debit" : titre += _(u" de débit")
+            titre = _(u"Saisie d'une catÃ©gorie")
+        if self.typeCategorie == "credit" : titre += _(u" de crÃ©dit")
+        if self.typeCategorie == "debit" : titre += _(u" de dÃ©bit")
         self.SetTitle(titre)
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez le nom de la catégorie")))
-        self.ctrl_abrege.SetToolTip(wx.ToolTip(_(u"Saisissez le nom abrégé de la catégorie")))
-        self.ctrl_compte.SetToolTip(wx.ToolTip(_(u"Sélectionnez un compte comptable")))
-        self.bouton_comptes.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des comptes comptables")))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez le nom de la catÃ©gorie")))
+        self.ctrl_abrege.SetToolTip(wx.ToolTip(_(u"Saisissez le nom abrÃ©gÃ© de la catÃ©gorie")))
+        self.ctrl_compte.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un compte comptable")))
+        self.bouton_comptes.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la gestion des comptes comptables")))
         self.ctrl_journal.SetToolTip(wx.ToolTip(_(u"Saisissez le code du journal")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
@@ -174,17 +174,17 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event): 
         if self.Sauvegarde()  == False :
             return
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def Sauvegarde(self):
-        """ Sauvegarde des données """
+        """ Sauvegarde des donnÃ©es """
         nom = self.ctrl_nom.GetValue() 
         abrege = self.ctrl_abrege.GetValue()
         IDcompte = self.ctrl_compte.GetID() 
         journal = self.ctrl_journal.GetValue() 
         
-        # Validation des données saisies
+        # Validation des donnÃ©es saisies
         if nom == "" :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -193,7 +193,7 @@ class Dialog(wx.Dialog):
             return False
 
         if abrege == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné le nom abrégé.\n\nSouhaitez-vous tout de même valider ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseignÃ© le nom abrÃ©gÃ©.\n\nSouhaitez-vous tout de mÃªme valider ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -201,7 +201,7 @@ class Dialog(wx.Dialog):
                 return False
 
         if IDcompte == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné le compte comptable.\n\nSouhaitez-vous tout de même valider ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseignÃ© le compte comptable.\n\nSouhaitez-vous tout de mÃªme valider ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -209,7 +209,7 @@ class Dialog(wx.Dialog):
                 return False
 
         if journal == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné le code journal.\n\nSouhaitez-vous tout de même valider ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseignÃ© le code journal.\n\nSouhaitez-vous tout de mÃªme valider ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :

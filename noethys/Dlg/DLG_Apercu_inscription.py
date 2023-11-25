@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -22,23 +22,23 @@ from Utils import UTILS_Config
 
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent, provisoire=False, titre=_(u"Aperçu d'une inscription"), intro=_(u"Vous pouvez ici créer un aperçu PDF du document sélectionné.")):
+    def __init__(self, parent, provisoire=False, titre=_(u"AperÃ§u d'une inscription"), intro=_(u"Vous pouvez ici crÃ©er un aperÃ§u PDF du document sÃ©lectionnÃ©.")):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE)
         self.parent = parent
         
         # Bandeau
         if provisoire == True :
-            intro += _(u" <FONT COLOR = '#FF0000'>Attention, il ne s'agit que d'un document provisoire avant génération !</FONT>")
+            intro += _(u" <FONT COLOR = '#FF0000'>Attention, il ne s'agit que d'un document provisoire avant gÃ©nÃ©ration !</FONT>")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Apercu.png")
         
-        # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
+        # ParamÃ¨tres
+        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"ParamÃ¨tres"))
         self.ctrl_options = CTRL_Inscriptions_options.CTRL(self)
 
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"AperÃ§u"), cheminImage="Images/32x32/Apercu.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
@@ -58,7 +58,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
         
-        # Paramètres
+        # ParamÃ¨tres
         box_parametres = wx.StaticBoxSizer(self.box_parametres_staticbox, wx.VERTICAL)
         
         grid_sizer_haut = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
@@ -90,15 +90,15 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
 
     def GetParametres(self):
-        """ Retourne les paramètres sélectionnés """
+        """ Retourne les paramÃ¨tres sÃ©lectionnÃ©s """
         return self.ctrl_options.GetOptions()
 
         dictParametres = {} 
         
-        # Modèle
+        # ModÃ¨le
         dictParametres["IDmodele"] = self.ctrl_modele.GetID() 
         if dictParametres["IDmodele"] == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un modèle !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un modÃ¨le !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -109,12 +109,12 @@ class Dialog(wx.Dialog):
 
 
     def OnBoutonOk(self, event):
-        # Validaion des paramètres
+        # Validaion des paramÃ¨tres
         dictParametres = self.GetParametres()
         if dictParametres == False :
             return
 
-        # Mémorisation des paramètres
+        # MÃ©morisation des paramÃ¨tres
         self.ctrl_options.MemoriserParametres()
 
         self.EndModal(wx.ID_OK)

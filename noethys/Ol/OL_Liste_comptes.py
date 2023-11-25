@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -20,7 +20,7 @@ from Dlg import DLG_Saisie_virement
 import datetime
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 from Utils import UTILS_Interface
@@ -57,7 +57,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         DB = GestionDB.DB()
         
         # Lecture des comptes bancaires
@@ -69,7 +69,7 @@ class ListView(FastObjectListView):
         for IDcompte, nom, numero in listeComptes :
             dictComptes[IDcompte] = {"IDcompte" : IDcompte, "nom" : nom, "numero" : numero, "solde" : 0.0, "solde_pointe" : 0.0, "solde_jour" : 0.0}
         
-        # Lecture des opérations
+        # Lecture des opÃ©rations
         req = """SELECT IDoperation, type, date, IDcompte_bancaire, IDreleve, montant
         FROM compta_operations 
         ORDER BY date, IDoperation;"""
@@ -77,7 +77,7 @@ class ListView(FastObjectListView):
         listeOperations = DB.ResultatReq()
         DB.Close()
         
-        # Analyse des opérations
+        # Analyse des opÃ©rations
         for IDoperation, typeOperation, date, IDcompte, IDreleve, montant in listeOperations :
             date = UTILS_Dates.DateEngEnDateDD(date)
             if typeOperation == "debit" :
@@ -112,10 +112,10 @@ class ListView(FastObjectListView):
 
         liste_Colonnes = [
             ColumnDefn(u"", "left", 0, "IDcompte", typeDonnee="entier"),
-            ColumnDefn(_(u"Numéro"), 'left', 120, "numero", typeDonnee="texte"),
+            ColumnDefn(_(u"NumÃ©ro"), 'left', 120, "numero", typeDonnee="texte"),
             ColumnDefn(_(u"Nom"), 'left', 200, "nom", typeDonnee="texte", isSpaceFilling=True),
             ColumnDefn(_(u"Solde du jour"), "right", 100, "solde_jour", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(_(u"Solde pointé"), "right", 100, "solde_pointe", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"Solde pointÃ©"), "right", 100, "solde_pointe", typeDonnee="montant", stringConverter=FormateMontant),
             ColumnDefn(_(u"Solde final"), "right", 100, "solde", typeDonnee="montant", stringConverter=FormateMontant),
             ]
 
@@ -129,7 +129,7 @@ class ListView(FastObjectListView):
         self.Freeze()
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if track != None :
             self.SelectObject(track, deselectOthers=True, ensureVisible=True)
         # MAJ listctrl
@@ -147,11 +147,11 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDcompte
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 10, _(u"Accéder au compte"))
+        item = wx.MenuItem(menuPop, 10, _(u"AccÃ©der au compte"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Loupe.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -160,7 +160,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -214,7 +214,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
 ##        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_categories_comptables", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun compte à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun compte Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

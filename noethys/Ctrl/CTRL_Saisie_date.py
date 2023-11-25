@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -39,7 +39,7 @@ ID_ANNEE_ACTUELLE = 300
 ID_ANNEE_PRECEDENTE = 310
 ID_ANNEE_SUIVANTE = 320
 
-# expression régulière pour une date (JJ/MM/AAAA)
+# expression rÃ©guliÃ¨re pour une date (JJ/MM/AAAA)
 datePattern = re.compile(
     r"(?P<jour>[\d]{1,2})/(?P<mois>[\d]{1,2})/(?P<annee>[\d]{4})"
 )
@@ -59,17 +59,17 @@ class myparserinfo(parserinfo):
                 (_(u"Sam"), _(u"Samedi")),
                 (_(u"Dim"), _(u"Dimanche"))]
     MONTHS = [(_(u"Jan"), _(u"Janvier")),
-              (_(u"Fév"), _(u"Février")),
+              (_(u"FÃ©v"), _(u"FÃ©vrier")),
               (_(u"Mar"), _(u"Mars")),
               (_(u"Avr"), _(u"Avril")),
               (_(u"Mai"), _(u"Mai")),
               (_(u"Juin"), _(u"Juin")),
               (_(u"Juil"), _(u"Juillet")),
-              (_(u"Aoû"), _(u"Août")),
+              (_(u"AoÃ»"), _(u"AoÃ»t")),
               (_(u"Sept"), _(u"Septembre")),
               (_(u"Oct"), _(u"Octobre")),
               (_(u"Nov"), _(u"Novembre")),
-              (_(u"Déc"), _(u"Décembre")),]
+              (_(u"DÃ©c"), _(u"DÃ©cembre")),]
     HMS = [("h", "hour", "hours"),
            ("m", "minute", "minutes"),
            ("s", "second", "seconds")]
@@ -85,7 +85,7 @@ class myparserinfo(parserinfo):
 
 
 class Date(masked.TextCtrl):
-    """ Contrôle Date simple """
+    """ ContrÃ´le Date simple """
     def __init__(self, parent, date_min="01/01/1900", date_max="01/01/2999", size=(-1, -1), pos=wx.DefaultPosition):
         self.mask_date = UTILS_Config.GetParametre("mask_date", "##/##/####")
         masked.TextCtrl.__init__(self, parent, -1, "", style=wx.TE_CENTRE |wx.TE_PROCESS_ENTER, size=size, pos=pos, mask=self.mask_date)
@@ -118,19 +118,19 @@ class Date(masked.TextCtrl):
                 dateDD = date
             if type(date) == str or type(date) == six.text_type :
                 if date[2] == "/" :
-                    # Si c'est une date française
+                    # Si c'est une date franÃ§aise
                     dateDD = datetime.date(year=int(date[6:10]), month=int(date[3:5]), day=int(date[:2]))
                 else:
                     # Si c'est une date anglaise
                     dateDD = datetime.date(year=int(date[:4]), month=int(date[5:7]), day=int(date[8:10]))
-            # Transformation en date française
+            # Transformation en date franÃ§aise
             dateFR = self.DateEngFr(str(dateDD))
             self.SetValue(dateFR)
         except :
             pass
     
     def GetDate(self, FR=False):
-        """ Récupère une date au format Datetime ou francaise"""
+        """ RÃ©cupÃ¨re une date au format Datetime ou francaise"""
         dateFR = self.GetValue()
         if dateFR == "  /  /    " or dateFR == "" :
             return None
@@ -154,7 +154,7 @@ class Date(masked.TextCtrl):
         
     def OnKillFocus(self, event):
         self.MaJ_DateNaiss()
-        # Vérification de la date
+        # VÃ©rification de la date
         self.FonctionValiderDate()
         # Envoi un signal de changement de date au panel parent
         try :
@@ -222,23 +222,23 @@ class Date(masked.TextCtrl):
         
         listeFonctions = [
             (ID_SEMAINE_ACTUELLE, _(u"Semaine actuelle")),
-            (ID_SEMAINE_PRECEDENTE, _(u"Semaine précédente")),
+            (ID_SEMAINE_PRECEDENTE, _(u"Semaine prÃ©cÃ©dente")),
             (ID_SEMAINE_SUIVANTE, _(u"Semaine suivante")),
             (None, None),
             (ID_MOIS_ACTUEL, _(u"Mois actuel")),
-            (ID_MOIS_PRECEDENT, _(u"Mois précédent")),
+            (ID_MOIS_PRECEDENT, _(u"Mois prÃ©cÃ©dent")),
             (ID_MOIS_SUIVANT, _(u"Mois suivant")),
             (None, None),
-            (ID_ANNEE_ACTUELLE, _(u"Année actuelle")),
-            (ID_ANNEE_PRECEDENTE, _(u"Année précédente")),
-            (ID_ANNEE_SUIVANTE, _(u"Année suivante")),
+            (ID_ANNEE_ACTUELLE, _(u"AnnÃ©e actuelle")),
+            (ID_ANNEE_PRECEDENTE, _(u"AnnÃ©e prÃ©cÃ©dente")),
+            (ID_ANNEE_SUIVANTE, _(u"AnnÃ©e suivante")),
             ]
         for id, label in listeFonctions :
             if id == None :
                 menuPop.AppendSeparator()
             else :
                 sousMenu = UTILS_Adaptations.Menu()
-                sousMenu.AppendItem(wx.MenuItem(menuPop, id+1, _(u"Date de début")))
+                sousMenu.AppendItem(wx.MenuItem(menuPop, id+1, _(u"Date de dÃ©but")))
                 self.Bind(wx.EVT_MENU, self.OnActionMenu, id=id+1)
                 sousMenu.AppendItem(wx.MenuItem(menuPop, id+2, _(u"Date de fin")))
                 self.Bind(wx.EVT_MENU, self.OnActionMenu, id=id+2)
@@ -312,7 +312,7 @@ class Date(masked.TextCtrl):
             mois = calendar.monthrange(date.year, date.month)
             self.SetDate(datetime.date(date.year, date.month, mois[1]))
 
-        # Année
+        # AnnÃ©e
         if id == ID_ANNEE_ACTUELLE + 1 :
             self.SetDate(datetime.date(dateJour.year, 1, 1))
         if id == ID_ANNEE_ACTUELLE + 2 :
@@ -344,10 +344,10 @@ def ValideDate(texte, date_min="01/01/1900", date_max="01/01/2999", avecMessages
 
     listeErreurs = []
 
-    # Recherche depuis l'expression régulière
+    # Recherche depuis l'expression rÃ©guliÃ¨re
     date = datePattern.match(texte)
     if date:
-        # On vérifie que les chiffres existent
+        # On vÃ©rifie que les chiffres existent
         jour = int(date.group("jour"))
         if jour == 0 or jour > 31:
             listeErreurs.append(_(u"le jour"))
@@ -356,26 +356,26 @@ def ValideDate(texte, date_min="01/01/1900", date_max="01/01/2999", avecMessages
             listeErreurs.append(_(u"le mois"))
         annee = int(date.group("annee"))
         if annee < 1900 or annee > 2999:
-            listeErreurs.append(_(u"l'année"))
+            listeErreurs.append(_(u"l'annÃ©e"))
 
         # Affichage du message d'erreur
         if listeErreurs:
-            # Message en cas de date incomplète
+            # Message en cas de date incomplÃ¨te
             if avecMessages == True :
                 nbErreurs = len(listeErreurs)
                 if nbErreurs == 1:
-                    message = _(u"Une incohérence a été détectée dans ") + listeErreurs[0]
+                    message = _(u"Une incohÃ©rence a Ã©tÃ© dÃ©tectÃ©e dans ") + listeErreurs[0]
                 else:
-                    message = _(u"Des incohérences ont été détectées dans ") + listeErreurs[0]
+                    message = _(u"Des incohÃ©rences ont Ã©tÃ© dÃ©tectÃ©es dans ") + listeErreurs[0]
                     if nbErreurs == 2:
                         message += " et " + listeErreurs[1]
                     elif nbErreurs == 3:
                         message += ", " + listeErreurs[1]  + " et " + listeErreurs[2]
-                message += _(u" de la date que vous venez de saisir. Veuillez la vérifier.")
+                message += _(u" de la date que vous venez de saisir. Veuillez la vÃ©rifier.")
                 wx.MessageBox(message, "Erreur de date")
             return False
         else:
-            # On vérifie que les dates sont comprises dans l'intervalle donné en paramètre
+            # On vÃ©rifie que les dates sont comprises dans l'intervalle donnÃ© en paramÃ¨tre
             date_min = int(str(date_min[6:10]) + str(date_min[3:5]) + str(date_min[:2]))
             date_max = int(str(date_max[6:10]) + str(date_max[3:5]) + str(date_max[:2]))
             date_sel = int(str(annee) + ('0' if mois < 10 else '') + str(mois) +
@@ -383,16 +383,16 @@ def ValideDate(texte, date_min="01/01/1900", date_max="01/01/2999", avecMessages
 
             if date_sel < date_min:
                 if avecMessages == True :
-                    message = _(u"La date que vous venez de saisir semble trop ancienne. Veuillez la vérifier.")
+                    message = _(u"La date que vous venez de saisir semble trop ancienne. Veuillez la vÃ©rifier.")
                     wx.MessageBox(message, "Erreur de date")
                 return False
             if date_sel > date_max:
                 if avecMessages == True :
-                    message = _(u"La date que vous venez de saisir semble trop élevée. Veuillez la vérifier.")
+                    message = _(u"La date que vous venez de saisir semble trop Ã©levÃ©e. Veuillez la vÃ©rifier.")
                     wx.MessageBox(message, "Erreur de date")
                 return False
 
-            # On vérifie que la date peut être transformée en Datetime
+            # On vÃ©rifie que la date peut Ãªtre transformÃ©e en Datetime
             try:
                 datetime.date(year=annee, month=mois, day=jour)
             except :
@@ -407,7 +407,7 @@ def ValideDate(texte, date_min="01/01/1900", date_max="01/01/2999", avecMessages
 
 
 class Date2(wx.Panel):
-    """ Contrôle Date avec Bouton Calendrier inclus """
+    """ ContrÃ´le Date avec Bouton Calendrier inclus """
     def __init__(self, parent, date_min="01/01/1910", date_max="01/01/2030", activeCallback=True, size=(-1, -1), heure=False, pos=wx.DefaultPosition):
         wx.Panel.__init__(self, parent, id=-1, name="panel_date2", size=size, pos=pos, style=wx.TAB_TRAVERSAL)
         self.parent = parent
@@ -417,7 +417,7 @@ class Date2(wx.Panel):
         self.ctrl_date = Date(self, date_min, date_max)
         self.bouton_calendrier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Calendrier.png"), wx.BITMAP_TYPE_ANY))
         self.Bind(wx.EVT_BUTTON, self.OnBoutonCalendrier, self.bouton_calendrier)
-        self.bouton_calendrier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner la date dans le calendrier")))
+        self.bouton_calendrier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner la date dans le calendrier")))
 
         if heure == True :
             self.ctrl_heure = CTRL_Saisie_heure.Heure(self)
@@ -515,7 +515,7 @@ class MyFrame(wx.Frame):
         self.SetSizer(sizer_1)
         self.ctrl1 = Date2(panel, heure=True)
         self.ctrl2 = Date2(panel)
-        self.bouton1 = wx.Button(panel, -1, u"Tester la validité du ctrl 1")
+        self.bouton1 = wx.Button(panel, -1, u"Tester la validitÃ© du ctrl 1")
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl1, 0, wx.ALL|wx.EXPAND, 4)
         sizer_2.Add(self.ctrl2, 0, wx.ALL|wx.EXPAND, 4)

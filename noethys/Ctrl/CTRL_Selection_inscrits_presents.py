@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -37,7 +37,7 @@ class CTRL_Activites(wx.CheckListBox):
         self.parent = parent
         self.data = []
         self.listePeriodes = []
-        self.SetToolTip(wx.ToolTip(_(u"Cochez les activités à afficher")))
+        self.SetToolTip(wx.ToolTip(_(u"Cochez les activitÃ©s Ã  afficher")))
         self.listeActivites = []
         self.dictActivites = {}
         self.SetMinSize((-1, 100))
@@ -58,10 +58,10 @@ class CTRL_Activites(wx.CheckListBox):
         dictActivites = {}
         if len(self.listePeriodes) == 0:
             return listeActivites, dictActivites
-            # Condition Périodes
+            # Condition PÃ©riodes
         conditionsPeriodes = GetSQLdates(self.listePeriodes)
 
-        # Récupération des activités disponibles la période sélectionnée
+        # RÃ©cupÃ©ration des activitÃ©s disponibles la pÃ©riode sÃ©lectionnÃ©e
         DB = GestionDB.DB()
         req = """SELECT activites.IDactivite, nom, abrege, date_debut, date_fin
         FROM activites
@@ -111,7 +111,7 @@ class CTRL_Activites(wx.CheckListBox):
             index += 1
 
     def OnCheck(self, event):
-        """ Quand une sélection d'activités est effectuée... """
+        """ Quand une sÃ©lection d'activitÃ©s est effectuÃ©e... """
         self.parent.OnCheckActivites()
 
     def GetListeActivites(self):
@@ -131,7 +131,7 @@ class CTRL_Groupes(wx.CheckListBox):
         self.parent = parent
         self.data = []
         self.date = None
-        self.SetToolTip(wx.ToolTip(_(u"Cochez les groupes à afficher")))
+        self.SetToolTip(wx.ToolTip(_(u"Cochez les groupes Ã  afficher")))
         self.listeGroupes = []
         self.dictGroupes = {}
         self.SetMinSize((-1, 100))
@@ -150,7 +150,7 @@ class CTRL_Groupes(wx.CheckListBox):
         dictGroupes = {}
         if len(self.listeActivites) == 0:
             return listeGroupes, dictGroupes
-            # Récupération des groupes des activités sélectionnées
+            # RÃ©cupÃ©ration des groupes des activitÃ©s sÃ©lectionnÃ©es
         if len(self.listeActivites) == 0:
             conditionActivites = "()"
         elif len(self.listeActivites) == 1:
@@ -218,17 +218,17 @@ class CTRL(wx.Panel):
         self.parent = parent
 
         # Mode
-        self.staticbox_mode_staticbox = wx.StaticBox(self, -1, _(u"Mode de sélection"))
+        self.staticbox_mode_staticbox = wx.StaticBox(self, -1, _(u"Mode de sÃ©lection"))
         self.radio_inscrits = wx.RadioButton(self, -1, _(u"Inscrits"), style=wx.RB_GROUP)
-        self.radio_presents = wx.RadioButton(self, -1, _(u"Présents sur une période"))
+        self.radio_presents = wx.RadioButton(self, -1, _(u"PrÃ©sents sur une pÃ©riode"))
 
         # Calendrier
-        self.staticbox_date_staticbox = wx.StaticBox(self, -1, _(u"Période"))
+        self.staticbox_date_staticbox = wx.StaticBox(self, -1, _(u"PÃ©riode"))
         self.ctrl_calendrier = CTRL_Grille_periode.CTRL(self)
         self.ctrl_calendrier.SetMinSize((230, 150))
 
-        # Activités
-        self.staticbox_activites_staticbox = wx.StaticBox(self, -1, _(u"Activités"))
+        # ActivitÃ©s
+        self.staticbox_activites_staticbox = wx.StaticBox(self, -1, _(u"ActivitÃ©s"))
         self.ctrl_activites_presents = CTRL_Activites(self)
         self.ctrl_activites_inscrits = CTRL_Selection_activites.CTRL(self)
         self.ctrl_activites_presents.SetMinSize((10, 10))
@@ -239,9 +239,9 @@ class CTRL(wx.Panel):
         self.ctrl_groupes = CTRL_Groupes(self)
         self.ctrl_groupes.SetMinSize((10, 100))
 
-        # Propriétés
-        self.radio_inscrits.SetToolTip(wx.ToolTip(_(u"Sélectionnez le mode de sélection des individus")))
-        self.radio_presents.SetToolTip(wx.ToolTip(_(u"Sélectionnez le mode de sélection des individus")))
+        # PropriÃ©tÃ©s
+        self.radio_inscrits.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le mode de sÃ©lection des individus")))
+        self.radio_presents.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le mode de sÃ©lection des individus")))
 
         # Binds
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioMode, self.radio_inscrits)
@@ -261,7 +261,7 @@ class CTRL(wx.Panel):
         staticbox_mode.Add(grid_sizer_mode, 0, wx.ALL | wx.EXPAND, 10)
         grid_sizer_gauche.Add(staticbox_mode, 1, wx.EXPAND, 0)
 
-        # Période
+        # PÃ©riode
         staticbox_date = wx.StaticBoxSizer(self.staticbox_date_staticbox, wx.VERTICAL)
         staticbox_date.Add(self.ctrl_calendrier, 1, wx.ALL | wx.EXPAND, 10)
         grid_sizer_gauche.Add(staticbox_date, 1, wx.EXPAND, 0)
@@ -272,7 +272,7 @@ class CTRL(wx.Panel):
         # Sizer DROIT
         grid_sizer_droit = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
 
-        # Activités
+        # ActivitÃ©s
         staticbox_activites = wx.StaticBoxSizer(self.staticbox_activites_staticbox, wx.VERTICAL)
 
         staticbox_activites.Add(self.ctrl_activites_presents, 1, wx.ALL | wx.EXPAND, 10)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -57,7 +57,7 @@ class CTRL_Membre(wx.ListBox):
             if mailTravail != None and mailTravail != "" :
                 listeAdresses.append((_(u"%s (Adresse pro de %s)") % (mailTravail, prenom), mailTravail, IDindividu, "travail"))
 
-        # Remplissage du contrôle
+        # Remplissage du contrÃ´le
         listeItems = []
         self.dictDonnees = {}
         index = 0
@@ -112,7 +112,7 @@ class CTRL_Membres(wx.CheckListBox):
                 listeAdresses.append(
                     (_(u"%s (Adresse pro de %s)") % (mailTravail, prenom), mailTravail, IDindividu, "travail"))
 
-        # Remplissage du contrôle
+        # Remplissage du contrÃ´le
         listeItems = []
         self.dictDonnees = {}
         index = 0
@@ -157,8 +157,8 @@ class Panel_adresse_unique(wx.Panel):
         self.ctrl_autre = CTRL_Saisie_mail.Mail(self)
 
         # Properties
-        self.radio_membre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner l'adresse Email d'un membre de la famille")))
-        self.ctrl_membre.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici l'adresse Email d'un membre de la famille")))
+        self.radio_membre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner l'adresse Email d'un membre de la famille")))
+        self.ctrl_membre.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici l'adresse Email d'un membre de la famille")))
         self.radio_autre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir manuellement une adresse Email")))
         self.ctrl_autre.SetToolTip(wx.ToolTip(_(u"Saisissez une adresse Email")))
 
@@ -201,13 +201,13 @@ class Panel_adresse_unique(wx.Panel):
         self.OnRadioAdresse(None)
 
     def GetValeur(self):
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         if self.radio_membre.GetValue() == True:
             IDindividu, categorie = self.ctrl_membre.GetAdresse()
             adresse = ""
 
             if IDindividu == None:
-                dlg = wx.MessageDialog(self, _(u"Activation impossible !\n\nVous devez sélectionner un membre."), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Activation impossible !\n\nVous devez sÃ©lectionner un membre."), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_autre.SetFocus()
@@ -257,7 +257,7 @@ class Panel_adresses_multiples(wx.Panel):
 
         # Properties
         self.ctrl_membres.SetToolTip(wx.ToolTip(_(u"Cochez une ou plusieurs adresses de destination")))
-        self.ctrl_autres.SetToolTip(wx.ToolTip(_(u"Saisissez directement d'autres adresses en les séparant d'un point-virgule (;)")))
+        self.ctrl_autres.SetToolTip(wx.ToolTip(_(u"Saisissez directement d'autres adresses en les sÃ©parant d'un point-virgule (;)")))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=5, hgap=5)
@@ -290,13 +290,13 @@ class Panel_adresses_multiples(wx.Panel):
     def GetValeur(self):
         liste_valeurs = []
 
-        # Récupération des adresses des membres
+        # RÃ©cupÃ©ration des adresses des membres
         liste_membres = self.ctrl_membres.GetAdresses()
         for dict_membre in liste_membres :
             valeur = u"%s;%s;" % (dict_membre["IDindividu"], dict_membre["categorie"])
             liste_valeurs.append(valeur)
 
-        # Récupération des autres adresses
+        # RÃ©cupÃ©ration des autres adresses
         autres_adresses = self.ctrl_autres.GetValue()
         if len(autres_adresses) > 0 :
             liste_autres = autres_adresses.split(";")
@@ -339,7 +339,7 @@ class Dialog(wx.Dialog):
         
         # Activation
         self.box_activation_staticbox = wx.StaticBox(self, -1, _(u"Activation"))
-        self.label_activation = wx.StaticText(self, -1, _(u"Envoi par Email activé :"))
+        self.label_activation = wx.StaticText(self, -1, _(u"Envoi par Email activÃ© :"))
         self.radio_activation_oui = wx.RadioButton(self, -1, _(u"Oui"), style=wx.RB_GROUP)
         self.radio_activation_non = wx.RadioButton(self, -1, _(u"Non"))
                 
@@ -364,13 +364,13 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.radio_activation_non.SetValue(True) 
         self.Importation() 
 
     def __set_properties(self):
         self.radio_activation_oui.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour activer l'envoi par Email")))
-        self.radio_activation_non.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour désactiver l'envoi par Email")))
+        self.radio_activation_non.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dÃ©sactiver l'envoi par Email")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -416,7 +416,7 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
 
     def Importation(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         if self.IDfamille == None :
             return
 
@@ -434,7 +434,7 @@ class Dialog(wx.Dialog):
         self.panel_adresse.SetValeur(valeur)
 
     def OnBoutonOk(self, event):
-        # Récupération de la valeur
+        # RÃ©cupÃ©ration de la valeur
         if self.radio_activation_oui.GetValue() == True :
             valeur = self.panel_adresse.GetValeur()
             if valeur == False :
@@ -442,7 +442,7 @@ class Dialog(wx.Dialog):
         else:
             # Pas d'activation
             valeur = None
-            dlg = wx.MessageDialog(None, _(u"Vous confirmez que vous ne souhaitez pas activer cette fonctionnalité ?"), _(u"Confirmation"), wx.YES_NO | wx.YES_DEFAULT | wx.CANCEL | wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(None, _(u"Vous confirmez que vous ne souhaitez pas activer cette fonctionnalitÃ© ?"), _(u"Confirmation"), wx.YES_NO | wx.YES_DEFAULT | wx.CANCEL | wx.ICON_QUESTION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES:

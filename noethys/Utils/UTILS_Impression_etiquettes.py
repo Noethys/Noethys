@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -26,7 +26,7 @@ from reportlab.pdfgen.canvas import Canvas
 
 
 class Impression():
-    """ Impression des étiquettes """
+    """ Impression des Ã©tiquettes """
     def __init__(self, 
                     IDmodele=None, 
                     taillePage=(210, 297),
@@ -48,7 +48,7 @@ class Impression():
             if AfficherReperesDecoupe == True :
                 canvas.setStrokeColor( (0.9, 0.9, 0.9) )
                 canvas.setLineWidth(0.25)
-                # Repères de colonnes
+                # RepÃ¨res de colonnes
                 for y1, y2 in [(hauteurPage*mm-4*mm, hauteurPage*mm-margeHaut*mm+2*mm), (4*mm, margeBas-2*mm)] :
                     x = margeGauche*mm
                     for numColonne in range(0, int(nbreColonnes)):
@@ -56,7 +56,7 @@ class Impression():
                         x += largeurEtiquette*mm
                         canvas.line(x, y1, x, y2)
                         x += espaceHorizontal*mm
-                # Repères de lignes
+                # RepÃ¨res de lignes
                 for x1, x2 in [(4*mm, margeGauche*mm-2*mm), (largeurPage*mm-4*mm, largeurPage*mm-margeDroite*mm+2*mm)] :
                     y = hauteurPage*mm - margeHaut*mm
                     for numLigne in range(0, int(nbreLignes)):
@@ -70,7 +70,7 @@ class Impression():
         largeurPage = taillePage[0]
         hauteurPage = taillePage[1]
 
-        # Initialisation du modèle de document
+        # Initialisation du modÃ¨le de document
         modeleDoc = DLG_Noedoc.ModeleDoc(IDmodele=IDmodele)
         largeurEtiquette = modeleDoc.dictInfosModele["largeur"]
         hauteurEtiquette = modeleDoc.dictInfosModele["hauteur"]
@@ -83,7 +83,7 @@ class Impression():
         nomDoc = FonctionsPerso.GenerationNomDoc("ETIQUETTES", "pdf")
         canvas = Canvas(nomDoc, pagesize=(largeurPage*mm, hauteurPage*mm))
         
-        # Création des étiquettes
+        # CrÃ©ation des Ã©tiquettes
         numColonne = 0
         numLigne = 0
         for dictValeurs in listeValeurs :
@@ -95,20 +95,20 @@ class Impression():
                 canvas.saveState()
                 canvas.translate(x*mm, y*mm)
 
-                # Création du clipping
+                # CrÃ©ation du clipping
                 p = canvas.beginPath()
                 canvas.setStrokeColor( (1, 1, 1) )
                 canvas.setLineWidth(0.25)
                 p.rect(0, 0, largeurEtiquette*mm, hauteurEtiquette*mm)
                 canvas.clipPath(p)
 
-                # Dessin de l'étiquette
+                # Dessin de l'Ã©tiquette
                 modeleDoc.DessineFond(canvas, dictChamps=dictValeurs)
                 etat = modeleDoc.DessineTousObjets(canvas, dictChamps=dictValeurs)
                 if etat == False :
                     return
 
-                # Dessin du contour de l'étiquette
+                # Dessin du contour de l'Ã©tiquette
                 if AfficherContourEtiquette == True :
                     canvas.setStrokeColor( (0, 0, 0) )
                     canvas.setLineWidth(0.25)
@@ -128,7 +128,7 @@ class Impression():
                     canvas.showPage()
                     numLigne = 0
 
-        # Affichage des repères de découpe
+        # Affichage des repÃ¨res de dÃ©coupe
         AfficheReperesDecoupe()
                     
         # Finalisation du PDF
@@ -154,9 +154,9 @@ if __name__ == u"__main__":
         dictTemp = {
             "{IDINDIVIDU}" : str(3), 
             "{INDIVIDU_NOM}" : _(u"DUPOND"), 
-            "{INDIVIDU_PRENOM}" : _(u"Gérard"),
+            "{INDIVIDU_PRENOM}" : _(u"GÃ©rard"),
             }
         listeValeurs.append(dictTemp)
-    # Lance édition PDF
+    # Lance Ã©dition PDF
     Impression(IDmodele=39, taillePage=(210, 297), listeValeurs=listeValeurs)
     app.MainLoop()

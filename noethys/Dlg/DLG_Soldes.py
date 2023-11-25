@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -26,19 +26,19 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Vous pouvez ici consulter la liste des comptes des familles. Double-cliquez sur une ligne pour ouvrir la fiche famille correspondante. Utilisez le champ Date pour connaître la situation des comptes à une date précise.")
+        intro = _(u"Vous pouvez ici consulter la liste des comptes des familles. Double-cliquez sur une ligne pour ouvrir la fiche famille correspondante. Utilisez le champ Date pour connaÃ®tre la situation des comptes Ã  une date prÃ©cise.")
         titre = _(u"Soldes des comptes")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Euro.png")
         
-        # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
+        # ParamÃ¨tres
+        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"ParamÃ¨tres"))
         self.label_date = wx.StaticText(self, -1, _(u"Date de la situation :"))
         self.ctrl_date = CTRL_Saisie_date.Date2(self)
         self.label_filtres = wx.StaticText(self, -1, _(u"Filtres des soldes :"))
-        self.check_debit = wx.CheckBox(self, -1, _(u"Débiteurs"))
-        self.check_credit = wx.CheckBox(self, -1, _(u"Créditeurs"))
+        self.check_debit = wx.CheckBox(self, -1, _(u"DÃ©biteurs"))
+        self.check_credit = wx.CheckBox(self, -1, _(u"CrÃ©diteurs"))
         self.check_nul = wx.CheckBox(self, -1, _(u"Nuls"))
-        self.check_factures = wx.CheckBox(self, -1, _(u"Uniquement les prestations facturées"))
+        self.check_factures = wx.CheckBox(self, -1, _(u"Uniquement les prestations facturÃ©es"))
         self.bouton_actualiser = wx.Button(self, -1, _(u"Actualiser"))
         
         # Liste
@@ -72,7 +72,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_CHECKBOX, self.OnFiltres, self.check_factures)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonActualiser, self.bouton_actualiser)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.ctrl_date.SetDate(datetime.date.today()) 
         self.check_debit.SetValue(True)
         self.check_credit.SetValue(True)
@@ -81,16 +81,16 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Soldes des comptes"))
-        self.bouton_ouvrir_fiche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la fiche de la famille sélectionnée dans la liste")))
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu de la liste")))
+        self.bouton_ouvrir_fiche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la fiche de la famille sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er un aperÃ§u de la liste")))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
         self.bouton_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Texte")))
         self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Veuillez saisir une date de situation")))
-        self.check_debit.SetToolTip(wx.ToolTip(_(u"Afficher les soldes débiteurs")))
-        self.check_credit.SetToolTip(wx.ToolTip(_(u"Afficher les soldes créditeurs")))
+        self.check_debit.SetToolTip(wx.ToolTip(_(u"Afficher les soldes dÃ©biteurs")))
+        self.check_credit.SetToolTip(wx.ToolTip(_(u"Afficher les soldes crÃ©diteurs")))
         self.check_nul.SetToolTip(wx.ToolTip(_(u"Afficher les soldes nuls")))
         self.check_factures.SetToolTip(wx.ToolTip(_(u"Inclure uniquement les prestations qui apparaissent sur des factures")))
         self.SetMinSize((780, 700))

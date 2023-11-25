@@ -389,14 +389,14 @@ class HeaderDrawerDCMixin(object):
 ##		else:
 ##			self.context.SetBrush( wx.Brush( SCHEDULER_BACKGROUND_BRUSH ) )
 
-		self.context.DrawRectangle( x, y, w, textH * 1.5 )
+		self.context.DrawRectangle(int(x), int(y), int(w), int(textH * 1.5))
 
 		self.context.SetTextForeground( wx.BLACK )
 
 		if alignRight:
 			self.context.DrawText( text, x + w - textW * 1.5, y + textH * .25)
 		else:
-			self.context.DrawText( text, x + ( w - textW ) / 2, y + textH * .25 )
+			self.context.DrawText( text, int(x + ( w - textW ) / 2), int(y + textH * .25 ))
 
 		return w, textH * 1.5
 
@@ -508,7 +508,7 @@ class HeaderDrawerGCMixin(object):
 			if alignRight:
 				self.context.DrawText(text, x + w - 1.5 * textW, y + textH * .25)
 			else:
-				self.context.DrawText(text, x + (w - textW) / 2, y + textH * .25)
+				self.context.DrawText(text, int(x + (w - textW) / 2), int(y + textH * .25))
 
 			return w, textH * 1.5
 		finally:
@@ -626,7 +626,7 @@ class wxBaseDrawer(BackgroundDrawerDCMixin, HeaderDrawerDCMixin, HeaderDrawerMix
 		for i, hour in enumerate( self.displayedHours ):
 			if hour.GetMinute() == 0:
 				if direction == wxSCHEDULER_VERTICAL:
-					self.context.DrawLine(x + LEFT_COLUMN_SIZE - hourW / 2, y + i * hourH, x + w, y + i * hourH)
+					self.context.DrawLine(int(x + LEFT_COLUMN_SIZE - hourW / 2), int(y + i * hourH), int(x + w), int(y + i * hourH))
 					if includeText:
 						self.context.DrawText(hour.Format(' %H'), x + LEFT_COLUMN_SIZE - hourW - 5, y + i * hourH)
 				else:
@@ -684,8 +684,8 @@ class wxFancyDrawer(BackgroundDrawerGCMixin, HeaderDrawerGCMixin, HeaderDrawerMi
 			for i, hour in enumerate( self.displayedHours ):
 				if hour.GetMinute() == 0:
 					if direction == wxSCHEDULER_VERTICAL:
-						self.context.DrawLines([(x + LEFT_COLUMN_SIZE - hourW / 2, y + i * hourH),
-									(x + w, y + i * hourH)])
+						self.context.DrawLines([int((x + LEFT_COLUMN_SIZE - hourW / 2), int(y + i * hourH)),
+									int((x + w, y + i * hourH))])
 						if includeText:
 							self.context.DrawText(hour.Format(' %H'), x + LEFT_COLUMN_SIZE - hourW - 10, y + i * hourH)
 					else:

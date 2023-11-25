@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-20 Ivan LUCAS
@@ -33,7 +33,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -62,7 +62,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         # Conditions Activites
         if self.dict_parametres["liste_activites"] == None or self.dict_parametres["liste_activites"] == [] :
             conditionActivites = ""
@@ -74,7 +74,7 @@ class ListView(FastObjectListView):
 
         DB = GestionDB.DB()
 
-        # Récupération des présents
+        # RÃ©cupÃ©ration des prÃ©sents
         listePresents = []
         if self.dict_parametres["presents"] != None :
             req = """SELECT IDfamille, inscriptions.IDinscription
@@ -88,7 +88,7 @@ class ListView(FastObjectListView):
             for IDfamille, IDinscription in listeIndividusPresents :
                 listePresents.append(IDfamille)
 
-        # Récupération des familles
+        # RÃ©cupÃ©ration des familles
         req = """
         SELECT inscriptions.IDfamille, familles.code_comptable
         FROM inscriptions 
@@ -134,12 +134,12 @@ class ListView(FastObjectListView):
         self.dict_parametres[nom] = valeur
 
     def MAJ(self, IDfamille=None):
-        attente = wx.BusyInfo(_(u"Recherche des données..."), self)
+        attente = wx.BusyInfo(_(u"Recherche des donnÃ©es..."), self)
         self.InitModel()
         self.InitObjectListView()
         del attente
 
-        # Sélection
+        # SÃ©lection
         for track in self.donnees:
             if track.IDfamille == IDfamille :
                 self.SelectObject(track, ensureVisible=True)
@@ -150,7 +150,7 @@ class ListView(FastObjectListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """        
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -169,7 +169,7 @@ class ListView(FastObjectListView):
         
         menuPop.AppendSeparator()
         
-        # Génération automatique des fonctions standards
+        # GÃ©nÃ©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
 
         self.PopupMenu(menuPop)
@@ -187,7 +187,7 @@ class ListView(FastObjectListView):
     def OuvrirFicheFamille(self, event=None):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune fiche famille à ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune fiche famille Ã  ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -200,7 +200,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event=None):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune ligne à modifier !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune ligne Ã  modifier !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -62,10 +62,10 @@ class CTRL(wx.StaticBitmap):
         
         self.imagewx = None
         
-        # Propriétés
+        # PropriÃ©tÃ©s
         self.SetMinSize(size)
         self.SetBackgroundColour(self.couleurFond)
-        self.SetToolTip(wx.ToolTip(_(u"Cliquez sur le bouton droit de votre souris\npour accéder aux fonctions")))
+        self.SetToolTip(wx.ToolTip(_(u"Cliquez sur le bouton droit de votre souris\npour accÃ©der aux fonctions")))
         
         #Binds
         self.Bind(wx.EVT_LEFT_DOWN, self.Menu)
@@ -77,7 +77,7 @@ class CTRL(wx.StaticBitmap):
         
     def Menu(self, event):
         """Ouverture du menu contextuel"""
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         if self.mode == "ecriture" :
@@ -118,13 +118,13 @@ class CTRL(wx.StaticBitmap):
         """ Importer Image """
         wildcard = "Toutes les images (*.bmp; *.gif; *.jpg; *.png)|*.bmp;*.gif;*.jpg;*.png|Image JPEG (*.jpg)|*.jpg|Image PNG (*.png)|*.png|Image GIF (*.gif)|*.gif|Tous les fichiers (*.*)|*.*"
                 
-        # Récupération du chemin des documents
+        # RÃ©cupÃ©ration du chemin des documents
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
         
-        # Ouverture dela fenêtre de dialogue
+        # Ouverture dela fenÃªtre de dialogue
         dlg = wx.FileDialog(
-            self, message=_(u"Sélectionnez une image"),
+            self, message=_(u"SÃ©lectionnez une image"),
             defaultDir=cheminDefaut, 
             defaultFile="", 
             wildcard=wildcard,
@@ -153,7 +153,7 @@ class CTRL(wx.StaticBitmap):
 ##            imgPIL = imgPIL.resize((largeur, hauteur), Image.ANTIALIAS)
             img.Rescale(width=largeur, height=hauteur, quality=wx.IMAGE_QUALITY_HIGH)
         
-        # Conserve l'image en mémoire
+        # Conserve l'image en mÃ©moire
         self.imagewx = img
         self.MAJ() 
         self.estModifie = True
@@ -172,10 +172,10 @@ class CTRL(wx.StaticBitmap):
         ratioCadre = 1.0 * largeurCadre / hauteurCadre
         ratioImage = 1.0 * largeurImage / hauteurImage
         espace = 8
-        # Adaptation à la hauteur
+        # Adaptation Ã  la hauteur
         hauteurImage = hauteurCadre - espace
         largeurImage = hauteurImage * ratioImage
-        # Adaptation à la largeur
+        # Adaptation Ã  la largeur
         if largeurImage > largeurCadre :
             largeurImage = largeurCadre - espace
             hauteurImage = largeurImage / ratioImage
@@ -192,7 +192,7 @@ class CTRL(wx.StaticBitmap):
     
     def Supprimer(self, event=None):
         if self.imagewx == None :
-            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune image à supprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune image Ã  supprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -208,7 +208,7 @@ class CTRL(wx.StaticBitmap):
         self.estModifie = True
     
     def ChargeFromBuffer(self, buffer=None):
-        """ Charge l'image à partir d'un buffer """
+        """ Charge l'image Ã  partir d'un buffer """
         if buffer == None :
             self.imagewx = None
         else :
@@ -220,7 +220,7 @@ class CTRL(wx.StaticBitmap):
         self.MAJ() 
 
     def GetBuffer(self):
-        """ Récupère le buffer de l'image """
+        """ RÃ©cupÃ¨re le buffer de l'image """
         if self.imagewx == None : return None
         buffer = six.BytesIO()
         if 'phoenix' in wx.PlatformInfo:
@@ -233,7 +233,7 @@ class CTRL(wx.StaticBitmap):
     
     def Visualiser(self, event=None):
         if self.imagewx == None :
-            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune image à visualiser !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune image Ã  visualiser !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

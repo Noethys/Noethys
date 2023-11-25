@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -26,7 +26,7 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.IDmodele = IDmodele
         
-        # Init activité
+        # Init activitÃ©
         if self.IDmodele != None :
             DB = GestionDB.DB()
             req = """SELECT IDmodele, IDactivite, nom, donnees 
@@ -39,8 +39,8 @@ class Dialog(wx.Dialog):
 
         self.IDactivite = IDactivite
 
-        # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Généralités"))
+        # GÃ©nÃ©ralitÃ©s
+        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"GÃ©nÃ©ralitÃ©s"))
         self.label_nom = wx.StaticText(self, wx.ID_ANY, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
         
@@ -71,17 +71,17 @@ class Dialog(wx.Dialog):
         
         # Importation
         if self.IDmodele == None :
-            self.SetTitle(_(u"Saisie d'un modèle de planning"))
+            self.SetTitle(_(u"Saisie d'un modÃ¨le de planning"))
         else :
-            self.SetTitle(_(u"Modification d'un modèle de planning"))
+            self.SetTitle(_(u"Modification d'un modÃ¨le de planning"))
             self.Importation() 
 
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour ce modèle")))
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un paramètre")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier un paramètre")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer un paramètre")))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour ce modÃ¨le")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un paramÃ¨tre")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier un paramÃ¨tre")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer un paramÃ¨tre")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -90,7 +90,7 @@ class Dialog(wx.Dialog):
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(3, 1, 10, 10)
         
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         box_generalites = wx.StaticBoxSizer(self.box_generalites_staticbox, wx.VERTICAL)
         grid_sizer_generalites = wx.FlexGridSizer(2, 2, 10, 10)
         grid_sizer_generalites.Add(self.label_nom, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
@@ -152,13 +152,13 @@ class Dialog(wx.Dialog):
 
     def OnBoutonOk(self, event):
         if self.ctrl_nom.GetValue() == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour ce modèle !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour ce modÃ¨le !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         if len(self.ctrl_planning.GetDonnees()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un élément de planning !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un Ã©lÃ©ment de planning !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -166,7 +166,7 @@ class Dialog(wx.Dialog):
         # Sauvegarde
         self.Sauvegarde() 
         
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def GetIDmodele(self):
@@ -204,9 +204,9 @@ class Dialog_selection_activite(wx.Dialog):
     def __init__(self, parent):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
-        self.SetTitle(_(u"Sélection d'une activité"))
+        self.SetTitle(_(u"SÃ©lection d'une activitÃ©"))
         
-        self.label_intro = wx.StaticText(self, wx.ID_ANY, _(u"Sélectionnez l'activité pour laquelle vous souhaitez créer un modèle de planning puis cliquez sur OK :"))
+        self.label_intro = wx.StaticText(self, wx.ID_ANY, _(u"SÃ©lectionnez l'activitÃ© pour laquelle vous souhaitez crÃ©er un modÃ¨le de planning puis cliquez sur OK :"))
         self.ctrl_activites = OL_Activites.ListView(self, modificationAutorisee=False, id=-1, style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
         self.ctrl_activites.SetMinSize((150, 50))
         self.ctrl_activites.MAJ() 
@@ -260,7 +260,7 @@ class Dialog_selection_activite(wx.Dialog):
 
     def OnBoutonOk(self, event):  
         if len(self.ctrl_activites.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une activité dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une activitÃ© dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

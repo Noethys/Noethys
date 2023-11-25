@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -39,8 +39,8 @@ class Panel_planning(wx.Panel):
         self.IDactivite = self.clsbase.GetValeur("IDactivite")
         self.IDunite_prevision = self.clsbase.GetValeur("IDunite_prevision")
 
-        # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Période d'application"))
+        # GÃ©nÃ©ralitÃ©s
+        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"PÃ©riode d'application"))
         self.label_periode = wx.StaticText(self, wx.ID_ANY, _(u"Dates :"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_au = wx.StaticText(self, wx.ID_ANY, _(u"au"))
@@ -68,16 +68,16 @@ class Panel_planning(wx.Panel):
         self.ctrl_planning_detail.MAJ()
 
     def __set_properties(self):
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez une date de début")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez une date de dÃ©but")))
         self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez une date de fin")))
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un paramètre")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier un paramètre")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer un paramètre")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un paramÃ¨tre")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier un paramÃ¨tre")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer un paramÃ¨tre")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(3, 1, 10, 10)
 
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         box_generalites = wx.StaticBoxSizer(self.box_generalites_staticbox, wx.VERTICAL)
         grid_sizer_generalites = wx.FlexGridSizer(2, 2, 10, 10)
         grid_sizer_generalites.Add(self.label_periode, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
@@ -113,7 +113,7 @@ class Panel_planning(wx.Panel):
 
     def Validation(self):
         if self.ctrl_date_debut.GetDate() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir la date de début d'application !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir la date de dÃ©but d'application !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
@@ -127,26 +127,26 @@ class Panel_planning(wx.Panel):
             return False
 
         if self.ctrl_date_debut.GetDate() > self.ctrl_date_fin.GetDate() :
-            dlg = wx.MessageDialog(self, _(u"La date de début doit être inférieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de dÃ©but doit Ãªtre infÃ©rieure Ã  la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         if self.ctrl_date_debut.GetDate() < self.date_debut :
-            dlg = wx.MessageDialog(self, _(u"La date de début ne peut pas être inférieure à la date de début du contrat !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de dÃ©but ne peut pas Ãªtre infÃ©rieure Ã  la date de dÃ©but du contrat !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         if self.ctrl_date_fin.GetDate() > self.date_fin :
-            dlg = wx.MessageDialog(self, _(u"La date de fin ne peut pas être supérieure à la date de fin du contrat !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de fin ne peut pas Ãªtre supÃ©rieure Ã  la date de fin du contrat !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         donnees = self.GetDonnees()
         if len(donnees) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement définir au moins un paramètre de planning !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement dÃ©finir au moins un paramÃ¨tre de planning !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -154,7 +154,7 @@ class Panel_planning(wx.Panel):
         return True
 
     def GetDonnees(self):
-        # Récupération des paramètres
+        # RÃ©cupÃ©ration des paramÃ¨tres
         date_debut = self.ctrl_date_debut.GetDate()
         date_fin = self.ctrl_date_fin.GetDate()
         listeConso = self.ctrl_planning_detail.GetConso(date_debut, date_fin)
@@ -178,7 +178,7 @@ class Panel_calendrier(wx.Panel):
         self.ctrl_calendrier.SetMinSize((200, 200))
 
         # Unites
-        self.box_unites_staticbox = wx.StaticBox(self, -1, _(u"Unités"))
+        self.box_unites_staticbox = wx.StaticBox(self, -1, _(u"UnitÃ©s"))
         self.ctrl_unites = CTRL_Unites(self, IDactivite=self.IDactivite, IDunite=self.IDunite_prevision)
         self.ctrl_unites.SetMinSize((330, 100))
 
@@ -195,7 +195,7 @@ class Panel_calendrier(wx.Panel):
         box_calendrier.Add(self.ctrl_calendrier, 1, wx.EXPAND | wx.ALL, 10)
         grid_sizer_base.Add(box_calendrier, 1, wx.TOP|wx.EXPAND, 10)
 
-        # Unités
+        # UnitÃ©s
         box_unites = wx.StaticBoxSizer(self.box_unites_staticbox, wx.VERTICAL)
         box_unites.Add(self.ctrl_unites, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(box_unites, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 0)
@@ -209,7 +209,7 @@ class Panel_calendrier(wx.Panel):
         listeDates = self.ctrl_calendrier.GetSelections()
         listeDates.sort()
         if len(listeDates) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner au moins une date dans le calendrier !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner au moins une date dans le calendrier !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -218,13 +218,13 @@ class Panel_calendrier(wx.Panel):
             return False
 
         if listeDates[0] < self.date_debut :
-            dlg = wx.MessageDialog(self, _(u"La date de début ne peut pas être inférieure à la date de début du contrat !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de dÃ©but ne peut pas Ãªtre infÃ©rieure Ã  la date de dÃ©but du contrat !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         if listeDates[-1] > self.date_fin :
-            dlg = wx.MessageDialog(self, _(u"La date de fin ne peut pas être supérieure à la date de fin du contrat !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de fin ne peut pas Ãªtre supÃ©rieure Ã  la date de fin du contrat !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -291,7 +291,7 @@ class Notebook(wx.Choicebook):
             index += 1
         self.AssignImageList(il)
 
-        # Création des pages
+        # CrÃ©ation des pages
         index = 0
         for codePage, labelPage, ctrlPage, imgPage in self.listePages :
             self.AddPage(ctrlPage, labelPage)
@@ -350,7 +350,7 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.SetTitle(_(u"Génération de consommations"))
+        self.SetTitle(_(u"GÃ©nÃ©ration de consommations"))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -388,19 +388,19 @@ class Dialog(wx.Dialog):
         if self.notebook.Validation()  == False :
             return False
 
-        # Génération des consommations
+        # GÃ©nÃ©ration des consommations
         listeConso = self.parent.Generation(listeConso=self.notebook.GetDonnees(), IDconso=self.IDconso)
         if listeConso == False :
             return
         else :
             self.listeConso = listeConso
 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
     
 
     # def Importation_unites(self):
-    #     # Récupération des unités
+    #     # RÃ©cupÃ©ration des unitÃ©s
     #     DB = GestionDB.DB()
     #     req = """SELECT IDunite, nom, abrege, type, heure_debut, heure_fin
     #     FROM unites
@@ -412,7 +412,7 @@ class Dialog(wx.Dialog):
     #     for IDunite, nom, abrege, type, heure_debut, heure_fin in listeDonnees :
     #         dictUnites[IDunite] = {"nom":nom, "abrege":abrege, "type":type, "heure_debut":heure_debut, "heure_fin":heure_fin, "unites_incompatibles" : []}
     #
-    #     # Récupère les incompatibilités entre unités
+    #     # RÃ©cupÃ¨re les incompatibilitÃ©s entre unitÃ©s
     #     req = """SELECT IDunite_incompat, IDunite, IDunite_incompatible
     #     FROM unites_incompat;"""
     #     DB.ExecuterReq(req)
@@ -448,7 +448,7 @@ class Dialog(wx.Dialog):
     # def Generation(self):
     #     listeConso = self.notebook.GetDonnees()
     #
-    #     # Vérification de la validité des dates
+    #     # VÃ©rification de la validitÃ© des dates
     #     listeAnomalies = []
     #     nbreConsoValides = 0
     #     self.listeConso = []
@@ -459,36 +459,36 @@ class Dialog(wx.Dialog):
     #         dateFr = UTILS_Dates.DateDDEnFr(dictConso["date"])
     #         valide = True
     #
-    #         # Recherche si pas d'incompatibilités avec les conso déjà saisies
+    #         # Recherche si pas d'incompatibilitÃ©s avec les conso dÃ©jÃ  saisies
     #         # for dictConsoTemp in listeConso :
     #         #     if dictConso["date"] == dictConsoTemp["date"] :
     #         #         nomUnite1 = self.dictUnites[dictConso["IDunite"]]["nom"]
     #         #         nomUnite2 = self.dictUnites[dictConsoTemp["IDunite"]]["nom"]
     #         #
     #         #         if self.VerifieCompatibilitesUnites(dictConsoTemp["IDunite"], dictConso["IDunite"]) == False :
-    #         #             listeAnomalies.append(_(u"%s : Unité %s incompatible avec unité %s déjà présente") % (dateFr, nomUnite1, nomUnite2))
+    #         #             listeAnomalies.append(_(u"%s : UnitÃ© %s incompatible avec unitÃ© %s dÃ©jÃ  prÃ©sente") % (dateFr, nomUnite1, nomUnite2))
     #         #             valide = False
     #         #
     #         #         if dictConso["IDunite"] == dictConsoTemp["IDunite"] :
     #         #             if self.dictUnites[dictConso["IDunite"]]["type"] == "Multihoraire" :
     #         #                 if dictConso["heure_fin"] > dictConsoTemp["heure_debut"] and dictConso["heure_debut"] < dictConsoTemp["heure_fin"] :
-    #         #                     listeAnomalies.append(_(u"%s : L'unité multihoraires %s chevauche une consommation d'une unité identique") % (dateFr, nomUnite1))
+    #         #                     listeAnomalies.append(_(u"%s : L'unitÃ© multihoraires %s chevauche une consommation d'une unitÃ© identique") % (dateFr, nomUnite1))
     #         #                     valide = False
     #         #             else :
-    #         #                 listeAnomalies.append(_(u"%s : Unité %s déjà présente") % (dateFr, nomUnite1))
+    #         #                 listeAnomalies.append(_(u"%s : UnitÃ© %s dÃ©jÃ  prÃ©sente") % (dateFr, nomUnite1))
     #         #                 valide = False
     #
-    #         # Vérifie si unité ouverte
+    #         # VÃ©rifie si unitÃ© ouverte
     #         IDgroupe = self.clsbase.GetValeur("IDgroupe")
     #         if IDgroupe != None and self.dictOuvertures.has_key((dictConso["date"], dictConso["IDunite"], IDgroupe)) == False :
-    #             listeAnomalies.append(_(u"%s : Unité %s fermée") % (dateFr, self.dictUnites[dictConso["IDunite"]]["nom"]))
+    #             listeAnomalies.append(_(u"%s : UnitÃ© %s fermÃ©e") % (dateFr, self.dictUnites[dictConso["IDunite"]]["nom"]))
     #             valide = False
     #
     #         # IDconso pour les modifications
     #         if self.IDconso != None :
     #             dictConso["IDconso"] = self.IDconso
     #
-    #         # Insertion de la conso validée
+    #         # Insertion de la conso validÃ©e
     #         if valide == True :
     #             self.listeConso.append(dictConso)
     #             nbreConsoValides += 1
@@ -497,23 +497,23 @@ class Dialog(wx.Dialog):
     #
     #     # Signalement des anomalies
     #     if len(listeAnomalies) :
-    #         message1 = _(u"Les %d anomalies suivantes ont été trouvées.\n\nSouhaitez-vous tout de même générer les %d autres consommations ?") % (len(listeAnomalies), nbreConsoValides)
+    #         message1 = _(u"Les %d anomalies suivantes ont Ã©tÃ© trouvÃ©es.\n\nSouhaitez-vous tout de mÃªme gÃ©nÃ©rer les %d autres consommations ?") % (len(listeAnomalies), nbreConsoValides)
     #         message2 = u"\n".join(listeAnomalies)
-    #         dlg = dialogs.MultiMessageDialog(self, message1, caption = _(u"Génération"), msg2=message2, style = wx.ICON_EXCLAMATION | wx.YES|wx.CANCEL|wx.YES_DEFAULT, btnLabels={wx.ID_YES : _(u"Oui"), wx.ID_CANCEL : _(u"Annuler")})
+    #         dlg = dialogs.MultiMessageDialog(self, message1, caption = _(u"GÃ©nÃ©ration"), msg2=message2, style = wx.ICON_EXCLAMATION | wx.YES|wx.CANCEL|wx.YES_DEFAULT, btnLabels={wx.ID_YES : _(u"Oui"), wx.ID_CANCEL : _(u"Annuler")})
     #         reponse = dlg.ShowModal()
     #         dlg.Destroy()
     #         if reponse != wx.ID_YES :
     #             return False
     #
     #     if nbreConsoValides == 0 :
-    #         dlg = wx.MessageDialog(self, _(u"Il n'y a aucune consommation valide à générer !"), _(u"Génération"), wx.OK | wx.ICON_EXCLAMATION)
+    #         dlg = wx.MessageDialog(self, _(u"Il n'y a aucune consommation valide Ã  gÃ©nÃ©rer !"), _(u"GÃ©nÃ©ration"), wx.OK | wx.ICON_EXCLAMATION)
     #         dlg.ShowModal()
     #         dlg.Destroy()
     #         return False
     #
     #     # Demande de confirmation
     #     if self.IDconso == None :
-    #         dlg = wx.MessageDialog(self, _(u"Confirmez-vous la génération de %d consommations ?") % nbreConsoValides, _(u"Génération"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+    #         dlg = wx.MessageDialog(self, _(u"Confirmez-vous la gÃ©nÃ©ration de %d consommations ?") % nbreConsoValides, _(u"GÃ©nÃ©ration"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
     #         reponse = dlg.ShowModal()
     #         dlg.Destroy()
     #         if reponse != wx.ID_YES :
@@ -528,14 +528,14 @@ class Dialog(wx.Dialog):
         self.notebook.AffichePage("calendrier", forcer=True)
         pageCalendrier = self.notebook.GetPage()
 
-        # Mémorise l'IDconso
+        # MÃ©morise l'IDconso
         self.IDconso = track.IDconso
 
-        # Sélectionne la date
+        # SÃ©lectionne la date
         pageCalendrier.ctrl_calendrier.SelectJours([track.date,])
         pageCalendrier.ctrl_calendrier.Enable(False)
 
-        # Sélectionne les unités
+        # SÃ©lectionne les unitÃ©s
         listeUnites = [
             {"IDunite" : track.IDunite, "options" : {"interdit_ajout" : True, "heure_debut" : track.heure_debut, "heure_fin" : track.heure_fin, "quantite" : track.quantite}},
             ]

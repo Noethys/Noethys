@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -27,7 +27,7 @@ class Dialog(wx.Dialog):
         
         titre = _(u"Villes et codes postaux")
         if modeImportation == True :
-            intro = _(u"Vous pouvez ici rechercher une ville ou un code postal gr‚ce ‡ la barre de recherche. Cliquez sur 'Importer la ville' pour importer la ville saisie ou sÈlectionnÈe.")
+            intro = _(u"Vous pouvez ici rechercher une ville ou un code postal gr√¢ce √† la barre de recherche. Cliquez sur 'Importer la ville' pour importer la ville saisie ou s√©lectionn√©e.")
         else:
             intro =_(u"Vous pouvez ici rechercher une ville ou un code postal. La barre de recherche vous permet d'effectuer une recherche sur une partie du nom ou du code postal.")
         self.SetTitle(titre)
@@ -70,10 +70,10 @@ class Dialog(wx.Dialog):
         self.ctrl_cp.SetToolTip(wx.ToolTip(_(u"Saisissez ici un code postal")))
         self.ctrl_ville.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom d'une ville")))
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une ville")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la ville sÈlectionnÈe dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la ville sÈlectionnÈe dans la liste")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la ville s√©lectionn√©e dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la ville s√©lectionn√©e dans la liste")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_importer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour importer la ville saisie manuellement ou sÈlectionnÈe dans la liste")))
+        self.bouton_importer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour importer la ville saisie manuellement ou s√©lectionn√©e dans la liste")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((480, 600))
 
@@ -152,7 +152,7 @@ class Dialog(wx.Dialog):
         saisie_cp = self.ctrl_cp.GetValue()
         saisie_ville = self.ctrl_ville.GetValue()
         if saisie_ville == "" and saisie_cp == "" and len(selectionListe) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez effectuÈ aucune saisie manuelle ou sÈlection dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez effectu√© aucune saisie manuelle ou s√©lection dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

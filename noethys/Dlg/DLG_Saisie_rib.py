@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -139,7 +139,7 @@ class CTRL_Titulaire(wx.Choice):
     def GetListeDonnees(self):
         if self.IDfamille == None :
             return []
-        # Récupération de la liste des représentants de la famille
+        # RÃ©cupÃ©ration de la liste des reprÃ©sentants de la famille
         DB = GestionDB.DB()
         req = """SELECT individus.IDindividu, nom, prenom
         FROM rattachements
@@ -154,7 +154,7 @@ class CTRL_Titulaire(wx.Choice):
         for IDindividu, nom, prenom in listeDonnees :
             listeRepresentants.append({"IDindividu":IDindividu, "nom":nom, "prenom":prenom})
         
-        # Remplissage du contrôle
+        # Remplissage du contrÃ´le
         listeItems = [u"",]
         self.dictDonnees = {}
         self.dictDonnees[0] = { "ID" : 0, "nom" : _(u"Inconnue")}
@@ -191,13 +191,13 @@ class Dialog(wx.Dialog):
         self.SetTitle(_(u"Saisie du RIB"))
                                 
         # RIB
-        self.box_rib_staticbox = wx.StaticBox(self, -1, _(u"Coordonnées bancaires"))
+        self.box_rib_staticbox = wx.StaticBox(self, -1, _(u"CoordonnÃ©es bancaires"))
         
-        self.label_cle_iban = wx.StaticText(self, -1, _(u"Clé IBAN"))
+        self.label_cle_iban = wx.StaticText(self, -1, _(u"ClÃ© IBAN"))
         self.label_etab = wx.StaticText(self, -1, _(u"Etab."))
         self.label_guichet = wx.StaticText(self, -1, _(u"Guichet"))
         self.label_numero = wx.StaticText(self, -1, _(u"Compte"))
-        self.label_cle_rib = wx.StaticText(self, -1, _(u"Clé RIB"))
+        self.label_cle_rib = wx.StaticText(self, -1, _(u"ClÃ© RIB"))
         
         self.ctrl_cle_iban = wx.TextCtrl(self, -1, _(u"FR76"), style=wx.TE_CENTRE)
         self.ctrl_code_etab = wx.TextCtrl(self, -1, u"", style=wx.TE_CENTRE, validator = MyValidator())
@@ -228,7 +228,7 @@ class Dialog(wx.Dialog):
         self.label_individu_ville = wx.StaticText(self, -1, _(u"C.P. :"))
         self.ctrl_individu_ville = CTRL_Saisie_adresse.Adresse(self)
 
-        # Mémo
+        # MÃ©mo
         self.box_memo_staticbox = wx.StaticBox(self, -1, _(u"Observations"))
         self.ctrl_memo = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
 
@@ -253,7 +253,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.Importation() 
         self.OnSaisieRIB(None)
         self.OnRadioTitulaire(None)
@@ -266,13 +266,13 @@ class Dialog(wx.Dialog):
         self.ctrl_cle_rib.SetMinSize((40, -1))
         self.ctrl_code_etab.SetToolTip(wx.ToolTip(_(u"Saisissez ici le code Etablissement")))
         self.ctrl_code_guichet.SetToolTip(wx.ToolTip(_(u"Saisissez ici le code Guichet")))
-        self.ctrl_numero.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numéro de compte")))
-        self.ctrl_cle_rib.SetToolTip(wx.ToolTip(_(u"Saisissez ici la clé RIB")))
-        self.ctrl_controle.SetToolTip(wx.ToolTip(_(u"Une coche verte apparaît si les coordonnées bancaires sont valides")))
-        self.ctrl_banque.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici l'établissement du compte")))
-        self.bouton_banques.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des établissements bancaires")))
-        self.radio_membre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner un membre de la famille")))
-        self.ctrl_membre.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici un membre de la famille en tant que titulaire du compte bancaire")))
+        self.ctrl_numero.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numÃ©ro de compte")))
+        self.ctrl_cle_rib.SetToolTip(wx.ToolTip(_(u"Saisissez ici la clÃ© RIB")))
+        self.ctrl_controle.SetToolTip(wx.ToolTip(_(u"Une coche verte apparaÃ®t si les coordonnÃ©es bancaires sont valides")))
+        self.ctrl_banque.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici l'Ã©tablissement du compte")))
+        self.bouton_banques.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la gestion des Ã©tablissements bancaires")))
+        self.radio_membre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner un membre de la famille")))
+        self.ctrl_membre.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici un membre de la famille en tant que titulaire du compte bancaire")))
         self.radio_individu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir manuellement un titulaire de compte bancaire")))
         self.ctrl_individu_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom de titulaire pour ce compte bancaire")))
         self.ctrl_individu_rue.SetToolTip(wx.ToolTip(_(u"Saisissez la rue de l'individu")))
@@ -339,7 +339,7 @@ class Dialog(wx.Dialog):
         box_titulaire.Add(grid_sizer_titulaire, 1, wx.ALL|wx.EXPAND, 10)
         
         
-        # Mémo
+        # MÃ©mo
         box_memo = wx.StaticBoxSizer(self.box_memo_staticbox, wx.VERTICAL)
         box_memo.Add(self.ctrl_memo, 1, wx.ALL|wx.EXPAND, 10)
         
@@ -415,7 +415,7 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
 
     def Importation(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         if self.IDfamille == None :
             return
         DB = GestionDB.DB()
@@ -469,11 +469,11 @@ class Dialog(wx.Dialog):
             self.ctrl_individu_ville.SetValueCP(cp)
             self.ctrl_individu_ville.SetValueVille(ville)
         
-        # Mémo
+        # MÃ©mo
         self.ctrl_memo.SetValue(memo) 
 
     def OnBoutonOk(self, event):
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         etab = self.ctrl_code_etab.GetValue()
         guichet = self.ctrl_code_guichet.GetValue()
         numero = self.ctrl_numero.GetValue()
@@ -495,16 +495,16 @@ class Dialog(wx.Dialog):
         else :
             IDindividu = None
 
-        # Vérification des données saisies
+        # VÃ©rification des donnÃ©es saisies
         if self.ControleRIB() == False :
-            dlg = wx.MessageDialog(self, _(u"Il est impossible d'activer le prélèvement :\nLes coordonnées bancaires ne sont pas valides !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il est impossible d'activer le prÃ©lÃ¨vement :\nLes coordonnÃ©es bancaires ne sont pas valides !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_code_etab.SetFocus()
             return
 
         if IDbanque == None :
-            dlg = wx.MessageDialog(self, _(u"Il est impossible d'activer le prélèvement :\nVous n'avez sélectionné aucun établissement bancaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il est impossible d'activer le prÃ©lÃ¨vement :\nVous n'avez sÃ©lectionnÃ© aucun Ã©tablissement bancaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_banque.SetFocus()
@@ -512,14 +512,14 @@ class Dialog(wx.Dialog):
         
         if self.radio_membre.GetValue() == True :
             if IDindividu == None :
-                dlg = wx.MessageDialog(self, _(u"Il est impossible d'activer le prélèvement :\nVous n'avez pas sélectionné de titulaire du compte bancaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Il est impossible d'activer le prÃ©lÃ¨vement :\nVous n'avez pas sÃ©lectionnÃ© de titulaire du compte bancaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_membre.SetFocus()
                 return
         else :
             if nom == "" or rue == "" or cp == "" or ville == "" or cp == None or ville == None :
-                dlg = wx.MessageDialog(self, _(u"Il est impossible d'activer le prélèvement :\nVous n'avez pas renseigné le titulaire du compte bancaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Il est impossible d'activer le prÃ©lÃ¨vement :\nVous n'avez pas renseignÃ© le titulaire du compte bancaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_individu_nom.SetFocus()

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -77,7 +77,7 @@ class CTRL(HTL.HyperTreeList):
         from Utils import UTILS_Linux
         UTILS_Linux.AdaptePolice(self)
 
-        # Création de l'ImageList
+        # CrÃ©ation de l'ImageList
         il = wx.ImageList(16, 16)
         self.img_categorie = il.Add(wx.Bitmap(Chemins.GetStaticPath('Images/16x16/Dossier.png'), wx.BITMAP_TYPE_PNG))
         self.img_categorie_gris = il.Add(wx.Bitmap(Chemins.GetStaticPath('Images/16x16/Dossier_gris.png'), wx.BITMAP_TYPE_PNG))
@@ -92,13 +92,13 @@ class CTRL(HTL.HyperTreeList):
         self.SetColumnWidth(0, 250)
         self.AddColumn(_(u"Description du tarif"))
         self.SetColumnWidth(1, 230)
-        self.AddColumn(_(u"Catégories de tarifs"))
+        self.AddColumn(_(u"CatÃ©gories de tarifs"))
         self.SetColumnWidth(2, 180)
-        self.AddColumn(_(u"Méthode de calcul"))
+        self.AddColumn(_(u"MÃ©thode de calcul"))
         self.SetColumnWidth(3, 230)
         self.SetMainColumn(0)
                                 
-        # Création des branches
+        # CrÃ©ation des branches
         self.root = self.AddRoot(_(u"Tarifs"))
         self.SetPyData(self.root, {"type" : "root", "ID" : None} )
         if 'phoenix' in wx.PlatformInfo:
@@ -112,23 +112,23 @@ class CTRL(HTL.HyperTreeList):
         self.GetMainWindow().Bind(wx.EVT_LEFT_DCLICK, self.OnLeftDClick)
                         
     def MAJ(self, selection=None):
-        """ Met à jour (redessine) tout le contrôle """
+        """ Met Ã  jour (redessine) tout le contrÃ´le """
         nbreBranches = 1#self.GetMainWindow().GetCount()
         if nbreBranches > 0 :
             self.DeleteChildren(self.root)
         self.CreationBranches()
-        # Sélection
+        # SÃ©lection
         if selection != None :
             typeBranche, ID = selection
             branche = self.dictBranches[typeBranche][ID]
             self.SelectItem(branche)
     
     def CreationBranches(self):
-        """ Met uniquement à jour le contenu du contrôle """
-        # --- Importation des données ---
+        """ Met uniquement Ã  jour le contenu du contrÃ´le """
+        # --- Importation des donnÃ©es ---
         DB = GestionDB.DB()
         
-        # Importation des catégories de tarifs
+        # Importation des catÃ©gories de tarifs
         req = """SELECT IDcategorie_tarif, nom
         FROM categories_tarifs 
         WHERE IDactivite=%d
@@ -164,7 +164,7 @@ class CTRL(HTL.HyperTreeList):
             dictTemp = { "IDtarif" : IDtarif, "date_debut" : date_debut, "date_fin" : date_fin, "methode" : methode, "categories_tarifs" : categories_tarifs, "groupes" : groupes, "description" : description}
             dictTarifs[IDnom_tarif].append(dictTemp)
                     
-        # --- Création des branches ---
+        # --- CrÃ©ation des branches ---
         self.dictBranches = {"noms_tarifs" : {}, "tarifs" : {} } 
         
         # Noms de tarifs
@@ -180,7 +180,7 @@ class CTRL(HTL.HyperTreeList):
                 for dictTarifTemp in dictTarifs[IDnom_tarif] :
                     IDtarif = dictTarifTemp["IDtarif"]
                     
-                    # Dates de validité
+                    # Dates de validitÃ©
                     if dictTarifTemp["date_debut"] != None :
                         date_debut = DateEngFr(dictTarifTemp["date_debut"])
                     else:
@@ -202,7 +202,7 @@ class CTRL(HTL.HyperTreeList):
                         
                     self.SetItemText(brancheTarif, description, 1)
 
-                    # Catégories rattachées
+                    # CatÃ©gories rattachÃ©es
                     categoriesTemp = dictTarifTemp["categories_tarifs"]
                     if categoriesTemp != None :
                         listeTemp = categoriesTemp.split(";")
@@ -217,7 +217,7 @@ class CTRL(HTL.HyperTreeList):
                         
                     self.SetItemText(brancheTarif, texteCategories, 2)
                     
-                    # Méthode
+                    # MÃ©thode
                     methode = dictTarifTemp["methode"]
                     labelMethode = None
                     for dictValeurs in LISTE_METHODES :
@@ -245,12 +245,12 @@ class CTRL(HTL.HyperTreeList):
         type = dictItem["type"]
         ID = dictItem["ID"]
         
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
 ##        if type == "root" :
 ##            # Item Ajouter
-##            item = wx.MenuItem(menuPop, 10, _(u"Ajouter un catégorie de tarif"))
+##            item = wx.MenuItem(menuPop, 10, _(u"Ajouter un catÃ©gorie de tarif"))
 ##            bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_PNG)
 ##            item.SetBitmap(bmp)
 ##            menuPop.AppendItem(item)
@@ -265,20 +265,20 @@ class CTRL(HTL.HyperTreeList):
             self.Bind(wx.EVT_MENU, self.Ajouter, id=10)
 ##            menuPop.AppendSeparator()
 ##            # Item Modifier
-##            item = wx.MenuItem(menuPop, 20, _(u"Modifier la catégorie de tarif"))
+##            item = wx.MenuItem(menuPop, 20, _(u"Modifier la catÃ©gorie de tarif"))
 ##            bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Modifier.png"), wx.BITMAP_TYPE_PNG)
 ##            item.SetBitmap(bmp)
 ##            menuPop.AppendItem(item)
 ##            self.Bind(wx.EVT_MENU, self.Modifier, id=20)
 ##            # Item Supprimer
-##            item = wx.MenuItem(menuPop, 30, _(u"Supprimer la catégorie de tarif"))
+##            item = wx.MenuItem(menuPop, 30, _(u"Supprimer la catÃ©gorie de tarif"))
 ##            bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_PNG)
 ##            item.SetBitmap(bmp)
 ##            menuPop.AppendItem(item)
 ##            self.Bind(wx.EVT_MENU, self.Supprimer, id=30)
 ##            menuPop.AppendSeparator()
 ##            # Item Dupliquer
-##            item = wx.MenuItem(menuPop, 40, _(u"Dupliquer cette catégorie de tarif"))
+##            item = wx.MenuItem(menuPop, 40, _(u"Dupliquer cette catÃ©gorie de tarif"))
 ##            bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Dupliquer.png"), wx.BITMAP_TYPE_PNG)
 ##            item.SetBitmap(bmp)
 ##            menuPop.AppendItem(item)
@@ -410,11 +410,11 @@ class CTRL(HTL.HyperTreeList):
 ##        listeDonnees = DB.ResultatReq()
 ##        DB.Close()
 ##        if len(listeDonnees) > 0 :
-##            dlg = wx.MessageDialog(self, _(u"Il est impossible de supprimer une catégorie qui comporte au moins un tarif !"), _(u"Suppression impossible"), wx.OK | wx.ICON_INFORMATION)
+##            dlg = wx.MessageDialog(self, _(u"Il est impossible de supprimer une catÃ©gorie qui comporte au moins un tarif !"), _(u"Suppression impossible"), wx.OK | wx.ICON_INFORMATION)
 ##            dlg.ShowModal()
 ##            dlg.Destroy()
 ##            return
-##        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette catégorie ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+##        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette catÃ©gorie ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
 ##        if dlg.ShowModal() == wx.ID_YES :
 ##            DB = GestionDB.DB()
 ##            DB.ReqDEL("categories_tarifs", "IDcategorie_tarif", IDcategorie_tarif)
@@ -425,7 +425,7 @@ class CTRL(HTL.HyperTreeList):
 ##
 ##    def DupliquerCategorie(self, IDcategorie_tarif):
 ##        IDcategorie_tarif_modele = IDcategorie_tarif
-##        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous dupliquer également les tarifs et paramétrages de cette catégorie ?"), _(u"Duplication"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+##        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous dupliquer Ã©galement les tarifs et paramÃ©trages de cette catÃ©gorie ?"), _(u"Duplication"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
 ##        reponse = dlg.ShowModal() 
 ##        if reponse == wx.ID_YES :
 ##            dupliqueEnfants = True
@@ -437,7 +437,7 @@ class CTRL(HTL.HyperTreeList):
 ##        dlg.Destroy()
 ##        DB = GestionDB.DB()
 ##        
-##        # Duplication de la catégorie
+##        # Duplication de la catÃ©gorie
 ##        req = """SELECT IDactivite, nom FROM categories_tarifs WHERE IDcategorie_tarif=%d;""" % IDcategorie_tarif_modele
 ##        DB.ExecuterReq(req)
 ##        listeCategories = DB.ResultatReq()
@@ -449,7 +449,7 @@ class CTRL(HTL.HyperTreeList):
 ##            ]
 ##        IDcategorie_tarif_nouveau = DB.ReqInsert("categories_tarifs", listeDonnees)
 ##        
-##        # Duplication des villes associées
+##        # Duplication des villes associÃ©es
 ##        req = """SELECT cp, nom FROM categories_tarifs_villes WHERE IDcategorie_tarif=%d;""" % IDcategorie_tarif_modele
 ##        DB.ExecuterReq(req)
 ##        listeVilles = DB.ResultatReq()
@@ -474,7 +474,7 @@ class CTRL(HTL.HyperTreeList):
 ##                    ]
 ##                IDnom_tarif_nouveau = DB.ReqInsert("noms_tarifs", listeDonnees)
 ##                
-##                # ICI : Duplication des paramétrages à programmer... <<<<<<<<<<<<<<<<<<<<
+##                # ICI : Duplication des paramÃ©trages Ã  programmer... <<<<<<<<<<<<<<<<<<<<
 ##            
 ##        DB.Close()
 ##        self.MAJ()
@@ -536,7 +536,7 @@ class CTRL(HTL.HyperTreeList):
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Il est impossible de supprimer un tarif qui comporte au moins un paramétrage !"), _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il est impossible de supprimer un tarif qui comporte au moins un paramÃ©trage !"), _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -571,7 +571,7 @@ class CTRL(HTL.HyperTreeList):
         DB.Close()
         nbrePrestations = len(listePrestations)
         if nbrePrestations > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce tarif a déjà été attribué à %d prestations.\nIl est donc impossible de le supprimer !") % nbrePrestations, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce tarif a dÃ©jÃ  Ã©tÃ© attribuÃ© Ã  %d prestations.\nIl est donc impossible de le supprimer !") % nbrePrestations, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -590,7 +590,7 @@ class CTRL(HTL.HyperTreeList):
     def DupliquerNom(self, IDnom_tarif, nomTarif):
         """ Duplication d'un nom de tarif """
         IDnom_tarif_modele = IDnom_tarif
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous dupliquer également les tarifs ?"), _(u"Duplication"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous dupliquer Ã©galement les tarifs ?"), _(u"Duplication"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse == wx.ID_YES :
@@ -629,7 +629,7 @@ class CTRL(HTL.HyperTreeList):
         # Duplication des combinaisons de tarifs
         dictCorrespondances = DB.Dupliquer(nomTable="combi_tarifs", nomChampCle="IDcombi_tarif", conditions="IDtarif=%d" % IDtarif, dictModifications={"IDtarif":newIDtarif}, renvoieCorrespondances=True)
         
-        # Duplication des unités de combinaisons de tarifs
+        # Duplication des unitÃ©s de combinaisons de tarifs
         if type(dictCorrespondances) == dict :
             for ancienIDcombi, newIDcombi in dictCorrespondances.items() :
                 DB.Dupliquer(nomTable="combi_tarifs_unites", nomChampCle="IDcombi_tarif_unite", conditions="IDcombi_tarif=%d" % ancienIDcombi, dictModifications={"IDcombi_tarif":newIDcombi, "IDtarif":newIDtarif})

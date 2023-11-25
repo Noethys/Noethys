@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -25,8 +25,8 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = _(u"Cette fonctionnalité permet de saisir une date de désinscription pour un ensemble d'inscriptions. Cochez les inscriptions souhaitées puis cliquez sur le bouton 'Valider' pour commencer la procédure.")
-        titre = _(u"Désinscrire des individus")
+        intro = _(u"Cette fonctionnalitÃ© permet de saisir une date de dÃ©sinscription pour un ensemble d'inscriptions. Cochez les inscriptions souhaitÃ©es puis cliquez sur le bouton 'Valider' pour commencer la procÃ©dure.")
+        titre = _(u"DÃ©sinscrire des individus")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Activite.png")
         
@@ -36,7 +36,7 @@ class Dialog(wx.Dialog):
         
         # Options
         self.box_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
-        self.label_date = wx.StaticText(self, -1, "Date de désinscription souhaitée :")
+        self.label_date = wx.StaticText(self, -1, "Date de dÃ©sinscription souhaitÃ©e :")
         self.ctrl_date = CTRL_Saisie_date.Date2(self)
         self.ctrl_date.SetDate(datetime.date.today())
 
@@ -53,14 +53,14 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonValider, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
-        # Init Contrôles
+        # Init ContrÃ´les
         self.ctrl_liste_inscriptions.partis = True
         self.ctrl_liste_inscriptions.ctrl_inscriptions.SetChampsAffiches(listeCodes=["nomComplet", "nomActivite", "dateInscription", "date_desinscription", "totalSolde", "nomTitulaires"])
         self.ctrl_liste_inscriptions.MAJ()
 
     def __set_properties(self):
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lancer la procédure")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lancer la procÃ©dure")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((850, 700))
 
@@ -105,19 +105,19 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
 
     def OnBoutonValider(self, event):
-        """ Désinscription par lot """
-        # Validation des données saisies
+        """ DÃ©sinscription par lot """
+        # Validation des donnÃ©es saisies
         tracks = self.ctrl_liste_inscriptions.GetTracksCoches()
         if len(tracks) == 0 : 
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune inscription !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune inscription !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # Récupération des options
+        # RÃ©cupÃ©ration des options
         date_desinscription = self.ctrl_date.GetDate()
         if not date_desinscription:
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez pas saisi de date de désinscription. Souhaitez-vous quand même continuer ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez pas saisi de date de dÃ©sinscription. Souhaitez-vous quand mÃªme continuer ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             if dlg.ShowModal() != wx.ID_YES :
                 dlg.Destroy()
                 return
@@ -130,7 +130,7 @@ class Dialog(wx.Dialog):
         elif len(liste_inscriptions) == 1: condition_inscriptions = "inscriptions.IDinscription IN (%d)" % liste_inscriptions[0]
         else: condition_inscriptions = "inscriptions.IDinscription IN %s" % str(tuple(liste_inscriptions))
 
-        # Vérifie que des consommations n'existent pas après la date de désinscription souhaitée
+        # VÃ©rifie que des consommations n'existent pas aprÃ¨s la date de dÃ©sinscription souhaitÃ©e
         DB = GestionDB.DB()
         req = """SELECT individus.IDindividu, individus.nom, individus.prenom, activites.nom
         FROM consommations
@@ -148,13 +148,13 @@ class Dialog(wx.Dialog):
             dict_anomalies[(IDindividu, nom, prenom, nom_activite)] = True
         if dict_anomalies:
             txt_anomalies = ", ".join(["%s %s (%s)" % (temp[1], temp[2],temp[3]) for temp in dict_anomalies.keys()])
-            dlg = wx.MessageDialog(self, _(u"Il est impossible de désinscrire les individus suivants car des consommations existent après la date de déinscription souhaitée : %s." % txt_anomalies), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il est impossible de dÃ©sinscrire les individus suivants car des consommations existent aprÃ¨s la date de dÃ©inscription souhaitÃ©e : %s." % txt_anomalies), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         # Demande de confirmation
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment appliquer la date de désinscription aux inscriptions sélectionnées ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment appliquer la date de dÃ©sinscription aux inscriptions sÃ©lectionnÃ©es ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() != wx.ID_YES :
             dlg.Destroy()
             return

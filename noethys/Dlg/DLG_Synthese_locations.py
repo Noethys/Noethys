@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-20 Ivan LUCAS
@@ -107,7 +107,7 @@ class CTRL_Choix_donnees(wx.Choice):
         self.MAJ() 
     
     def MAJ(self):
-        self.listeLabels = [_(u"QuantitÈ"), _(u"DurÈe")]
+        self.listeLabels = [_(u"Quantit√©"), _(u"Dur√©e")]
         self.SetItems(self.listeLabels)
         self.Select(0)
 
@@ -125,17 +125,17 @@ class CTRL_Choix_regroupement(wx.Choice):
         self.listeDonnees = [
             {"label" : _(u"Jour"), "code" : "jour"},
             {"label" : _(u"Mois"), "code" : "mois"},
-            {"label" : _(u"AnnÈe"), "code" : "annee"},
-            {"label" : _(u"CatÈgorie"), "code" : "categorie"},
-            {"label" : _(u"Ville de rÈsidence"), "code" : "ville_residence"},
-            {"label" : _(u"Secteur gÈographique"), "code" : "secteur"},
+            {"label" : _(u"Ann√©e"), "code" : "annee"},
+            {"label" : _(u"Cat√©gorie"), "code" : "categorie"},
+            {"label" : _(u"Ville de r√©sidence"), "code" : "ville_residence"},
+            {"label" : _(u"Secteur g√©ographique"), "code" : "secteur"},
             {"label" : _(u"Famille"), "code" : "famille"},
-            {"label" : _(u"RÈgime social"), "code" : "regime"},
+            {"label" : _(u"R√©gime social"), "code" : "regime"},
             {"label" : _(u"Caisse d'allocations"), "code" : "caisse"},
             {"label" : _(u"Quotient familial"), "code" : "qf"},
             ]
         
-        # IntÈgration des questionnaires
+        # Int√©gration des questionnaires
         q = UTILS_Questionnaires.Questionnaires() 
         for public in ("famille",) :
             for dictTemp in q.GetQuestions(public) :
@@ -165,8 +165,8 @@ class Parametres(wx.Panel):
         self.parent = parent
         self.listview = listview
 
-        # PÈriode
-        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"PÈriode de rÈfÈrence"))
+        # P√©riode
+        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"P√©riode de r√©f√©rence"))
         self.label_date_debut = wx.StaticText(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_date_fin = wx.StaticText(self, -1, _(u"Au"))
@@ -174,20 +174,20 @@ class Parametres(wx.Panel):
         self.ctrl_date_debut.SetDate(datetime.date(datetime.date.today().year, 1, 1))
         self.ctrl_date_fin.SetDate(datetime.date(datetime.date.today().year, 12, 31))
 
-        # CatÈgories
-        self.box_categories_staticbox = wx.StaticBox(self, -1, _(u"CatÈgories de produits"))
+        # Cat√©gories
+        self.box_categories_staticbox = wx.StaticBox(self, -1, _(u"Cat√©gories de produits"))
         self.ctrl_categories = CTRL_Categories(self)
         self.ctrl_categories.SetMinSize((200, 100))
 
         # Affichage
         self.box_affichage_staticbox = wx.StaticBox(self, -1, _(u"Options"))
-        self.label_donnees = wx.StaticText(self, -1, _(u"DonnÈes :"))
+        self.label_donnees = wx.StaticText(self, -1, _(u"Donn√©es :"))
         self.ctrl_donnees = CTRL_Choix_donnees(self)
         self.label_regroupement = wx.StaticText(self, -1, _(u"Regroup. :"))
         self.ctrl_regroupement = CTRL_Choix_regroupement(self)
 
         # Actualiser
-        self.bouton_actualiser = CTRL_Bouton_image.CTRL(self, texte=_(u"RafraÓchir la liste"), cheminImage="Images/32x32/Actualiser.png")
+        self.bouton_actualiser = CTRL_Bouton_image.CTRL(self, texte=_(u"Rafra√Æchir la liste"), cheminImage="Images/32x32/Actualiser.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -200,17 +200,17 @@ class Parametres(wx.Panel):
         self.Actualiser()
 
     def __set_properties(self):
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de dÈbut de pÈriode")))
-        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de pÈriode")))
-        self.ctrl_categories.SetToolTip(wx.ToolTip(_(u"Cochez les catÈgories ‡ prendre en compte")))
-        self.ctrl_donnees.SetToolTip(wx.ToolTip(_(u"SÈlectionnez le type de donnÈes ‡ afficher")))
-        self.ctrl_regroupement.SetToolTip(wx.ToolTip(_(u"SÈlectionnez le regroupement par pÈriode")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de d√©but de p√©riode")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de p√©riode")))
+        self.ctrl_categories.SetToolTip(wx.ToolTip(_(u"Cochez les cat√©gories √† prendre en compte")))
+        self.ctrl_donnees.SetToolTip(wx.ToolTip(_(u"S√©lectionnez le type de donn√©es √† afficher")))
+        self.ctrl_regroupement.SetToolTip(wx.ToolTip(_(u"S√©lectionnez le regroupement par p√©riode")))
         self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser la liste")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=5)
 
-        # Date de rÈfÈrence
+        # Date de r√©f√©rence
         staticbox_periode = wx.StaticBoxSizer(self.staticbox_periode_staticbox, wx.VERTICAL)
         grid_sizer_periode = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
         grid_sizer_periode.Add(self.label_date_debut, 0, wx.ALIGN_CENTER_VERTICAL, 0)
@@ -220,7 +220,7 @@ class Parametres(wx.Panel):
         staticbox_periode.Add(grid_sizer_periode, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(staticbox_periode, 1, wx.EXPAND, 0)
 
-        # CatÈgories
+        # Cat√©gories
         box_categories = wx.StaticBoxSizer(self.box_categories_staticbox, wx.VERTICAL)
         box_categories.Add(self.ctrl_categories, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(box_categories, 1, wx.EXPAND, 0)
@@ -247,9 +247,9 @@ class Parametres(wx.Panel):
         self.Actualiser() 
 
     def OnBoutonActualiser(self, event): 
-        # VÈrifications
+        # V√©rifications
         if self.ctrl_date_debut.GetDate()  == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucune date de dÈbut !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucune date de d√©but !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -261,7 +261,7 @@ class Parametres(wx.Panel):
             return False
 
         if len(self.ctrl_categories.GetListeCategories()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sÈlectionner au moins une catÈgorie !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez s√©lectionner au moins une cat√©gorie !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -277,7 +277,7 @@ class Parametres(wx.Panel):
         affichage_donnees = self.ctrl_donnees.GetValeur()
         affichage_regroupement = self.ctrl_regroupement.GetValeur() 
 
-        # VÈrifications
+        # V√©rifications
         if date_debut == None :
             self.parent.ctrl_resultats.ResetGrid()
             return False
@@ -290,10 +290,10 @@ class Parametres(wx.Panel):
             self.parent.ctrl_resultats.ResetGrid()
             return False
         
-        # Label ParamËtres
+        # Label Param√®tres
         listeParametres = [ 
-            _(u"PÈriode du %s au %s") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin))),
-            _(u"CatÈgories : %s") % self.ctrl_categories.GetNomsCategories(),
+            _(u"P√©riode du %s au %s") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin))),
+            _(u"Cat√©gories : %s") % self.ctrl_categories.GetNomsCategories(),
             ]
         labelParametres = " | ".join(listeParametres)
         
@@ -311,17 +311,17 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Vous pouvez ici Èditer une synthËse des locations pour une pÈriode donnÈe. Commencez par sÈlectionner une date de dÈbut et de fin et cliquer sur le bouton Actualiser. Vous pouvez affiner vos rÈsultats et modifier l'affichage des donnÈes gr‚ce aux options proposÈes.")
-        titre = _(u"SynthËse des locations")
+        intro = _(u"Vous pouvez ici √©diter une synth√®se des locations pour une p√©riode donn√©e. Commencez par s√©lectionner une date de d√©but et de fin et cliquer sur le bouton Actualiser. Vous pouvez affiner vos r√©sultats et modifier l'affichage des donn√©es gr√¢ce aux options propos√©es.")
+        titre = _(u"Synth√®se des locations")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Diagramme.png")
         
         # Liste
-        self.staticbox_resultats_staticbox = wx.StaticBox(self, -1, _(u"RÈsultats"))
+        self.staticbox_resultats_staticbox = wx.StaticBox(self, -1, _(u"R√©sultats"))
         self.ctrl_resultats = CTRL_Synthese_locations.CTRL(self)
         self.ctrl_resultats.SetMinSize((50, 50)) 
         
-        # ParamËtres
+        # Param√®tres
         self.ctrl_parametres = Parametres(self, listview=self.ctrl_resultats)
         
         self.bouton_apercu = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_ANY))
@@ -341,7 +341,7 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÈer un aperÁu de la liste (PDF)")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour cr√©er un aper√ßu de la liste (PDF)")))
         self.bouton_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Texte")))
         self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
@@ -354,7 +354,7 @@ class Dialog(wx.Dialog):
         
         grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
         
-        # Panel des paramËtres
+        # Panel des param√®tres
         grid_sizer_contenu.Add(self.ctrl_parametres, 1, wx.EXPAND, 0)
         
         grid_sizer_droit = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-20 Ivan LUCAS
@@ -31,7 +31,7 @@ class CTRL_Activite(wx.Choice):
         self.SetID(None)
     
     def SetListeDonnees(self):
-        self.listeNoms = [_(u"Toutes les activités")]
+        self.listeNoms = [_(u"Toutes les activitÃ©s")]
         self.listeID = [None,]
         DB = GestionDB.DB()
         req = """SELECT IDactivite, nom
@@ -69,7 +69,7 @@ class CTRL_Annee(wx.Choice):
         self.SetListeDonnees() 
     
     def SetListeDonnees(self):
-        self.listeNoms = [_(u"Toutes les années")]
+        self.listeNoms = [_(u"Toutes les annÃ©es")]
         self.listeID = [None,]
         DB = GestionDB.DB()
         req = """SELECT date, COUNT(IDconso)
@@ -118,18 +118,18 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Vous pouvez ici consulter la liste complète des consommations saisies dans le logiciel.")
-        titre = _(u"Liste détaillée des consommations")
+        intro = _(u"Vous pouvez ici consulter la liste complÃ¨te des consommations saisies dans le logiciel.")
+        titre = _(u"Liste dÃ©taillÃ©e des consommations")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Calendrier.png")
 
-        # Paramètres
+        # ParamÃ¨tres
         self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Filtres"))
 
-        self.label_annee = wx.StaticText(self, -1, _(u"Année :"))
+        self.label_annee = wx.StaticText(self, -1, _(u"AnnÃ©e :"))
         self.ctrl_annee = CTRL_Annee(self)
         self.ctrl_annee.SetMinSize((60, -1))
         
-        self.label_activite = wx.StaticText(self, -1, _(u"Activité :"))
+        self.label_activite = wx.StaticText(self, -1, _(u"ActivitÃ© :"))
         self.ctrl_activite = CTRL_Activite(self)
         self.ctrl_activite.SetMinSize((400, -1))
 
@@ -161,15 +161,15 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_CHOICE, self.OnParametre, self.ctrl_annee)
         self.Bind(wx.EVT_CHOICE, self.OnParametre, self.ctrl_activite)
 
-        # Init contrôles
+        # Init contrÃ´les
         self.OnParametre()
         
 
     def __set_properties(self):
-        self.SetTitle(_(u"Liste détaillée des consommations"))
-        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"Sélectionnez un filtre d'activité")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la consommation sélectionnée dans la liste")))
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu de la liste")))
+        self.SetTitle(_(u"Liste dÃ©taillÃ©e des consommations"))
+        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un filtre d'activitÃ©")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la consommation sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er un aperÃ§u de la liste")))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
         self.bouton_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Texte")))
         self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
@@ -181,7 +181,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
         
-        # Paramètres
+        # ParamÃ¨tres
         staticbox_options = wx.StaticBoxSizer(self.staticbox_options_staticbox, wx.VERTICAL)
         
         grid_sizer_options = wx.FlexGridSizer(rows=1, cols=16, vgap=5, hgap=5)
@@ -241,7 +241,7 @@ class Dialog(wx.Dialog):
     def OnParametre(self, event=None):
         listeFiltres = []
         
-        # Année
+        # AnnÃ©e
         annee = self.ctrl_annee.GetID() 
         if annee != None :
             listeFiltres.append("consommations.date>='%d-01-01' and consommations.date<='%d-12-31' " % (annee, annee))
@@ -251,7 +251,7 @@ class Dialog(wx.Dialog):
         if IDactivite != None :
             listeFiltres.append("consommations.IDactivite=%d" % IDactivite)
 
-        # Envoi des paramètres au listview
+        # Envoi des paramÃ¨tres au listview
         self.ctrl_consommations.listeFiltres = listeFiltres
         self.ctrl_consommations.MAJ()
         

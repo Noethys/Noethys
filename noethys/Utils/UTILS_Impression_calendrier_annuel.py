@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -59,9 +59,9 @@ def HeureStrEnDatetime(texteHeure):
     return heure
 
 def DatetimeDateEnStr(date):
-    """ Transforme un datetime.date en date complËte : Ex : lundi 15 janvier 2008 """
+    """ Transforme un datetime.date en date compl√®te : Ex : lundi 15 janvier 2008 """
     listeJours = ("Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche")
-    listeMois = (_(u"janvier"), _(u"fÈvrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"ao˚t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÈcembre"))
+    listeMois = (_(u"janvier"), _(u"f√©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"ao√ªt"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"d√©cembre"))
     dateStr = listeJours[date.weekday()] + " " + str(date.day) + " " + listeMois[date.month-1] + " " + str(date.year)
     return dateStr
 
@@ -109,7 +109,7 @@ class Impression():
         largeurMois = 55
         espaceMois = 5
         
-        # ParamËtres du PDF
+        # Param√®tres du PDF
         nomDoc = FonctionsPerso.GenerationNomDoc("CALENDRIER_ANNUEL", "pdf")
         if "win" in sys.platform : nomDoc = nomDoc.replace("/", "\\")        
         taillePage = landscape(A4)
@@ -119,10 +119,10 @@ class Impression():
         doc = SimpleDocTemplate(nomDoc, pagesize=taillePage, topMargin=50, bottomMargin=50)
         story = []
         
-        # CrÈation du titre du document
+        # Cr√©ation du titre du document
         largeursColonnesTitre = ( (615, 100) )
         dateDuJour = DatetimeDateEnStr(datetime.date.today())
-        dataTableauTitre = [(_(u"Planning %d de %s") % (self.annee, self.titre), _(u"EditÈ le %s") % dateDuJour ),]
+        dataTableauTitre = [(_(u"Planning %d de %s") % (self.annee, self.titre), _(u"Edit√© le %s") % dateDuJour ),]
         styleTitre = TableStyle([
                             ('BOX', (0,0), (-1,-1), 0.25, colors.black), 
                             ('VALIGN', (0,0), (-1,-1), 'TOP'), 
@@ -136,7 +136,7 @@ class Impression():
         story.append(tableauTitre)
         story.append(Spacer(0,20))  
         
-        # RÈcupÈration des donnÈes
+        # R√©cup√©ration des donn√©es
         self.dictPresences, self.dictTotauxCategories = {}, {}#self.ImportPresences(self.IDpersonne, self.annee)
         
         global DICT_CATEGORIES, LISTE_VACANCES, LISTE_FERIES
@@ -144,16 +144,16 @@ class Impression():
         LISTE_VACANCES = self.Importation_Vacances()
         LISTE_FERIES = self.Importation_Feries()
         
-        # CrÈation du tableau
+        # Cr√©ation du tableau
         dataTableau = []
         enteteTableau = []
         largeursColonnes = []
         styleTableau = []
         
-        listeMois = (_(u"Janvier"), _(u"FÈvrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Ao˚t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"DÈcembre"))
+        listeMois = (_(u"Janvier"), _(u"F√©vrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Ao√ªt"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"D√©cembre"))
         listeJours = (u"L", u"M", u"M", u"J", u"V", u"S", u"D")
         
-        # CrÈation de l'entete du tableau
+        # Cr√©ation de l'entete du tableau
         index = 1
         for nomMois in listeMois :
             largeursColonnes.append(largeurMois)
@@ -165,14 +165,14 @@ class Impression():
         styleTableau.append(('ALIGN', (0, 0), (-1, 0), 'CENTRE')) 
         styleTableau.append(('FONT', (0, 0), (-1, 0), "Helvetica-Bold", 8))
         
-        # CrÈation des lignes vides
+        # Cr√©ation des lignes vides
         for x in range(1, 33) :
             ligne = []
             for case in range (0, 23):
                 ligne.append(None)
             dataTableau.append(ligne)
         
-        # Style gÈnÈral du tableau
+        # Style g√©n√©ral du tableau
         styleTableau.append(('FONT', (0, 1), (-1, -1), "Helvetica", 7))
         styleTableau.append(('LEFTPADDING', (0, 1), (-1, -1), 0))
         styleTableau.append(('RIGHTPADDING', (0, 1), (-1, -1), 0))
@@ -182,18 +182,18 @@ class Impression():
         # Remplissage du tableau
         numMois = 1
         for nomMois in listeMois :
-            # CrÈation d'un mois
+            # Cr√©ation d'un mois
             totalMinutesMois = 0
             numWeekDay, nbreJoursMois = calendar.monthrange(self.annee, numMois)
             numCol = (numMois*2)-2
             
             for numJour in range(1, nbreJoursMois+1) :
-                # CrÈation des labels des dates
+                # Cr√©ation des labels des dates
                 dateDD = datetime.date(year=self.annee, month=numMois, day=numJour)
                 nomJour = listeJours[dateDD.weekday()]
                 labelDate = u"%s %d" % (nomJour, numJour)
                 
-                # CrÈation du contenu de chaque case
+                # Cr√©ation du contenu de chaque case
                 if dateDD in self.dictPresences :
                     dictBarres = self.dictPresences[dateDD]
                 else:
@@ -213,7 +213,7 @@ class Impression():
                 styleTableau.append(('ALIGN', (numCol, numJour), (numCol, numJour), "RIGHT"))
                 styleTableau.append(('VALIGN', (numCol, numJour), (numCol, numJour), "TOP"))
                 
-            # DÈfinit le style du tableau
+            # D√©finit le style du tableau
             styleTableau.append(('GRID', (numCol, 0), (numCol, nbreJoursMois), 0.25, colors.black))
         
             numMois += 1
@@ -225,12 +225,12 @@ class Impression():
         story.append(tableau)
         story.append(Spacer(0, 25))
 
-        # LÈgendes des catÈgories
+        # L√©gendes des cat√©gories
         dataTableauLegende = []
         largeursColonnesLegende = []
         styleTableauLegende = []
         
-        # CrÈation des lignes vides du tableau des lÈgendes
+        # Cr√©ation des lignes vides du tableau des l√©gendes
         nbreLignesLegendes = 5
         nbreColonnesLegendes = 4
         largeurColonneLegende = 178.75
@@ -241,11 +241,11 @@ class Impression():
                 ligne.append(None)
             dataTableauLegende.append(ligne)
         
-        # CrÈation de la liste des largeurs des colonnes
+        # Cr√©ation de la liste des largeurs des colonnes
         for x in range(0, nbreColonnesLegendes):
             largeursColonnesLegende.append(largeurColonneLegende)
             
-        # Remplissage du tableau des lÈgendes
+        # Remplissage du tableau des l√©gendes
         nbre_legendes = 0
         total_heures = 0
         numLigne = 0
@@ -258,7 +258,7 @@ class Impression():
             dataTableauLegende[numLigne][numCol] = CaseLegende(0, 10, _(u"Week-ends"), COULEUR_WE, None)
             numLigne += 1
         if AFFICHER_FERIES == True :
-            dataTableauLegende[numLigne][numCol] = CaseLegende(0, 10, _(u"Jours fÈriÈs"), COULEUR_FERIES, None)
+            dataTableauLegende[numLigne][numCol] = CaseLegende(0, 10, _(u"Jours f√©ri√©s"), COULEUR_FERIES, None)
             numLigne += 1
         
         for IDcategorie, nbreHeures in self.dictTotauxCategories.items() :
@@ -275,8 +275,8 @@ class Impression():
                     numCol += 1
 
         if nbre_legendes > 1 :
-            # Ajoute un total d'heures pour l'annÈe
-            legende = CaseLegende(0, 10, _(u"Total pour l'annÈe"), None, total_heures)
+            # Ajoute un total d'heures pour l'ann√©e
+            legende = CaseLegende(0, 10, _(u"Total pour l'ann√©e"), None, total_heures)
             dataTableauLegende[numLigne][numCol] = legende
         
         styleTableauLegende.append(('FONT', (0, 1), (-1, -1), "Helvetica", 6))
@@ -308,11 +308,11 @@ class Impression():
         DB.ExecuterReq(req)
         listePresences = DB.ResultatReq()
         DB.Close()
-        # CrÈation des dict de donnÈes
+        # Cr√©ation des dict de donn√©es
         dictPresences = {}
         dictTotalHeures = {}
         for IDpresence, date, heure_debut, heure_fin, IDcategorie in listePresences :
-            # CrÈation du dict des prÈsences
+            # Cr√©ation du dict des pr√©sences
             dateDD = StrEnDatetimeDate(date)
             heure_debut = HeureStrEnDatetime(heure_debut)
             heure_fin = HeureStrEnDatetime(heure_fin)
@@ -328,7 +328,7 @@ class Impression():
                     dictPresences[dateDD]["totalJour"] = dictPresences[dateDD]["totalJour"] + duree
             else:
                 dictPresences[dateDD] = { IDcategorie : duree, "totalJour" : duree }
-            # CrÈation du dict des totaux par categories
+            # Cr√©ation du dict des totaux par categories
             if IDcategorie in dictTotalHeures:
                 dictTotalHeures[IDcategorie] = dictTotalHeures[IDcategorie] + duree
             else:
@@ -403,7 +403,7 @@ class CaseDate(Flowable) :
         couleurDate = None
         positionSeparation = 20
         
-        # Couleur de la case Date de la journÈe
+        # Couleur de la case Date de la journ√©e
         if AFFICHER_VACANCES == True and self.dateDD in LISTE_VACANCES : couleurDate = COULEUR_VACANCES
         if AFFICHER_WE == True and (self.dateDD.weekday() == 5 or self.dateDD.weekday() == 6) : couleurDate = COULEUR_WE
         if AFFICHER_FERIES == True and self.dateDD in LISTE_FERIES : couleurDate = COULEUR_FERIES
@@ -418,17 +418,17 @@ class CaseDate(Flowable) :
         canvas.setFont("Helvetica", 7)
         canvas.drawRightString(positionSeparation-2, 2, self.labelDate)
         
-        # Trait sÈparation Date et Heures
+        # Trait s√©paration Date et Heures
         canvas.setLineWidth(0.25)
         canvas.line(positionSeparation, 0, positionSeparation, self.hauteurCase)
         
-        # Si aucune prÈsence ce jour -l‡
+        # Si aucune pr√©sence ce jour -l√†
         if len(self.dictBarres) == 0 : return
 
-        # RÈcup du nbre total d'heure de la journÈe
+        # R√©cup du nbre total d'heure de la journ√©e
         totalJour = self.dictBarres["totalJour"]
         
-        # Transformation du nombre d'heures par catÈgorie en pourcentage
+        # Transformation du nombre d'heures par cat√©gorie en pourcentage
         listeCategories = []
         for IDcategorie, nbreHeures in self.dictBarres.items():
             if IDcategorie != "totalJour" :
@@ -436,7 +436,7 @@ class CaseDate(Flowable) :
                 listeCategories.append( (largeurBarre, IDcategorie) )
         listeCategories.sort()
         
-        # CrÈation des graphes
+        # Cr√©ation des graphes
         if AFFICHER_COULEUR_CATEGORIES == True :
             positionTemp = positionSeparation+0.25
             for largeurBarre, IDcategorie in listeCategories :
@@ -445,7 +445,7 @@ class CaseDate(Flowable) :
                 canvas.rect(positionTemp, 0, largeurBarre, self.hauteurCase, fill=1, stroke=False)
                 positionTemp += largeurBarre
         
-        # Label Total Heure de la journÈe
+        # Label Total Heure de la journ√©e
         if AFFICHER_HEURES == True :
             canvas.setFillColorRGB(0, 0, 0)
             canvas.setFont("Helvetica", 7)
@@ -453,7 +453,7 @@ class CaseDate(Flowable) :
 
 
 class CaseLegende(Flowable) :
-    """ Flowable Ligne de lÈgende """
+    """ Flowable Ligne de l√©gende """
     def __init__(self, xoffset=0, hauteurCase=None, label="", couleur=None, totalHeures=0):
         self.xoffset = xoffset
         self.size = hauteurCase
@@ -472,7 +472,7 @@ class CaseLegende(Flowable) :
             canvas.drawString(15, 2, self.label)
         else:
             canvas.drawString(15, 2, "%s : %s" % (self.label, minutesEnHeures(self.totalHeures)))
-        # CarrÈ de couleur
+        # Carr√© de couleur
         if self.couleur != None :
             if type(self.couleur) == tuple :
                 r, g, b = ConvertCouleur(self.couleur)

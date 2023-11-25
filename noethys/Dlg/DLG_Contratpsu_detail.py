@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -19,7 +19,7 @@ from Ctrl import CTRL_Bandeau
 from Ol import OL_Contratspsu_detail
 import GestionDB
 
-LISTE_MOIS = [_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre")]
+LISTE_MOIS = [_(u"Janvier"), _(u"FÃ©vrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"AoÃ»t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"DÃ©cembre")]
 
 
 class Dialog(wx.Dialog):
@@ -28,13 +28,13 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.track_mensualite = track_mensualite
         
-        intro = _(u"Vous pouvez consulter ici le détail de la mensualité sélectionnée avec un regroupement par date.")
-        titre = _(u"Détail de la mensualité")
+        intro = _(u"Vous pouvez consulter ici le dÃ©tail de la mensualitÃ© sÃ©lectionnÃ©e avec un regroupement par date.")
+        titre = _(u"DÃ©tail de la mensualitÃ©")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Contrat.png")
 
         # dates
-        self.box_dates_staticbox = wx.StaticBox(self, -1, _(u"Détail de la mensualité de %s pour %s" % (titre_detail, track_mensualite.individu_nom_complet)))
+        self.box_dates_staticbox = wx.StaticBox(self, -1, _(u"DÃ©tail de la mensualitÃ© de %s pour %s" % (titre_detail, track_mensualite.individu_nom_complet)))
         self.listviewAvecFooter = OL_Contratspsu_detail.ListviewAvecFooter(self)
         self.ctrl_dates = self.listviewAvecFooter.GetListview()
         self.ctrl_recherche = OL_Contratspsu_detail.CTRL_Outils(self, listview=self.ctrl_dates)
@@ -63,7 +63,7 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu de la liste")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er un aperÃ§u de la liste")))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
         self.bouton_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Texte")))
         self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -33,7 +33,7 @@ class CTRL(wx.Panel):
         self.listviewAvecFooter = OL_Liste_cotisations.ListviewAvecFooter(self, kwargs={"codesColonnes" : codesColonnes, "checkColonne" : checkColonne, "triColonne" : triColonne}) 
         self.ctrl_cotisations = self.listviewAvecFooter.GetListview()
         
-        # Ctrl des filtres de sélection
+        # Ctrl des filtres de sÃ©lection
         self.ctrl_filtres = DLG_Filtres_cotisations.CTRL_Filtres(self, filtres=filtres, ctrl_cotisations=self.ctrl_cotisations)
         
         # Commandes de liste
@@ -62,10 +62,10 @@ class CTRL(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl_cotisations.MenuConfigurerListe, self.bouton_configuration)
         
     def __set_properties(self):
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu de la cotisation sélectionnée")))
-        self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici envoyer la cotisation sélectionnée par Email")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la cotisation sélectionnée ou les cotisations cochées")))
-        self.bouton_liste_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression de cette liste")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperÃ§u de la cotisation sÃ©lectionnÃ©e")))
+        self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici envoyer la cotisation sÃ©lectionnÃ©e par Email")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la cotisation sÃ©lectionnÃ©e ou les cotisations cochÃ©es")))
+        self.bouton_liste_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperÃ§u avant impression de cette liste")))
         self.bouton_liste_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer cette liste")))
         self.bouton_liste_export_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter cette liste au format Texte")))
         self.bouton_liste_export_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter cette liste au format Excel")))

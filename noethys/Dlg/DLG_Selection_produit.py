@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -45,7 +45,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckDisponibles, self.check_disponibles)
 
-        # Init contrôles
+        # Init contrÃ´les
         self.ctrl_produits.coche_uniquement_disponibles = self.check_disponibles.GetValue()
         self.ctrl_produits.MAJ()
 
@@ -59,8 +59,8 @@ class Dialog(wx.Dialog):
             wx.CallLater(10, self.ctrl_produits.SetFocus)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Sélection d'un produit"))
-        self.ctrl_produits.SetToolTip(wx.ToolTip(_(u"Double-cliquez sur une ligne pour la sélectionner rapidement")))
+        self.SetTitle(_(u"SÃ©lection d'un produit"))
+        self.ctrl_produits.SetToolTip(wx.ToolTip(_(u"Double-cliquez sur une ligne pour la sÃ©lectionner rapidement")))
         self.check_disponibles.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher uniquement les produits disponibles")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
@@ -106,12 +106,12 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("")
 
     def OnBoutonOk(self, event=None):
-        # Vérification des données saisies
+        # VÃ©rification des donnÃ©es saisies
         if self.selection_obligatoire == True :
 
             if self.selection_multiple == False:
                 if self.ctrl_produits.GetID() == None :
-                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un produit !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un produit !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return
@@ -122,7 +122,7 @@ class Dialog(wx.Dialog):
                     dlg.Destroy()
                     return
 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def GetIDproduit(self):

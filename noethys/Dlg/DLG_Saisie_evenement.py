@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -27,8 +27,8 @@ class Dialog(wx.Dialog):
         self.mode = mode
         self.track_evenement = track_evenement
 
-        # Généralités
-        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralités"))
+        # GÃ©nÃ©ralitÃ©s
+        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"GÃ©nÃ©ralitÃ©s"))
 
         self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, "")
@@ -38,14 +38,14 @@ class Dialog(wx.Dialog):
 
         self.label_horaires = wx.StaticText(self, -1, _(u"Horaires :"))
         self.ctrl_heure_debut = CTRL_Saisie_heure.Heure(self)
-        self.label_a = wx.StaticText(self, -1, u"à")
+        self.label_a = wx.StaticText(self, -1, u"Ã ")
         self.ctrl_heure_fin = CTRL_Saisie_heure.Heure(self)
 
         self.check_limitation_inscrits = wx.CheckBox(self, -1, _(u"Nombre d'inscrits max. :"))
         self.ctrl_limitation_inscrits = wx.SpinCtrl(self, -1, size=(80, -1), min=1, max=99999)
 
         # Tarification
-        self.staticbox_tarification_staticbox = wx.StaticBox(self, -1, _(u"Tarification spécifique"))
+        self.staticbox_tarification_staticbox = wx.StaticBox(self, -1, _(u"Tarification spÃ©cifique"))
 
         self.radio_tarification_aucune = wx.RadioButton(self, -1, _(u"Aucune"), style=wx.RB_GROUP)
 
@@ -54,8 +54,8 @@ class Dialog(wx.Dialog):
         self.label_montant = wx.StaticText(self, -1, _(u"Montant fixe :"))
         self.ctrl_montant = CTRL_Saisie_euros.CTRL(self)
 
-        # Tarification avancée
-        self.radio_tarification_tarif = wx.RadioButton(self, -1, _(u"Tarification avancée :"))
+        # Tarification avancÃ©e
+        self.radio_tarification_tarif = wx.RadioButton(self, -1, _(u"Tarification avancÃ©e :"))
         self.ctrl_tarifs = OL_Evenements_tarifs.ListView(self, id=-1, track_evenement=track_evenement, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_tarifs.SetMinSize((50, 80))
         self.ctrl_tarifs.MAJ()
@@ -84,9 +84,9 @@ class Dialog(wx.Dialog):
 
         # Init
         if mode == "ajout" :
-            self.SetTitle(_(u"Saisie d'un évènement"))
+            self.SetTitle(_(u"Saisie d'un Ã©vÃ¨nement"))
         else:
-            self.SetTitle(_(u"Modification d'un évènement"))
+            self.SetTitle(_(u"Modification d'un Ã©vÃ¨nement"))
             self.Importation()
         self.OnCheckLimitationInscrits(None)
         self.OnRadioTarification(None)
@@ -94,19 +94,19 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.ctrl_nom.SetMinSize((420, -1))
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici l'intitulé de l'évènement (Ex : 'Cinéma', 'Yoga'...)")))
-        self.ctrl_description.SetToolTip(wx.ToolTip(_(u"[Optionnel] Saisissez ici une description pour cet évènement")))
-        self.ctrl_heure_debut.SetToolTip(wx.ToolTip(_(u"[Optionnel] Saisissez l'heure de début de l'évènement (Ex : 08:30)")))
-        self.ctrl_heure_fin.SetToolTip(wx.ToolTip(_(u"[Optionnel] Saisissez l'heure de fin de l'évènement (Ex : 09:30)")))
-        self.radio_tarification_aucune.SetToolTip(wx.ToolTip(_(u"Aucune tarification spécifique pour cet évènement")))
-        self.radio_tarification_montant.SetToolTip(wx.ToolTip(_(u"Un montant fixe est associé à cet évènement")))
-        self.radio_tarification_tarif.SetToolTip(wx.ToolTip(_(u"Un ou plusieurs tarifs avancés sont associés à cet évènement")))
-        self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez un montant fixe pour cet évènement")))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici l'intitulÃ© de l'Ã©vÃ¨nement (Ex : 'CinÃ©ma', 'Yoga'...)")))
+        self.ctrl_description.SetToolTip(wx.ToolTip(_(u"[Optionnel] Saisissez ici une description pour cet Ã©vÃ¨nement")))
+        self.ctrl_heure_debut.SetToolTip(wx.ToolTip(_(u"[Optionnel] Saisissez l'heure de dÃ©but de l'Ã©vÃ¨nement (Ex : 08:30)")))
+        self.ctrl_heure_fin.SetToolTip(wx.ToolTip(_(u"[Optionnel] Saisissez l'heure de fin de l'Ã©vÃ¨nement (Ex : 09:30)")))
+        self.radio_tarification_aucune.SetToolTip(wx.ToolTip(_(u"Aucune tarification spÃ©cifique pour cet Ã©vÃ¨nement")))
+        self.radio_tarification_montant.SetToolTip(wx.ToolTip(_(u"Un montant fixe est associÃ© Ã  cet Ã©vÃ¨nement")))
+        self.radio_tarification_tarif.SetToolTip(wx.ToolTip(_(u"Un ou plusieurs tarifs avancÃ©s sont associÃ©s Ã  cet Ã©vÃ¨nement")))
+        self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez un montant fixe pour cet Ã©vÃ¨nement")))
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un tarif")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le tarif sélectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le tarif sélectionné dans la liste")))
-        self.check_limitation_inscrits.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour définir un nombre d'inscrits maximal pour cet évènement")))
-        self.ctrl_limitation_inscrits.SetToolTip(wx.ToolTip(_(u"Saisissez ici une nombre d'inscrits maximal pour cet évènement")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le tarif sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le tarif sÃ©lectionnÃ© dans la liste")))
+        self.check_limitation_inscrits.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour dÃ©finir un nombre d'inscrits maximal pour cet Ã©vÃ¨nement")))
+        self.ctrl_limitation_inscrits.SetToolTip(wx.ToolTip(_(u"Saisissez ici une nombre d'inscrits maximal pour cet Ã©vÃ¨nement")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
@@ -114,7 +114,7 @@ class Dialog(wx.Dialog):
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
 
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         staticbox_generalites = wx.StaticBoxSizer(self.staticbox_generalites_staticbox, wx.VERTICAL)
 
         grid_sizer_generalites = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=10)
@@ -162,7 +162,7 @@ class Dialog(wx.Dialog):
         grid_sizer_tarification_simple.Add(self.ctrl_montant, 0, 0, 0)
         grid_sizer_tarification.Add(grid_sizer_tarification_simple, 0, 0, 0)
 
-        # Tarification avancée
+        # Tarification avancÃ©e
         grid_sizer_tarification.Add(self.radio_tarification_tarif, 0, 0, 0)
 
         grid_sizer_tarification_avancee = wx.FlexGridSizer(rows=1, cols=3, vgap=5, hgap=5)
@@ -221,7 +221,7 @@ class Dialog(wx.Dialog):
         self.ctrl_heure_debut.SetHeure(self.track_evenement.heure_debut)
         self.ctrl_heure_fin.SetHeure(self.track_evenement.heure_fin)
 
-        # Capacité max
+        # CapacitÃ© max
         if self.track_evenement.capacite_max != None :
             self.check_limitation_inscrits.SetValue(True)
             self.ctrl_limitation_inscrits.SetValue(self.track_evenement.capacite_max)
@@ -240,7 +240,7 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event):
         nom = self.ctrl_nom.GetValue()
         if nom == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour cet évènement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour cet Ã©vÃ¨nement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
@@ -251,13 +251,13 @@ class Dialog(wx.Dialog):
         heure_fin = self.ctrl_heure_fin.GetHeure()
 
         if heure_debut != None and heure_fin != None and heure_debut > heure_fin :
-            dlg = wx.MessageDialog(self, _(u"L'heure de début ne peut pas être supérieure à l'heure de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"L'heure de dÃ©but ne peut pas Ãªtre supÃ©rieure Ã  l'heure de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_heure_debut.SetFocus()
             return False
 
-        # Capacité max
+        # CapacitÃ© max
         capacite_max = None
         if self.check_limitation_inscrits.GetValue() == True :
             capacite_max = self.ctrl_limitation_inscrits.GetValue()
@@ -267,7 +267,7 @@ class Dialog(wx.Dialog):
         if self.radio_tarification_montant.GetValue() == True :
             montant = self.ctrl_montant.GetMontant()
 
-        # Tarification avancée
+        # Tarification avancÃ©e
         liste_tarifs = []
         if self.radio_tarification_tarif.GetValue() == True :
             liste_tarifs = self.ctrl_tarifs.GetTracksTarifs()
@@ -277,7 +277,7 @@ class Dialog(wx.Dialog):
                 dlg.Destroy()
                 return False
 
-        # Mémorisation des valeurs
+        # MÃ©morisation des valeurs
         self.track_evenement.nom = nom
         self.track_evenement.description = description
         self.track_evenement.heure_debut = heure_debut

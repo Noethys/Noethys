@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -23,9 +23,9 @@ from Utils import UTILS_Historique
 
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -36,12 +36,12 @@ def DateEngEnDateDD(dateEng):
 # ---------------------------------------------------------------------------------------------------------------------------
 
 class Informations():
-    """ Récupère les informations sur le fichier """
+    """ RÃ©cupÃ¨re les informations sur le fichier """
     def __init__(self):
         self.listeDonnees = []
         self.DB = GestionDB.DB()
         
-        # Ajout des items par catégorie
+        # Ajout des items par catÃ©gorie
         self.listeDonnees.append(self.Categorie_general())
         self.listeDonnees.append(self.Categorie_stats())
         self.listeDonnees.append(self.Categorie_historique())
@@ -52,16 +52,16 @@ class Informations():
         return self.listeDonnees
     
     def Categorie_general(self):
-        nomCategorie = _(u"Général")
+        nomCategorie = _(u"GÃ©nÃ©ral")
         listeItems = []
     
-        # Récupération du nom du fichier
+        # RÃ©cupÃ©ration du nom du fichier
         nomFichier = self.DB.GetNomFichierDefaut() 
         if "[RESEAU]" in nomFichier :
             nomFichier = nomFichier[nomFichier.index("[RESEAU]"):]
         listeItems.append((_(u"Nom du fichier"), nomFichier))
         
-        # Récupération des paramètres du fichier
+        # RÃ©cupÃ©ration des paramÃ¨tres du fichier
         req = """SELECT IDparametre, nom, parametre 
         FROM parametres WHERE categorie='fichier'
         ;"""
@@ -71,15 +71,15 @@ class Informations():
         for IDparametre, nom, parametre  in listeTemp :
             dictInfos[nom] = parametre
         
-        listeItems.append((_(u"Date de création"), FonctionsPerso.DateEngFr(dictInfos["date_creation"])))
+        listeItems.append((_(u"Date de crÃ©ation"), FonctionsPerso.DateEngFr(dictInfos["date_creation"])))
         listeItems.append((_(u"Version de fichier"), dictInfos["version"]))
         listeItems.append((_(u"IDfichier"), dictInfos["IDfichier"]))
         
-        # Nbre de tables de données
+        # Nbre de tables de donnÃ©es
         listeTables = self.DB.GetListeTables()
-        listeItems.append((_(u"Nombre de tables de données"), str(len(listeTables)+2)))
+        listeItems.append((_(u"Nombre de tables de donnÃ©es"), str(len(listeTables)+2)))
 
-        # Récupération des variables MySQL
+        # RÃ©cupÃ©ration des variables MySQL
         if "[RESEAU]" in nomFichier:
             req = """SHOW VARIABLES LIKE "version";"""
             self.DB.ExecuterReq(req)
@@ -112,17 +112,17 @@ class Informations():
         # Nbre de prestations
         GetQuantite(_(u"Nombre de prestations"), "IDprestation", "prestations")
 
-        # Nbre de dépôts
-        GetQuantite(_(u"Nombre de dépôts bancaires"), "IDdepot", "depots")
+        # Nbre de dÃ©pÃ´ts
+        GetQuantite(_(u"Nombre de dÃ©pÃ´ts bancaires"), "IDdepot", "depots")
 
         # Nbre de factures
         GetQuantite(_(u"Nombre de factures"), "IDfacture", "factures")
 
-        # Nbre de règlements
-        GetQuantite(_(u"Nombre de règlements"), "IDreglement", "reglements")
+        # Nbre de rÃ¨glements
+        GetQuantite(_(u"Nombre de rÃ¨glements"), "IDreglement", "reglements")
 
-        # Nbre de pièces
-        GetQuantite(_(u"Nombre de pièces"), "IDpiece", "pieces")
+        # Nbre de piÃ¨ces
+        GetQuantite(_(u"Nombre de piÃ¨ces"), "IDpiece", "pieces")
         
         # Nbre de photos
         DBTemp = GestionDB.DB(suffixe="PHOTOS")
@@ -133,10 +133,10 @@ class Informations():
         if len(donnees) > 0 :
             nbre = donnees[0][0]
         else :
-            nbre = "Base non installée"
+            nbre = "Base non installÃ©e"
         listeItems.append((_(u"Nombre de photos"), str(nbre)))
 
-        # Nbre de documents scannés
+        # Nbre de documents scannÃ©s
         DBTemp = GestionDB.DB(suffixe="DOCUMENTS")
         req = """SELECT COUNT(IDdocument) FROM documents;"""
         DBTemp.ExecuterReq(req)
@@ -145,8 +145,8 @@ class Informations():
         if len(donnees) > 0 :
             nbre = donnees[0][0]
         else :
-            nbre = "Base non installée"
-        listeItems.append((_(u"Nombre de documents scannés"), str(nbre)))
+            nbre = "Base non installÃ©e"
+        listeItems.append((_(u"Nombre de documents scannÃ©s"), str(nbre)))
         
         return nomCategorie, listeItems
 
@@ -191,8 +191,8 @@ class CTRL_Infos(HTL.HyperTreeList):
     def MAJ(self, listeDonnees=[]): 
         self.listeDonnees = listeDonnees
                       
-        # Création des colonnes
-        self.AddColumn(_(u"Catégorie"))
+        # CrÃ©ation des colonnes
+        self.AddColumn(_(u"CatÃ©gorie"))
         self.SetMainColumn(0)
         self.SetColumnWidth(0, 300)
         self.AddColumn(_(u"Valeur"))
@@ -210,14 +210,14 @@ class CTRL_Infos(HTL.HyperTreeList):
             ]
         self.AssignImageList(il)
 
-        # Création de la racine
+        # CrÃ©ation de la racine
         self.root = self.AddRoot(_(u"Racine"))
         
-        # Création des branches
+        # CrÃ©ation des branches
         numCategorie = 0
         for categorie, listeItems in self.listeDonnees :
             
-            # Création de la catégorie
+            # CrÃ©ation de la catÃ©gorie
             brancheCategorie = self.AppendItem(self.root, categorie)
             self.SetItemBold(brancheCategorie, True)
             self.SetItemBackgroundColour(brancheCategorie, wx.Colour(200, 200, 200) )
@@ -226,7 +226,7 @@ class CTRL_Infos(HTL.HyperTreeList):
             
             for label, valeur in listeItems :
 
-                # Création du label + valeur
+                # CrÃ©ation du label + valeur
                 brancheItem = self.AppendItem(brancheCategorie, label)
                 self.SetItemText(brancheItem, valeur, 1)
             
@@ -242,7 +242,7 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Vous pouvez ici consulter les informations concernant le fichier de données actuellement chargé. Cette liste propose trois catégories de données : les informations générales, les statistiques et l'historique.")
+        intro = _(u"Vous pouvez ici consulter les informations concernant le fichier de donnÃ©es actuellement chargÃ©. Cette liste propose trois catÃ©gories de donnÃ©es : les informations gÃ©nÃ©rales, les statistiques et l'historique.")
         titre = _(u"Informations sur le fichier")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Information.png")

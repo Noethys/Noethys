@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -19,8 +19,8 @@ import GestionDB
 from Ctrl import CTRL_Saisie_euros
 
 LISTE_METHODES_ARRONDI = [
-    (_(u"Arrondi au centime supérieur"), "centimesup"),
-    (_(u"Arrondi au centime inférieur"), "centimeinf"),
+    (_(u"Arrondi au centime supÃ©rieur"), "centimesup"),
+    (_(u"Arrondi au centime infÃ©rieur"), "centimeinf"),
     ]
 
 
@@ -30,8 +30,8 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.dictFrais = dictFrais
         
-        # Méthode de calcul
-        self.box_calcul = wx.StaticBox(self, -1, _(u"Méthode de calcul"))
+        # MÃ©thode de calcul
+        self.box_calcul = wx.StaticBox(self, -1, _(u"MÃ©thode de calcul"))
         self.radio_frais_aucun = wx.RadioButton(self, -1, _(u"Aucun"), style=wx.RB_GROUP)
         self.radio_frais_fixe = wx.RadioButton(self, -1, _(u"Montant fixe :"))
         self.ctrl_frais_fixe = CTRL_Saisie_euros.CTRL(self)
@@ -63,7 +63,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         
-        # Initialisation des contrôles
+        # Initialisation des contrÃ´les
         self.Importation()
         self.OnRadioFrais(None)
 
@@ -71,13 +71,13 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.ctrl_frais_fixe.SetMinSize((60, -1))
         self.ctrl_frais_prorata.SetMinSize((50, -1))
-        self.radio_frais_aucun.SetToolTip(wx.ToolTip(_(u"Cochez ici si aucun frais de gestion n'est applicable pour ce mode de règlement")))
+        self.radio_frais_aucun.SetToolTip(wx.ToolTip(_(u"Cochez ici si aucun frais de gestion n'est applicable pour ce mode de rÃ¨glement")))
         self.radio_frais_fixe.SetToolTip(wx.ToolTip(_(u"Cochez ici si des frais d'un montant fixe sont applicables")))
         self.ctrl_frais_fixe.SetToolTip(wx.ToolTip(_(u"Saisissez le montant fixe des frais de gestion")))
         self.radio_frais_prorata.SetToolTip(wx.ToolTip(_(u"Cochez ici si des frais de gestion d'un montant au prorata est applicable")))
-        self.ctrl_frais_prorata.SetToolTip(wx.ToolTip(_(u"Saisissez ici le pourcentage du montant du règlement")))
-        self.ctrl_frais_arrondi.SetToolTip(wx.ToolTip(_(u"Selectionnez une méthode de calcul de l'arrondi")))
-        self.ctrl_frais_label.SetToolTip(wx.ToolTip(_(u"Vous avez ici la possibilité de modifier le label de la prestation qui sera créée pour les frais de gestion")))
+        self.ctrl_frais_prorata.SetToolTip(wx.ToolTip(_(u"Saisissez ici le pourcentage du montant du rÃ¨glement")))
+        self.ctrl_frais_arrondi.SetToolTip(wx.ToolTip(_(u"Selectionnez une mÃ©thode de calcul de l'arrondi")))
+        self.ctrl_frais_label.SetToolTip(wx.ToolTip(_(u"Vous avez ici la possibilitÃ© de modifier le label de la prestation qui sera crÃ©Ã©e pour les frais de gestion")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider la saisie")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler la saisie")))
@@ -208,7 +208,7 @@ class Dialog(wx.Dialog):
                 self.ctrl_frais_label.SetFocus()
                 return
         
-        # Mémorisation
+        # MÃ©morisation
         self.dictFrais = {  
             "frais_gestion" : frais_gestion,
             "frais_montant" : frais_montant,
@@ -217,11 +217,11 @@ class Dialog(wx.Dialog):
             "frais_label" : frais_label,
             }
                 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
         
     def Importation(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         if len(self.dictFrais) == 0 :
             return        
         frais_gestion = self.dictFrais["frais_gestion"]

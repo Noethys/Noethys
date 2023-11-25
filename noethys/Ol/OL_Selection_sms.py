@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -114,7 +114,7 @@ class TrackFamille(object):
 
 
 def GetListeFamilles(listview=None, listeActivites=None, presents=None, IDfamille=None, infosIndividus=None):
-    """ Récupération des infos familles """
+    """ RÃ©cupÃ©ration des infos familles """
     listeListeView = []
     titulaires = UTILS_Titulaires.GetTitulaires(inclure_telephones=True)
     for IDfamille, dictTemp in titulaires.items() :
@@ -156,7 +156,7 @@ def GetListeFamilles(listview=None, listeActivites=None, presents=None, IDfamill
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.categorie = kwds.pop("categorie", "individus")
         self.IDindividu = kwds.pop("IDindividu", None)
         self.IDfamille = kwds.pop("IDfamille", None)
@@ -168,7 +168,7 @@ class ListView(FastObjectListView):
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
 
     def InitModel(self):
-        # Récupération des tracks
+        # RÃ©cupÃ©ration des tracks
         if self.categorie == "individus" :
             self.donnees = GetListeIndividus(self)
         else:
@@ -191,9 +191,9 @@ class ListView(FastObjectListView):
             liste_Colonnes = [
                 ColumnDefn(u"", "left", 0, "IDindividu", typeDonnee="entier"),
                 ColumnDefn(_(u"Nom"), 'left', 140, "nom", typeDonnee="texte"),
-                ColumnDefn(_(u"Prénom"), "left", 140, "prenom", typeDonnee="texte"),
-                ColumnDefn(_(u"Catégorie"), "left", 100, "categorie", typeDonnee="texte"),
-                ColumnDefn(_(u"Téléphone"), "left", 100, "tel", typeDonnee="texte"),
+                ColumnDefn(_(u"PrÃ©nom"), "left", 140, "prenom", typeDonnee="texte"),
+                ColumnDefn(_(u"CatÃ©gorie"), "left", 100, "categorie", typeDonnee="texte"),
+                ColumnDefn(_(u"TÃ©lÃ©phone"), "left", 100, "tel", typeDonnee="texte"),
                 ColumnDefn(_(u"SMS"), "left", 50, "sms", typeDonnee="bool", stringConverter=FormateSMS),
                 ]
         
@@ -203,9 +203,9 @@ class ListView(FastObjectListView):
                 ColumnDefn(_(u"ID"), "left", 0, "IDfamille", typeDonnee="entier"),
                 ColumnDefn(_(u"Famille"), 'left', 180, "nomTitulaires", typeDonnee="texte"),
                 ColumnDefn(_(u"Nom"), 'left', 100, "nom", typeDonnee="texte"),
-                ColumnDefn(_(u"Prénom"), "left", 100, "prenom", typeDonnee="texte"),
-                ColumnDefn(_(u"Catégorie"), "left", 100, "categorie", typeDonnee="texte"),
-                ColumnDefn(_(u"Téléphone"), "left", 100, "tel", typeDonnee="texte"),
+                ColumnDefn(_(u"PrÃ©nom"), "left", 100, "prenom", typeDonnee="texte"),
+                ColumnDefn(_(u"CatÃ©gorie"), "left", 100, "categorie", typeDonnee="texte"),
+                ColumnDefn(_(u"TÃ©lÃ©phone"), "left", 100, "tel", typeDonnee="texte"),
                 ColumnDefn(_(u"SMS"), "left", 50, "sms", typeDonnee="bool", stringConverter=FormateSMS),
             ]
 
@@ -248,10 +248,10 @@ class ListView(FastObjectListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """            
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
         
-        # Génération automatique des fonctions standards
+        # GÃ©nÃ©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
 
         self.PopupMenu(menuPop)

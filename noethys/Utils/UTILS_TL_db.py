@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 
 # Copyright (C) 2009  Rickard Lindberg, Roger Lindberg
 #
@@ -152,7 +152,7 @@ class TimelinePerso(Timeline):
 # ----------------------------------------------------------------------------------------------------------------------------------------
 
     def _load_data(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         self.preferred_period = None
         self.categories = []
         self.events = []
@@ -160,7 +160,7 @@ class TimelinePerso(Timeline):
         
         ################### TEST AVEC VRAIES DONNEES  ####################
         
-##        # Période préférée
+##        # PÃ©riode prÃ©fÃ©rÃ©e
 ##        dateDebut = datetime.datetime(2011, 1, 1, 9, 52, 0)
 ##        dateFin = datetime.datetime(2011, 12, 31, 18, 52, 0)
 ##        self.preferred_period = TimePeriod(dateDebut, dateFin)
@@ -168,14 +168,14 @@ class TimelinePerso(Timeline):
         import GestionDB
         from Utils.UTILS_Historique import CATEGORIES as dictCategories
         
-##        # Récupération des catégories
+##        # RÃ©cupÃ©ration des catÃ©gories
 ##        dictCategorieTemp = {}
 ##        for IDcategorie, nomCategorie in dictCategories.iteritems() :
 ##            categorie = Category(nomCategorie, (0, 255, 0), True)
 ##            self.categories.append(categorie)
 ##            dictCategorieTemp[IDcategorie] = categorie
 ##        
-##        # Récupération des events
+##        # RÃ©cupÃ©ration des events
 ##        DB = GestionDB.DB()
 ##        req = """SELECT IDaction, date, heure, IDcategorie, action
 ##        FROM historique
@@ -203,7 +203,7 @@ class TimelinePerso(Timeline):
 ##        ################### TEsT AVEC CONSOMMATIONS ####################
 ##                
 ##        
-##        # Récupération des events
+##        # RÃ©cupÃ©ration des events
 ##        DB = GestionDB.DB()
 ##        req = """SELECT IDconso, IDindividu, IDactivite, date, heure_debut, heure_fin, IDunite, IDgroupe, etat
 ##        FROM consommations
@@ -234,13 +234,13 @@ class TimelinePerso(Timeline):
         ################### TEST AVEC ANNIVERSAIRES ####################
         
         
-        # Période préférée
+        # PÃ©riode prÃ©fÃ©rÃ©e
         dateDuJour = datetime.datetime.today()
         dateDebut = dateDuJour - datetime.timedelta(1)
         dateFin = dateDuJour + datetime.timedelta(3)
         self.preferred_period = TimePeriod(dateDebut, dateFin)
         
-        # Récupération des events
+        # RÃ©cupÃ©ration des events
         DB = GestionDB.DB()
         req = """SELECT IDindividu, nom, prenom, date_naiss
         FROM individus
@@ -272,24 +272,24 @@ class TimelinePerso(Timeline):
 
             ################### TEST AVEC DONNEES FICTIVES ####################
             
-##        # Importation de la période préférée
+##        # Importation de la pÃ©riode prÃ©fÃ©rÃ©e
 ##        dateDebut = datetime.datetime(2011, 8, 11, 9, 52, 0)
 ##        dateFin = datetime.datetime(2011, 8, 13, 18, 52, 0)
 ##        self.preferred_period = TimePeriod(dateDebut, dateFin)
 ##        
-##        # Importation d'une catégorie
-##        catExemple = Category(_(u"Catégorie Exemple"), (0, 255, 0), True)
+##        # Importation d'une catÃ©gorie
+##        catExemple = Category(_(u"CatÃ©gorie Exemple"), (0, 255, 0), True)
 ##        self.categories.append(catExemple)
 ##        
 ##        # Importation d'un Event
 ##        dateDebut = datetime.datetime(2011, 8, 12, 9, 52, 0)
 ##        dateFin = datetime.datetime(2011, 8, 12, 9, 52, 0)
-##        texte = _(u"Evènement 1")
+##        texte = _(u"EvÃ¨nement 1")
 ##        categorie = catExemple
 ##        description = _(u"Ceci est la description de l'event 1")
 ##        icon = wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Anniversaire.png"), wx.BITMAP_TYPE_ANY)
 ##        
-##        # Mémorisation de l'event
+##        # MÃ©morisation de l'event
 ##        evt = Event(dateDebut, dateFin, texte, categorie)
 ##        if description != None : evt.set_data("description", description)
 ##        if icon != None : evt.set_data("icon", icon)
@@ -298,11 +298,11 @@ class TimelinePerso(Timeline):
     def _save_data(self):
         print("--------- Sauvegarde fictive : ----------")
         
-        # Sauvegarde de la période préférée
+        # Sauvegarde de la pÃ©riode prÃ©fÃ©rÃ©e
         print("Periode preferee :")
         print((self.preferred_period.start_time, self.preferred_period.end_time))
         
-        # Sauvegarde des catégories
+        # Sauvegarde des catÃ©gories
         print("Categories :")
         for categorie in self.categories:
             print((categorie.name, categorie.color, categorie.visible))
@@ -328,7 +328,7 @@ class TimelinePerso(Timeline):
             print((icon,))
             print("-------------------------------------------------")
             
-        # Indique que tout a été sauvegardé
+        # Indique que tout a Ã©tÃ© sauvegardÃ©
         self._notify(Timeline.STATE_CHANGE_ANY)
         
         print("Fin sauvegarde.")

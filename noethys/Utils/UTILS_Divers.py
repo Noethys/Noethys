@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -11,7 +11,7 @@
 import copy
 
 def DictionnaireImbrique(dictionnaire={}, cles=[], valeur=None):
-    """ Création de dictionnaires imbriqués """
+    """ CrÃ©ation de dictionnaires imbriquÃ©s """
     if len(cles) == 0 :
         return dictionnaire
     

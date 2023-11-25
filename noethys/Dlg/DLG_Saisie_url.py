@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -68,11 +68,11 @@ class MyDialog(wx.Dialog):
         self.CentreOnScreen()
 
     def GetLabel(self):
-        """ Récupération ds valeurs saisies """
+        """ RÃ©cupÃ©ration ds valeurs saisies """
         return self.ctrl_label.GetValue()
     
     def GetURL(self):
-        """ Récupération ds valeurs saisies """
+        """ RÃ©cupÃ©ration ds valeurs saisies """
         return self.ctrl_url.GetValue()
         
     def OnBoutonAide(self, event):
@@ -80,7 +80,7 @@ class MyDialog(wx.Dialog):
         UTILS_Aide.Aide("EditeurdEmails")
 
     def OnBoutonOk(self, event):
-        """ Validation des données saisies """
+        """ Validation des donnÃ©es saisies """
         
         label = self.ctrl_label.GetValue()
         if label == "" :

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -37,7 +37,7 @@ class CTRL(CT.CustomTreeCtrl):
         self.SetAGWWindowStyleFlag(wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT )
 ##        self.EnableSelectionVista(True)
         
-        # Importation des activités
+        # Importation des activitÃ©s
         DB = GestionDB.DB()
         req = """SELECT IDactivite, nom
         FROM activites;"""
@@ -58,7 +58,7 @@ class CTRL(CT.CustomTreeCtrl):
             self.Bind(wx.EVT_RIGHT_DOWN, self.OnContextMenu)
 
     def Activation(self, etat=True):
-        """ Active ou désactive le contrôle """
+        """ Active ou dÃ©sactive le contrÃ´le """
         self.activation = etat
         self.MAJ() 
     
@@ -83,7 +83,7 @@ class CTRL(CT.CustomTreeCtrl):
         return (r, v, b)
 
     def CreationImage(self, tailleImages, couleur=(255, 255, 255)):
-        """ Création des images pour le TreeCtrl """
+        """ CrÃ©ation des images pour le TreeCtrl """
         if couleur == None :
             return None
         
@@ -135,14 +135,14 @@ class CTRL(CT.CustomTreeCtrl):
 
         self.SetImageList(self.il)
         
-        # Création de la racine
+        # CrÃ©ation de la racine
         self.root = self.AddRoot(_(u"Etiquettes"))
         
-        # Création des branches activités
+        # CrÃ©ation des branches activitÃ©s
         for nomActivite, IDactivite in self.listeActivitesTemp :
             if IDactivite in self.listeActivites :
                 if nomActivite == None : 
-                    nomActivite = u"Activité"
+                    nomActivite = u"ActivitÃ©"
                 if self.nomActivite != None :
                     nomActivite = self.nomActivite
                 item = self.AppendItem(self.root, nomActivite)
@@ -151,7 +151,7 @@ class CTRL(CT.CustomTreeCtrl):
                 self.SetPyData(item, {"type" : "activite", "IDetiquette" : None, "IDactivite" : IDactivite})
                 self.SetItemImage(self.root, self.imgRoot, wx.TreeItemIcon_Normal)
             
-                # Création des branches étiquettes
+                # CrÃ©ation des branches Ã©tiquettes
                 self.Boucle(None, item, IDactivite)
         
                 self.Expand(item)
@@ -166,7 +166,7 @@ class CTRL(CT.CustomTreeCtrl):
             
             if dictEtiquette["parent"] == IDparent and IDactivite == dictEtiquette["IDactivite"]:
                 
-                # Création de la branche
+                # CrÃ©ation de la branche
                 if dictEtiquette["active"] == 0:
                     item = self.AppendItem(itemParent, dictEtiquette["label"])
                 else :
@@ -190,7 +190,7 @@ class CTRL(CT.CustomTreeCtrl):
         self.Thaw()
 
     def Importation(self):
-        """ Importation de la liste des étiquettes """
+        """ Importation de la liste des Ã©tiquettes """
         if len(self.listeActivites) == 0 :
             conditionActivites = "()"
         elif len(self.listeActivites) == 1 :
@@ -213,7 +213,7 @@ class CTRL(CT.CustomTreeCtrl):
         for IDetiquette, label, IDactivite, parent, ordre, couleur, active in listeDonnees :     
             couleurRVB = self.FormateCouleur(couleur)       
             
-            # Mémorisation de l'étiquette
+            # MÃ©morisation de l'Ã©tiquette
             dictTemp = {
                 "IDetiquette" : IDetiquette, "label" : label, "IDactivite" : IDactivite, "parent" : parent, 
                 "ordre" : ordre, "couleur" : couleur, "couleurRVB" : couleurRVB, "active" : active,
@@ -225,14 +225,14 @@ class CTRL(CT.CustomTreeCtrl):
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """
 
-        # Recherche et sélection de l'item pointé avec la souris
+        # Recherche et sÃ©lection de l'item pointÃ© avec la souris
         item = self.FindTreeItem(event.GetPosition())
         if item == None:
             return
         self.SelectItem(item, True)
         dictData = self.GetPyData(item)
         
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ajouter
@@ -260,14 +260,14 @@ class CTRL(CT.CustomTreeCtrl):
         menuPop.AppendSeparator()
 
         # Item Deplacer vers le haut
-        itemx = wx.MenuItem(menuPop, 40, _(u"Déplacer vers le haut"))
+        itemx = wx.MenuItem(menuPop, 40, _(u"DÃ©placer vers le haut"))
         itemx.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_haut.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(itemx)
         self.Bind(wx.EVT_MENU, self.Monter, id=40)
         if dictData["type"] != "etiquette" : itemx.Enable(False)
 
-        # Item Déplacer vers le bas
-        itemx = wx.MenuItem(menuPop, 50, _(u"Déplacer vers le bas"))
+        # Item DÃ©placer vers le bas
+        itemx = wx.MenuItem(menuPop, 50, _(u"DÃ©placer vers le bas"))
         itemx.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_bas.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(itemx)
         self.Bind(wx.EVT_MENU, self.Descendre, id=50)
@@ -275,8 +275,8 @@ class CTRL(CT.CustomTreeCtrl):
         
         menuPop.AppendSeparator()
         
-        # Item Range par ordre alphabétique
-        itemx = wx.MenuItem(menuPop, 60, _(u"Trier par ordre alphabétique"))
+        # Item Range par ordre alphabÃ©tique
+        itemx = wx.MenuItem(menuPop, 60, _(u"Trier par ordre alphabÃ©tique"))
         itemx.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Tri_za.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(itemx)
         self.Bind(wx.EVT_MENU, self.TrierOrdreAlpha, id=60)
@@ -286,7 +286,7 @@ class CTRL(CT.CustomTreeCtrl):
         menuPop.Destroy()
 
     def FindTreeItem(self, position):
-        """ Permet de retrouver l'item pointé dans le TreeCtrl """
+        """ Permet de retrouver l'item pointÃ© dans le TreeCtrl """
         item, flags = self.HitTest(position)
         if item and flags & (wx.TREE_HITTEST_ONITEMLABEL |
                              wx.TREE_HITTEST_ONITEMICON):
@@ -294,7 +294,7 @@ class CTRL(CT.CustomTreeCtrl):
         return None
     
     def Ajouter(self, event):
-        """ Ajouter une étiquette """
+        """ Ajouter une Ã©tiquette """
         item = self.GetSelection()
         dictData = self.GetPyData(item)
         if dictData != None :
@@ -318,16 +318,16 @@ class CTRL(CT.CustomTreeCtrl):
             dictOptions = dlg.GetOptions()
             active = dictOptions["active"]
             
-            # Sauvegarde de l'étiquette
+            # Sauvegarde de l'Ã©tiquette
             self.SauvegarderEtiquette(IDetiquette=None, label=label, IDactivite=IDactivite, parent=IDparent, couleur=couleur, ordre=ordre, active=active)
         dlg.Destroy()
             
     def Modifier(self, event):
-        """ Modifier une étiquette """
+        """ Modifier une Ã©tiquette """
         item = self.GetSelection()
         dictData = self.GetPyData(item)
         if dictData == None or ("label" in dictData) == False :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une étiquette à modifier !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une Ã©tiquette Ã  modifier !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -347,7 +347,7 @@ class CTRL(CT.CustomTreeCtrl):
             active = dictOptions["active"]
 
             if dictData["IDetiquette"] == IDparent :
-                dlg2 = wx.MessageDialog(self, _(u"Vous ne pouvez pas sélectionner une étiquette parente qui est l'étiquette à modifier !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg2 = wx.MessageDialog(self, _(u"Vous ne pouvez pas sÃ©lectionner une Ã©tiquette parente qui est l'Ã©tiquette Ã  modifier !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg2.ShowModal()
                 dlg2.Destroy()
                 dlg.Destroy()
@@ -390,7 +390,7 @@ class CTRL(CT.CustomTreeCtrl):
             itemTemp, cookie = self.GetNextChild(item, cookie)
     
     def RechercheNbreConsoAssociees(self):
-        """ Recherche si les IDetiquette données sont déjà associées à des consommations """
+        """ Recherche si les IDetiquette donnÃ©es sont dÃ©jÃ  associÃ©es Ã  des consommations """
         DB = GestionDB.DB()
         req = """SELECT IDconso, etiquettes
         FROM consommations
@@ -411,7 +411,7 @@ class CTRL(CT.CustomTreeCtrl):
         item = self.GetSelection()
         dictData = self.GetPyData(item)
         if dictData == None or dictData["IDetiquette"] == None:
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une étiquette à supprimer !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une Ã©tiquette Ã  supprimer !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -421,47 +421,47 @@ class CTRL(CT.CustomTreeCtrl):
         dictConsoAssociees = self.RechercheNbreConsoAssociees() 
         if IDetiquette in dictConsoAssociees :
             if dictConsoAssociees[IDetiquette] > 0 :
-                dlg = wx.MessageDialog(self, _(u"Cette étiquette a déjà été associée à %d consommation(s) !\n\nVous ne pouvez donc pas la supprimer." % dictConsoAssociees[IDetiquette]), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Cette Ã©tiquette a dÃ©jÃ  Ã©tÃ© associÃ©e Ã  %d consommation(s) !\n\nVous ne pouvez donc pas la supprimer." % dictConsoAssociees[IDetiquette]), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
         
-        # Confirmation de suppression des étiquettes enfants
+        # Confirmation de suppression des Ã©tiquettes enfants
         listeTousEnfants = []
         if self.GetChildrenCount(item, recursively=True) > 0 :
 
-            # Récupère la liste des tous les items enfants (récursif)
+            # RÃ©cupÃ¨re la liste des tous les items enfants (rÃ©cursif)
             self.GetItemsEnfants(listeTousEnfants, item)
             
-            # Va servir à vérifier les liens avec les autres tables :
+            # Va servir Ã  vÃ©rifier les liens avec les autres tables :
             for dictDataTemp in listeTousEnfants :
                 if dictDataTemp["IDetiquette"] in dictConsoAssociees :
                     if dictConsoAssociees[dictDataTemp["IDetiquette"]] > 0 :
-                        dlg = wx.MessageDialog(self, _(u"L'étiquette enfant '%s' qui dépend de l'étiquette sélectionnée a déjà été associée à %d consommation(s) !\n\nVous ne pouvez donc pas supprimer l'étiquette parent." % (dictDataTemp["label"], dictDataTemp["IDetiquette"])), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                        dlg = wx.MessageDialog(self, _(u"L'Ã©tiquette enfant '%s' qui dÃ©pend de l'Ã©tiquette sÃ©lectionnÃ©e a dÃ©jÃ  Ã©tÃ© associÃ©e Ã  %d consommation(s) !\n\nVous ne pouvez donc pas supprimer l'Ã©tiquette parent." % (dictDataTemp["label"], dictDataTemp["IDetiquette"])), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
                         dlg.ShowModal()
                         dlg.Destroy()
                         return
             
             # Demande de confirmation
-            dlg = wx.MessageDialog(self, _(u"Attention, cette étiquette comporte des étiquettes enfants.\n\nSouhaitez-vous vraiment supprimer cette étiquette ? Les étiquettes enfants seront également supprimées !"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Attention, cette Ã©tiquette comporte des Ã©tiquettes enfants.\n\nSouhaitez-vous vraiment supprimer cette Ã©tiquette ? Les Ã©tiquettes enfants seront Ã©galement supprimÃ©es !"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
                 return
         
         # Confirmation de suppression
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette étiquette ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette Ã©tiquette ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             
-            # Suppression de l'étiquette
+            # Suppression de l'Ã©tiquette
             DB.ReqDEL("etiquettes", "IDetiquette", dictData["IDetiquette"])
 
-            # Suppression des étiquettes enfants également
+            # Suppression des Ã©tiquettes enfants Ã©galement
             for dictTemp in listeTousEnfants :
                 DB.ReqDEL("etiquettes", "IDetiquette", dictTemp["IDetiquette"])
 
-            # Modification de l'ordre des étiquettes soeurs
+            # Modification de l'ordre des Ã©tiquettes soeurs
             itemParent = self.GetItemParent(item)
             listeItemsSoeurs = []
             self.GetItemsEnfants(liste=listeItemsSoeurs, item=itemParent, recursif=False)
@@ -478,7 +478,7 @@ class CTRL(CT.CustomTreeCtrl):
         
 
     def Monter(self, event):
-        """ Déplacer vers le haut """
+        """ DÃ©placer vers le haut """
         self.Deplacer(-1)
 
     def Descendre(self, event):
@@ -489,7 +489,7 @@ class CTRL(CT.CustomTreeCtrl):
         if item == None or self.GetPyData(item) == None :
             return
         
-        # Recherche l'item à remplacer
+        # Recherche l'item Ã  remplacer
         if sens == -1 :
             itemRemplace = self.GetPrevSibling(item)
         else :
@@ -506,12 +506,12 @@ class CTRL(CT.CustomTreeCtrl):
         DB.Commit()
         DB.Close()
         
-        # MAJ du contrôle
+        # MAJ du contrÃ´le
         self.MAJ() 
         self.SetID(dictData["IDetiquette"])
     
     def TrierOrdreAlpha(self, event=None):
-        """ Range les branches enfants par ordre alphabétique """
+        """ Range les branches enfants par ordre alphabÃ©tique """
         item = self.GetSelection()
         if item == None or self.GetPyData(item) == None :
             return
@@ -576,7 +576,7 @@ class CTRL(CT.CustomTreeCtrl):
         return nbre
 
     def GetCoches(self, IDactivite=None):
-        """ Obtient la liste des étiquettes cochées """
+        """ Obtient la liste des Ã©tiquettes cochÃ©es """
         listeCoches = []
         for IDetiquette, item in self.dictItems.items() :
             if self.IsItemChecked(item) == True :
@@ -615,7 +615,7 @@ class DialogSelection(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent      
         self.listeActivites = listeActivites
-        self.SetTitle(_(u"Sélectionner des étiquettes"))
+        self.SetTitle(_(u"SÃ©lectionner des Ã©tiquettes"))
         
         self.ctrl_etiquettes = CTRL(self, listeActivites=listeActivites, nomActivite=nomActivite, activeMenu=False)
         self.ctrl_etiquettes.MAJ() 
@@ -663,7 +663,7 @@ class DialogSelection(wx.Dialog):
         UTILS_Aide.Aide("Etiquettes")
 
     def OnBoutonOk(self, event): 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def GetCoches(self):
@@ -700,7 +700,7 @@ if __name__ == '__main__':
     frame_1.Show()
     app.MainLoop()
     
-    # Test Dialog de sélection d'étiquettes
+    # Test Dialog de sÃ©lection d'Ã©tiquettes
     # frame_1 = DialogSelection(None, listeActivites=[1,])
     # app.SetTopWindow(frame_1)
     # frame_1.ShowModal()

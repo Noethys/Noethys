@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -28,7 +28,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -49,7 +49,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT IDmodele, label, public
@@ -85,12 +85,12 @@ class ListView(FastObjectListView):
 
         liste_Colonnes = [
             ColumnDefn(_(u"ID"), "left", 0, "IDmodele", typeDonnee="entier"),
-            ColumnDefn(_(u"Intitulé"), 'left', 200, "label", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(_(u"IntitulÃ©"), 'left', 200, "label", typeDonnee="texte", isSpaceFilling=True),
             ColumnDefn(_(u"Public"), "left", 150, "public", typeDonnee="texte", stringConverter=FormatePublic),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucun modèle"))
+        self.SetEmptyListMsg(_(u"Aucun modÃ¨le"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -104,7 +104,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -121,7 +121,7 @@ class ListView(FastObjectListView):
         else:
             noSelection = False
 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -152,7 +152,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -170,12 +170,12 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des modèles de prestations"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des modÃ¨les de prestations"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des modèles de prestations"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des modÃ¨les de prestations"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
 
@@ -189,7 +189,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun modèle à modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun modÃ¨le Ã  modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -202,13 +202,13 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun modèle à supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun modÃ¨le Ã  supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDmodele = self.Selection()[0].IDmodele
         # Confirmation de suppression
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce modèle de prestation ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce modÃ¨le de prestation ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             if IDmodele != None :
                 DB = GestionDB.DB()

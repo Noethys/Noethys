@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -24,8 +24,8 @@ LISTE_CATEGORIES = [
     ("consommations", _(u"Consommations")),
     ("prestations", _(u"Prestations")),
     ("factures", _(u"Factures")),
-    ("reglements", _(u"Règlements")),
-    ("depots", _(u"Dépôts de règlements")),
+    ("reglements", _(u"RÃ¨glements")),
+    ("depots", _(u"DÃ©pÃ´ts de rÃ¨glements")),
     ("cotisations", _(u"Cotisations")),
 ]
 
@@ -71,9 +71,9 @@ class Dialog(wx.Dialog):
         self.parent = parent 
         self.IDperiode = IDperiode
         
-        # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Généralités"))
-        self.label_periode = wx.StaticText(self, wx.ID_ANY, _(u"Période :"))
+        # GÃ©nÃ©ralitÃ©s
+        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"GÃ©nÃ©ralitÃ©s"))
+        self.label_periode = wx.StaticText(self, wx.ID_ANY, _(u"PÃ©riode :"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_au = wx.StaticText(self, wx.ID_ANY, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
@@ -99,19 +99,19 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
-        # Importation de l'opération
+        # Importation de l'opÃ©ration
         if self.IDperiode != None :
             self.Importation()
-            titre = _(u"Modification d'une période de gestion")
+            titre = _(u"Modification d'une pÃ©riode de gestion")
         else :
-            titre = _(u"Saisie d'une période de gestion")
+            titre = _(u"Saisie d'une pÃ©riode de gestion")
         self.SetTitle(titre)
 
     def __set_properties(self):
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début de la période")))
-        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de la période")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de dÃ©but de la pÃ©riode")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de la pÃ©riode")))
         self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez des observations")))
-        self.ctrl_verrou.SetToolTip(wx.ToolTip(_(u"Cochez les éléments à verrouiller")))
+        self.ctrl_verrou.SetToolTip(wx.ToolTip(_(u"Cochez les Ã©lÃ©ments Ã  verrouiller")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -119,7 +119,7 @@ class Dialog(wx.Dialog):
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(3, 1, 10, 10)
 
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         box_generalites = wx.StaticBoxSizer(self.box_generalites_staticbox, wx.VERTICAL)
         grid_sizer_generalites = wx.FlexGridSizer(5, 2, 10, 10)
 
@@ -206,21 +206,21 @@ class Dialog(wx.Dialog):
         liste_verrous = self.ctrl_verrou.GetCoches()
 
         if date_debut == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début de période !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de dÃ©but de pÃ©riode !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
             return False
 
         if date_fin == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin de période !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin de pÃ©riode !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
             return False
 
         if date_fin < date_debut :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin supérieure à la date de début de période !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin supÃ©rieure Ã  la date de dÃ©but de pÃ©riode !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
@@ -234,7 +234,7 @@ class Dialog(wx.Dialog):
         verrou_depots = int("depots" in liste_verrous)
         verrou_cotisations = int("cotisations" in liste_verrous)
 
-        # Sauvegarde de l'opération
+        # Sauvegarde de l'opÃ©ration
         DB = GestionDB.DB()
         
         listeDonnees = [ 

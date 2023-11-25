@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -35,7 +35,7 @@ class Track(object):
         self.date_fin = donnees["date_fin"]
         self.parametres = donnees["parametres"]
 
-        # Période
+        # PÃ©riode
         if isinstance(self.date_debut, str) or isinstance(self.date_debut, six.text_type) :
             self.date_debut = datetime.datetime.strptime(self.date_debut, "%Y-%m-%d %H:%M:%S")
 
@@ -68,7 +68,7 @@ class ListView(FastObjectListView):
         self.MAJ()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeListeView = []
         index = 0
         for item in self.listeDonnees :
@@ -85,7 +85,7 @@ class ListView(FastObjectListView):
 
         def FormateDate(date):
             if date == None :
-                return _(u"Non définie")
+                return _(u"Non dÃ©finie")
             else :
                 return datetime.datetime.strftime(date, "%d/%m/%Y - %Hh%M")
 
@@ -97,7 +97,7 @@ class ListView(FastObjectListView):
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucun évènement"))
+        self.SetEmptyListMsg(_(u"Aucun Ã©vÃ¨nement"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SortBy(1, ascending=False)
@@ -106,7 +106,7 @@ class ListView(FastObjectListView):
     def MAJ(self, index=None):
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if index != None :
             self.SelectObject(self.GetObjectAt(index), deselectOthers=True, ensureVisible=True)
         self._ResizeSpaceFillingColumns()
@@ -121,7 +121,7 @@ class ListView(FastObjectListView):
         else:
             noSelection = False
 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ajouter
@@ -153,7 +153,7 @@ class ListView(FastObjectListView):
         menuPop.Destroy()
 
     def GetIDprovisoire(self):
-        """ Création d'un ID négatif provisoire """
+        """ CrÃ©ation d'un ID nÃ©gatif provisoire """
         self.newID -= 1
         return int(self.newID)
 
@@ -168,7 +168,7 @@ class ListView(FastObjectListView):
         
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun évènement à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun Ã©vÃ¨nement Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -183,12 +183,12 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun évènement à supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun Ã©vÃ¨nement Ã  supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cet évènement ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cet Ã©vÃ¨nement ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             self.listeDonnees.pop(track.index)
             self.MAJ()
@@ -205,7 +205,7 @@ class DLG_Saisie_element(wx.Dialog):
         self.dictDonnees = {}
 
         # Titre
-        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"Caractéristiques"))
+        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"CaractÃ©ristiques"))
         self.label_titre = wx.StaticText(self, -1, _(u"Titre :"))
         self.ctrl_titre = wx.TextCtrl(self, -1, "")
 
@@ -236,10 +236,10 @@ class DLG_Saisie_element(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Saisie d'un évènement"))
-        self.ctrl_titre.SetToolTip(wx.ToolTip(_(u"Saisissez ici le titre de l'évènement")))
-        self.ctrl_description.SetToolTip(wx.ToolTip(_(u"[Optionnel] Ajoutez une description pour cet évènement")))
-        self.ctrl_couleur.SetToolTip(wx.ToolTip(_(u"Sélectionnez une couleur pour cet évènement")))
+        self.SetTitle(_(u"Saisie d'un Ã©vÃ¨nement"))
+        self.ctrl_titre.SetToolTip(wx.ToolTip(_(u"Saisissez ici le titre de l'Ã©vÃ¨nement")))
+        self.ctrl_description.SetToolTip(wx.ToolTip(_(u"[Optionnel] Ajoutez une description pour cet Ã©vÃ¨nement")))
+        self.ctrl_couleur.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une couleur pour cet Ã©vÃ¨nement")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -247,7 +247,7 @@ class DLG_Saisie_element(wx.Dialog):
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=0, hgap=10)
 
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         staticbox_generalites = wx.StaticBoxSizer(self.staticbox_generalites_staticbox, wx.VERTICAL)
         grid_sizer_generalites = wx.FlexGridSizer(rows=5, cols=2, vgap=10, hgap=10)
         grid_sizer_generalites.Add(self.label_titre, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -294,27 +294,27 @@ class DLG_Saisie_element(wx.Dialog):
     def OnBoutonOk(self, event):
         # Validation
         if len(self.ctrl_titre.GetValue()) == 0:
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un titre pour cet évènement !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un titre pour cet Ã©vÃ¨nement !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_titre.SetFocus()
             return
 
         if self.ctrl_date_debut.Validation() == False or self.ctrl_date_debut.GetDate() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début valide pour cet évènement !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de dÃ©but valide pour cet Ã©vÃ¨nement !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
             return
 
         if self.ctrl_date_fin.Validation() == False or self.ctrl_date_fin.GetDate() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin valide pour cet évènement !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin valide pour cet Ã©vÃ¨nement !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
             return
 
-        # Fermeture fenêtre
+        # Fermeture fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def GetDonnees(self):

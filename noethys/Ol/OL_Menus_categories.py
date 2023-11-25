@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -29,7 +29,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -50,7 +50,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT IDcategorie, ordre, nom
@@ -86,7 +86,7 @@ class ListView(FastObjectListView):
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucune catégorie"))
+        self.SetEmptyListMsg(_(u"Aucune catÃ©gorie"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -100,7 +100,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -118,7 +118,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDcategorie
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ajouter
@@ -149,15 +149,15 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
         
         # Item Deplacer vers le haut
-        item = wx.MenuItem(menuPop, 40, _(u"Déplacer vers le haut"))
+        item = wx.MenuItem(menuPop, 40, _(u"DÃ©placer vers le haut"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_haut.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Monter, id=40)
         if noSelection == True : item.Enable(False)
         
-        # Item Déplacer vers le bas
-        item = wx.MenuItem(menuPop, 50, _(u"Déplacer vers le bas"))
+        # Item DÃ©placer vers le bas
+        item = wx.MenuItem(menuPop, 50, _(u"DÃ©placer vers le bas"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_bas.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -167,7 +167,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -185,18 +185,18 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des catégories de menus"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des catÃ©gories de menus"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des catégories de menus"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des catÃ©gories de menus"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
 
     def Ajouter(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_menus_categories", "creer") == False : return
-        # Recherche numéro d'ordre à appliquer
+        # Recherche numÃ©ro d'ordre Ã  appliquer
         listeTemp = []
         for track in self.donnees :
             listeTemp.append(track.ordre)
@@ -222,7 +222,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_menus_categories", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune catégorie à modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune catÃ©gorie Ã  modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -243,13 +243,13 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_menus_categories", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune catégorie à supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune catÃ©gorie Ã  supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDcategorie = self.Selection()[0].IDcategorie
 
-        # Vérifie que cette catégorie n'a pas déjà été attribué à un menu
+        # VÃ©rifie que cette catÃ©gorie n'a pas dÃ©jÃ  Ã©tÃ© attribuÃ© Ã  un menu
         DB = GestionDB.DB()
         req = """SELECT IDmenu, IDcategorie
         FROM menus
@@ -258,12 +258,12 @@ class ListView(FastObjectListView):
         listeMenus = DB.ResultatReq()
         DB.Close()
         if len(listeMenus) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Cette catégorie a déjà été rattachée à %d menus.\nVous ne pouvez donc la supprimer.") % len(listeMenus), _(u"Avertissement"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cette catÃ©gorie a dÃ©jÃ  Ã©tÃ© rattachÃ©e Ã  %d menus.\nVous ne pouvez donc la supprimer.") % len(listeMenus), _(u"Avertissement"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette catégorie ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette catÃ©gorie ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("menus_categories", "IDcategorie", IDcategorie)
@@ -285,7 +285,7 @@ class ListView(FastObjectListView):
     def Monter(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_menus_categories", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune catégorie dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune catÃ©gorie dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -293,10 +293,10 @@ class ListView(FastObjectListView):
         ordre = self.Selection()[0].ordre
         if ordre == 1 : return
         DB = GestionDB.DB()
-        # Modifie catégorie actuelle
+        # Modifie catÃ©gorie actuelle
         DB.ReqMAJ("menus_categories", [("ordre", ordre-1),], "IDcategorie", IDcategorie)
         self.Selection()[0].ordre = ordre-1
-        # Modifie catégorie a remplacer
+        # Modifie catÃ©gorie a remplacer
         index = self.GetIndexOf(self.Selection()[0])
         categorie2 = self.GetObjectAt(index-1)
         IDcategorie2 = categorie2.IDcategorie
@@ -307,7 +307,7 @@ class ListView(FastObjectListView):
     def Descendre(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_menus_categories", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune catégorie dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune catÃ©gorie dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -315,10 +315,10 @@ class ListView(FastObjectListView):
         ordre = self.Selection()[0].ordre
         if ordre == len(self.donnees) : return
         DB = GestionDB.DB()
-        # Modifie catégorie actuelle
+        # Modifie catÃ©gorie actuelle
         DB.ReqMAJ("menus_categories", [("ordre", ordre+1),], "IDcategorie", IDcategorie)
         self.Selection()[0].ordre = ordre+1
-        # Modifie catégorie a remplacer
+        # Modifie catÃ©gorie a remplacer
         index = self.GetIndexOf(self.Selection()[0])
         categorie2 = self.GetObjectAt(index+1)
         IDcategorie2 = categorie2.IDcategorie
@@ -344,9 +344,9 @@ class DLG_Saisie(wx.Dialog):
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         
         if nom == None :
-            self.SetTitle(_(u"Saisie d'une catégorie"))
+            self.SetTitle(_(u"Saisie d'une catÃ©gorie"))
         else:
-            self.SetTitle(_(u"Modification d'une catégorie"))
+            self.SetTitle(_(u"Modification d'une catÃ©gorie"))
         self.SetMinSize((350, -1))
 
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -378,7 +378,7 @@ class DLG_Saisie(wx.Dialog):
     def OnBoutonOk(self, event):
         nom = self.ctrl_nom.GetValue()
         if nom == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucun nom de catégorie !\nExemples : 'Midi', 'goûter', 'Dessert', etc..."), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucun nom de catÃ©gorie !\nExemples : 'Midi', 'goÃ»ter', 'Dessert', etc..."), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()

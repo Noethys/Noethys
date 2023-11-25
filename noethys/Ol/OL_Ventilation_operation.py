@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -19,7 +19,7 @@ from Dlg import DLG_Saisie_ventilation_operation
 from Utils import UTILS_Dates
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
@@ -45,7 +45,7 @@ class Track(object):
         if self.IDcategorie in self.dictCategories :
             self.label_categorie = self.dictCategories[self.IDcategorie]
         else :
-            self.label_categorie = _(u"Catégorie inconnue")
+            self.label_categorie = _(u"CatÃ©gorie inconnue")
             
         if self.IDanalytique in self.dictAnalytiques :
             self.label_analytique = self.dictAnalytiques[self.IDanalytique]
@@ -77,7 +77,7 @@ def Importation(IDoperation=None):
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.typeOperation = kwds.pop("typeOperation", None)
         self.selectionID = None
         self.selectionTrack = None
@@ -102,7 +102,7 @@ class ListView(FastObjectListView):
     def InitModel(self):
         DB = GestionDB.DB()
                 
-        # Importation des catégories
+        # Importation des catÃ©gories
         req = """SELECT IDcategorie, nom
         FROM compta_categories ;"""
         DB.ExecuterReq(req)
@@ -146,8 +146,8 @@ class ListView(FastObjectListView):
             ColumnDefn(u"", "left", 0, "IDreleve", typeDonnee="entier"),
             ColumnDefn(_(u"Date budget"), 'left', 100, "date_budget", typeDonnee="date", stringConverter=FormateDate),
             ColumnDefn(_(u"Analytique"), "left", 150, "label_analytique", typeDonnee="texte"),
-            ColumnDefn(_(u"Catégorie"), "left", 150, "label_categorie", typeDonnee="texte"),
-            ColumnDefn(_(u"Libellé"), "left", 120, "libelle", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(_(u"CatÃ©gorie"), "left", 150, "label_categorie", typeDonnee="texte"),
+            ColumnDefn(_(u"LibellÃ©"), "left", 120, "libelle", typeDonnee="texte", isSpaceFilling=True),
             ColumnDefn(_(u"Montant"), "right", 100, "montant", typeDonnee="montant", stringConverter=FormateMontant),
             ]
 
@@ -166,7 +166,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -184,7 +184,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDventilation
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -215,7 +215,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -257,7 +257,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune ventilation à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune ventilation Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -274,7 +274,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune ventilation à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune ventilation Ã  supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

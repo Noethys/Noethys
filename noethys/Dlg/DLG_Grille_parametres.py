@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -32,7 +32,7 @@ class EditeurAvecBoutons(wxpg.PyTextCtrlEditor):
 
         # Add two regular buttons
         buttons.AddBitmapButton(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Actualiser2.png"), wx.BITMAP_TYPE_PNG))
-        buttons.GetButton(0).SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rétablir la valeur par défaut")))
+        buttons.GetButton(0).SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rÃ©tablir la valeur par dÃ©faut")))
         
         # Create the 'primary' editor control (textctrl in this case)
         wnd = self.CallSuperMethod("CreateControls", propGrid, property, pos, buttons.GetPrimarySize())
@@ -59,7 +59,7 @@ class CTRL_Proprietes(wxpg.PropertyGrid) :
         wxpg.PropertyGrid.__init__(self, parent, -1, style=wxpg.PG_SPLITTER_AUTO_CENTER)
         self.listeDonnees = listeDonnees
 
-        # Définition des éditeurs personnalisés
+        # DÃ©finition des Ã©diteurs personnalisÃ©s
         if not getattr(sys, '_PropGridEditorsRegistered', False):
             self.RegisterEditor(EditeurAvecBoutons)
             # ensure we only do it once
@@ -84,7 +84,7 @@ class CTRL_Proprietes(wxpg.PropertyGrid) :
                     self.SetPropertyValue(propriete, dictTemp["defaut"])
     
     def ReinitTout(self):
-        """ Rétablit toutes les valeurs par défaut """
+        """ RÃ©tablit toutes les valeurs par dÃ©faut """
         for nom, listeProprietes in self.listeDonnees :
             for dictTemp in listeProprietes :
                 propriete = self.GetPropertyByName(dictTemp["code"])
@@ -100,8 +100,8 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.listeDonnees = listeDonnees
         
-        intro = _(u"Vous pouvez ici modifier les hauteurs de lignes et largeurs des colonnes. Pour rétablir la valeur initiale d'une ligne, cliquez sur celle-ci et cliquez sur le bouton Réinitialiser situé à droite de la colonne.")
-        titre = _(u"Paramètres de la grille")
+        intro = _(u"Vous pouvez ici modifier les hauteurs de lignes et largeurs des colonnes. Pour rÃ©tablir la valeur initiale d'une ligne, cliquez sur celle-ci et cliquez sur le bouton RÃ©initialiser situÃ© Ã  droite de la colonne.")
+        titre = _(u"ParamÃ¨tres de la grille")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Configuration2.png")
         
@@ -122,7 +122,7 @@ class Dialog(wx.Dialog):
         
     def __set_properties(self):
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_reinit.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rétablir toutes les valeurs par défaut")))
+        self.bouton_reinit.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rÃ©tablir toutes les valeurs par dÃ©faut")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((600, 550))

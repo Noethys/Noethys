@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -28,7 +28,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -49,7 +49,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT IDmodele, modeles_commandes.nom, modeles_commandes.IDrestaurateur, modeles_commandes.defaut,
@@ -80,7 +80,7 @@ class ListView(FastObjectListView):
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
 
-        # PrÈparation de la listeImages
+        # Pr√©paration de la listeImages
         imgDefaut = self.AddNamedImages("defaut", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok.png"), wx.BITMAP_TYPE_PNG))
 
         def GetImageDefaut(track):
@@ -96,7 +96,7 @@ class ListView(FastObjectListView):
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucun modËle"))
+        self.SetEmptyListMsg(_(u"Aucun mod√®le"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -110,7 +110,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -127,7 +127,7 @@ class ListView(FastObjectListView):
         else:
             noSelection = False
 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -157,8 +157,8 @@ class ListView(FastObjectListView):
                 
         menuPop.AppendSeparator()
 
-        # Item Par dÈfaut
-        item = wx.MenuItem(menuPop, 35, _(u"DÈfinir comme type de cotisation par dÈfaut"))
+        # Item Par d√©faut
+        item = wx.MenuItem(menuPop, 35, _(u"D√©finir comme type de cotisation par d√©faut"))
         if noSelection == False :
             if self.Selection()[0].defaut == 1 :
                 item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok.png"), wx.BITMAP_TYPE_PNG))
@@ -169,7 +169,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -187,12 +187,12 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des modËles de commandes de repas"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des mod√®les de commandes de repas"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des modËles de commandes de repas"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des mod√®les de commandes de repas"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
 
@@ -210,7 +210,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun modËle ‡ modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun mod√®le √† modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -223,13 +223,13 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun modËle ‡ supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun mod√®le √† supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
 
-        # Recherche si commandes associÈes
+        # Recherche si commandes associ√©es
         DB = GestionDB.DB()
         req = """SELECT IDcommande, nom
         FROM commandes 
@@ -239,20 +239,20 @@ class ListView(FastObjectListView):
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer ce modËle car il est dÈj‡ associÈ ‡ %d commandes !") % len(listeDonnees), _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer ce mod√®le car il est d√©j√† associ√© √† %d commandes !") % len(listeDonnees), _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         # Confirmation de suppression
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce modËle de commande de repas ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce mod√®le de commande de repas ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             if track.IDmodele != None :
                 DB = GestionDB.DB()
                 DB.ReqDEL("modeles_commandes", "IDmodele", track.IDmodele)
                 DB.ReqDEL("modeles_commandes_colonnes", "IDmodele", track.IDmodele)
 
-                # Attribue le DÈfaut ‡ un autre modËle
+                # Attribue le D√©faut √† un autre mod√®le
                 if track.defaut == 1:
                     req = """SELECT IDmodele, defaut
                     FROM modeles_commandes
@@ -269,7 +269,7 @@ class ListView(FastObjectListView):
 
     def SetDefaut(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun modËle dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun mod√®le dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

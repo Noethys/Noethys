@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -20,7 +20,7 @@ import datetime
 import GestionDB
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 DICT_LABELS_CATEGORIES = {
@@ -33,9 +33,9 @@ DICT_LABELS_CATEGORIES = {
             
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -71,7 +71,7 @@ class CTRL(HTL.HyperTreeList):
 ##        self.GetMainWindow().Bind(wx.EVT_RIGHT_UP, self.OnContextMenu)
     
     def Initialisation(self):               
-        # Création des colonnes
+        # CrÃ©ation des colonnes
         self.AddColumn(_(u"Prestations"))
         self.SetMainColumn(0)
         self.SetColumnWidth(0, 195)
@@ -79,7 +79,7 @@ class CTRL(HTL.HyperTreeList):
         self.SetColumnWidth(1, 55)
         self.SetColumnAlignment(1, wx.ALIGN_RIGHT)
         
-        # Création de la racine
+        # CrÃ©ation de la racine
         self.root = self.AddRoot(_(u"Racine"))
         
         self.dictBranches = {}
@@ -118,15 +118,15 @@ class CTRL(HTL.HyperTreeList):
                 if len(dictDeductions[IDprestation]) > 0 :
                     label += u"*"
             
-            # Critères d'affichage
+            # CritÃ¨res d'affichage
             affichePrestation = True
-            # Affiche uniquement les individus sélectionnés
+            # Affiche uniquement les individus sÃ©lectionnÃ©s
             if IDindividu not in selectionIndividus and IDindividu != 0 :
                 affichePrestation = False
-            # Affiche uniquement les activités sélectionnées
+            # Affiche uniquement les activitÃ©s sÃ©lectionnÃ©es
             if IDactivite not in listeActivites and IDactivite != None :
                 affichePrestation = False
-            # Affiche uniquement les périodes sélectionnées
+            # Affiche uniquement les pÃ©riodes sÃ©lectionnÃ©es
             afficheTemp = False
             for date_debut, date_fin in listePeriodes :
                 if date >= date_debut and date <= date_fin :
@@ -136,7 +136,7 @@ class CTRL(HTL.HyperTreeList):
             
             if affichePrestation == True :
             
-                # Recherche de la branche Catégorie
+                # Recherche de la branche CatÃ©gorie
                 brancheCategorie = self.RechercheBranche(categorie)
                 if brancheCategorie == None :
                     brancheCategorie = self.AppendItem(self.root, labelCategorie)
@@ -183,7 +183,7 @@ class CTRL(HTL.HyperTreeList):
                         "IDindividu" : IDindividu,
                         "montant" : montant,
                         }
-                    # Coloration si prestation payée
+                    # Coloration si prestation payÃ©e
                     if montantVentilation > 0.0 :
                         if montant == montantVentilation :
                             self.SetItemImage(branchePrestation, self.img_vert, which=wx.TreeItemIcon_Normal)
@@ -215,12 +215,12 @@ class CTRL(HTL.HyperTreeList):
                     self.Delete(self.dictBranches[categorie][date]["branche"])
                     del self.dictBranches[categorie][date]
                 
-                # Suppression des branches catégories inutiles
+                # Suppression des branches catÃ©gories inutiles
                 if len(self.dictBranches[categorie]) == 2 :
                     self.Delete(self.dictBranches[categorie]["branche"])
                     del self.dictBranches[categorie]
         
-        # Calcul du total par catégorie
+        # Calcul du total par catÃ©gorie
         totalCategorie = 0.0
         dictTotaux = {}
         for IDprestation, dictValeurs in self.dictBranchesPrestations.items() :
@@ -250,15 +250,15 @@ class CTRL(HTL.HyperTreeList):
 ##        listeDates.append(date)
 ##        listeDates.sort()
 ##        brancheCategorie = self.dictBranches[categorie]["branche"]
-##        # Si cet item doit être premier
+##        # Si cet item doit Ãªtre premier
 ##        if listeDates[0] == date and len(listeDates) > 1 : 
 ##            brancheDate = self.InsertItemBefore(brancheCategorie, 0, DateComplete(date))
 ##            return brancheDate
-##        # Si cet item doit être dernier
+##        # Si cet item doit Ãªtre dernier
 ##        if listeDates[-1] == date : 
 ##            brancheDate = self.AppendItem(brancheCategorie, DateComplete(date))
 ##            return brancheDate
-##        # Si l'item est à une autre position
+##        # Si l'item est Ã  une autre position
 ##        index = 0
 ##        for dateTmp in listeDates :
 ##            if date == dateTmp :
@@ -297,11 +297,11 @@ class CTRL(HTL.HyperTreeList):
         if col != -1 :
             self.SelectItem(item)
         
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, _(u"Créer une prestation"))
+        item = wx.MenuItem(menuPop, 10, _(u"CrÃ©er une prestation"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -352,7 +352,7 @@ class CTRL(HTL.HyperTreeList):
         return None
     
     def ModifiePrestation(self, date, IDindividu, IDprestation, montantVentilation=0.0, nouveauMontant=0.0, nouveauLabel=None):
-        """ Fontion qui sert au tarif basé sur le nbre d'individus de la famille présents """
+        """ Fontion qui sert au tarif basÃ© sur le nbre d'individus de la famille prÃ©sents """
         # Modifie le montant
         if IDprestation in self.dictBranchesPrestations :
             self.dictBranchesPrestations[IDprestation]["montant"] = nouveauMontant
@@ -360,7 +360,7 @@ class CTRL(HTL.HyperTreeList):
         branchePrestation = self.RechercheBranche("consommation", date, IDindividu, IDprestation)
         if branchePrestation != None :
             self.SetItemText(branchePrestation, u"%.2f %s " % (nouveauMontant, SYMBOLE), 1)
-            # Coloration si prestation payée
+            # Coloration si prestation payÃ©e
             if montantVentilation > 0.0 :
                 if nouveauMontant == montantVentilation :
                     self.SetItemImage(branchePrestation, self.img_vert, which=wx.TreeItemIcon_Normal)

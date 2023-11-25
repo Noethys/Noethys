@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -40,13 +40,13 @@ LISTE_MODELES = [
          'entete_fond_couleur': wx.Colour(128, 128, 255, 255), 'case_macaron_afficher': False, 'case_taille_police': 12}
      },
 
-    # Noir métallique
-    {"label": _(u"Noir métallique"), "fichier": "Modele_noirmetallique.png", "description": _(u"Format paysage / Mensuel"), "donnees":
+    # Noir mÃ©tallique
+    {"label": _(u"Noir mÃ©tallique"), "fichier": "Modele_noirmetallique.png", "description": _(u"Format paysage / Mensuel"), "donnees":
         {'case_macaron_type': u'rond', 'case_macaron_largeur': 12, 'case_macaron_hauteur': 12, 'page_fond_image': u'Interface/Noir/Fond.jpg', 'pied_hauteur': 20,
          'type': u'mensuel', 'case_macaron_taille_police': 10}
      },
 
-    # Noir métallique
+    # Noir mÃ©tallique
     {"label": _(u"Ballons multicolores"), "fichier": "Modele_ballons.png", "description": _(u"Format paysage / Mensuel"), "donnees":
         {'pied_fond_alpha': 0, 'case_fond_alpha': 80, 'pied_bord_alpha': 0, 'entete_mix_couleurs': True, 'pied_hauteur': 12, 'page_fond_image': u'Menus/Ballons.jpg',
          'case_bord_couleur': wx.Colour(64, 0, 128, 255), 'pied_taille_police': 8, 'case_macaron_mix_couleurs': True, 'case_rotation_aleatoire': True, 'type': u'mensuel'}
@@ -75,8 +75,8 @@ LISTE_MODELES = [
          'titre_texte_couleur': wx.Colour(128, 64, 0, 255), 'titre_bord_couleur': wx.Colour(255, 255, 255, 255), 'case_macaron_afficher': False, 'case_taille_police': 14}
      },
 
-    # Cadeau de Noël
-    {"label": _(u"Cadeau de Noël"), "fichier": "Modele_cadeaunoel.png", "description": _(u"Format paysage / Hebdomadaire"), "donnees":
+    # Cadeau de NoÃ«l
+    {"label": _(u"Cadeau de NoÃ«l"), "fichier": "Modele_cadeaunoel.png", "description": _(u"Format paysage / Hebdomadaire"), "donnees":
         {'case_separateur_type': u'image', 'case_macaron_bord_couleur': wx.Colour(255, 0, 0, 255), 'case_fond_alpha': 70, 'entete_bord_couleur': wx.Colour(0, 128, 0, 255),
          'titre_fond_couleur': wx.Colour(0, 128, 0, 255), 'pied_hauteur': 20, 'pied_taille_police': 9, 'case_separateur_image': u'Ligne_branche.png',
          'titre_bord_couleur': wx.Colour(0, 128, 0, 255), 'page_fond_image': u'Badgeage/Theme_noel.jpg', 'pied_texte_couleur': wx.Colour(255, 255, 255, 255),
@@ -103,8 +103,8 @@ LISTE_MODELES = [
          'pied_hauteur': 14, 'type': u'mensuel', 'case_macaron_afficher': False, 'pied_taille_police': 8}
      },
 
-    # Plage d'été
-    {"label": _(u"Plage d'été"), "fichier": "Modele_plageete.png", "description": _(u"Format paysage / Hebdomadaire"), "donnees":
+    # Plage d'Ã©tÃ©
+    {"label": _(u"Plage d'Ã©tÃ©"), "fichier": "Modele_plageete.png", "description": _(u"Format paysage / Hebdomadaire"), "donnees":
         {'pied_fond_alpha': 0, 'case_separateur_type': u'image', 'entete_bord_couleur': wx.Colour(228, 190, 142, 255), 'titre_fond_couleur': wx.Colour(228, 190, 142, 255),
          'case_titre_fond_couleur': wx.Colour(228, 190, 142, 255), 'pied_taille_police': 8, 'case_separateur_image': u'Ligne_bijou.png', 'pied_bord_alpha': 0,
          'page_fond_image': u'Badgeage/Theme_ocean.jpg', 'pied_texte_couleur': wx.Colour(255, 255, 255, 255), 'entete_fond_couleur': wx.Colour(228, 190, 142, 255),
@@ -148,7 +148,7 @@ LISTE_MODELES = [
 
 
 VALEURS_DEFAUT = {
-    # Données
+    # DonnÃ©es
     #"jours_semaine" : [0, 1, 2, 3, 4],
     #"titre_texte" : u"",
     #"pied_texte": u"Menus susceptibles de modifications",
@@ -176,23 +176,23 @@ VALEURS_DEFAUT = {
     "entete_texte_couleur": wx.WHITE,
     "entete_texte_alpha": 1*100,
     "entete_hauteur": 25,
-    "entete_nom_police": "Helvetica-Bold", # Pas intégré dans le propertyGrid !
+    "entete_nom_police": "Helvetica-Bold", # Pas intÃ©grÃ© dans le propertyGrid !
     "entete_taille_police": 15,
     "entete_radius": 5,
     "entete_mix_couleurs": False,
 
     # Case
-    "case_hauteur": 0, # Pas intégré dans le propertyGrid !
+    "case_hauteur": 0, # Pas intÃ©grÃ© dans le propertyGrid !
     "case_radius": 5,
     "case_rotation_aleatoire": False,
     "case_bord_couleur": wx.WHITE,
     "case_bord_alpha": int(0.6*100),
-    "case_bord_alpha_vide": int(0.2*100), # Pas intégré dans le propertyGrid !
+    "case_bord_alpha_vide": int(0.2*100), # Pas intÃ©grÃ© dans le propertyGrid !
     "case_fond_couleur": wx.WHITE,
     "case_fond_alpha": int(0.6*100),
-    "case_fond_alpha_vide": int(0.2*100), # Pas intégré dans le propertyGrid !
+    "case_fond_alpha_vide": int(0.2*100), # Pas intÃ©grÃ© dans le propertyGrid !
     "case_repartition_verticale": True,
-    "case_nom_police": "Helvetica", # Pas intégré dans le propertyGrid !
+    "case_nom_police": "Helvetica", # Pas intÃ©grÃ© dans le propertyGrid !
     "case_taille_police": 10,
     "case_texte_couleur": wx.BLACK,
     "case_marge_haut": 15,
@@ -206,7 +206,7 @@ VALEURS_DEFAUT = {
     "case_titre_fond_couleur": wx.Colour(254, 178, 0),
     "case_titre_texte_couleur": wx.WHITE,
     "case_titre_mix_couleurs" : False,
-    "case_titre_nom_police": "Helvetica-Bold", # Pas intégré dans le propertyGrid !
+    "case_titre_nom_police": "Helvetica-Bold", # Pas intÃ©grÃ© dans le propertyGrid !
     "case_titre_taille_police": 8,
 
     # Macaron
@@ -219,7 +219,7 @@ VALEURS_DEFAUT = {
     "case_macaron_bord_alpha": 1*100,
     "case_macaron_fond_couleur": wx.Colour(254, 178, 0),
     "case_macaron_fond_alpha": 1*100,
-    "case_macaron_nom_police": "Helvetica-Bold", # Pas intégré dans le propertyGrid !
+    "case_macaron_nom_police": "Helvetica-Bold", # Pas intÃ©grÃ© dans le propertyGrid !
     "case_macaron_taille_police": 13,
     "case_macaron_texte_couleur": wx.WHITE,
     "case_macaron_mix_couleurs" : False,
@@ -229,11 +229,11 @@ VALEURS_DEFAUT = {
     "titre_hauteur": 50,
     "titre_bord_couleur": wx.Colour(254, 178, 0),
     "titre_fond_couleur": wx.Colour(254, 178, 0),
-    "titre_nom_police": "Helvetica-Bold", # Pas intégré dans le propertyGrid !
+    "titre_nom_police": "Helvetica-Bold", # Pas intÃ©grÃ© dans le propertyGrid !
     "titre_taille_police": 25,
     "titre_texte_couleur": wx.WHITE,
 
-    # Légende
+    # LÃ©gende
     "legende_afficher": True,
     "legende_type": "numero",
     "legende_hauteur": 30,
@@ -242,7 +242,7 @@ VALEURS_DEFAUT = {
     "legende_bord_alpha": int(0.2 * 100),
     "legende_fond_couleur": wx.WHITE,
     "legende_fond_alpha": 30,
-    "legende_nom_police": "Helvetica",  # Pas intégré dans le propertyGrid !
+    "legende_nom_police": "Helvetica",  # Pas intÃ©grÃ© dans le propertyGrid !
     "legende_taille_police": 8,
     "legende_texte_couleur": wx.BLACK,
 
@@ -254,7 +254,7 @@ VALEURS_DEFAUT = {
     "pied_bord_alpha": int(0.2*100),
     "pied_fond_couleur": wx.WHITE,
     "pied_fond_alpha": int(0.05*100),
-    "pied_nom_police": "Helvetica", # Pas intégré dans le propertyGrid !
+    "pied_nom_police": "Helvetica", # Pas intÃ©grÃ© dans le propertyGrid !
     "pied_taille_police": 10,
     "pied_texte_couleur": wx.BLACK,
 
@@ -269,18 +269,18 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
     
     def Remplissage(self):
-        # Rubrique Données
-        self.Append(wxpg.PropertyCategory(_(u"Données")))
+        # Rubrique DonnÃ©es
+        self.Append(wxpg.PropertyCategory(_(u"DonnÃ©es")))
 
         # Jours de la semaine
         nom = "jours_semaine"
         liste_jours = [(0, _(u"Lundi")), (1, _(u"Mardi")), (2, _(u"Mercredi")), (3, _(u"Jeudi")), (4, _(u"Vendredi")), (5, _(u"Samedi")), (6, _(u"Dimanche"))]
         propriete = CTRL_Propertygrid.Propriete_multichoix(label=_(u"Jours de la semaine"), name=nom, liste_choix=liste_jours, liste_selections=[0, 1, 2, 3, 4])
-        propriete.SetHelpString(_(u"Sélectionnez les jours de la semaine à inclure. Cliquez sur le bouton à droite du champ de saisie pour accéder à la fenêtre de sélection."))
+        propriete.SetHelpString(_(u"SÃ©lectionnez les jours de la semaine Ã  inclure. Cliquez sur le bouton Ã  droite du champ de saisie pour accÃ©der Ã  la fenÃªtre de sÃ©lection."))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
-        # Choix des catégories
+        # Choix des catÃ©gories
         DB = GestionDB.DB()
         req = """SELECT IDcategorie, nom
         FROM menus_categories 
@@ -293,8 +293,8 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
             liste_choix.append((IDcategorie, nom))
 
         nom = "categories_menus"
-        propriete = CTRL_Propertygrid.Propriete_multichoix(label=_(u"Catégories à afficher"), name=nom, liste_choix=liste_choix, liste_selections=[0,])
-        propriete.SetHelpString(_(u"Sélectionnez les catégories de menus à afficher."))
+        propriete = CTRL_Propertygrid.Propriete_multichoix(label=_(u"CatÃ©gories Ã  afficher"), name=nom, liste_choix=liste_choix, liste_selections=[0,])
+        propriete.SetHelpString(_(u"SÃ©lectionnez les catÃ©gories de menus Ã  afficher."))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -317,7 +317,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         nom = "type"
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Type d'affichage"), name=nom, liste_choix=[("mensuel", _(u"Mensuel")), ("hebdomadaire", _(u"Hebdomadaire")), ("quotidien", _(u"Journalier"))], valeur=VALEURS_DEFAUT[nom])
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"Sélectionnez le type d'affichage de la page"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez le type d'affichage de la page"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -325,7 +325,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         nom = "page_format"
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Orientation de la page"), name=nom, liste_choix=[("portrait", _(u"Portrait")), ("paysage", _(u"Paysage"))], valeur=VALEURS_DEFAUT[nom])
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"Sélectionnez l'orientation de la page"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez l'orientation de la page"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -339,18 +339,18 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
                         ("Menus/Ballons.jpg", _(u"Ballons")),
                         ("Interface/Bleu/Fond.jpg", _(u"Fond marin")),
                         ("Menus/Tableau_craie.jpg", _(u"Tableau de craie")),
-                        ("Interface/Noir/Fond.jpg", _(u"Noir métallique")),
+                        ("Interface/Noir/Fond.jpg", _(u"Noir mÃ©tallique")),
                         ("Badgeage/Theme_vert.jpg", _(u"Vert pomme")),
-                        ("Badgeage/Theme_sommets.jpg", _(u"Sommets enneigés")),
-                        ("Badgeage/Theme_ocean.jpg", _(u"Plage d'été")),
-                        ("Badgeage/Theme_noel.jpg", _(u"Cadeau de Noël")),
+                        ("Badgeage/Theme_sommets.jpg", _(u"Sommets enneigÃ©s")),
+                        ("Badgeage/Theme_ocean.jpg", _(u"Plage d'Ã©tÃ©")),
+                        ("Badgeage/Theme_noel.jpg", _(u"Cadeau de NoÃ«l")),
                         ("Badgeage/Theme_hiver.jpg", _(u"Hiver blanc")),
                         ("Badgeage/Theme_bleu.jpg", _(u"Bleu sombre")),
                         ("Badgeage/Theme_defaut.png", _(u"Marron chic")),
                         ]
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Image de fond"), name=nom, liste_choix=liste_images, valeur=VALEURS_DEFAUT[nom])
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"Sélectionnez une image de fond"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez une image de fond"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -365,7 +365,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         ]
         for nom, label in temp:
             propriete = wxpg.IntProperty(label=label, name=nom, value=VALEURS_DEFAUT[nom])
-            propriete.SetHelpString(_(u"Saisissez une valeur numérique"))
+            propriete.SetHelpString(_(u"Saisissez une valeur numÃ©rique"))
             propriete.SetAttribute("obligatoire", True)
             self.Append(propriete)
             self.SetPropertyEditor(nom, "SpinCtrl")
@@ -391,7 +391,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Hauteur
         nom = "titre_hauteur"
         propriete = wxpg.IntProperty(label=_(u"Hauteur"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez une valeur numérique"))
+        propriete.SetHelpString(_(u"Saisissez une valeur numÃ©rique"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor(nom, "SpinCtrl")
@@ -405,14 +405,14 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
             # Couleur
             nom = "%s_couleur" % code
             propriete = wxpg.ColourProperty(label=_(u"Couleur du %s") % label, name=nom, value=VALEURS_DEFAUT[nom])
-            propriete.SetHelpString(_(u"Sélectionnez une couleur"))
+            propriete.SetHelpString(_(u"SÃ©lectionnez une couleur"))
             propriete.SetAttribute("obligatoire", True)
             self.Append(propriete)
 
         # Couleur de texte
         nom = "titre_texte_couleur"
         propriete = wxpg.ColourProperty(label=_(u"Couleur du texte"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Sélectionnez une couleur"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez une couleur"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -426,12 +426,12 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
 
         # Rubrique Entete
-        self.Append(wxpg.PropertyCategory(_(u"Entêtes")))
+        self.Append(wxpg.PropertyCategory(_(u"EntÃªtes")))
 
-        # Afficher entêtes
+        # Afficher entÃªtes
         nom = "entete_afficher"
-        propriete = wxpg.BoolProperty(label=_(u"Afficher les entêtes des dates"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Les entêtes affichent les dates"))
+        propriete = wxpg.BoolProperty(label=_(u"Afficher les entÃªtes des dates"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Les entÃªtes affichent les dates"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
@@ -446,21 +446,21 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
             # Couleur
             nom = "%s_couleur" % code
             propriete = wxpg.ColourProperty(label=_(u"Couleur du %s") % label, name=nom, value=VALEURS_DEFAUT[nom])
-            propriete.SetHelpString(_(u"Sélectionnez une couleur"))
+            propriete.SetHelpString(_(u"SÃ©lectionnez une couleur"))
             propriete.SetAttribute("obligatoire", True)
             self.Append(propriete)
 
             # Transparence
             nom = "%s_alpha" % code
-            propriete = wxpg.IntProperty(label=_(u"Opacité du %s (en %%)") % label, name=nom, value=VALEURS_DEFAUT[nom])
-            propriete.SetHelpString(_(u"Saisissez une valeur numérique"))
+            propriete = wxpg.IntProperty(label=_(u"OpacitÃ© du %s (en %%)") % label, name=nom, value=VALEURS_DEFAUT[nom])
+            propriete.SetHelpString(_(u"Saisissez une valeur numÃ©rique"))
             propriete.SetAttribute("obligatoire", True)
             self.Append(propriete)
             self.SetPropertyEditor(nom, "SpinCtrl")
             propriete.SetAttribute("Min", 0)
             propriete.SetAttribute("Max", 100)
 
-        # Afficher entêtes
+        # Afficher entÃªtes
         nom = "entete_mix_couleurs"
         propriete = wxpg.BoolProperty(label=_(u"Fond mix de couleurs"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Afficher un fond avec un mix de couleurs"))
@@ -470,7 +470,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Hauteur de l'entete
         nom = "entete_hauteur"
         propriete = wxpg.IntProperty(label=_(u"Hauteur"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez une valeur numérique"))
+        propriete.SetHelpString(_(u"Saisissez une valeur numÃ©rique"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor(nom, "SpinCtrl")
@@ -478,7 +478,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Valeur de l'arrondi
         nom = "entete_radius"
         propriete = wxpg.IntProperty(label=_(u"Valeur de l'arrondi"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez une valeur numérique"))
+        propriete.SetHelpString(_(u"Saisissez une valeur numÃ©rique"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor(nom, "SpinCtrl")
@@ -505,7 +505,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Hauteur
         nom = "case_titre_hauteur"
         propriete = wxpg.IntProperty(label=_(u"Hauteur"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez une valeur numérique"))
+        propriete.SetHelpString(_(u"Saisissez une valeur numÃ©rique"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor(nom, "SpinCtrl")
@@ -513,18 +513,18 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Couleur de fond
         nom = "case_titre_fond_couleur"
         propriete = wxpg.ColourProperty(label=_(u"Couleur du fond"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Sélectionnez une couleur"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez une couleur"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Couleur de texte
         nom = "case_titre_texte_couleur"
         propriete = wxpg.ColourProperty(label=_(u"Couleur du texte"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Sélectionnez une couleur"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez une couleur"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
-        # Afficher entêtes
+        # Afficher entÃªtes
         nom = "case_titre_mix_couleurs"
         propriete = wxpg.BoolProperty(label=_(u"Fond mix de couleurs"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Afficher un fond avec un mix de couleurs"))
@@ -552,16 +552,16 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
         # Type de macaron
         nom = "case_macaron_type"
-        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Type de macaron"), name=nom, liste_choix=[("carre", _(u"Carré")), ("rond", _(u"Rond"))], valeur=VALEURS_DEFAUT[nom])
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Type de macaron"), name=nom, liste_choix=[("carre", _(u"CarrÃ©")), ("rond", _(u"Rond"))], valeur=VALEURS_DEFAUT[nom])
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"Sélectionnez le type de macaron"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez le type de macaron"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Valeur de l'arrondi
         nom = "case_macaron_radius"
         propriete = wxpg.IntProperty(label=_(u"Valeur de l'arrondi"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez une valeur numérique"))
+        propriete.SetHelpString(_(u"Saisissez une valeur numÃ©rique"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor(nom, "SpinCtrl")
@@ -569,7 +569,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Largeur
         nom = "case_macaron_largeur"
         propriete = wxpg.IntProperty(label=_(u"Largeur"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez une valeur numérique"))
+        propriete.SetHelpString(_(u"Saisissez une valeur numÃ©rique"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor(nom, "SpinCtrl")
@@ -577,7 +577,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Hauteur
         nom = "case_macaron_hauteur"
         propriete = wxpg.IntProperty(label=_(u"Hauteur"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez une valeur numérique"))
+        propriete.SetHelpString(_(u"Saisissez une valeur numÃ©rique"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor(nom, "SpinCtrl")
@@ -592,21 +592,21 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
             # Couleur
             nom = "%s_couleur" % code
             propriete = wxpg.ColourProperty(label=_(u"Couleur du %s") % label, name=nom, value=VALEURS_DEFAUT[nom])
-            propriete.SetHelpString(_(u"Sélectionnez une couleur"))
+            propriete.SetHelpString(_(u"SÃ©lectionnez une couleur"))
             propriete.SetAttribute("obligatoire", True)
             self.Append(propriete)
 
             # Transparence
             nom = "%s_alpha" % code
-            propriete = wxpg.IntProperty(label=_(u"Opacité du %s (en %%)") % label, name=nom, value=VALEURS_DEFAUT[nom])
-            propriete.SetHelpString(_(u"Saisissez une valeur numérique"))
+            propriete = wxpg.IntProperty(label=_(u"OpacitÃ© du %s (en %%)") % label, name=nom, value=VALEURS_DEFAUT[nom])
+            propriete.SetHelpString(_(u"Saisissez une valeur numÃ©rique"))
             propriete.SetAttribute("obligatoire", True)
             self.Append(propriete)
             self.SetPropertyEditor(nom, "SpinCtrl")
             propriete.SetAttribute("Min", 0)
             propriete.SetAttribute("Max", 100)
 
-        # Afficher entêtes
+        # Afficher entÃªtes
         nom = "case_macaron_mix_couleurs"
         propriete = wxpg.BoolProperty(label=_(u"Fond mix de couleurs"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Afficher un fond avec un mix de couleurs"))
@@ -616,7 +616,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Couleur de texte
         nom = "case_macaron_texte_couleur"
         propriete = wxpg.ColourProperty(label=_(u"Couleur du texte"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Sélectionnez une couleur"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez une couleur"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -636,7 +636,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Hauteur de la case
         nom = "case_hauteur"
         propriete = wxpg.IntProperty(label=_(u"Hauteur (0=automatique)"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez une valeur numérique en pixels"))
+        propriete.SetHelpString(_(u"Saisissez une valeur numÃ©rique en pixels"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor(nom, "SpinCtrl")
@@ -644,15 +644,15 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Valeur de l'arrondi
         nom = "case_radius"
         propriete = wxpg.IntProperty(label=_(u"Valeur de l'arrondi"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez une valeur numérique"))
+        propriete.SetHelpString(_(u"Saisissez une valeur numÃ©rique"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor(nom, "SpinCtrl")
 
         # Rotation
         nom = "case_rotation_aleatoire"
-        propriete = wxpg.BoolProperty(label=_(u"Rotation aléatoire"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Chaque case subit une légère rotation aléatoire"))
+        propriete = wxpg.BoolProperty(label=_(u"Rotation alÃ©atoire"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Chaque case subit une lÃ©gÃ¨re rotation alÃ©atoire"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
@@ -666,24 +666,24 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
             # Couleur
             nom = "%s_couleur" % code
             propriete = wxpg.ColourProperty(label=_(u"Couleur du %s") % label, name=nom, value=VALEURS_DEFAUT[nom])
-            propriete.SetHelpString(_(u"Sélectionnez une couleur"))
+            propriete.SetHelpString(_(u"SÃ©lectionnez une couleur"))
             propriete.SetAttribute("obligatoire", True)
             self.Append(propriete)
 
             # Transparence
             nom = "%s_alpha" % code
-            propriete = wxpg.IntProperty(label=_(u"Opacité du %s (en %%)") % label, name=nom, value=VALEURS_DEFAUT[nom])
-            propriete.SetHelpString(_(u"Saisissez une valeur numérique"))
+            propriete = wxpg.IntProperty(label=_(u"OpacitÃ© du %s (en %%)") % label, name=nom, value=VALEURS_DEFAUT[nom])
+            propriete.SetHelpString(_(u"Saisissez une valeur numÃ©rique"))
             propriete.SetAttribute("obligatoire", True)
             self.Append(propriete)
             self.SetPropertyEditor(nom, "SpinCtrl")
             propriete.SetAttribute("Min", 0)
             propriete.SetAttribute("Max", 100)
 
-        # Répartition verticale des texte
+        # RÃ©partition verticale des texte
         nom = "case_repartition_verticale"
-        propriete = wxpg.BoolProperty(label=_(u"Répartition verticale des textes"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Les lignes de texte sont répartis verticalement"))
+        propriete = wxpg.BoolProperty(label=_(u"RÃ©partition verticale des textes"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Les lignes de texte sont rÃ©partis verticalement"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
@@ -698,14 +698,14 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Couleur de texte
         nom = "case_texte_couleur"
         propriete = wxpg.ColourProperty(label=_(u"Couleur du texte"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Sélectionnez une couleur"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez une couleur"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Marge haut
         nom = "case_marge_haut"
-        propriete = wxpg.IntProperty(label=_(u"Marge supérieure"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez une valeur numérique"))
+        propriete = wxpg.IntProperty(label=_(u"Marge supÃ©rieure"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez une valeur numÃ©rique"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor(nom, "SpinCtrl")
@@ -713,57 +713,57 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Espace verticale
         nom = "case_espace_vertical"
         propriete = wxpg.IntProperty(label=_(u"Espace vertical"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez une valeur numérique"))
+        propriete.SetHelpString(_(u"Saisissez une valeur numÃ©rique"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor(nom, "SpinCtrl")
 
-        # Type de séparateur de ligne
+        # Type de sÃ©parateur de ligne
         nom = "case_separateur_type"
         liste_choix = [("aucun", _(u"Aucun")), ("image", _(u"Image")), ("ligne", _(u"Ligne"))]
-        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Séparateur de ligne"), name=nom, liste_choix=liste_choix, valeur=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Sélectionnez un type de séparateur de ligne"))
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"SÃ©parateur de ligne"), name=nom, liste_choix=liste_choix, valeur=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"SÃ©lectionnez un type de sÃ©parateur de ligne"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
-        # Image du séparateur
+        # Image du sÃ©parateur
         nom = "case_separateur_image"
         liste_choix = [("aucune", _(u"Aucune")),
-                       ("Ligne_retro.png", _(u"Rétro")),
+                       ("Ligne_retro.png", _(u"RÃ©tro")),
                        ("Ligne_bijou.png", _(u"Bijou")),
                        ("Ligne_branche.png", _(u"Branche")),
                        ("Ligne_fleurs.png", _(u"Fleurs")),
                        ("Ligne_moderne.png", _(u"Moderne")),
                        ("Ligne_ronds.png", _(u"Ronds")),
                        ]
-        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Image du séparateur"), name=nom, liste_choix=liste_choix, valeur=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Sélectionnez une image pour le séparateur"))
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Image du sÃ©parateur"), name=nom, liste_choix=liste_choix, valeur=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"SÃ©lectionnez une image pour le sÃ©parateur"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
 
-        # Rubrique Légende
-        self.Append(wxpg.PropertyCategory(_(u"Légende")))
+        # Rubrique LÃ©gende
+        self.Append(wxpg.PropertyCategory(_(u"LÃ©gende")))
 
-        # Afficher légende
+        # Afficher lÃ©gende
         nom = "legende_afficher"
-        propriete = wxpg.BoolProperty(label=_(u"Afficher la légende"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Afficher la légende"))
+        propriete = wxpg.BoolProperty(label=_(u"Afficher la lÃ©gende"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Afficher la lÃ©gende"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Type de légende
+        # Type de lÃ©gende
         nom = "legende_type"
-        liste_choix = [("numero", _(u"Numéro coloré")), ("carre", _(u"Carré de couleur")),]
-        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Type de légende"), name=nom, liste_choix=liste_choix, valeur=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Sélectionnez un type de légende"))
+        liste_choix = [("numero", _(u"NumÃ©ro colorÃ©")), ("carre", _(u"CarrÃ© de couleur")),]
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Type de lÃ©gende"), name=nom, liste_choix=liste_choix, valeur=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"SÃ©lectionnez un type de lÃ©gende"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Hauteur
         nom = "legende_hauteur"
         propriete = wxpg.IntProperty(label=_(u"Hauteur"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez une valeur numérique"))
+        propriete.SetHelpString(_(u"Saisissez une valeur numÃ©rique"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor(nom, "SpinCtrl")
@@ -778,14 +778,14 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
             # Couleur
             nom = "%s_couleur" % code
             propriete = wxpg.ColourProperty(label=_(u"Couleur du %s") % label, name=nom, value=VALEURS_DEFAUT[nom])
-            propriete.SetHelpString(_(u"Sélectionnez une couleur"))
+            propriete.SetHelpString(_(u"SÃ©lectionnez une couleur"))
             propriete.SetAttribute("obligatoire", True)
             self.Append(propriete)
 
             # Transparence
             nom = "%s_alpha" % code
-            propriete = wxpg.IntProperty(label=_(u"Opacité du %s (en %%)") % label, name=nom, value=VALEURS_DEFAUT[nom])
-            propriete.SetHelpString(_(u"Saisissez une valeur numérique"))
+            propriete = wxpg.IntProperty(label=_(u"OpacitÃ© du %s (en %%)") % label, name=nom, value=VALEURS_DEFAUT[nom])
+            propriete.SetHelpString(_(u"Saisissez une valeur numÃ©rique"))
             propriete.SetAttribute("obligatoire", True)
             self.Append(propriete)
             self.SetPropertyEditor(nom, "SpinCtrl")
@@ -795,7 +795,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Valeur de l'arrondi
         nom = "legende_radius"
         propriete = wxpg.IntProperty(label=_(u"Valeur de l'arrondi"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez une valeur numérique"))
+        propriete.SetHelpString(_(u"Saisissez une valeur numÃ©rique"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor(nom, "SpinCtrl")
@@ -803,7 +803,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Couleur de texte
         nom = "legende_texte_couleur"
         propriete = wxpg.ColourProperty(label=_(u"Couleur du texte"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Sélectionnez une couleur"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez une couleur"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -829,7 +829,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Hauteur
         nom = "pied_hauteur"
         propriete = wxpg.IntProperty(label=_(u"Hauteur"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez une valeur numérique"))
+        propriete.SetHelpString(_(u"Saisissez une valeur numÃ©rique"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor(nom, "SpinCtrl")
@@ -844,14 +844,14 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
             # Couleur
             nom = "%s_couleur" % code
             propriete = wxpg.ColourProperty(label=_(u"Couleur du %s") % label, name=nom, value=VALEURS_DEFAUT[nom])
-            propriete.SetHelpString(_(u"Sélectionnez une couleur"))
+            propriete.SetHelpString(_(u"SÃ©lectionnez une couleur"))
             propriete.SetAttribute("obligatoire", True)
             self.Append(propriete)
 
             # Transparence
             nom = "%s_alpha" % code
-            propriete = wxpg.IntProperty(label=_(u"Opacité du %s (en %%)") % label, name=nom, value=VALEURS_DEFAUT[nom])
-            propriete.SetHelpString(_(u"Saisissez une valeur numérique"))
+            propriete = wxpg.IntProperty(label=_(u"OpacitÃ© du %s (en %%)") % label, name=nom, value=VALEURS_DEFAUT[nom])
+            propriete.SetHelpString(_(u"Saisissez une valeur numÃ©rique"))
             propriete.SetAttribute("obligatoire", True)
             self.Append(propriete)
             self.SetPropertyEditor(nom, "SpinCtrl")
@@ -861,7 +861,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Valeur de l'arrondi
         nom = "pied_radius"
         propriete = wxpg.IntProperty(label=_(u"Valeur de l'arrondi"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez une valeur numérique"))
+        propriete.SetHelpString(_(u"Saisissez une valeur numÃ©rique"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor(nom, "SpinCtrl")
@@ -869,7 +869,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Couleur de texte
         nom = "pied_texte_couleur"
         propriete = wxpg.ColourProperty(label=_(u"Couleur du texte"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Sélectionnez une couleur"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez une couleur"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -884,31 +884,31 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
 
     def Validation(self):
-        """ Validation des données saisies """
+        """ Validation des donnÃ©es saisies """
         for nom, valeur in self.GetPropertyValues().items() :
             propriete = self.GetPropertyByName(nom)
             if self.GetPropertyAttribute(propriete, "obligatoire") == True :
                 if valeur == "" or valeur == None :
-                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner le paramètre '%s' !") % nom, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner le paramÃ¨tre '%s' !") % nom, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
         return True
         
     def Importation(self):
-        """ Importation des valeurs dans le contrôle """
-        # Récupération des noms et valeurs par défaut du contrôle
+        """ Importation des valeurs dans le contrÃ´le """
+        # RÃ©cupÃ©ration des noms et valeurs par dÃ©faut du contrÃ´le
         dictValeurs = copy.deepcopy(self.GetPropertyValues())
-        # Recherche les paramètres mémorisés
+        # Recherche les paramÃ¨tres mÃ©morisÃ©s
         dictParametres = UTILS_Parametres.ParametresCategorie(mode="get", categorie=self.categorie, dictParametres=dictValeurs)
-        # Envoie les paramètres dans le contrôle
+        # Envoie les paramÃ¨tres dans le contrÃ´le
         for nom, valeur in dictParametres.items() :
             propriete = self.GetPropertyByName(nom)
             ancienneValeur = propriete.GetValue() 
             propriete.SetValue(valeur)
     
     def Sauvegarde(self, forcer=False):
-        """ Mémorisation des valeurs du contrôle """
+        """ MÃ©morisation des valeurs du contrÃ´le """
         dictValeurs = copy.deepcopy(self.GetPropertyValues())
         UTILS_Parametres.ParametresCategorie(mode="set", categorie=self.categorie, dictParametres=dictValeurs)
         
@@ -931,7 +931,7 @@ class Track_modele(CTRL_Vignettes_documents.Track):
         self.donnees = donnees
 
     def GetInfobulle(self):
-        texte = _(u"%s\n%s\n\nDouble-cliquez pour appliquer ce modèle") % (self.label.upper(), self.description)
+        texte = _(u"%s\n%s\n\nDouble-cliquez pour appliquer ce modÃ¨le") % (self.label.upper(), self.description)
         return texte
 
 
@@ -970,7 +970,7 @@ class CTRL_Modeles(CTRL_Vignettes_documents.CTRL):
             imgPIL, poidsImg = self.ChargeImage(cheminFichier)
             blob = self.GetBufferImage(imgPIL)
 
-            # Conserve l'image en mémoire
+            # Conserve l'image en mÃ©moire
             track = Track_modele(self, buffer=blob, type=nomFichier[-3:], label=dictModele["label"],
                                  description=dictModele["description"], donnees=dictModele["donnees"])
             self.listePages.append(track)
@@ -986,17 +986,17 @@ class CTRL(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
 
-        # Période
-        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"Période à afficher"))
+        # PÃ©riode
+        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"PÃ©riode Ã  afficher"))
         self.label_date_debut = wx.StaticText(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_date_fin = wx.StaticText(self, -1, _(u"Au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
 
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début de période")))
-        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de période")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de dÃ©but de pÃ©riode")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de pÃ©riode")))
 
-        # Paramètres généraux
+        # ParamÃ¨tres gÃ©nÃ©raux
         self.box_options_staticbox = wx.StaticBox(self, -1, _(u"Options d'impression"))
         self.ctrl_parametres = CTRL_Parametres(self, categorie="impression_menu")
         self.ctrl_parametres.Importation()
@@ -1004,8 +1004,8 @@ class CTRL(wx.Panel):
         self.bouton_sauvegarde = CTRL_Propertygrid.Bouton_sauvegarde(self, self.ctrl_parametres)
         self.ctrl_parametres.SetMinSize((50, 50)) 
 
-        # Modèles
-        self.box_modeles_staticbox = wx.StaticBox(self, -1, _(u"Modèles prédéfinis"))
+        # ModÃ¨les
+        self.box_modeles_staticbox = wx.StaticBox(self, -1, _(u"ModÃ¨les prÃ©dÃ©finis"))
         self.ctrl_modeles = CTRL_Modeles(self)
 
         self.__do_layout()
@@ -1019,7 +1019,7 @@ class CTRL(wx.Panel):
 
         grid_sizer_gauche = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
 
-        # Période de référence
+        # PÃ©riode de rÃ©fÃ©rence
         staticbox_periode = wx.StaticBoxSizer(self.staticbox_periode_staticbox, wx.VERTICAL)
         grid_sizer_periode = wx.FlexGridSizer(rows=2, cols=5, vgap=5, hgap=5)
         grid_sizer_periode.Add(self.label_date_debut, 0, wx.ALIGN_CENTER_VERTICAL, 0)
@@ -1029,7 +1029,7 @@ class CTRL(wx.Panel):
         staticbox_periode.Add(grid_sizer_periode, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_gauche.Add(staticbox_periode, 1, wx.RIGHT|wx.EXPAND, 0)
 
-        # Paramètres généraux
+        # ParamÃ¨tres gÃ©nÃ©raux
         box_options = wx.StaticBoxSizer(self.box_options_staticbox, wx.VERTICAL)
         grid_sizer_parametres = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_parametres.Add(self.ctrl_parametres, 1, wx.EXPAND, 0)
@@ -1048,7 +1048,7 @@ class CTRL(wx.Panel):
         grid_sizer_gauche.AddGrowableCol(0)
         grid_sizer_base.Add(grid_sizer_gauche, 1, wx.EXPAND, 0)
 
-        # Modèles
+        # ModÃ¨les
         box_modeles = wx.StaticBoxSizer(self.box_modeles_staticbox, wx.VERTICAL)
         box_modeles.Add(self.ctrl_modeles, 1, wx.EXPAND|wx.ALL, 10)
         grid_sizer_base.Add(box_modeles, 1, wx.EXPAND, 0)
@@ -1065,16 +1065,16 @@ class CTRL(wx.Panel):
     def GetOptions(self):
         dictOptions = copy.copy(VALEURS_DEFAUT)
         
-        # Récupération des paramètres
+        # RÃ©cupÃ©ration des paramÃ¨tres
         if self.ctrl_parametres.Validation() == False :
             return False
         for nom, valeur in self.ctrl_parametres.GetValeurs().items()  :
             dictOptions[nom] = valeur
 
-        # Récupération de la période
+        # RÃ©cupÃ©ration de la pÃ©riode
         date_debut = self.ctrl_date_debut.GetDate()
         if self.ctrl_date_debut.FonctionValiderDate() == False or date_debut == None:
-            dlg = wx.MessageDialog(self, _(u"La date de début de période ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de dÃ©but de pÃ©riode ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
@@ -1083,7 +1083,7 @@ class CTRL(wx.Panel):
 
         date_fin = self.ctrl_date_fin.GetDate()
         if self.ctrl_date_fin.FonctionValiderDate() == False or date_fin == None:
-            dlg = wx.MessageDialog(self, _(u"La date de fin de période ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de fin de pÃ©riode ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
@@ -1110,16 +1110,16 @@ class Dialog(wx.Dialog):
 
         # Bandeau
         titre = _(u"Options d'impression")
-        intro = _(u"Vous pouvez ici modifier les paramètres d'impression du document. Double-cliquez sur un modèle prédéfini, ajustez éventuellement les paramètres souhaités puis cliquez sur le bouton 'Mémoriser les paramètres' (Image disquette) pour mémoriser votre modèle pour les impressions suivantes.")
+        intro = _(u"Vous pouvez ici modifier les paramÃ¨tres d'impression du document. Double-cliquez sur un modÃ¨le prÃ©dÃ©fini, ajustez Ã©ventuellement les paramÃ¨tres souhaitÃ©s puis cliquez sur le bouton 'MÃ©moriser les paramÃ¨tres' (Image disquette) pour mÃ©moriser votre modÃ¨le pour les impressions suivantes.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Imprimante.png")
 
-        # Paramètres
+        # ParamÃ¨tres
         self.ctrl_parametres = CTRL(self, periode=periode)
 
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"AperÃ§u"), cheminImage="Images/32x32/Apercu.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
@@ -1188,12 +1188,12 @@ class Dialog(wx.Dialog):
         return self.ctrl_parametres.GetOptions() 
 
     def OnBoutonOk(self, event):
-        # Récupération des options
+        # RÃ©cupÃ©ration des options
         dictDonnees = self.ctrl_parametres.GetOptions()
         if dictDonnees == False :
             return
 
-        # Complète le dictOptions
+        # ComplÃ¨te le dictOptions
         dictDonnees["IDrestaurateur"] = self.IDrestaurateur
 
         # Affiche le PDF

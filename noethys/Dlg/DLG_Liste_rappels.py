@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -24,7 +24,7 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Vous pouvez ici consulter la liste complète des lettres de rappel créées dans le logiciel.")
+        intro = _(u"Vous pouvez ici consulter la liste complÃ¨te des lettres de rappel crÃ©Ã©es dans le logiciel.")
         titre = _(u"Liste des lettres de rappel")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Facture.png")
@@ -39,7 +39,7 @@ class Dialog(wx.Dialog):
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.ctrl_rappels.MAJ() 
 
     def __set_properties(self):

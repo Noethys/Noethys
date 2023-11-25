@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -59,10 +59,10 @@ class Dialog(wx.Dialog):
             self.Importation()
 
     def __set_properties(self):
-        self.SetTitle(_(u"Saisie d'une catégorie"))
+        self.SetTitle(_(u"Saisie d'une catÃ©gorie"))
         self.ctrl_label.SetToolTip(wx.ToolTip(_(u"Saisissez ici un label")))
-        self.ctrl_couleur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner la couleur de cette catégorie")))
-        self.ctrl_visible.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher cette catégorie")))
+        self.ctrl_couleur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner la couleur de cette catÃ©gorie")))
+        self.ctrl_visible.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher cette catÃ©gorie")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
@@ -122,10 +122,10 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return
         
-        # Sauvegarde des données
+        # Sauvegarde des donnÃ©es
         DB = GestionDB.DB()
         if self.IDcategorie == None :
-            # Recherche de l'ordre de la catégorie
+            # Recherche de l'ordre de la catÃ©gorie
             req = """SELECT max(ordre)
             FROM questionnaire_categories;"""
             DB.ExecuterReq(req)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -28,7 +28,7 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = _(u"Cochez les factures à imprimer puis cliquez sur le bouton 'Aperçu' pour visualiser le ou les documents dans votre lecteur PDF.")
+        intro = _(u"Cochez les factures Ã  imprimer puis cliquez sur le bouton 'AperÃ§u' pour visualiser le ou les documents dans votre lecteur PDF.")
         titre = _(u"Impression de factures")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Imprimante.png")
@@ -42,8 +42,8 @@ class Dialog(wx.Dialog):
         
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_recap = CTRL_Bouton_image.CTRL(self, texte=_(u"Récapitulatif"), cheminImage="Images/32x32/Imprimante.png")
-        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
+        self.bouton_recap = CTRL_Bouton_image.CTRL(self, texte=_(u"RÃ©capitulatif"), cheminImage="Images/32x32/Imprimante.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"AperÃ§u"), cheminImage="Images/32x32/Apercu.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
@@ -55,13 +55,13 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonApercu, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
-        # Init Contrôles
+        # Init ContrÃ´les
         self.ctrl_liste_factures.MAJ() 
                 
 
     def __set_properties(self):
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_recap.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer un récapitulatif des factures cochées dans la liste")))
+        self.bouton_recap.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer un rÃ©capitulatif des factures cochÃ©es dans la liste")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher le PDF")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((850, 700))
@@ -104,7 +104,7 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
 
     def OnBoutonRecap(self, event): 
-        """ Aperçu PDF du récapitulatif des factures """
+        """ AperÃ§u PDF du rÃ©capitulatif des factures """
         tracks = self.ctrl_liste_factures.GetTracksCoches() 
         if len(tracks) == 0 : 
             dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins une facture dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
@@ -118,11 +118,11 @@ class Dialog(wx.Dialog):
         dlg.Destroy()
 
     def OnBoutonApercu(self, event): 
-        """ Aperçu PDF des factures """
-        # Validation des données saisies
+        """ AperÃ§u PDF des factures """
+        # Validation des donnÃ©es saisies
         tracks = self.ctrl_liste_factures.GetTracksCoches() 
         if len(tracks) == 0 : 
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune facture à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune facture Ã  imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -131,7 +131,7 @@ class Dialog(wx.Dialog):
         for track in tracks :
             # Avertissements
             if track.etat == "annulation" : 
-                dlg = wx.MessageDialog(self, _(u"La facture n°%s a été annulée.\n\nVous ne pouvez pas l'imprimer !") % track.numero, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La facture nÂ°%s a Ã©tÃ© annulÃ©e.\n\nVous ne pouvez pas l'imprimer !") % track.numero, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -139,7 +139,7 @@ class Dialog(wx.Dialog):
             # Ajout
             listeIDfacture.append(track.IDfacture) 
         
-        # Récupération des options
+        # RÃ©cupÃ©ration des options
         dictOptions = self.ctrl_options.GetOptions()
         if dictOptions == False :
             return False
@@ -147,7 +147,7 @@ class Dialog(wx.Dialog):
         # for nom, valeur in dictOptions.items() :
         #     print (nom, valeur)
             
-        # Impression des factures sélectionnées
+        # Impression des factures sÃ©lectionnÃ©es
         facturation = UTILS_Facturation.Facturation()
         facturation.Impression(listeFactures=listeIDfacture, afficherDoc=True, dictOptions=dictOptions, repertoire=dictOptions["repertoire_copie"])
         

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -23,7 +23,7 @@ from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Saisie_date
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 import copy
 import numpy as np
@@ -138,10 +138,10 @@ class Panel_Donnees(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl.ExportTexte, self.bouton_texte)
         
         # Properties
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression des données")))
-        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer les données")))
-        self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter au format Excel les données")))
-        self.bouton_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter au format texte les données")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperÃ§u avant impression des donnÃ©es")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer les donnÃ©es")))
+        self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter au format Excel les donnÃ©es")))
+        self.bouton_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter au format texte les donnÃ©es")))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(1, 2, 5, 5)
@@ -190,8 +190,8 @@ class Panel_Graphe(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.Options, self.bouton_options)
 
         # Properties
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir le visualiseur de graphe pour accéder aux fonctions d'export et d'impression")))
-        self.bouton_options.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux options du graphe")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir le visualiseur de graphe pour accÃ©der aux fonctions d'export et d'impression")))
+        self.bouton_options.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der aux options du graphe")))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(1, 2, 5, 5)
@@ -232,7 +232,7 @@ class Panel_Graphe(wx.Panel):
         dlg.Destroy()
     
     def Options(self, event):
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
         
         item = wx.MenuItem(menuPop, 10, _(u"Afficher les valeurs"), _(u"Afficher les valeurs"), wx.ITEM_CHECK)
@@ -257,7 +257,7 @@ class Panel_Graphe(wx.Panel):
             wx.CallAfter(self.SendSizeEvent)
             return
         
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         from Ol import OL_Suivi_budget
         analyse = OL_Suivi_budget.Analyse(self.dictBudget)
         listeCategories = analyse.GetValeurs() 
@@ -282,8 +282,8 @@ class Panel_Graphe(wx.Panel):
 ##        opacity = 0.4
 ##        
 ##        ax = self.figure.add_subplot(111)
-##        barres = ax.bar(listeIndex, listeRealise, width=bar_width, alpha=opacity, color="g", label=_(u"Réel"))
-##        barres = ax.bar(listeIndex + bar_width, listeBudgete, width=bar_width, alpha=opacity, color="b", label=_(u"Budgété"))
+##        barres = ax.bar(listeIndex, listeRealise, width=bar_width, alpha=opacity, color="g", label=_(u"RÃ©el"))
+##        barres = ax.bar(listeIndex + bar_width, listeBudgete, width=bar_width, alpha=opacity, color="b", label=_(u"BudgÃ©tÃ©"))
 ##
 ##        # Formatage des montants sur y
 ##        majorFormatter = FormatStrFormatter(SYMBOLE + u" %d")
@@ -296,7 +296,7 @@ class Panel_Graphe(wx.Panel):
 ##        labels = ax.get_xticklabels()
 ##        setp(labels, rotation=45) 
 ##        
-##        # Légende
+##        # LÃ©gende
 ##        props = matplotlib.font_manager.FontProperties(size=10)
 ##        leg = ax.legend(loc='best', shadow=False, fancybox=True, prop=props)
 ##        leg.get_frame().set_alpha(0.5)
@@ -311,8 +311,8 @@ class Panel_Graphe(wx.Panel):
         opacity = 0.4
         
         ax = self.figure.add_subplot(111)
-        barresRealise = ax.barh(listeIndex, listeRealise, height=bar_height, alpha=opacity, color="g", label=_(u"Réel"))
-        barresBudgete = ax.barh(listeIndex + bar_height, listeBudgete, height=bar_height, alpha=opacity, color="b", label=_(u"Budgété"))
+        barresRealise = ax.barh(listeIndex, listeRealise, height=bar_height, alpha=opacity, color="g", label=_(u"RÃ©el"))
+        barresBudgete = ax.barh(listeIndex + bar_height, listeBudgete, height=bar_height, alpha=opacity, color="b", label=_(u"BudgÃ©tÃ©"))
 
         # Formatage des montants sur x
         majorFormatter = FormatStrFormatter(u"%d " + SYMBOLE)
@@ -342,7 +342,7 @@ class Panel_Graphe(wx.Panel):
         margeGauche = 0.1 + largeurMax * 0.008
         self.figure.subplots_adjust(left=margeGauche, right=None, wspace=None, hspace=None)
 
-        # Légende
+        # LÃ©gende
         props = matplotlib.font_manager.FontProperties(size=10)
         leg = ax.legend(loc='best', shadow=False, fancybox=True, prop=props)
         leg.get_frame().set_alpha(0.5)
@@ -361,31 +361,31 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent 
 
-        intro = _(u"Sélectionnez un budget dans la liste déroulante pour afficher les données correspondantes.")
+        intro = _(u"SÃ©lectionnez un budget dans la liste dÃ©roulante pour afficher les donnÃ©es correspondantes.")
         titre = _(u"Suivi du budget")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Tresorerie.png")
 
-        # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Paramètres"))
+        # GÃ©nÃ©ralitÃ©s
+        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"ParamÃ¨tres"))
         self.label_budget = wx.StaticText(self, wx.ID_ANY, _(u"Budget :"))
         self.ctrl_budget = CTRL_Budget(self)
         self.bouton_budget = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
         
-        self.check_periode = wx.CheckBox(self, -1, _(u"Période personnalisée :"))
+        self.check_periode = wx.CheckBox(self, -1, _(u"PÃ©riode personnalisÃ©e :"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_au = wx.StaticText(self, wx.ID_ANY, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
         self.bouton_valider_periode = wx.Button(self, -1, _(u"Valider")) 
         
-        self.check_inclure = wx.CheckBox(self, -1, _(u"Inclure les catégories non budgétées"))
+        self.check_inclure = wx.CheckBox(self, -1, _(u"Inclure les catÃ©gories non budgÃ©tÃ©es"))
         
         # Situation
         self.box_situation_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Situation"))
         self.notebook = wx.Notebook(self, -1, style=wx.BK_BOTTOM)
         
         self.ctrl_donnees = Panel_Donnees(self.notebook)
-        self.notebook.AddPage(self.ctrl_donnees, _(u"Données"))
+        self.notebook.AddPage(self.ctrl_donnees, _(u"DonnÃ©es"))
 
         self.ctrl_graphe = Panel_Graphe(self.notebook)
         self.notebook.AddPage(self.ctrl_graphe, _(u"Graphique"))
@@ -421,10 +421,10 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.ctrl_budget.SetToolTip(wx.ToolTip(_(u"Sélectionnez une budget dans la liste")))
-        self.check_periode.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour saisir une autre date que celle définie dans le budget")))
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début de période")))
-        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de période")))
+        self.ctrl_budget.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une budget dans la liste")))
+        self.check_periode.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour saisir une autre date que celle dÃ©finie dans le budget")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de dÃ©but de pÃ©riode")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de pÃ©riode")))
         self.bouton_valider_periode.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider les dates saisies")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
@@ -434,7 +434,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(4, 1, 10, 10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
 
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         box_generalites = wx.StaticBoxSizer(self.box_generalites_staticbox, wx.VERTICAL)
         grid_sizer_generalites = wx.FlexGridSizer(3, 2, 10, 10)
                 
@@ -501,12 +501,12 @@ class Dialog(wx.Dialog):
         self.OnChoixBudget(None)
     
     def OnChoixBudget(self, event):
-        # Activation de la période personnalisée
+        # Activation de la pÃ©riode personnalisÃ©e
         self.ctrl_date_debut.Enable(self.check_periode.GetValue())
         self.label_au.Enable(self.check_periode.GetValue())
         self.ctrl_date_fin.Enable(self.check_periode.GetValue())
         self.bouton_valider_periode.Enable(self.check_periode.GetValue())
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         dictBudget = copy.copy(self.ctrl_budget.GetDictBudget())
         if dictBudget != None :
             dictBudget["inclure_toutes_categories"] = self.check_inclure.GetValue() 
@@ -516,12 +516,12 @@ class Dialog(wx.Dialog):
                     dictBudget["date_fin"] = self.ctrl_date_fin.GetDate()
                 else :
                     dictBudget = None
-        # Envoi des données vers le ctrl de suivi
+        # Envoi des donnÃ©es vers le ctrl de suivi
         page = self.notebook.GetPage(self.notebook.GetSelection())
         page.SetDictBudget(dictBudget)
 
     def OnPageChanged(self, event):
-        """ Quand une page du notebook est sélectionnée """
+        """ Quand une page du notebook est sÃ©lectionnÃ©e """
         old = event.GetOldSelection()
         self.OnChoixBudget(None)
         event.Skip()

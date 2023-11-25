@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -32,7 +32,7 @@ def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False, inclure_tel
     
     DB = GestionDB.DB()
 
-    # Récupération de toutes les familles de la base
+    # RÃ©cupÃ©ration de toutes les familles de la base
     req = """
     SELECT IDfamille, IDcompte_payeur, autre_adresse_facturation, code_comptable
     FROM familles
@@ -47,7 +47,7 @@ def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False, inclure_tel
     else :
         champs_telephones = ""
 
-    # Récupération de tous les individus de la base
+    # RÃ©cupÃ©ration de tous les individus de la base
     req = """
     SELECT IDindividu, IDcivilite, individus.nom, prenom, date_naiss, adresse_auto, rue_resid, cp_resid, ville_resid, mail, individus.IDsecteur, secteurs.nom %s
     FROM individus
@@ -69,7 +69,7 @@ def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False, inclure_tel
                 "tel_mobile_sms" : bool(valeurs[17]),
                 }
 
-    # Récupération des rattachements
+    # RÃ©cupÃ©ration des rattachements
     if inclure_archives == False :
         conditionArchives = "individus.etat IS NULL"
     else :
@@ -116,8 +116,8 @@ def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False, inclure_tel
                             dictTemp["telephones"] = dictIndividus[IDindividuTmp]["telephones"]
 
                         if afficher_tag_archive == True and etat == "archive":
-                            dictTemp["nomSansCivilite"] += u" [archivé]"
-                            dictTemp["prenom"] += u" [archivé]"
+                            dictTemp["nomSansCivilite"] += u" [archivÃ©]"
+                            dictTemp["prenom"] += u" [archivÃ©]"
 
                         listeTitulaires.append(dictTemp)
                         nbreTitulaires += 1
@@ -187,7 +187,7 @@ def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False, inclure_tel
                     titulairesSansCivilite = valeurs_autre_adresse[0]
                     dictAdresse = {"rue": valeurs_autre_adresse[1], "cp": valeurs_autre_adresse[2], "ville": valeurs_autre_adresse[3], "IDsecteur": None, "nomSecteur": "", "secteur": ""}
 
-                # Définit les noms des titulaires
+                # DÃ©finit les noms des titulaires
                 dictFamilles[IDfamille]["titulairesAvecCivilite"] = titulairesAvecCivilite
                 dictFamilles[IDfamille]["titulairesSansCivilite"] = titulairesSansCivilite
                 dictFamilles[IDfamille]["listeTitulaires"] = listeTitulaires
@@ -195,7 +195,7 @@ def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False, inclure_tel
                 dictFamilles[IDfamille]["listeMails"] = listeMails
 
         if nbreTitulaires== 0:
-            # Définit les noms des titulaires
+            # DÃ©finit les noms des titulaires
             dictFamilles[IDfamille]["titulairesAvecCivilite"] = _(u"Sans titulaires")
             dictFamilles[IDfamille]["titulairesSansCivilite"] = _(u"Sans titulaires")
             dictFamilles[IDfamille]["listeTitulaires"] = []
@@ -228,7 +228,7 @@ def GetIndividus():
     dictIndividus = {}
     for IDindividu, dictIndividu in dictTemp.items() :
         
-        # Civilité
+        # CivilitÃ©
         IDcivilite = dictIndividu["IDcivilite"]
         if IDcivilite == None :
             IDcivilite = 1
@@ -258,7 +258,7 @@ def GetIndividus():
             
     
 def GetFamillesRattachees(IDindividu=None):
-    # Recherche des familles rattachées
+    # Recherche des familles rattachÃ©es
     db = GestionDB.DB()
     req = """SELECT IDrattachement, rattachements.IDfamille, IDcategorie, titulaire, IDcompte_payeur
     FROM rattachements
@@ -269,7 +269,7 @@ def GetFamillesRattachees(IDindividu=None):
     listeRattachements = db.ResultatReq()
     dictFamilles = {}
     for IDrattachement, IDfamille, IDcategorie, titulaire, IDcompte_payeur in listeRattachements :
-        if IDcategorie == 1 : nomCategorie = _(u"représentant")
+        if IDcategorie == 1 : nomCategorie = _(u"reprÃ©sentant")
         if IDcategorie == 2 : nomCategorie = _(u"enfant")
         if IDcategorie == 3 : nomCategorie = _(u"contact")
         dictFamilles[IDfamille] = {"nomsTitulaires" : u"", "listeNomsTitulaires" : [], "IDcategorie" : IDcategorie, "nomCategorie" : nomCategorie, "IDcompte_payeur" : IDcompte_payeur }
@@ -317,7 +317,7 @@ def GetCoordsIndividu(IDindividu=None):
 
     adresse_auto, rue_resid, cp_resid, ville_resid, travail_tel, travail_fax, travail_mail, tel_domicile, tel_mobile, tel_fax, mail = listeDonnees[0]
 
-    # Recherche d'une adresse associée
+    # Recherche d'une adresse associÃ©e
     if adresse_auto != None :
         req = """SELECT rue_resid, cp_resid, ville_resid
         FROM individus WHERE IDindividu=%d;""" % adresse_auto
@@ -328,7 +328,7 @@ def GetCoordsIndividu(IDindividu=None):
 
     DB.Close()
 
-    # Renvoi des résultats
+    # Renvoi des rÃ©sultats
     dict_coords = {
         "rue_resid" : rue_resid, "cp_resid" : cp_resid, "ville_resid" : ville_resid,
         "travail_tel" : travail_tel, "travail_fax" : travail_fax, "travail_mail" : travail_mail,

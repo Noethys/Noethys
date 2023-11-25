@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -24,7 +24,7 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Vous pouvez consulter ici les soldes des comptes bancaires. Double-cliquez sur un compte pour accéder au détail des opérations.")
+        intro = _(u"Vous pouvez consulter ici les soldes des comptes bancaires. Double-cliquez sur un compte pour accÃ©der au dÃ©tail des opÃ©rations.")
         titre = _(u"Liste des comptes")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Operations.png")
@@ -53,12 +53,12 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.ctrl_comptes.ExportTexte, self.bouton_texte)
         self.Bind(wx.EVT_BUTTON, self.ctrl_comptes.ExportExcel, self.bouton_excel)
 
-        # Init contrôles
+        # Init contrÃ´les
         self.ctrl_comptes.MAJ() 
 
     def __set_properties(self):
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder au compte bancaire sélectionné")))
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu de la liste")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der au compte bancaire sÃ©lectionnÃ©")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er un aperÃ§u de la liste")))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
         self.bouton_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Texte")))
         self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))

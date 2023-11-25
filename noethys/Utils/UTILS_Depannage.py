@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -159,7 +159,7 @@ class CorrigerHeuresConso(Anomalie):
         individu = self.kwds["individu"]
         
         if heure_debut != None : 
-            dlg = wx.TextEntryDialog(None, _(u"Corrigez l'heure de début de la consommation du %s de %s :\n\n(Obligatoirement au format HH:MM)") % (date.strftime("%d/%m/%Y"), individu), _(u"Correction d'une heure"), heure_debut)
+            dlg = wx.TextEntryDialog(None, _(u"Corrigez l'heure de dÃ©but de la consommation du %s de %s :\n\n(Obligatoirement au format HH:MM)") % (date.strftime("%d/%m/%Y"), individu), _(u"Correction d'une heure"), heure_debut)
             if dlg.ShowModal() == wx.ID_OK:
                 DB.ReqMAJ("consommations", [("heure_debut", dlg.GetValue()),], "IDconso", IDconso)
                 self.corrige = True
@@ -235,10 +235,10 @@ class Depannage():
             
             if len(listeDonnees) > 0 :
                 for anomalie in listeDonnees :
-                    texteCorrection = _(u"<A HREF='http://www.noethys.com'>Correction proposée : %s</A>") % labelCorrection
+                    texteCorrection = _(u"<A HREF='http://www.noethys.com'>Correction proposÃ©e : %s</A>") % labelCorrection
                     texte += u"&nbsp;&nbsp;&nbsp;<IMG SRC='Static/Images/16x16/Interdit2.png'>&nbsp;%s. %s<BR>" % (anomalie.label, texteCorrection)
             else :
-                    texte += u"&nbsp;&nbsp;&nbsp;<IMG SRC='Static/Images/16x16/Ok4.png'>&nbsp;Aucune anomalie détectée...<BR>"
+                    texte += u"&nbsp;&nbsp;&nbsp;<IMG SRC='Static/Images/16x16/Ok4.png'>&nbsp;Aucune anomalie dÃ©tectÃ©e...<BR>"
             texte += u"</FONT></P>"
         return texte
     
@@ -294,7 +294,7 @@ class Depannage():
         EcritStatusbar("")
         
     def InscriptionsSansIndividus(self):
-        labelProbleme = _(u"Inscriptions sans individus associés")
+        labelProbleme = _(u"Inscriptions sans individus associÃ©s")
         labelCorrection = _(u"Supprimer l'inscription")
         req = """SELECT IDinscription, inscriptions.IDactivite, activites.nom, inscriptions.date_inscription, inscriptions.IDindividu 
         FROM inscriptions 
@@ -305,12 +305,12 @@ class Depannage():
         listePrestations = self.DB.ResultatReq()
         listeTemp = []
         for IDinscription, IDactivite, nomActivite, dateInscription, IDindividu in listePrestations :
-            label = _(u"Individu ID%d inscrit le %s à l'activité %s") % (IDindividu, UTILS_Dates.DateEngFr(dateInscription), nomActivite)
+            label = _(u"Individu ID%d inscrit le %s Ã  l'activitÃ© %s") % (IDindividu, UTILS_Dates.DateEngFr(dateInscription), nomActivite)
             listeTemp.append(InscriptionsSansIndividus(label=label, IDinscription=IDinscription, IDindividu=IDindividu))
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def CotisationsSansIndividus(self):
-        labelProbleme = _(u"Cotisations sans individus associés")
+        labelProbleme = _(u"Cotisations sans individus associÃ©s")
         labelCorrection = _(u"Supprimer la cotisation")
         req = """SELECT IDcotisation, types_cotisations.nom, unites_cotisations.nom, cotisations.date_saisie, cotisations.IDindividu, cotisations.IDprestation
         FROM cotisations 
@@ -327,7 +327,7 @@ class Depannage():
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def CotisationsSansFamilles(self):
-        labelProbleme = _(u"Cotisations sans familles associées")
+        labelProbleme = _(u"Cotisations sans familles associÃ©es")
         labelCorrection = _(u"Supprimer la cotisation")
         req = """SELECT IDcotisation, types_cotisations.nom, unites_cotisations.nom, cotisations.date_saisie, cotisations.IDfamille, cotisations.IDprestation
         FROM cotisations 
@@ -344,7 +344,7 @@ class Depannage():
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def PrestationsSansFamilles(self):
-        labelProbleme = _(u"Prestations sans familles associées")
+        labelProbleme = _(u"Prestations sans familles associÃ©es")
         labelCorrection = _(u"Supprimer la prestation")
         req = """SELECT IDprestation, date, label, prestations.IDfamille
         FROM prestations 
@@ -359,7 +359,7 @@ class Depannage():
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def VentilationsSansPrestations(self):
-        labelProbleme = _(u"Ventilations sans prestations associées")
+        labelProbleme = _(u"Ventilations sans prestations associÃ©es")
         labelCorrection = _(u"Supprimer la ventilation")
         req = """SELECT IDventilation, ventilation.IDprestation, IDreglement, comptes_payeurs.IDfamille
         FROM ventilation
@@ -371,12 +371,12 @@ class Depannage():
         listeTemp = []
         for IDventilation, IDprestation, IDreglement, IDfamille in listeDonnees :
             if IDventilation and IDprestation and IDreglement and IDfamille:
-                label = _(u"Ventilation ID%d pour la prestation ID%d et le règlement ID%d pour la famille ID%d") % (IDventilation, IDprestation, IDreglement, IDfamille)
+                label = _(u"Ventilation ID%d pour la prestation ID%d et le rÃ¨glement ID%d pour la famille ID%d") % (IDventilation, IDprestation, IDreglement, IDfamille)
                 listeTemp.append(VentilationsSansPrestations(label=label, IDventilation=IDventilation, IDprestation=IDprestation, IDreglement=IDreglement, IDfamille=IDfamille))
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def VentilationsSansReglements(self):
-        labelProbleme = _(u"Ventilations sans règlements associés")
+        labelProbleme = _(u"Ventilations sans rÃ¨glements associÃ©s")
         labelCorrection = _(u"Supprimer la ventilation")
         req = """SELECT IDventilation, IDprestation, ventilation.IDreglement, comptes_payeurs.IDfamille
         FROM ventilation
@@ -387,13 +387,13 @@ class Depannage():
         listeDonnees = self.DB.ResultatReq()
         listeTemp = []
         for IDventilation, IDprestation, IDreglement, IDfamille in listeDonnees :
-            label = _(u"Ventilation ID%d pour la prestation ID%d et le règlement ID%d pour la famille ID%d") % (IDventilation, IDprestation, IDreglement, IDfamille)
+            label = _(u"Ventilation ID%d pour la prestation ID%d et le rÃ¨glement ID%d pour la famille ID%d") % (IDventilation, IDprestation, IDreglement, IDfamille)
             listeTemp.append(VentilationsSansReglements(label=label, IDventilation=IDventilation, IDprestation=IDprestation, IDreglement=IDreglement, IDfamille=IDfamille))
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def IndividusIncomplets(self):
-        labelProbleme = _(u"Fiches individuelles tronquées")
-        labelCorrection = _(u"Modifier la civilité et/ou le nom de famille")
+        labelProbleme = _(u"Fiches individuelles tronquÃ©es")
+        labelCorrection = _(u"Modifier la civilitÃ© et/ou le nom de famille")
         req = """SELECT IDindividu, IDcivilite, nom, prenom
         FROM individus 
         WHERE IDcivilite IS NULL OR nom IS NULL;"""
@@ -406,8 +406,8 @@ class Depannage():
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def FamillesIncompletes(self):
-        labelProbleme = _(u"Fiches familles tronquées")
-        labelCorrection = _(u"Réparer la fiche famille")
+        labelProbleme = _(u"Fiches familles tronquÃ©es")
+        labelCorrection = _(u"RÃ©parer la fiche famille")
         req = """SELECT IDfamille, IDcompte_payeur
         FROM familles 
         WHERE IDcompte_payeur IS NULL;"""
@@ -420,8 +420,8 @@ class Depannage():
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def InscriptionsIncompletes(self):
-        labelProbleme = _(u"Inscriptions tronquées")
-        labelCorrection = _(u"Réparer la table des inscriptions")
+        labelProbleme = _(u"Inscriptions tronquÃ©es")
+        labelCorrection = _(u"RÃ©parer la table des inscriptions")
         req = """SELECT IDinscription, IDfamille, IDindividu, IDcompte_payeur
         FROM inscriptions 
         WHERE IDcompte_payeur IS NULL;"""
@@ -434,8 +434,8 @@ class Depannage():
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def ConsommationsIncompletes(self):
-        labelProbleme = _(u"Consommations tronquées")
-        labelCorrection = _(u"Réparer la table des consommations")
+        labelProbleme = _(u"Consommations tronquÃ©es")
+        labelCorrection = _(u"RÃ©parer la table des consommations")
         req = """SELECT IDconso, consommations.IDindividu, consommations.IDinscription, inscriptions.IDcompte_payeur
         FROM consommations 
         LEFT JOIN inscriptions ON inscriptions.IDinscription = consommations.IDinscription
@@ -449,7 +449,7 @@ class Depannage():
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def FacturesErronees(self):
-        labelProbleme = _(u"Factures erronées")
+        labelProbleme = _(u"Factures erronÃ©es")
         labelCorrection = _(u"Recalculer le montant des factures")
         # Recherche des factures
         req = """SELECT factures.IDfacture, factures.numero, factures.IDcompte_payeur, comptes_payeurs.IDfamille,
@@ -485,7 +485,7 @@ class Depannage():
             for dictTemp in listePrestationsFacture :
                 montantTotalPrestations += dictTemp["montant"]
             if montantTotalPrestations != FloatToDecimal(totalFacture) :
-                # Si la facture n'a pas de famille rattachée
+                # Si la facture n'a pas de famille rattachÃ©e
                 if IDfamille == None : 
                     label = _(u"Facture ID%d : Famille inconnue") % IDfacture
                     listeTemp.append(FacturesAsupprimer(label=label, IDfacture=IDfacture))
@@ -493,16 +493,16 @@ class Depannage():
                     label = _(u"Facture ID%d : Aucune prestation correspondante") % IDfacture
                     listeTemp.append(FacturesAsupprimer(label=label, IDfacture=IDfacture))
                 elif montantTotalPrestations == FloatToDecimal(0.0) :
-                    label = _(u"Facture ID%d : Montant de la facture égal à 0") % IDfacture
+                    label = _(u"Facture ID%d : Montant de la facture Ã©gal Ã  0") % IDfacture
                     listeTemp.append(FacturesAsupprimer(label=label, IDfacture=IDfacture))
                 else :
-                    label = _(u"Facture ID%d : Total à recalculer") % IDfacture
+                    label = _(u"Facture ID%d : Total Ã  recalculer") % IDfacture
                     listeTemp.append(FacturesRecalcul(label=label, IDfacture=IDfacture, totalFacture=totalFacture, regleFacture=regleFacture, soldeFacture=soldeFacture, montantTotalPrestations=montantTotalPrestations))
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def ConsommationsErronees(self):
-        labelProbleme = _(u"Consommations erronées")
-        labelCorrection = _(u"Réparer la table des consommations")
+        labelProbleme = _(u"Consommations erronÃ©es")
+        labelCorrection = _(u"RÃ©parer la table des consommations")
         req = """SELECT IDconso, date, heure_debut, heure_fin, individus.nom, individus.prenom
         FROM consommations
         LEFT JOIN individus ON individus.IDindividu = consommations.IDindividu
@@ -528,16 +528,16 @@ class Depannage():
             if prenomIndividu != None : individu += " " + prenomIndividu
             if heure_debut != None :
                 if ValidationHeure(heure_debut) == False :
-                    label = _(u"Conso ID%d de %s : Heure de début de consommation erronée ('%s')") % (IDconso, individu, heure_debut)
+                    label = _(u"Conso ID%d de %s : Heure de dÃ©but de consommation erronÃ©e ('%s')") % (IDconso, individu, heure_debut)
                     listeTemp.append(CorrigerHeuresConso(label=label, IDconso=IDconso, date=date, individu=individu, heure_debut=heure_debut, heure_fin=None))
             if heure_fin != None :
                 if ValidationHeure(heure_fin) == False :
-                    label = _(u"Conso ID%d de %s : Heure de fin de consommation erronée ('%s')") % (IDconso, individu, heure_fin)
+                    label = _(u"Conso ID%d de %s : Heure de fin de consommation erronÃ©e ('%s')") % (IDconso, individu, heure_fin)
                     listeTemp.append(CorrigerHeuresConso(label=label, IDconso=IDconso, date=date, individu=individu, heure_debut=None, heure_fin=heure_fin))
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def LiensTronques(self):
-        labelProbleme = _(u"Liens sans familles ou sans individus associés")
+        labelProbleme = _(u"Liens sans familles ou sans individus associÃ©s")
         labelCorrection = _(u"Supprimer le lien dans la base")
 
         req = """SELECT IDlien, IDindividu_sujet
@@ -563,7 +563,7 @@ class Depannage():
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def RattachementsTronques(self):
-        labelProbleme = _(u"Rattachements sans individus associés")
+        labelProbleme = _(u"Rattachements sans individus associÃ©s")
         labelCorrection = _(u"Supprimer le rattachement dans la base")
         req = """SELECT IDrattachement, rattachements.IDindividu, IDfamille
         FROM rattachements 
@@ -578,8 +578,8 @@ class Depannage():
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
     
     def LiensErrones(self):
-        labelProbleme = _(u"Liens de parenté erronés")
-        labelCorrection = _(u"Supprimer les liens erronés")
+        labelProbleme = _(u"Liens de parentÃ© erronÃ©s")
+        labelCorrection = _(u"Supprimer les liens erronÃ©s")
         req = """SELECT IDlien, IDfamille, IDindividu_sujet, IDtype_lien, IDindividu_objet, responsable, IDautorisation
         FROM liens
         ORDER BY IDlien;"""
@@ -602,16 +602,16 @@ class Depannage():
                 if len(listeIDlien) > 1 :
                     if (IDfamille in dictLiensASupprimer) == False :
                         dictLiensASupprimer[IDfamille] = []
-                    # Suppression des liens obsolètes
+                    # Suppression des liens obsolÃ¨tes
                     for IDlien in listeIDlien[1:] :
                         dictLiensASupprimer[IDfamille].append(IDlien)
-        # Mémorisation
+        # MÃ©morisation
         listeIDfamille = list(dictLiensASupprimer.keys()) 
         listeIDfamille.sort() 
         listeTemp = []
         for IDfamille in listeIDfamille :
             listeIDlien = dictLiensASupprimer[IDfamille]
-            label = _(u"Famille ID%d : %d liens erronés") % (IDfamille, len(listeIDlien))
+            label = _(u"Famille ID%d : %d liens erronÃ©s") % (IDfamille, len(listeIDlien))
             listeTemp.append(LiensErrones(label=label, IDfamille=IDfamille, listeIDlien=listeIDlien))
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
         
@@ -628,17 +628,17 @@ class Depannage():
         for IDventilation, IDcompte_payeur, IDreglement, IDprestation, IDfamille in listeDonnees :
             key = (IDcompte_payeur, IDreglement, IDprestation)
             if key in dictTemp :
-                label = _(u"Ventilation ID%d pour la prestation ID%d et le règlement ID%d pour la famille ID%d") % (IDventilation, IDprestation, IDreglement, IDfamille)
+                label = _(u"Ventilation ID%d pour la prestation ID%d et le rÃ¨glement ID%d pour la famille ID%d") % (IDventilation, IDprestation, IDreglement, IDfamille)
                 listeTemp.append(VentilationsExcessives(label=label, IDventilation=IDventilation, IDprestation=IDprestation, IDreglement=IDreglement, IDfamille=IDfamille))
             else :
                 dictTemp[key] = IDventilation
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def PrestationsFantomes(self):
-        labelProbleme = _(u"Prestations fantômes")
-        labelCorrection = _(u"Supprimer la prestation fantôme")
+        labelProbleme = _(u"Prestations fantÃ´mes")
+        labelCorrection = _(u"Supprimer la prestation fantÃ´me")
 
-        # Récupération des prestations
+        # RÃ©cupÃ©ration des prestations
         from dateutil import relativedelta
         date_limite = datetime.date.today() + relativedelta.relativedelta(months=-2)
         req = """SELECT IDprestation, label, date, IDfamille, prestations.IDindividu,
@@ -651,7 +651,7 @@ class Depannage():
         self.DB.ExecuterReq(req)
         listePrestations = self.DB.ResultatReq()
 
-        # Récupération des consommations
+        # RÃ©cupÃ©ration des consommations
         req = """SELECT IDconso, IDprestation FROM consommations;"""
         self.DB.ExecuterReq(req)
         listeConsommations = self.DB.ResultatReq()
@@ -677,8 +677,8 @@ class Depannage():
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def MySQL8(self):
-        labelProbleme = _(u"MySQL 8 Server détecté")
-        labelCorrection = _(u"Correction manuelle requise : L'utilisation de la version 8 de MySQL est déconseillée. Faites une sauvegarde, désinstallez MySQL 8, installez MySQL 5.7 et restaurez la sauvegarde.")
+        labelProbleme = _(u"MySQL 8 Server dÃ©tectÃ©")
+        labelCorrection = _(u"Correction manuelle requise : L'utilisation de la version 8 de MySQL est dÃ©conseillÃ©e. Faites une sauvegarde, dÃ©sinstallez MySQL 8, installez MySQL 5.7 et restaurez la sauvegarde.")
 
         # Recherche si le serveur MySQL est une version 8
         nomFichier = self.DB.GetNomFichierDefaut()

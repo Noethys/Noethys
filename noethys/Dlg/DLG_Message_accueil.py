@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -27,20 +27,20 @@ TEXTE_ACCUEIL = u"""
 <B>Bienvenue dans Noethys</B><BR>
 <B>Version %s</B>
 <BR><BR>
-Noethys est un logiciel gratuit de gestion multi-activités pour les accueils de 
-loisirs, crèches, cantines, garderies périscolaires, secteurs jeunes, activités
+Noethys est un logiciel gratuit de gestion multi-activitÃ©s pour les accueils de 
+loisirs, crÃ¨ches, cantines, garderies pÃ©riscolaires, secteurs jeunes, activitÃ©s
 sportives et culturelles, etc...
 <BR><BR>
-Merci de bien vouloir signaler tous les bugs rencontrés ou exposer vos suggestions
-sur le forum dédié :
+Merci de bien vouloir signaler tous les bugs rencontrÃ©s ou exposer vos suggestions
+sur le forum dÃ©diÃ© :
 <BR>
-<A HREF="Saisie">Cliquez ici pour accéder au forum</A>.
+<A HREF="Saisie">Cliquez ici pour accÃ©der au forum</A>.
 </FONT>
 </CENTER>
 """ % (Chemins.GetStaticPath("Images/80x80/Logo.png"), VERSION_LOGICIEL)
 
-#Si vous jugez que ce logiciel vous apporte un service appréciable au quotidien et 
-#que vous souhaitez participez au développement du logiciel, vous pouvez apporter 
+#Si vous jugez que ce logiciel vous apporte un service apprÃ©ciable au quotidien et 
+#que vous souhaitez participez au dÃ©veloppement du logiciel, vous pouvez apporter 
 #votre soutien financier au projet : 
 
 class MyHtml(html.HtmlWindow):
@@ -79,7 +79,7 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Bienvenue"))
-        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer cette fenêtre et utiliser Noethys")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer cette fenÃªtre et utiliser Noethys")))
         self.SetMinSize((360, 400))
 
     def __do_layout(self):

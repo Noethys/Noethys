@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -36,16 +36,16 @@ from reportlab.platypus.flowables import DocAssign
 
 DICT_CIVILITES = Civilites.GetDictCivilites()
 LARGEUR_COLONNE = 158
-LISTE_NOMS_MOIS = [_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre")]
+LISTE_NOMS_MOIS = [_(u"Janvier"), _(u"FÃ©vrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"AoÃ»t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"DÃ©cembre")]
 IMAGE_FOND = None
 
 THEMES = {
     _(u"Plage de cailloux") : "Images/Special/Cailloux.jpg",
     _(u"Gouttes d'eau") : "Images/Special/Eau.jpg",
-    _(u"Feuille d'été") : "Images/Special/Feuille.jpg",
+    _(u"Feuille d'Ã©tÃ©") : "Images/Special/Feuille.jpg",
     _(u"Ballet de lignes") : "Images/Special/Lignes.jpg",
-    _(u"Montgolfières") : "Images/Special/Montgolfiere.jpg",
-    _(u"Mosaïque") : "Images/Special/Mosaique.jpg",
+    _(u"MontgolfiÃ¨res") : "Images/Special/Montgolfiere.jpg",
+    _(u"MosaÃ¯que") : "Images/Special/Mosaique.jpg",
     }
 
 
@@ -68,7 +68,7 @@ def GetSQLdates(listePeriodes=[]):
 
 
 def Template(canvas, doc):
-    """ Première page de l'attestation """
+    """ PremiÃ¨re page de l'attestation """
     canvas.saveState()
     # Insertion de l'image de fond de page
     if IMAGE_FOND != None:
@@ -121,11 +121,11 @@ class CTRL_profil_perso(CTRL_Profil.CTRL):
         self.dlg = dlg
 
     def Envoyer_parametres(self, dictParametres={}):
-        """ Envoi des paramètres du profil sélectionné à la fenêtre """
+        """ Envoi des paramÃ¨tres du profil sÃ©lectionnÃ© Ã  la fenÃªtre """
         self.dlg.SetParametres(dictParametres)
 
     def Recevoir_parametres(self):
-        """ Récupération des paramètres pour la sauvegarde du profil """
+        """ RÃ©cupÃ©ration des paramÃ¨tres pour la sauvegarde du profil """
         dictParametres = self.dlg.GetParametres()
         self.Enregistrer(dictParametres)
 
@@ -167,17 +167,17 @@ class Page_Options(wx.Panel):
 
         self.check_theme = wx.CheckBox(self, -1, u"")
         self.check_theme.SetValue(True)
-        self.label_theme = wx.StaticText(self, -1, _(u"Inclure le thème :"))
+        self.label_theme = wx.StaticText(self, -1, _(u"Inclure le thÃ¨me :"))
         self.ctrl_theme = wx.Choice(self, -1, choices=list(THEMES.keys()))
-        self.ctrl_theme.SetStringSelection(_(u"Feuille d'été"))
+        self.ctrl_theme.SetStringSelection(_(u"Feuille d'Ã©tÃ©"))
 
         # Binds
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckPhotos, self.check_photos)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckTheme, self.check_theme)
 
-        # Propriétés
-        self.check_photos.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour utiliser un thème graphique")))
-        self.ctrl_photos.SetToolTip(wx.ToolTip(_(u"Selectionnez ici le thème souhaité")))
+        # PropriÃ©tÃ©s
+        self.check_photos.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour utiliser un thÃ¨me graphique")))
+        self.ctrl_photos.SetToolTip(wx.ToolTip(_(u"Selectionnez ici le thÃ¨me souhaitÃ©")))
         self.check_photos.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les photos des individus")))
         self.ctrl_photos.SetToolTip(wx.ToolTip(_(u"Selectionnez ici la taille des photos")))
 
@@ -192,7 +192,7 @@ class Page_Options(wx.Panel):
         grid_sizer_photos.Add(self.ctrl_photos, 0, 0, 0)
         grid_sizer_base.Add(grid_sizer_photos, 1, wx.EXPAND, 0)
 
-        # Thème
+        # ThÃ¨me
         grid_sizer_base.Add(self.check_theme, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_theme = wx.FlexGridSizer(rows=1, cols=5, vgap=10, hgap=10)
         grid_sizer_theme.Add(self.label_theme, 0, wx.ALIGN_CENTER_VERTICAL, 0)
@@ -203,7 +203,7 @@ class Page_Options(wx.Panel):
         self.SetSizer(sizer_base)
         self.Layout()
 
-        # Init Contrôles
+        # Init ContrÃ´les
         self.OnCheckPhotos(None)
 
     def OnCheckPhotos(self, event=None):
@@ -221,7 +221,7 @@ class Page_Options(wx.Panel):
     def GetParametres(self):
         dictParametres = {}
 
-        # Thème
+        # ThÃ¨me
         if self.check_theme.GetValue() == True :
             dictParametres["theme"] = self.ctrl_theme.GetStringSelection()
         else :
@@ -238,7 +238,7 @@ class Page_Options(wx.Panel):
         return dictParametres
 
     def SetParametres(self, dictParametres={}):
-        # Thème
+        # ThÃ¨me
         if "theme" in dictParametres:
             if dictParametres["theme"] != None :
                 self.ctrl_theme.SetStringSelection(dictParametres["theme"])
@@ -264,7 +264,7 @@ class CTRL_Parametres(wx.Notebook):
         self.dictPages = {}
 
         self.listePages = [
-            {"code": "generalites", "ctrl": Page_Generalites(self), "label": _(u"Paramètres"), "image": "Calendrier.png"},
+            {"code": "generalites", "ctrl": Page_Generalites(self), "label": _(u"ParamÃ¨tres"), "image": "Calendrier.png"},
             {"code": "options", "ctrl": Page_Options(self), "label": _(u"Options"), "image": "Options.png"},
         ]
 
@@ -275,7 +275,7 @@ class CTRL_Parametres(wx.Notebook):
             self.dictImages[dictPage["code"]] = il.Add(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s" % dictPage["image"]), wx.BITMAP_TYPE_PNG))
         self.AssignImageList(il)
 
-        # Création des pages
+        # CrÃ©ation des pages
         self.dictPages = {}
         index = 0
         for dictPage in self.listePages:
@@ -312,7 +312,7 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, name="DLG_Anniversaires", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Vous pouvez ici imprimer la liste des anniversaires des individus inscrits sur les activités cochées et présents sur la période donnée. Il est possible d'inclure un thème graphique et les photos individuelles.")
+        intro = _(u"Vous pouvez ici imprimer la liste des anniversaires des individus inscrits sur les activitÃ©s cochÃ©es et prÃ©sents sur la pÃ©riode donnÃ©e. Il est possible d'inclure un thÃ¨me graphique et les photos individuelles.")
         titre = _(u"Liste des anniversaires")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Anniversaire.png")
@@ -326,7 +326,7 @@ class Dialog(wx.Dialog):
 
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"AperÃ§u"), cheminImage="Images/32x32/Apercu.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
@@ -335,7 +335,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
 
-        # Init Contrôles
+        # Init ContrÃ´les
         self.ctrl_profil.SetOnDefaut()
         self.bouton_ok.SetFocus()
 
@@ -380,11 +380,11 @@ class Dialog(wx.Dialog):
         return self.ctrl_notebook.GetPageAvecCode(code)
 
     def GetParametres(self):
-        """ Récupération des paramètres """
+        """ RÃ©cupÃ©ration des paramÃ¨tres """
         return self.ctrl_notebook.GetParametres()
 
     def SetParametres(self, dictParametres={}):
-        """ Importation des paramètres """
+        """ Importation des paramÃ¨tres """
         if dictParametres != None :
             self.ctrl_notebook.SetParametres(dictParametres)
 
@@ -397,16 +397,16 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event):
         dictParametres = self.ctrl_notebook.GetParametres()
 
-        # Récupération et vérification des données
+        # RÃ©cupÃ©ration et vÃ©rification des donnÃ©es
         listeActivites = dictParametres["liste_activites"]
         if len(listeActivites) == 0 :
             self.ctrl_notebook.AffichePage("generalites")
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins une activité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins une activitÃ© !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
-        # Récupération et vérification des données
+        # RÃ©cupÃ©ration et vÃ©rification des donnÃ©es
         listeGroupes = dictParametres["liste_groupes"]
         if len(dictParametres["liste_groupes"]) == 0 :
             self.ctrl_notebook.AffichePage("generalites")
@@ -415,14 +415,14 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return False
 
-        # Thème
+        # ThÃ¨me
         global IMAGE_FOND
         if dictParametres["theme"] != None :
             IMAGE_FOND = Chemins.GetStaticPath(THEMES[dictParametres["theme"]])
         else:
             IMAGE_FOND = None
 
-        # Création du PDF
+        # CrÃ©ation du PDF
         self.taille_page = A4
         self.orientation = "PORTRAIT"
         if self.orientation == "PORTRAIT":
@@ -432,7 +432,7 @@ class Dialog(wx.Dialog):
             self.hauteur_page = self.taille_page[0]
             self.largeur_page = self.taille_page[1]
 
-        # Création des conditions pour les requêtes SQL
+        # CrÃ©ation des conditions pour les requÃªtes SQL
         conditionsPeriodes = GetSQLdates(dictParametres["liste_periodes"])
 
         if len(listeActivites) == 0: conditionActivites = "()"
@@ -443,19 +443,19 @@ class Dialog(wx.Dialog):
         elif len(listeGroupes) == 1: conditionGroupes = "(%d)" % listeGroupes[0]
         else: conditionGroupes = str(tuple(listeGroupes))
 
-        # Récupération des noms des groupes
+        # RÃ©cupÃ©ration des noms des groupes
         dictGroupes = dictParametres["dict_groupes"]
 
         DB = GestionDB.DB()
 
-        # Récupération des individus grâce à leurs consommations
+        # RÃ©cupÃ©ration des individus grÃ¢ce Ã  leurs consommations
         self.EcritStatusBar(_(u"Recherche des individus..."))
 
         # ------------ MODE PRESENTS ---------------------------------
 
         if dictParametres["mode"] == "presents":
 
-            # Récupération de la liste des groupes ouverts sur cette période
+            # RÃ©cupÃ©ration de la liste des groupes ouverts sur cette pÃ©riode
             req = """SELECT IDouverture, IDactivite, IDunite, IDgroupe
             FROM ouvertures 
             WHERE ouvertures.IDactivite IN %s AND %s
@@ -470,7 +470,7 @@ class Dialog(wx.Dialog):
                 if IDgroupe not in dictOuvertures[IDactivite]:
                     dictOuvertures[IDactivite].append(IDgroupe)
 
-            # Récupération des individus grâce à leurs consommations
+            # RÃ©cupÃ©ration des individus grÃ¢ce Ã  leurs consommations
             req = """SELECT individus.IDindividu, IDcivilite, nom, prenom, date_naiss
             FROM consommations 
             LEFT JOIN individus ON individus.IDindividu = consommations.IDindividu
@@ -494,7 +494,7 @@ class Dialog(wx.Dialog):
                 if IDgroupe not in dictOuvertures[IDactivite]:
                     dictOuvertures[IDactivite].append(IDgroupe)
 
-            # Récupération des individus inscrits
+            # RÃ©cupÃ©ration des individus inscrits
             req = """SELECT individus.IDindividu, IDcivilite, nom, prenom, date_naiss
             FROM individus 
             LEFT JOIN inscriptions ON inscriptions.IDindividu = individus.IDindividu
@@ -508,7 +508,7 @@ class Dialog(wx.Dialog):
         DB.Close()
 
         if len(listeIndividus) == 0:
-            dlg = wx.MessageDialog(self, _(u"Aucun individu n'a été trouvé avec les paramètres spécifiés !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Aucun individu n'a Ã©tÃ© trouvÃ© avec les paramÃ¨tres spÃ©cifiÃ©s !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.EcritStatusBar(u"")
@@ -527,13 +527,13 @@ class Dialog(wx.Dialog):
                 jour = date_naiss.day
                 mois = date_naiss.month
 
-                # Mémorisation de l'individu
+                # MÃ©morisation de l'individu
                 dictIndividus[IDindividu] = {
                     "IDcivilite": IDcivilite, "nom": nom, "prenom": prenom,
                     "age": age, "date_naiss": date_naiss,
                 }
 
-                # Mémorisation du IDindividu
+                # MÃ©morisation du IDindividu
                 if (mois in dictAnniversaires) == False:
                     dictAnniversaires[mois] = {}
                 if (jour in dictAnniversaires[mois]) == False:
@@ -543,7 +543,7 @@ class Dialog(wx.Dialog):
                 if IDindividu not in listeIDindividus:
                     listeIDindividus.append(IDindividu)
 
-                    # Récupération des photos individuelles
+                    # RÃ©cupÃ©ration des photos individuelles
         dictPhotos = {}
         taillePhoto = 128
         if dictParametres["taille_photo"] != 0 :
@@ -554,7 +554,7 @@ class Dialog(wx.Dialog):
                 nomFichier = Chemins.GetStaticPath("Images/128x128/%s" % DICT_CIVILITES[IDcivilite]["nomImage"])
                 IDphoto, bmp = CTRL_Photo.GetPhoto(IDindividu=IDindividu, nomFichier=nomFichier, taillePhoto=(taillePhoto, taillePhoto), qualite=100)
 
-                # Création de la photo dans le répertoire Temp
+                # CrÃ©ation de la photo dans le rÃ©pertoire Temp
                 nomFichier = UTILS_Fichiers.GetRepTemp(fichier="photoTmp%d.jpg" % IDindividu)
                 bmp.SaveFile(nomFichier, type=wx.BITMAP_TYPE_JPEG)
                 img = Image(nomFichier, width=dictParametres["taille_photo"], height=dictParametres["taille_photo"])
@@ -562,8 +562,8 @@ class Dialog(wx.Dialog):
 
                 index += 1
 
-        # ---------------- Création du PDF -------------------
-        self.EcritStatusBar(_(u"Création du PDF..."))
+        # ---------------- CrÃ©ation du PDF -------------------
+        self.EcritStatusBar(_(u"CrÃ©ation du PDF..."))
 
         # Initialisation du PDF
         nomDoc = FonctionsPerso.GenerationNomDoc("ANNIVERSAIRES", "pdf")
@@ -577,7 +577,7 @@ class Dialog(wx.Dialog):
         listeMois.sort()
         for numMois in listeMois:
 
-            # Mémorise le numéro de mois pour le titre de la page
+            # MÃ©morise le numÃ©ro de mois pour le titre de la page
             nomMois = LISTE_NOMS_MOIS[numMois - 1]
             story.append(DocAssign("numMois", numMois))
 
@@ -590,14 +590,14 @@ class Dialog(wx.Dialog):
                 dataTableau = []
                 largeursColonnes = []
 
-                # Recherche des entêtes de colonnes :
+                # Recherche des entÃªtes de colonnes :
                 if dictParametres["taille_photo"] != 0 :
                     largeursColonnes.append(dictParametres["taille_photo"] + 6)
 
                 # Colonne nom de l'individu
                 largeursColonnes.append(LARGEUR_COLONNE - sum(largeursColonnes))
 
-                # Label numéro de jour
+                # Label numÃ©ro de jour
                 ligne = []
                 ligne.append(str(numJour))
                 if dictParametres["taille_photo"] != 0 :
@@ -631,7 +631,7 @@ class Dialog(wx.Dialog):
                     ('BACKGROUND', (0, 0), (-1, -1), couleurFondTableau),  # Donne la couleur de fond du titre de groupe
 
                     ('FONT', (0, 0), (-1, -1), "Helvetica", 7),  # Donne la police de caract. + taille de police
-                    ('GRID', (0, 0), (-1, -1), 0.25, colors.black),  # Crée la bordure noire pour tout le tableau
+                    ('GRID', (0, 0), (-1, -1), 0.25, colors.black),  # CrÃ©e la bordure noire pour tout le tableau
                     ('ALIGN', (0, 1), (-1, -1), 'CENTRE'),  # Centre les cases
 
                     ('SPAN', (0, 0), (-1, 0)),  # Fusionne les lignes du haut pour faire le titre du groupe
@@ -640,13 +640,13 @@ class Dialog(wx.Dialog):
 
                 ])
 
-                # Création du tableau
+                # CrÃ©ation du tableau
                 tableau = Table(dataTableau, largeursColonnes)
                 tableau.setStyle(style)
                 story.append(tableau)
                 story.append(Spacer(0, 10))
 
-            # Saut de page après un mois
+            # Saut de page aprÃ¨s un mois
             story.append(PageBreak())
 
         # Enregistrement du PDF

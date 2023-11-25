@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -23,13 +23,13 @@ from Utils import UTILS_Dates
 
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent, date_debut=None, date_fin=None, titre=_(u"Sélection d'une période")):
+    def __init__(self, parent, date_debut=None, date_fin=None, titre=_(u"SÃ©lection d'une pÃ©riode")):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE)
         self.parent = parent   
         self.SetTitle(titre)
 
-        # Période
-        self.box_periode_staticbox = wx.StaticBox(self, -1, _(u"Période"))
+        # PÃ©riode
+        self.box_periode_staticbox = wx.StaticBox(self, -1, _(u"PÃ©riode"))
         self.label_du = wx.StaticText(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_au = wx.StaticText(self, -1, _(u"au"))
@@ -47,12 +47,12 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
-        # Init contrôles
+        # Init contrÃ´les
         if date_debut != None : self.SetDateDebut(date_debut)
         if date_fin != None : self.SetDateFin(date_fin)
 
     def __set_properties(self):
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de dÃ©but")))
         self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
@@ -105,12 +105,12 @@ class Dialog(wx.Dialog):
         return self.ctrl_date_fin.GetDate()
 
     def OnBoutonOk(self, event): 
-        # Vérification de la saisie
+        # VÃ©rification de la saisie
         date_debut = self.GetDateDebut() 
         date_fin = self.GetDateFin() 
         
         if date_debut == None or self.ctrl_date_debut.Validation() == False :
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de début valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de dÃ©but valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
@@ -124,7 +124,7 @@ class Dialog(wx.Dialog):
             return
 
         if date_debut > date_fin :
-            dlg = wx.MessageDialog(self, _(u"La date de début ne peut pas être supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de dÃ©but ne peut pas Ãªtre supÃ©rieure Ã  la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()

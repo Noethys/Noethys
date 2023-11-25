@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -43,9 +43,9 @@ class Panel(wx.Panel):
 
         # Options
         self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
-        self.label_regularisation = wx.StaticText(self, -1, _(u"Heures de régularisation :"))
+        self.label_regularisation = wx.StaticText(self, -1, _(u"Heures de rÃ©gularisation :"))
         self.ctrl_regularisation = CTRL_Saisie_duree.CTRL(self, size=(50, -1))
-        self.label_tolerance = wx.StaticText(self, -1, _(u"Tolérance dépassement :"))
+        self.label_tolerance = wx.StaticText(self, -1, _(u"TolÃ©rance dÃ©passement :"))
         self.ctrl_tolerance = CTRL_Saisie_duree.CTRL(self, size=(50, -1))
 
         self.__set_properties()
@@ -60,12 +60,12 @@ class Panel(wx.Panel):
 
     def __set_properties(self):
         self.bouton_tarifs_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un tarif")))
-        self.bouton_tarifs_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le tarif sélectionné")))
-        self.bouton_tarifs_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le tarif sélectionné")))
-        self.bouton_tarifs_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste")))
+        self.bouton_tarifs_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le tarif sÃ©lectionnÃ©")))
+        self.bouton_tarifs_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le tarif sÃ©lectionnÃ©")))
+        self.bouton_tarifs_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperÃ§u avant impression de la liste")))
         self.bouton_tarifs_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
-        self.ctrl_regularisation.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nombre d'heure de régularisation (en positif ou négatif)")))
-        self.ctrl_tolerance.SetToolTip(wx.ToolTip(_(u"Saisissez ici la valeur de tolérance des dépassements. Une facturation ne sera ainsi appliquée que lorsque le dépassement sera supérieur à la valeur renseignée.")))
+        self.ctrl_regularisation.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nombre d'heure de rÃ©gularisation (en positif ou nÃ©gatif)")))
+        self.ctrl_tolerance.SetToolTip(wx.ToolTip(_(u"Saisissez ici la valeur de tolÃ©rance des dÃ©passements. Une facturation ne sera ainsi appliquÃ©e que lorsque le dÃ©passement sera supÃ©rieur Ã  la valeur renseignÃ©e.")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -134,12 +134,12 @@ class Panel(wx.Panel):
             tracks_tarifs = self.clsbase.GetValeur("tracks_tarifs", [])
             self.ctrl_tarifs.SetTracks(tracks_tarifs)
 
-            # Heures de régularisation
+            # Heures de rÃ©gularisation
             duree_heures_regularisation = self.clsbase.GetValeur("duree_heures_regularisation", datetime.timedelta(0))
             if duree_heures_regularisation != None :
                 self.ctrl_regularisation.SetValue(duree_heures_regularisation)
 
-            # Tolérance des dépassements
+            # TolÃ©rance des dÃ©passements
             duree_tolerance_depassement = self.clsbase.GetValeur("duree_tolerance_depassement", datetime.timedelta(0))
             if duree_tolerance_depassement != None :
                 self.ctrl_tolerance.SetValue(duree_tolerance_depassement)
