@@ -140,6 +140,17 @@ class CTRL_Parametres(DLG_Saisie_lot_tresor_public.CTRL_Parametres):
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
+        choix = [
+            ("002", _(u"Recette")),
+            ("006", _(u"Facture PES")),
+            ("007", _(u"Facture ORMC")),
+            ("008", _(u"Document complémentaire ASAP")),
+        ]
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Type de la pièce jointe"), name="type_pj", liste_choix=choix, valeur="006")
+        propriete.SetEditor("EditeurChoix")
+        propriete.SetHelpString(_(u"Sélectionnez le type de la pièce jointe"))
+        self.Append(propriete)
+
         propriete = wxpg.StringProperty(label=_(u"Nom du tribunal de recours"), name="tribunal", value=_(u"le tribunal administratif"))
         propriete.SetHelpString(_(u"Saisissez le nom du tribunal"))
         self.SetPropertyMaxLength(propriete, 100)
@@ -184,6 +195,7 @@ class CTRL_Parametres(DLG_Saisie_lot_tresor_public.CTRL_Parametres):
         # Préférences
         self.SetPropertyValue("tipi", UTILS_Parametres.Parametres(mode="get", categorie="export_magnus", nom="tipi", valeur=True))
         self.SetPropertyValue("edition_asap", UTILS_Parametres.Parametres(mode="get", categorie="export_magnus", nom="edition_asap", valeur="01"))
+        self.SetPropertyValue("type_pj", UTILS_Parametres.Parametres(mode="get", categorie="export_magnus", nom="type_pj", valeur="006"))
         self.SetPropertyValue("inclure_pieces_jointes", UTILS_Parametres.Parametres(mode="get", categorie="export_magnus", nom="inclure_pieces_jointes", valeur=False))
         self.SetPropertyValue("inclure_detail", UTILS_Parametres.Parametres(mode="get", categorie="export_magnus", nom="inclure_detail", valeur=False))
         self.SetPropertyValue("tribunal", UTILS_Parametres.Parametres(mode="get", categorie="export_magnus", nom="tribunal", valeur=u"le tribunal administratif"))
@@ -349,7 +361,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
 
     def Memorisation_parametres(self):
         # Mémorisation des préférences
-        for code in ("tipi", "edition_asap", "inclure_detail", "inclure_pieces_jointes", "tribunal", "code_compta_as_alias", "service"):
+        for code in ("tipi", "edition_asap", "type_pj", "inclure_detail", "inclure_pieces_jointes", "tribunal", "code_compta_as_alias", "service"):
             UTILS_Parametres.Parametres(mode="set", categorie="export_magnus", nom=code, valeur=self.ctrl_parametres.GetPropertyValue(code))
 
     def OnBoutonFichier(self, event):
@@ -475,6 +487,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
             "tribunal": self.ctrl_parametres.GetPropertyValue("tribunal"),
             "tipi": self.ctrl_parametres.GetPropertyValue("tipi"),
             "edition_asap": self.ctrl_parametres.GetPropertyValue("edition_asap"),
+            "type_pj": self.ctrl_parametres.GetPropertyValue("type_pj"),
             "pieces": listePieces,
             "pieces_jointes" : dict_pieces_jointes,
         }
@@ -986,7 +999,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                 ligne_pj[3] = ConvertToTexte(piece["objet_piece"][:255])
 
                 # TypPJPES - Texte (3)
-                ligne_pj[4] = ConvertToTexte("006")
+                ligne_pj[4] = ConvertToTexte(dict_donnees["type_pj"])
 
                 # TypDoc - Texte (2)
                 ligne_pj[6] = ConvertToTexte("02")
