@@ -19,6 +19,7 @@ import datetime
 
 from Utils import UTILS_Organisateur
 from Utils import UTILS_Config
+from Utils import UTILS_Customize
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 
@@ -183,14 +184,16 @@ def Impression(dictDonnees={}, nomDoc=FonctionsPerso.GenerationNomDoc("RESERVATI
 
                         if etat != None :
                             labelUnite = nomUnite
-                            if dictUnite["type"] == "Horaire" or (dictUnite["type"] == "Evenement" and dictUnite["heure_debut"] and dictUnite["heure_fin"]and dictUnite["heure_debut"] != "00:00" and dictUnite["heure_fin"] != "00:00"):
-                                heure_debut = dictUnite["heure_debut"]
-                                if heure_debut == None : heure_debut = u"?"
-                                heure_debut = heure_debut.replace(":", "h")
-                                heure_fin = dictUnite["heure_fin"]
-                                if heure_fin == None : heure_fin = u"?"
-                                heure_fin = heure_fin.replace(":", "h")
-                                labelUnite += _(u" (%s-%s)") % (heure_debut, heure_fin)
+                            afficher_horaires = UTILS_Customize.GetValeur("impression_consommations", "afficher_horaires", "1", ajouter_si_manquant=False) in ("1", None)
+                            if afficher_horaires:
+                                if dictUnite["type"] == "Horaire" or (dictUnite["type"] == "Evenement" and dictUnite["heure_debut"] and dictUnite["heure_fin"]and dictUnite["heure_debut"] != "00:00" and dictUnite["heure_fin"] != "00:00"):
+                                    heure_debut = dictUnite["heure_debut"]
+                                    if heure_debut == None : heure_debut = u"?"
+                                    heure_debut = heure_debut.replace(":", "h")
+                                    heure_fin = dictUnite["heure_fin"]
+                                    if heure_fin == None : heure_fin = u"?"
+                                    heure_fin = heure_fin.replace(":", "h")
+                                    labelUnite += _(u" (%s-%s)") % (heure_debut, heure_fin)
                             listeConso.append(labelUnite)
 
                             if etat not in listeEtatsTemp:
