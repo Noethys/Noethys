@@ -258,6 +258,7 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Montant"), 'right', 60, "montant", typeDonnee="montant", stringConverter=FormateMontant),
             ColumnDefn(_(u"Ventilé"), 'right', 80, "montant_ventilation", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageVentilation),
             ColumnDefn(_(u"Dépôt"), 'left', 90, "date_depot", typeDonnee="date", stringConverter=FormateDateCourt, imageGetter=GetImageDepot),
+            ColumnDefn(_(u"Observations"), 'left', 130, "observations", typeDonnee="texte"),
             ]
 
         if self.mode == "liste" :
