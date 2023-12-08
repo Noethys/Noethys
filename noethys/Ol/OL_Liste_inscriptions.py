@@ -125,10 +125,11 @@ class ListView(GroupListView):
         self.labelParametres = ""
         self.ctrl_regroupement = kwds.pop("ctrl_regroupement", None)
         self.checkColonne = kwds.pop("checkColonne", False)
-        self.nomListe = kwds.pop("nomListe", "OL_Liste_inscriptions")
+        nomListe = kwds.pop("nomListe", "OL_Liste_inscriptions")
         # Initialisation du listCtrl
         self.nom_fichier_liste = __file__
         GroupListView.__init__(self, *args, **kwds)
+        self.nomListe = nomListe
         # Binds perso
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnActivated)
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)

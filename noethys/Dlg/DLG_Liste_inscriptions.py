@@ -234,7 +234,7 @@ class Dialog(wx.Dialog):
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Activite.png")
 
-        self.listviewAvecFooter = OL_Liste_inscriptions.ListviewAvecFooter(self, kwargs={})
+        self.listviewAvecFooter = OL_Liste_inscriptions.ListviewAvecFooter(self, kwargs={"nomListe": "OL_Liste_inscriptions"})
         self.ctrl_listview = self.listviewAvecFooter.GetListview()
         self.ctrl_recherche = OL_Liste_inscriptions.CTRL_Outils(self, listview=self.ctrl_listview)
         self.ctrl_parametres = Parametres(self, listview=self.ctrl_listview)
