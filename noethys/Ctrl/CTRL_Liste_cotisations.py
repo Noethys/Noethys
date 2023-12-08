@@ -24,7 +24,7 @@ from Utils import UTILS_Utilisateurs
 
 
 class CTRL(wx.Panel):
-    def __init__(self, parent, filtres=[], codesColonnes = ["IDcotisation", "date_debut", "date_fin", "beneficiaires", "rue", "cp", "ville", "nom", "numero", "montant", "solde", "date_creation_carte", "depot_nom", "activites", "observations"], \
+    def __init__(self, parent, filtres=[], codesColonnes = ["IDcotisation", "date_debut", "date_fin", "beneficiaires", "rue", "cp", "ville", "nom", "type_cotisation", "unite_cotisation", "numero", "montant", "solde", "date_creation_carte", "depot_nom", "activites", "observations"], \
                             checkColonne = True, triColonne = "date_debut"):
         wx.Panel.__init__(self, parent, id=-1, name="CTRL_Liste_cotisations", style=wx.TAB_TRAVERSAL)
         self.parent = parent
