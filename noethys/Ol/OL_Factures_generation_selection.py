@@ -86,6 +86,7 @@ class ListView(FastObjectListView):
                                                         mention1=self.dictParametres["mention1"],
                                                         mention2=self.dictParametres["mention2"],
                                                         mention3=self.dictParametres["mention3"],
+                                                        inclure_cotisations_si_conso=self.dictParametres["inclure_cotisations_si_conso"],
                                                         )
             del dlgAttente
         except Exception as err:

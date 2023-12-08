@@ -147,7 +147,7 @@ class Facturation():
                 texte = texte.replace(key, six.text_type(valeur))
         return texte
 
-    def GetDonnees(self, listeFactures=[], liste_activites=[], date_debut=None, date_fin=None, date_edition=None, date_echeance=None, prestations=["consommation", "cotisation", "location", "autre"], typeLabel=0, date_anterieure=None, mention1="", mention2="", mention3=""):
+    def GetDonnees(self, listeFactures=[], liste_activites=[], date_debut=None, date_fin=None, date_edition=None, date_echeance=None, prestations=["consommation", "cotisation", "location", "autre"], typeLabel=0, date_anterieure=None, mention1="", mention2="", mention3="", inclure_cotisations_si_conso=False):
         """ Recherche des factures à créer """      
         
         dictFactures = {}
@@ -205,8 +205,11 @@ class Facturation():
         ORDER BY prestations.date
         ;""" % conditions
         DB.ExecuterReq(req)
-        listePrestations = DB.ResultatReq()  
-        
+        listePrestations = DB.ResultatReq()
+
+        # Petite liste pour savoir si l'individu a des consommations sur la facture (pour l'option Inclure cotisations si individu sur activité)
+        famille_has_prestations_activite = {valeurs[1]: True for valeurs in listePrestations if valeurs[3] == "consommation"}
+
         # Recherche de la ventilation des prestations
         if len(listeFactures) == 0 :
             conditions = "WHERE (prestations.IDactivite IN %s OR prestations.IDactivite IS NULL) AND %s" % (conditionActivites, conditionDates)
@@ -408,7 +411,11 @@ class Facturation():
         dictComptes = {}
         dictComptesPayeursFactures = {}
         for IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, tva, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDfamille, forfait_date_debut, forfait_date_fin in listePrestations :
-            montant = FloatToDecimal(montant) 
+            montant = FloatToDecimal(montant)
+
+            # On passe cette prestation si c'est une cotisation et que la famille n'a pas de consommations d'activités sur cette facture
+            if inclure_cotisations_si_conso and categorie == "cotisation" and IDcompte_payeur not in famille_has_prestations_activite:
+                continue
             
             if (IDcompte_payeur in dictComptesPayeursFactures) == False :
                 dictComptesPayeursFactures[IDcompte_payeur] = []
