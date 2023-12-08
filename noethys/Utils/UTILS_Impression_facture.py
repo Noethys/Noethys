@@ -774,7 +774,7 @@ class Impression():
                             else :
                                 texteMontant = montantReglement
                                 
-                            texte = u"%s%s%s de %s (%s)" % (dictTemp["mode"], numero, emetteur, dictTemp["payeur"], texteMontant)
+                            texte = u"%s du %s %s%s de %s (%s)" % (dictTemp["mode"], UTILS_Dates.DateDDEnFr(dictTemp["date"]), numero, emetteur, dictTemp["payeur"], texteMontant)
                             listeTextesReglements.append(texte)
                         
                         if dictValeur["solde"] > FloatToDecimal(0.0) :
