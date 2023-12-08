@@ -285,7 +285,7 @@ class ListView(FastObjectListView):
                 dlg.Destroy()
             else:
                 dlg.Destroy()
-                return False
+                return False, False
         if format == "pes":
             classe = DLG_Saisie_lot_tresor_public_pes.Dialog
         if format == "magnus":
