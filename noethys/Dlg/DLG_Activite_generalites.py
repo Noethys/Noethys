@@ -215,6 +215,8 @@ class Panel(wx.Panel):
         self.ctrl_code_produit_local = wx.TextCtrl(self, -1, "")
         self.label_code_service = wx.StaticText(self, -1, _(u"Code service :"))
         self.ctrl_code_service = wx.TextCtrl(self, -1, "")
+        self.label_code_analytique = wx.StaticText(self, -1, _(u"Code analytique :"))
+        self.ctrl_code_analytique = wx.TextCtrl(self, -1, "")
 
         # Régie de facturation
         self.staticbox_regie_facturation_staticbox = wx.StaticBox(self, -1, _(u"Régie de facturation"))
@@ -316,6 +318,7 @@ class Panel(wx.Panel):
         self.ctrl_code_comptable.SetToolTip(wx.ToolTip(_(u"Saisissez un code comptable si vous souhaitez utiliser l'export des écritures comptables vers des logiciels de compta")))
         self.ctrl_code_produit_local.SetToolTip(wx.ToolTip(_(u"Saisissez un code produit local si vous souhaitez utiliser l'export vers les logiciels de comptabilité publique")))
         self.ctrl_code_service.SetToolTip(wx.ToolTip(_(u"Saisissez un code service si vous souhaitez utiliser l'export vers les logiciels de comptabilité publique")))
+        self.ctrl_code_analytique.SetToolTip(wx.ToolTip(_(u"Saisissez un code analytique si vous souhaitez utiliser l'export vers les logiciels de comptabilité")))
         self.ctrl_regie_facturation.SetToolTip(wx.ToolTip(_(u"Sélectionnez une régie de facturation")))
         self.check_inscriptions_multiples.SetToolTip(wx.ToolTip(_(u"Autoriser un individu à être inscrit plusieurs fois à la même activité. ATTENTION, ne pas utiliser cette option si vous utilisez des consommations dans cette activité car la grille des consommations est incompatible.")))
 
@@ -368,13 +371,15 @@ class Panel(wx.Panel):
 
         # Comptabilite
         staticbox_code_comptabilite = wx.StaticBoxSizer(self.staticbox_comptabilite_staticbox, wx.HORIZONTAL)
-        grid_sizer_comptabilite = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=5)
+        grid_sizer_comptabilite = wx.FlexGridSizer(rows=4, cols=2, vgap=5, hgap=5)
         grid_sizer_comptabilite.Add(self.label_code_comptable, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_comptabilite.Add(self.ctrl_code_comptable, 0, wx.EXPAND, 0)
         grid_sizer_comptabilite.Add(self.label_code_produit_local, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_comptabilite.Add(self.ctrl_code_produit_local, 0, wx.EXPAND, 0)
         grid_sizer_comptabilite.Add(self.label_code_service, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_comptabilite.Add(self.ctrl_code_service, 0, wx.EXPAND, 0)
+        grid_sizer_comptabilite.Add(self.label_code_analytique, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_comptabilite.Add(self.ctrl_code_analytique, 0, wx.EXPAND, 0)
         grid_sizer_comptabilite.AddGrowableCol(1)
         staticbox_code_comptabilite.Add(grid_sizer_comptabilite, 1, wx.ALL | wx.EXPAND, 5)
         grid_sizer_gauche.Add(staticbox_code_comptabilite, 1, wx.EXPAND, 0)
@@ -537,10 +542,16 @@ class Panel(wx.Panel):
         """ Importation des données """
         db = GestionDB.DB()
         req = """SELECT nom, abrege, coords_org, rue, cp, ville, tel, fax, mail, site, 
-        logo_org, logo, date_debut, date_fin, public, nbre_inscrits_max, code_comptable, regie, code_produit_local, inscriptions_multiples, code_service
+        logo_org, logo, date_debut, date_fin, public, nbre_inscrits_max, code_comptable, regie, code_produit_local, inscriptions_multiples, code_service, code_analytique
         FROM activites 
         WHERE IDactivite=%d;""" % self.IDactivite
-        db.ExecuterReq(req)
+        resultat = db.ExecuterReq(req)
+        if resultat == 0:
+            dlg = wx.MessageDialog(self, _(u"Il semble y avoir une erreur dans la dernière mise à niveau de la base de données. Essayez ceci depuis le Noethys de l'ordinateur qui héberge les données : Menu Outils > Utilitaires admin > Procédures. Saisissez le code A9281 et validez."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+
         listeDonnees = db.ResultatReq()
         db.Close()
         if len(listeDonnees) == 0 : return
@@ -627,6 +638,10 @@ class Panel(wx.Panel):
         code_service = activite[20]
         if code_service != None:
             self.ctrl_code_service.SetValue(code_service)
+
+        code_analytique = activite[21]
+        if code_analytique != None:
+            self.ctrl_code_analytique.SetValue(code_analytique)
 
         # Régie de facturation
         regie = activite[17]
@@ -764,6 +779,7 @@ class Panel(wx.Panel):
         code_comptable = self.ctrl_code_comptable.GetValue() 
         code_produit_local = self.ctrl_code_produit_local.GetValue()
         code_service = self.ctrl_code_service.GetValue()
+        code_analytique = self.ctrl_code_analytique.GetValue()
 
         # Régie de facturation
         regie = self.ctrl_regie_facturation.GetID()
@@ -789,6 +805,7 @@ class Panel(wx.Panel):
                 ("regie", regie),
                 ("code_produit_local", code_produit_local),
                 ("code_service", code_service),
+                ("code_analytique", code_analytique),
                 ("inscriptions_multiples", inscriptions_multiples),
             ]
         DB.ReqMAJ("activites", listeDonnees, "IDactivite", self.IDactivite)
