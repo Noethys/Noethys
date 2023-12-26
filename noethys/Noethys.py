@@ -4036,16 +4036,11 @@ class MainFrame(wx.Frame):
                     dlg.ShowModal()
                     dlg.Destroy()
 
-
-
-
-
-
-
-
-
-
-
+            if versionFichier < (1, 3, 3, 0):
+                from Dlg import DLG_Financement
+                dlg = DLG_Financement.Dialog(self, code="noethysweb")
+                dlg.ShowModal()
+                dlg.Destroy()
 
 
 
