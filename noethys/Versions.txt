@@ -1,3 +1,16 @@
+Version 1.3.3.0 (26/12/2023) :
+
+- Ajout de l'export vers Cerig
+- Ajout du code analytique dans l'activité
+- Ajout de l'envoi de SMS avec BREVO
+- Ajout de la sélection du type de pièce jointe dans l'export BL
+- Ajout de la date du règlement dans la facture
+- Ajout des colonnes Type et Unité dans la liste des cotisations
+- Ajout de la colonne Observations dans la liste des règlements
+- Ajout de l'option Inclure les cotisations si famille sur activités dans la génération des factures
+- Correction de la mémorisation des colonnes dans la liste des inscriptions à une activité
+- Correction de la colonne Facturé dans la liste des inscriptions
+
 Version 1.3.2.8 (09/11/2023) :
 
 - Ajout de l'envoi de SMS avec OVH
