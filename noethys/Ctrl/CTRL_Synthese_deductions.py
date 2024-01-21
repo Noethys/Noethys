@@ -236,12 +236,15 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     "caisse": nomCaisse, "num_allocataire": num_allocataire, "prestations": {},
                     "montant_initial": FloatToDecimal(0), "montant_deduction": FloatToDecimal(0), "montant_final": FloatToDecimal(0),
                     "liste_dates": [], "individu": nom_complet_individu, "famille": self.dictInfosFamilles[IDfamille]["FAMILLE_NOM"],
+                    "liste_individus": [],
                 }
             dictResultats[regroupement]["montant_initial"] += montantInitialPrestation
             dictResultats[regroupement]["montant_deduction"] += montant
             dictResultats[regroupement]["montant_final"] += montantPrestation
             if date not in dictResultats[regroupement]["liste_dates"]:
                 dictResultats[regroupement]["liste_dates"].append(date)
+            if IDindividu not in dictResultats[regroupement]["liste_individus"]:
+                dictResultats[regroupement]["liste_individus"].append(IDindividu)
 
             # Prestations
             if labelPrestation not in dictResultats[regroupement]["prestations"]:
@@ -280,12 +283,15 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             ("date_min", _(u"Date min")),
             ("date_max", _(u"Date max")),
             ("nbre_dates", _(u"Nbre dates")),
+
         ]
         if self.affichage_regroupement == "individu":
             listeColonnes.insert(0, ("num_allocataire", _(u"N° Allocataire")))
             listeColonnes.insert(0, ("famille", _(u"Famille")))
-        if self.affichage_regroupement == "famille":
+        elif self.affichage_regroupement == "famille":
             listeColonnes.insert(0, ("num_allocataire", _(u"N° Allocataire")))
+        else:
+            listeColonnes.append(("nbre_individus", _(u"Nbre individus")))
         for label_prestation in listePrestations:
             listeColonnes.append(("prestation", label_prestation))
 
@@ -349,6 +355,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 if code_colonne == "date_min": valeur = UTILS_Dates.DateDDEnFr(min(valeurs["liste_dates"]))
                 if code_colonne == "date_max": valeur = UTILS_Dates.DateDDEnFr(max(valeurs["liste_dates"]))
                 if code_colonne == "nbre_dates": valeur = len(valeurs["liste_dates"])
+                if code_colonne == "nbre_individus": valeur = len(valeurs["liste_individus"])
                 if code_colonne == "prestation":
                     try:
                         valeur = valeurs["prestations"][label_colonne]["nbre"]
