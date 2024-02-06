@@ -204,7 +204,7 @@ class Donnees():
         LEFT JOIN cotisations ON cotisations.IDprestation = prestations.IDprestation
         LEFT JOIN types_cotisations ON types_cotisations.IDtype_cotisation = cotisations.IDtype_cotisation
         WHERE %s
-        GROUP BY prestations.IDprestation
+        GROUP BY prestations.IDprestation, types_cotisations.IDtype_cotisation
         ORDER BY prestations.date
         ;""" % condition
         DB.ExecuterReq(req)
