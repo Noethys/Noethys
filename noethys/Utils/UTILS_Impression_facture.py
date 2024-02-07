@@ -648,7 +648,12 @@ class Impression():
                                         dataTableau.append([texteDate, texteIntitules, texteMontantsHT, texteTVA, texteMontantsTTC])
                                     else :
                                         dataTableau.append([texteDate, texteIntitules, texteMontantsTTC])
-                                    
+
+                            # Sous-total par activité
+                            if dictOptions.get("afficher_sous_total_activite", False) == True:
+                                total_activite = sum([dictDates["total"] for date, dictDates in dictActivites["presences"].items()])
+                                dataTableau.append([Paragraph(u"<para align='right'><i>Sous-total</i></para>", paraStyle), "", Paragraph(u"<para align='center'><i>%.02f %s</i></para>" % (total_activite, SYMBOLE), paraStyle)])
+
                             # Style du tableau des prestations
                             tableau = Table(dataTableau, largeursColonnes)
                             listeStyles = [
@@ -659,7 +664,10 @@ class Impression():
                                 ('ALIGN', (1, 0), (1, -1), 'LEFT'),
                                 ('TOPPADDING', (0, 0), (-1, -1), 1), 
                                 ('BOTTOMPADDING', (0, 0), (-1, -1), 3), 
-                                ]
+                            ]
+                            if dictOptions.get("afficher_sous_total_activite", False) == True:
+                                listeStyles.append(('SPAN', (0, -1), (1, -1)))
+                                listeStyles.append(('BACKGROUND', (-1, -1), (-1, -1), couleurFondActivite))
                             tableau.setStyle(TableStyle(listeStyles))
                             story.append(tableau)
 
