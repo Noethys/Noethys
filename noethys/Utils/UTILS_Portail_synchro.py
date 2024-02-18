@@ -1398,7 +1398,7 @@ class Synchro():
 
         cryptage_mdp = self.dict_parametres["secret_key"][:10] #base64.b64decode(password)
         nomFichierCRYPT = nomFichierZIP.replace(".zip", ".crypt")
-        ancienne_methode = UTILS_Customize.GetValeur("version_cryptage", "connecthys", "1", ajouter_si_manquant=False) in ("1", None)
+        ancienne_methode = UTILS_Customize.GetValeur("version_cryptage", "connecthys", "2", ajouter_si_manquant=False) == "1"
         UTILS_Cryptage_fichier.CrypterFichier(nomFichierZIP, nomFichierCRYPT, cryptage_mdp, ancienne_methode=ancienne_methode)
         os.remove(nomFichierZIP)
 
