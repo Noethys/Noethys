@@ -48,7 +48,7 @@ class Track(object):
         self.IDfamille = donnees[3]
         self.date_debut = donnees[4]
         self.date_fin = donnees[5]
-        self.nom = donnees[6]
+        self.nom = donnees[6] or ""
         self.public = donnees[7]
         self.duree_validite = donnees[8]
         self.valide_rattachement = donnees[9]
