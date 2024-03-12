@@ -451,7 +451,10 @@ class Dialog(wx.Dialog):
             if track.IDcompte_payeur in dictPayeurs :
                 IDpayeur = dictPayeurs[track.IDcompte_payeur][0]["IDpayeur"]
             else :
-                nomTitulaire = u"%s %s" % (track.listeTitulaires[0]["nom"], track.listeTitulaires[0]["prenom"])
+                if track.listeTitulaires:
+                    nomTitulaire = u"%s %s" % (track.listeTitulaires[0]["nom"], track.listeTitulaires[0]["prenom"])
+                else:
+                    nomTitulaire = "?"
                 IDpayeur = DB.ReqInsert("payeurs", [("IDcompte_payeur", track.IDcompte_payeur), ("nom", nomTitulaire)])
                 
             # Création des données à sauvegarder

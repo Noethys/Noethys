@@ -28,7 +28,7 @@ import FonctionsPerso
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 from Utils import UTILS_Parametres
-import six
+import six, csv
 import wx.propgrid as wxpg
 if 'phoenix' in wx.PlatformInfo:
     from wx.adv import BitmapComboBox
@@ -204,7 +204,7 @@ class Donnees():
         LEFT JOIN cotisations ON cotisations.IDprestation = prestations.IDprestation
         LEFT JOIN types_cotisations ON types_cotisations.IDtype_cotisation = cotisations.IDtype_cotisation
         WHERE %s
-        GROUP BY prestations.IDprestation
+        GROUP BY prestations.IDprestation, types_cotisations.IDtype_cotisation
         ORDER BY prestations.date
         ;""" % condition
         DB.ExecuterReq(req)
@@ -1090,6 +1090,7 @@ class CTRL_Logiciel(BitmapComboBox):
             {"code": "ciel_compta_ebp", "label" : _(u"CIEL Compta (Format EBP)"), "image" : wx.Bitmap(Chemins.GetStaticPath('Images/48x48/Logiciel_ciel.png'), wx.BITMAP_TYPE_PNG)},
             {"code": "ciel_compta_ximport", "label" : _(u"CIEL Compta (Format XImport)"), "image" : wx.Bitmap(Chemins.GetStaticPath('Images/48x48/Logiciel_ciel.png'), wx.BITMAP_TYPE_PNG)},
             {"code": "quadracompta", "label": _(u"QuadraCOMPTA"), "image": wx.Bitmap(Chemins.GetStaticPath('Images/48x48/Logiciel_quadra.png'), wx.BITMAP_TYPE_PNG)},
+            {"code": "cerig", "label": _(u"Cerig"), "image": wx.Bitmap(Chemins.GetStaticPath('Images/48x48/Logiciel_cerig.png'), wx.BITMAP_TYPE_PNG)},
         ]
         for dictFormat in self.listeFormats :
             self.Append(dictFormat["label"], dictFormat["image"], dictFormat["label"])
@@ -1725,6 +1726,180 @@ class CTRL_Parametres_quadracompta(CTRL_Parametres) :
 
         return True
 
+
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+class CTRL_Parametres_cerig(CTRL_Parametres) :
+    def __init__(self, parent):
+        sp = wx.StandardPaths.Get()
+        cheminDefaut = sp.GetDocumentsDir()
+
+        self.listeDonnees = [
+            _(u"Options générales"),
+            {"type": "check", "label": _(u"Mémoriser les paramètres"), "description": _(u"Mémoriser les paramètres"), "code": "memoriser_parametres", "tip": _(u"Cochez cette case pour mémoriser les paramètres"), "defaut": True, "obligatoire": True},
+            {"type": "repertoire", "label": _(u"Répertoire de destination"), "description": _(u"Répertoire de destination"), "code": "cerig_repertoire", "tip": _(u"Sélectionnez un répertoire de destination"), "defaut": cheminDefaut, "obligatoire": True},
+            _(u"Codes par défaut"),
+            {"type": "chaine", "label": _(u"Compte par défaut"), "description": _(u"Code compte par défaut"), "code": "cerig_code_comptable", "tip": _(u"Saisissez le code comptable par défaut"), "defaut": _(u""), "obligatoire": False},
+            {"type": "chaine", "label": _(u"Analytique par défaut"), "description": _(u"Code analytique par défaut"), "code": "cerig_code_analytique", "tip": _(u"Saisissez le code analytique par défaut"), "defaut": _(u""), "obligatoire": False},
+        ]
+        CTRL_Parametres.__init__(self, parent, self.listeDonnees)
+
+    def Generation(self, format=None):
+        if self.Validation() == False: return False
+
+        # Récupération des paramètres
+        dictParametres = self.GetParametres()
+
+        # Importation des familles
+        dictTitulaires = UTILS_Titulaires.GetTitulaires()
+
+        # Importation des prestations
+        condition = "factures.date_debut>='%s' AND factures.date_fin<='%s'" % (dictParametres["date_debut"], dictParametres["date_fin"])
+
+        DB = GestionDB.DB()
+        req = """
+        SELECT prestations.IDprestation, prestations.date, prestations.code_compta, prestations.IDfacture, prestations.label,
+        prestations.montant, prestations.IDactivite, prestations.IDtarif, prestations.IDfamille, prestations.IDindividu, 
+        activites.nom, activites.code_comptable, activites.code_analytique,
+        tarifs.code_compta,
+        noms_tarifs.nom, 
+        types_cotisations.code_comptable, types_cotisations.nom,
+        factures.numero, factures.date_edition,
+        individus.prenom
+        FROM prestations
+        LEFT JOIN activites ON prestations.IDactivite = activites.IDactivite
+        LEFT JOIN individus ON individus.IDindividu = prestations.IDindividu
+        LEFT JOIN tarifs ON prestations.IDtarif = tarifs.IDtarif
+        LEFT JOIN noms_tarifs ON tarifs.IDnom_tarif = noms_tarifs.IDnom_tarif
+        LEFT JOIN categories_tarifs ON prestations.IDcategorie_tarif = categories_tarifs.IDcategorie_tarif
+        LEFT JOIN cotisations ON cotisations.IDprestation = prestations.IDprestation
+        LEFT JOIN types_cotisations ON types_cotisations.IDtype_cotisation = cotisations.IDtype_cotisation
+        LEFT JOIN factures ON factures.IDfacture = prestations.IDfacture
+        WHERE %s
+        GROUP BY prestations.IDprestation
+        ORDER BY prestations.date
+        ;""" % condition
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+
+        anomalies = []
+        dict_resultats = {}
+        for IDprestation, date, code_compta_prestation, IDfacture, label, montant, IDactivite, IDtarif, IDfamille, IDindividu, nom_activite, code_compta_activite, code_analytique_activite, code_compta_tarif, nom_tarif, code_compta_type_cotisation, nom_type_cotisation, num_facture, date_edition, prenom_individu in listeDonnees :
+            montant = FloatToDecimal(montant)
+
+            cle_primaire = IDfacture
+            if cle_primaire:
+
+                # Regroupement primaire
+                if cle_primaire not in dict_resultats:
+                    code_comptable_famille = dictTitulaires[IDfamille]["code_comptable"]
+                    noms_titulaires = dictTitulaires[IDfamille]["titulairesSansCivilite"]
+                    dict_resultats[cle_primaire] = {
+                        "IDfamille": IDfamille, "code_comptable_famille": code_comptable_famille, "num_facture": num_facture,
+                        "date_edition_facture": UTILS_Dates.DateEngEnDateDD(date_edition), "montant_facture": FloatToDecimal(0.0), "lignes": {},
+                        "noms_titulaires": noms_titulaires,
+                        }
+
+                # Recherche le code compta de la prestation
+                code_compta = dictParametres["cerig_code_comptable"]
+                if code_compta_prestation:
+                    code_compta = code_compta_prestation
+                if code_compta in (None, ""):
+                    if code_compta_tarif not in (None, ""):
+                        code_compta = code_compta_tarif
+                    else:
+                        if code_compta_activite not in (None, ""):
+                            code_compta = code_compta_activite
+                        else:
+                            if code_compta_type_cotisation not in (None, ""):
+                                code_compta = code_compta_type_cotisation
+
+                if not code_compta:
+                    if IDactivite:
+                        txt = u"Le code comptable de l'activité %s est manquant." % nom_activite
+                    else:
+                        txt = u"Le code comptable de la prestation %s est manquant." % label
+                    if txt not in anomalies:
+                        anomalies.append(txt)
+
+                # Code analytique
+                code_analytique = dictParametres["cerig_code_analytique"]
+                if code_analytique_activite:
+                    code_analytique = code_analytique_activite
+                if not code_analytique:
+                    anomalies.append(u"Le code analytique de la prestation %s est manquant." % label)
+
+                # Création label
+                if prenom_individu:
+                    label = u"%s - %s" % (prenom_individu, label)
+
+                # Regroupement secondaire
+                cle_secondaire = code_compta
+
+                if cle_secondaire not in dict_resultats[cle_primaire]["lignes"]:
+                    dict_resultats[cle_primaire]["lignes"][cle_secondaire] = {"code_compta": code_compta, "code_analytique": code_analytique, "label": label, "montant": FloatToDecimal(0.0)}
+                dict_resultats[cle_primaire]["lignes"][cle_secondaire]["montant"] += montant
+                dict_resultats[cle_primaire]["montant_facture"] += montant
+
+        # Tri par IDfacture
+        liste_clesprimaires = list(dict_resultats.keys())
+        liste_clesprimaires.sort()
+
+        # Création du fichier
+        lignes = []
+        for cle_primaire in liste_clesprimaires:
+            date_facture = dict_resultats[cle_primaire]["date_edition_facture"].strftime("%Y%m%d")
+            noms_titulaires = dict_resultats[cle_primaire]["noms_titulaires"]
+            label_facture = u"Facture %s" % dict_resultats[cle_primaire]["num_facture"]
+            montant_facture = dict_resultats[cle_primaire]["montant_facture"]
+
+            for cle_secondaire, valeurs in dict_resultats[cle_primaire]["lignes"].items():
+                lignes.append((date_facture, noms_titulaires, label_facture, valeurs["label"], str(montant_facture), valeurs["code_compta"], valeurs["code_analytique"]))
+
+        # Si vide:
+        if not lignes:
+            dlg = wx.MessageDialog(self, _(u"Aucune donnée n'a été trouvée sur la période sélectionnée."), _(u"Erreur"), wx.OK | wx.ICON_INFORMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+
+        # Affichage des anomalies
+        if anomalies:
+            dlg = DLG_Messagebox.Dialog(self, titre=_(u"Anomalies"), introduction=_("Veuillez corriger les %d anomalies suivantes avant de pouvoir continuer :" % len(anomalies)), detail="\n".join(anomalies), icone=wx.ICON_ERROR, boutons=[_(u"Fermer"), ], defaut=0)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+
+        # Génération du fichier texte
+        succes = self.CreationFichier(nom_fichier="export_cerig.txt", lignes=lignes)
+        if not succes:
+            return False
+
+        # Succès
+        dlg = wx.MessageDialog(self, _(u"Le fichier a été généré avec succès dans le répertoire %s.") % dictParametres["cerig_repertoire"], _(u"Succès"), wx.OK | wx.ICON_INFORMATION)
+        dlg.ShowModal()
+        dlg.Destroy()
+        return True
+
+    def CreationFichier(self, nom_fichier="", lignes=[]):
+        dictParametres = self.GetParametres()
+
+        cheminFichier = os.path.join(dictParametres["cerig_repertoire"], nom_fichier)
+        if os.path.isfile(cheminFichier):
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?"),"Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse == wx.ID_NO:
+                return False
+
+        # Création d'un classeur et d'une feuille
+        with codecs.open(cheminFichier, mode="w", encoding="utf-8") as fichier:
+            for ligne in lignes:
+                fichier.write(u";".join(ligne) + "\n")
+
+        return True
+
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 class Dialog(wx.Dialog):
@@ -1754,6 +1929,7 @@ class Dialog(wx.Dialog):
         self.pages = [
             {"code": "defaut", "logiciels": ["ebp_compta", "ciel_compta_ebp", "ciel_compta_ximport"], "ctrl": Panel_parametres(self, CTRL_Parametres_defaut)},
             {"code": "quadracompta", "logiciels": ["quadracompta"], "ctrl": Panel_parametres(self, CTRL_Parametres_quadracompta)},
+            {"code": "cerig", "logiciels": ["cerig"], "ctrl": Panel_parametres(self, CTRL_Parametres_cerig)},
         ]
 
         # Boutons
@@ -1973,8 +2149,8 @@ if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
     dlg = Dialog(None)
-    dlg.ctrl_date_debut.SetDate("2019-01-01")
-    dlg.ctrl_date_fin.SetDate("2019-12-31")
+    dlg.ctrl_date_debut.SetDate("2011-01-01")
+    dlg.ctrl_date_fin.SetDate("2011-12-31")
     app.SetTopWindow(dlg)
     dlg.ShowModal()
     app.MainLoop()

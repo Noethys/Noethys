@@ -122,7 +122,13 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetHelpString(_(u"SÃ©lectionnez le type d'intitulÃ© Ã  afficher pour les prestations")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
-        
+
+        # Afficher le sous-total par activité
+        propriete = wxpg.BoolProperty(label=_(u"Afficher le sous-total par activité"), name="afficher_sous_total_activite", value=False)
+        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher le sous-total par activité"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
         # Couleur 1
         propriete = wxpg.ColourProperty(label=_(u"Couleur de fond 1"), name="couleur_fond_1", value=wx.Colour(204, 204, 255) )
         propriete.SetHelpString(_(u"SÃ©lectionnez la couleur 1")) 

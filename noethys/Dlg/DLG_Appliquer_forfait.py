@@ -14,7 +14,7 @@ from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
-import datetime
+import datetime, decimal
 import wx.lib.agw.hypertreelist as HTL
 import six
 from Ctrl import CTRL_Bandeau
@@ -416,7 +416,6 @@ class Forfaits():
                                     # ------------ Recherche du montant Ã  appliquer : QUOTIENT FAMILIAL
                                     if methode_calcul == "qf" :
                                         montant_tarif = 0.0
-                                        tarifFound = False
                                         lignes_calcul = dictTarif["lignes_calcul"]
                                         for ligneCalcul in lignes_calcul :
                                             qf_min = ligneCalcul["qf_min"]
@@ -428,17 +427,68 @@ class Forfaits():
                                                 if QFfamille >= qf_min and QFfamille <= qf_max :
                                                     break
 
-                                            # if dictQuotientsFamiliaux.has_key(self.IDfamille) :
-                                            #     listeQuotientsFamiliaux = dictQuotientsFamiliaux[self.IDfamille]
-                                            # else:
-                                            #     listeQuotientsFamiliaux = []
-                                            # for date_debut, date_fin, quotient in listeQuotientsFamiliaux :
-                                            #     if date_facturation >= date_debut and date_facturation <= date_fin and quotient >= qf_min and quotient <= qf_max :
-                                            #         tarifFound = True
-                                            #     if tarifFound == True :
-                                            #         break
-                                            # if tarifFound == True :
-                                            #     break
+                                    # ------------ Recherche du montant du tarif : TAUX D'EFFORT
+                                    if methode_calcul in ("taux_montant_unique", "taux_qf"):
+                                        montant_tarif = 0.0
+                                        lignes_calcul = dictTarif["lignes_calcul"]
+
+                                        # Recherche QF de la famille
+                                        QFfamille = self.RechercheQF(dictQuotientsFamiliaux, dictTarif, self.IDfamille, date_facturation)
+                                        if QFfamille == None:
+                                            dlg = wx.MessageDialog(None, _(u"Le tarif est basé sur le taux d'effort alors que cette famille n'a aucun quotient valide !"), "Erreur", wx.OK | wx.ICON_ERROR)
+                                            dlg.ShowModal()
+                                            dlg.Destroy()
+                                            return False
+
+                                        for ligneCalcul in lignes_calcul:
+                                            qf_min = ligneCalcul["qf_min"]
+                                            qf_max = ligneCalcul["qf_max"]
+                                            taux = ligneCalcul["taux"]
+                                            montant_min = ligneCalcul["montant_min"]
+                                            montant_max = ligneCalcul["montant_max"]
+                                            ajustement = ligneCalcul["ajustement"]
+
+                                            # Vérifie si QF ok pour le calcul basé également sur paliers de QF
+                                            conditions = True
+                                            if methode_calcul == "taux_qf":
+                                                if QFfamille != None:
+                                                    if QFfamille >= qf_min and QFfamille <= qf_max:
+                                                        conditions = True
+                                                    else:
+                                                        conditions = False
+
+                                            if conditions == True:
+
+                                                # Calcul du tarif
+                                                if QFfamille != None:
+                                                    montant_tarif = QFfamille * taux
+                                                    montant_tarif = float(decimal.Decimal(str(montant_tarif)))
+                                                else:
+                                                    if montant_max != None:
+                                                        montant_tarif = montant_max
+
+                                                # Montants seuil et plafond
+                                                if montant_min != None:
+                                                    if montant_tarif < montant_min:
+                                                        montant_tarif = montant_min
+                                                if montant_max != None:
+                                                    if montant_tarif > montant_max:
+                                                        montant_tarif = montant_max
+
+                                                # Application de l'ajustement (majoration ou déduction)
+                                                if ajustement != None:
+                                                    montant_tarif = montant_tarif + ajustement
+                                                    if montant_tarif < 0.0:
+                                                        montant_tarif = 0.0
+
+                                                # Création du label personnalisé
+                                                label = ligneCalcul["label"]
+                                                if label != None and label != "":
+                                                    if "{TAUX}" in label:
+                                                        label = label.replace("{TAUX}", str(taux))
+                                                    nom_tarif = label
+
+                                                break
 
                                     # -------------- Recherche du montant du tarif : CHOIX (MONTANT ET LABEL SELECTIONNES PAR L'UTILISATEUR)
                                     if methode_calcul == "choix" :
