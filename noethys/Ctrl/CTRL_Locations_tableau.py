@@ -381,7 +381,7 @@ class CTRL(wx.Panel):
             self.ctrl_tableau.SetDelta(h=0)
             nbre_colonnes = (1 + len(self.ctrl_tableau.liste_colonnes))
             nbre_colonnes_visibles = 1 + largeur_reelle / self.dict_options["case_largeur"]
-            self.scrollbar_h.SetScrollbar(0, nbre_colonnes_visibles, nbre_colonnes, nbre_colonnes_visibles)
+            self.scrollbar_h.SetScrollbar(0, int(nbre_colonnes_visibles), nbre_colonnes, int(nbre_colonnes_visibles))
 
         if v == True :
             self.ctrl_tableau.SetDelta(v=0)
@@ -396,7 +396,7 @@ class CTRL(wx.Panel):
                 nbre_lignes_total += nbre
 
             nbre_lignes_visibles = (hauteur_reelle / self.dict_options["case_hauteur"])
-            self.scrollbar_v.SetScrollbar(0, nbre_lignes_visibles, nbre_lignes_total+1, nbre_lignes_visibles)
+            self.scrollbar_v.SetScrollbar(0, int(nbre_lignes_visibles), nbre_lignes_total+1, int(nbre_lignes_visibles))
 
     def SetWheel(self, valeur=0):
         position_actuelle = self.scrollbar_v.GetThumbPosition()
@@ -473,9 +473,9 @@ class Colonne(object):
                     texte = "%dh" % dt.hour
                     largTexte, hautTexte = dc.GetTextExtent(texte)
                     if ecartGraduations > 5 :
-                        x_texte = x - (largTexte / 2) + rect.x
+                        x_texte = x - largTexte / 2 + rect.x
                         if x_texte - largTexte > rect.x and x_texte + largTexte < rect.right :
-                            dc.DrawText(texte, x_texte, posY + 2)
+                            dc.DrawText(texte, int(x_texte), posY + 2)
                         hauteurGraduations = 10
                     else :
                         hauteurGraduations = 4
@@ -484,7 +484,8 @@ class Colonne(object):
                 elif dt.minute == 30:
                     hauteurTrait = 2.5
                 if x > 2 and x < rect.width - 2 :
-                    dc.DrawLine(x + rect.x, posY + hautTexte + hautTraitHeures - hauteurTrait, x + rect.x, posY + hautTexte + hautTraitHeures)
+                    
+                    dc.DrawLine(int(x) + rect.x, int(posY + hautTexte + hautTraitHeures - hauteurTrait), int(x) + rect.x, int(posY + hautTexte + hautTraitHeures))
                 index += 1
 
         # Label
@@ -508,7 +509,7 @@ class Colonne(object):
         texte, largTexte, hautTexte = GetTailleTexte(dc, texte, rect.width)
         x = rect.width / 2.0 - largTexte / 2.0 + rect.x
         y = rect.height / 2.0 - hautTexte / 2.0 - hauteurGraduations
-        dc.DrawText(texte, x, y)
+        dc.DrawText(texte, int(x), int(y))
 
 
 class Ligne(object):
@@ -538,7 +539,7 @@ class Ligne(object):
         texte, largTexte, hautTexte = GetTailleTexte(dc, texte, rect.width)
         x = rect.x + rect.width / 2.0 - largTexte / 2.0
         y = rect.y + rect.height / 2.0 - hautTexte / 2.0
-        dc.DrawText(texte, x, y)
+        dc.DrawText(texte, int(x), int(y))
 
 
 
@@ -1446,7 +1447,7 @@ class CTRL_Infos(wx.Panel):
             else :
                 dc.DrawRectangle(wx.Rect(0, 0, int(largTitre + padding_titre * 4), int(rect.height - padding_titre * 2)))
             y = rect.height / 2.0 - hautTitre / 2.0
-            dc.DrawText(self.titre, padding_titre*2, y-2)
+            dc.DrawText(self.titre, padding_titre*2, int(y)-2)
             x_texte = largTitre + 12
 
         # Affiche le texte
@@ -1454,7 +1455,7 @@ class CTRL_Infos(wx.Panel):
         dc.SetTextForeground((0, 0, 0))
         largTexte, hautTexte, descent, externalLeading = dc.GetFullTextExtent(self.texte)
         y = rect.height / 2.0 - hautTexte / 2.0
-        dc.DrawText(self.texte, x_texte, y-2)
+        dc.DrawText(self.texte, x_texte, int(y)-2)
 
         dc.DestroyClippingRegion()
 

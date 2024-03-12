@@ -410,7 +410,7 @@ class MainFrame(wx.Frame):
         self.taskBarIcon.Cacher()
         self.taskBarIcon.Detruire()
 
-        self.Destroy()
+        #self.Destroy()
 
         return True
     
@@ -1743,9 +1743,9 @@ class MainFrame(wx.Frame):
         dlg.Destroy()
 
     def On_fichier_Quitter(self, event):
-        if self.Quitter() == False :
-            return
-        self.Destroy()
+        #if self.Quitter() == False :
+        #    return
+        self.Close()
     
     def On_fichier_DerniersFichiers(self, event):
         """ Ouvre un des derniers fichiers ouverts """
