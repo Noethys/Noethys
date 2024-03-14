@@ -310,7 +310,7 @@ class Export_all(Export):
                                                   "condition_dates_continues", "etiquettes", "IDevenement", "IDproduit", "code_produit_local"],
                                   dict_types_champs={"forfait_saisie_manuelle": bool, "forfait_saisie_auto": bool, "forfait_suppression_auto": bool}))
 
-        self.Ajouter(categorie="activites", table=Table(self, nom_table="tarifs_lignes", nouveau_nom_table="core.TarifLigne", nouveaux_noms_champs={"IDactivite": "activite", "IDtarif": "tarif"},
+        self.Ajouter(categorie="activites", table=Table_tarifs_lignes(self, nom_table="tarifs_lignes", nouveau_nom_table="core.TarifLigne", nouveaux_noms_champs={"IDactivite": "activite", "IDtarif": "tarif"},
                                   exclure_champs=["IDmodele"]))
 
         self.Ajouter(categorie="activites", table=Table_combi_tarifs(self, nom_table="combi_tarifs", nouveau_nom_table="core.CombiTarif", nouveaux_noms_champs={"IDtarif": "tarif", "IDgroupe": "groupe"},
@@ -615,6 +615,17 @@ class Table_unites_remplissage(Table):
 
 
 class Table_tarifs(Table):
+    def __init__(self, parent, **kwds):
+        self.parent = parent
+
+        # Récupération des évènements
+        req = """SELECT IDevenement, IDactivite FROM evenements;"""
+        self.parent.DB.ExecuterReq(req)
+        self.dict_evenements = {IDevenement: IDactivite for IDevenement, IDactivite in self.parent.DB.ResultatReq()}
+
+        Table.__init__(self, parent, **kwds)
+        del self.dict_evenements
+
     def categories_tarifs(self, valeur=None, objet=None):
         """ Champ ManyToMany"""
         liste_categories = []
@@ -661,6 +672,36 @@ class Table_tarifs(Table):
         if valeur:
             valeur = valeur.replace(";", ",")
         return valeur
+
+    def IDactivite(self, valeur=None, objet=None):
+        if not valeur and objet[-2]:
+            valeur = self.dict_evenements.get(objet[-2], None)
+        return valeur
+
+
+class Table_tarifs_lignes(Table):
+    def __init__(self, parent, **kwds):
+        self.parent = parent
+
+        # Récupération des tarifs
+        req = """SELECT IDtarif, date_debut FROM tarifs;"""
+        self.parent.DB.ExecuterReq(req)
+        self.liste_tarifs = [IDtarif for IDtarif, date_debut in self.parent.DB.ResultatReq()]
+
+        Table.__init__(self, parent, **kwds)
+        del self.liste_tarifs
+
+    def qf_max(self, valeur=None, objet=None):
+        if valeur > 9999999:
+            return 9999999
+        return None
+
+    def valide_ligne(self, data={}):
+        """ Incorpore la ligne uniquement le tarif existe """
+        if data["fields"]["tarif"] and data["fields"]["tarif"] not in self.liste_tarifs:
+            print(data)
+            return False
+        return True
 
 
 class Table_combi_tarifs(Table):
@@ -788,6 +829,11 @@ class Table_factures(Table):
             return self.parent.dictComptesPayeurs[data["IDcompte_payeur"]]
         return None
 
+    def activites(self, valeur=None, objet=None):
+        if valeur and len(valeur) > 200:
+            valeur = None
+        return valeur
+
 
 class Table_responsables_activites(Table):
     def __init__(self, parent, **kwds):
@@ -859,9 +905,16 @@ class Table_prestations(Table):
             return objet[2]
         return valeur
 
-    def montant_initial(self, valeur=None, objet=None):
+    def montant(self, valeur=None, objet=None):
         if valeur == None:
+            return 0
+        return valeur
+
+    def montant_initial(self, valeur=None, objet=None):
+        if objet[6] and valeur == None:
             return objet[6]
+        if valeur == None:
+            return 0
         return valeur
 
 
@@ -1510,6 +1563,11 @@ class Table_rappels(Table):
     def IDlot(self, valeur=None, objet=None):
         if valeur not in self.lots_rappels:
             return None
+        return valeur
+
+    def activites(self, valeur=None, objet=None):
+        if valeur and len(valeur) > 200:
+            valeur = None
         return valeur
 
 
