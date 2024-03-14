@@ -81,6 +81,7 @@ DICT_PROCEDURES = {
     "A9277" : _(u"Ajout du champ code_service"),
     "A9279" : _(u"Recherche les factures avec ventilation supérieure au montant de la facture"),
     "A9281" : _(u"Ajout du champ code_analytique"),
+    "A9282" : _(u"Création des catégories de tarifs manquantes pour des inscriptions"),
 }
 
 
@@ -1696,8 +1697,25 @@ def A9281():
     DB.Close()
 
 
+def A9282():
+    """ Création des catégories de tarifs manquantes pour des inscriptions """
+    DB = GestionDB.DB()
+    req = """SELECT idactivite FROM inscriptions WHERE idcategorie_tarif IS NULL GROUP BY idactivite"""
+    DB.ExecuterReq(req)
+    dict_categories = {}
+    for IDactivite, in DB.ResultatReq():
+        dict_categories[IDactivite] = DB.ReqInsert("categories_tarifs", [("IDactivite", IDactivite), ("nom", u"Tarif normal")])
+
+    req = """SELECT IDinscription, IDactivite FROM inscriptions WHERE idcategorie_tarif IS NULL"""
+    DB.ExecuterReq(req)
+    for IDinscription, IDactivite in DB.ResultatReq():
+        DB.ReqMAJ("inscriptions", [("IDcategorie_tarif", dict_categories[IDactivite]),], "IDinscription", IDinscription)
+
+    DB.Close()
+
+
 if __name__ == u"__main__":
     app = wx.App(0)
     # TEST D'UNE PROCEDURE :
-    A9279()
+    A9282()
     app.MainLoop()
