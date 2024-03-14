@@ -1835,7 +1835,7 @@ class CTRL_Parametres_cerig(CTRL_Parametres) :
                     label = u"%s - %s" % (prenom_individu, label)
 
                 # Regroupement secondaire
-                cle_secondaire = code_compta
+                cle_secondaire = (label, code_compta)
 
                 if cle_secondaire not in dict_resultats[cle_primaire]["lignes"]:
                     dict_resultats[cle_primaire]["lignes"][cle_secondaire] = {"code_compta": code_compta, "code_analytique": code_analytique, "label": label, "montant": FloatToDecimal(0.0)}
