@@ -108,7 +108,8 @@ class TrackIndividu(object):
         self.cp_naiss = donnees["cp_naiss"]
         self.ville_naiss = donnees["ville_naiss"]
         self.adresse_auto = donnees["adresse_auto"]
-        
+        self.date_creation = donnees["date_creation"]
+
         # Adresse auto ou manuelle
         if self.adresse_auto != None and self.adresse_auto in DICT_INFOS_INDIVIDUS :
             self.rue_resid = DICT_INFOS_INDIVIDUS[self.adresse_auto]["rue_resid"]
@@ -209,7 +210,7 @@ def GetListeIndividus(listview=None, listeActivites=None, presents=None, IDindiv
         "date_naiss", "IDpays_naiss", "cp_naiss", "ville_naiss",
         "adresse_auto", "rue_resid", "cp_resid", "ville_resid", 
         "IDcategorie_travail", "profession", "employeur", "travail_tel", "travail_fax", "travail_mail", 
-        "tel_domicile", "tel_mobile", "tel_fax", "mail", "secteurs.nom",
+        "tel_domicile", "tel_mobile", "tel_fax", "mail", "secteurs.nom", "date_creation",
         )
     DB = GestionDB.DB()
     req = """
@@ -475,6 +476,7 @@ class ListView(FastObjectListView):
                 ColumnDefn(_(u"C.P."), "left", 50, "cp_resid", typeDonnee="texte"),
                 ColumnDefn(_(u"Ville"), "left", 120, "ville_resid", typeDonnee="texte"),
                 ColumnDefn(_(u"Secteur"), "left", 120, "secteur", typeDonnee="texte"),
+                ColumnDefn(_(u"Date création"), "left", 72, "date_creation", typeDonnee="date", stringConverter=FormateDate),
 ##                ColumnDefn(_(u"Tél. domicile"), "left", 100, "tel_domicile"),
 ##                ColumnDefn(_(u"Tél. mobile"), "left", 100, "tel_mobile"),
                 ColumnDefn(_(u"Email"), "left", 150, "mail", typeDonnee="texte"),
