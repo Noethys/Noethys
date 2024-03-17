@@ -1,3 +1,11 @@
+Version 1.3.3.4 (17/03/2024) :
+
+- Ajout procédure de génération des catégories de tarifs manquantes
+- Ajout colonne création fiche dans la liste des destinataires emails
+- Ajout tarification au taux d'effort pour les forfaits datés
+- Correction du nom de pièce vide dans la liste des pièces
+- Correction export Cerig
+
 Version 1.3.3.3 (18/02/2024) :
 
 - Ajout du sous-total par activité dans les factures
