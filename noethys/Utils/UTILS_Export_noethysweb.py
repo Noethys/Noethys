@@ -372,7 +372,7 @@ class Export_all(Export):
 
         self.Ajouter(categorie="consommations", table=Table_prestations(self, nom_table="prestations", nouveau_nom_table="core.Prestation", nouveaux_noms_champs={"IDactivite": "activite", "IDtarif": "tarif", "IDfacture": "facture", "IDfamille": "famille",
                            "IDindividu": "individu", "IDcategorie_tarif": "categorie_tarif", "code_comptable": "code_compta"},
-                           exclure_champs=["IDcompte_payeur", "reglement_frais", "IDcontrat", "IDdonnee", "code_analytique"]))
+                           exclure_champs=["IDcompte_payeur", "reglement_frais", "IDcontrat", "IDdonnee", "code_analytique"], nouveaux_champs=["location"]))
 
         self.Ajouter(categorie="cotisations", table=Table(self, nom_table="depots_cotisations", nouveau_nom_table="core.DepotCotisations", dict_types_champs={"verrouillage": bool}, nouveaux_noms_champs={"IDdepot_cotisation": "iddepot"})),
 
@@ -388,8 +388,8 @@ class Export_all(Export):
         self.Ajouter(categorie="questionnaires", table=Table_questions(self, nom_table="questionnaire_questions", nouveau_nom_table="core.QuestionnaireQuestion", exclure_champs=["defaut"],
                                             nouveaux_noms_champs={"IDcategorie": "categorie"}, dict_types_champs={"visible": bool}, nouveaux_champs=["choix"]))
 
-        self.Ajouter(categorie="questionnaires", table=Table_reponses(self, nom_table="questionnaire_reponses", nouveau_nom_table="core.QuestionnaireReponse", exclure_champs=["type", "IDdonnee"],
-                                            nouveaux_noms_champs={"IDquestion": "question", "IDindividu": "individu", "IDfamille": "famille"}))
+        self.Ajouter(categorie="questionnaires", table=Table_reponses(self, nom_table="questionnaire_reponses", nouveau_nom_table="core.QuestionnaireReponse", exclure_champs=["type"],
+                                            nouveaux_noms_champs={"IDquestion": "question", "IDindividu": "individu", "IDfamille": "famille", "IDdonnee": "donnee"}))
 
         self.Ajouter(categorie="individus", table=Table_payeurs(self, nom_table="payeurs", nouveau_nom_table="core.Payeur", exclure_champs=["IDcompte_payeur"],
                                         nouveaux_champs=["famille"]))
@@ -477,6 +477,17 @@ class Export_all(Export):
         self.Ajouter(categorie="prelevements", table=Table_lots_prelevements(self, nom_table="lots_prelevements", nouveau_nom_table="core.PrelevementsLot",
                                             nouveaux_champs=["modele", "numero_sequence"],
                                             exclure_champs=["IDlot", "verrouillage", "IDcompte", "IDmode", "reglement_auto", "type", "format", "encodage", "IDperception", "identifiant_service", "poste_comptable"]))
+
+        self.Ajouter(categorie="locations", table=Table(self, nom_table="produits_categories", nouveau_nom_table="core.CategorieProduit", champs_images=["image"]))
+
+        self.Ajouter(categorie="locations", table=Table(self, nom_table="produits", nouveau_nom_table="core.Produit", champs_images=["image"],
+                                            nouveaux_noms_champs={"IDcategorie": "categorie"}, exclure_champs=["activation_partage",]))
+
+        self.Ajouter(categorie="locations", table=Table_tarifs_produits(self))
+
+        self.Ajouter(categorie="locations", table=Table(self, nom_table="locations", nouveau_nom_table="core.Location",
+                                            nouveaux_noms_champs={"IDfamille": "famille", "IDproduit": "produit"},
+                                            exclure_champs=["IDlocation_portail", "partage", "description"]))
 
         self.DB.Close()
         self.Finaliser()
@@ -626,6 +637,11 @@ class Table_tarifs(Table):
         Table.__init__(self, parent, **kwds)
         del self.dict_evenements
 
+    def valide_ligne(self, data={}):
+        if not data["fields"]["activite"]:
+            return False
+        return True
+
     def categories_tarifs(self, valeur=None, objet=None):
         """ Champ ManyToMany"""
         liste_categories = []
@@ -684,7 +700,7 @@ class Table_tarifs_lignes(Table):
         self.parent = parent
 
         # Récupération des tarifs
-        req = """SELECT IDtarif, date_debut FROM tarifs;"""
+        req = """SELECT IDtarif, date_debut FROM tarifs WHERE IDproduit IS NULL;"""
         self.parent.DB.ExecuterReq(req)
         self.liste_tarifs = [IDtarif for IDtarif, date_debut in self.parent.DB.ResultatReq()]
 
@@ -694,7 +710,7 @@ class Table_tarifs_lignes(Table):
     def qf_max(self, valeur=None, objet=None):
         if valeur > 9999999:
             return 9999999
-        return None
+        return valeur
 
     def valide_ligne(self, data={}):
         """ Incorpore la ligne uniquement le tarif existe """
@@ -916,6 +932,11 @@ class Table_prestations(Table):
         if valeur == None:
             return 0
         return valeur
+
+    def location(self, data={}):
+        if data["categorie"] == "location":
+            return data["IDdonnee"]
+        return None
 
 
 class Table_groupes(Table):
@@ -1188,23 +1209,26 @@ class Table_documents_modeles(Table):
 
                 # Image
                 if dict_objet["categorie"] == "image" and dict_objet["typeImage"].startswith("fichier"):
-                    image = Image.open(six.BytesIO(dict_objet["image"]))
-                    taille_image = image.size
-                    buffer = six.BytesIO()
-                    image.save(buffer, format=image.format)
-                    image64 = base64.b64encode(buffer.getvalue())
+                    try:
+                        image = Image.open(six.BytesIO(dict_objet["image"]))
+                        taille_image = image.size
+                        buffer = six.BytesIO()
+                        image.save(buffer, format=image.format)
+                        image64 = base64.b64encode(buffer.getvalue())
 
-                    objet = json.loads("""{"type":"image","version":"3.4.0","originX":"left","originY":"top","left":41,"top":84.5,"width":128,"height":128,"fill":"rgb(0,0,0)","stroke":"rgba(0,0,0,0)","strokeWidth":0,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeMiterLimit":4,"scaleX":1,"scaleY":1,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"clipTo":null,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","transformMatrix":null,"skewX":0,"skewY":0,"crossOrigin":"","cropX":0,"cropY":0,"nom":"Image","categorie":"image","src":"data:image/png;base64,X","filters":[]}""")
-                    scaleY = 1.0 * dict_objet["hauteur"] / taille_image[1]
-                    top = data["fields"]["hauteur"] - dict_objet["y"] - taille_image[1] * scaleY
-                    objet.update({
-                        "type": "image", "categorie": "logo", "nom": dict_objet["nom"],
-                        "left": dict_objet["x"], "top": top, "width": taille_image[0], "height": taille_image[1],
-                        "scaleX": scaleY, "scaleY": scaleY, "fill": self.ConvertCouleur(dict_objet["coulRemplis"]),
-                        "strokeWidth": dict_objet["epaissTrait"], "stroke": self.ConvertCouleur(dict_objet["couleurTrait"]),
-                        "strokeDashArray": self.ConvertTrait(dict_objet["styleTrait"]),
-                        "src": "data:image/png;base64,%s" % image64
-                    })
+                        objet = json.loads("""{"type":"image","version":"3.4.0","originX":"left","originY":"top","left":41,"top":84.5,"width":128,"height":128,"fill":"rgb(0,0,0)","stroke":"rgba(0,0,0,0)","strokeWidth":0,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeMiterLimit":4,"scaleX":1,"scaleY":1,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"clipTo":null,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","transformMatrix":null,"skewX":0,"skewY":0,"crossOrigin":"","cropX":0,"cropY":0,"nom":"Image","categorie":"image","src":"data:image/png;base64,X","filters":[]}""")
+                        scaleY = 1.0 * dict_objet["hauteur"] / taille_image[1]
+                        top = data["fields"]["hauteur"] - dict_objet["y"] - taille_image[1] * scaleY
+                        objet.update({
+                            "type": "image", "categorie": "logo", "nom": dict_objet["nom"],
+                            "left": dict_objet["x"], "top": top, "width": taille_image[0], "height": taille_image[1],
+                            "scaleX": scaleY, "scaleY": scaleY, "fill": self.ConvertCouleur(dict_objet["coulRemplis"]),
+                            "strokeWidth": dict_objet["epaissTrait"], "stroke": self.ConvertCouleur(dict_objet["couleurTrait"]),
+                            "strokeDashArray": self.ConvertTrait(dict_objet["styleTrait"]),
+                            "src": "data:image/png;base64,%s" % image64
+                        })
+                    except:
+                        pass
 
                 # Photo individuelle
                 if dict_objet["typeImage"] == "photo":
@@ -1734,7 +1758,7 @@ class Table_modeles_prelevements(Table):
         liste_modeles = []
         self.parent.dict_modeles_prelevements = {}
         for IDlot, format, IDcompte, IDmode, reglement_auto, encodage, IDperception, identifiant_service, poste_comptable in self.parent.DB.ResultatReq():
-            dict_modele = {"format": format, "compte": IDcompte, "mode": IDmode, "reglement_auto": reglement_auto, "encodage": encodage,
+            dict_modele = {"format": format or "prive", "compte": IDcompte, "mode": IDmode, "reglement_auto": reglement_auto, "encodage": encodage or "utf-8",
                            "perception": IDperception, "identifiant_service": identifiant_service, "poste_comptable": poste_comptable}
             if dict_modele in liste_modeles:
                 IDmodele = liste_modeles.index(dict_modele) + 1
@@ -1756,6 +1780,28 @@ class Table_lots_prelevements(Table):
 
     def numero_sequence(self, data={}):
         return 1
+
+
+class Table_tarifs_produits(Table):
+    def Get_data(self):
+        # Importation des montants des tarifs
+        req = """SELECT IDtarif, montant_unique FROM tarifs_lignes;"""
+        self.parent.DB.ExecuterReq(req)
+        dict_montants = {IDtarif: montant_unique for IDtarif, montant_unique in self.parent.DB.ResultatReq()}
+        # Importation des tarifs des produits
+        req = """SELECT IDtarif, IDproduit, date_debut, date_fin, description, observations, tva, label_prestation, code_compta, methode
+        FROM tarifs WHERE IDproduit IS NOT NULL;"""
+        self.parent.DB.ExecuterReq(req)
+        liste_xml = []
+        index = 1
+        for IDtarif, IDproduit, date_debut, date_fin, description, observations, tva, label_prestation, code_compta, methode in self.parent.DB.ResultatReq():
+            liste_xml.append({"model": "core.TarifProduit", "pk": index, "fields": {
+                "produit": IDproduit, "date_debut": date_debut, "date_fin": date_fin, "description": description, "observations": observations,
+                "tva": tva, "label_prestation": label_prestation, "code_compta": code_compta, "methode": methode, "montant": dict_montants.get(IDtarif, 0.0)}})
+            index += 1
+
+        del dict_montants
+        return liste_xml
 
 
 def Verifications(parent=None):
