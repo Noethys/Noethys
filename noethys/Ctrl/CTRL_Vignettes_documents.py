@@ -84,7 +84,7 @@ class Track(object):
         self.IDreponse = IDreponse
         self.IDtype_piece = IDtype_piece
         self.buffer = buffer
-        self.type = type
+        self.type = type.lower()
         self.isImage = None
         self.image = image
         self.label = label
