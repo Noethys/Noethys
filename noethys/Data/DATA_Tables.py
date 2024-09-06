@@ -1369,7 +1369,7 @@ DB_DATA = {
                                     ("tiers_solidaire", "INTEGER", u"IDindividu du tiers solidaire"),
                                     ("type", "VARCHAR(400)", u"Type du prélèvement"),
                                     ("IDfacture", "INTEGER", u"ID de la facture"),
-                                    ("numero", "BIGINT", u"Numéro de facture"),
+                                    ("numero", "VARCHAR(400)", u"Numéro de facture"),
                                     ("libelle", "VARCHAR(400)", u"Libellé de la pièce"),
                                     ("montant", "FLOAT", u"Montant du prélèvement"),
                                     ], # Pièces PESV2 ORMC
