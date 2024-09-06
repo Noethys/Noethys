@@ -65,7 +65,7 @@ class CTRL_Affichage(wx.Choice):
         self.item = item
         self.track = track
         if self.track.type == "conso" :
-            self.SetItems([_(u"Toujours afficher"), _(u"Ne jamais afficher"), _(u"Afficher si ouvert")])
+            self.SetItems([_(u"Toujours afficher"), _(u"Ne jamais afficher"), _(u"Afficher si ouvert"), _(u"Afficher si conso")])
         else:
             self.SetItems([_(u"Toujours afficher"), _(u"Ne jamais afficher")])
         self.SetToolTip(wx.ToolTip(_(u"Sélectionnez un type d'affichage pour cette unité")))
@@ -86,11 +86,13 @@ class CTRL_Affichage(wx.Choice):
             if self.track.affichage == "toujours" : self.SetSelection(0)
             if self.track.affichage == "jamais" : self.SetSelection(1)
             if self.track.affichage == "utilise" : self.SetSelection(2)
+            if self.track.affichage == "conso": self.SetSelection(3)
 
     def OnChoice(self, event):
         if self.GetSelection() == 0 : self.track.affichage = "toujours"
         if self.GetSelection() == 1 : self.track.affichage = "jamais"
         if self.GetSelection() == 2 : self.track.affichage = "utilise"
+        if self.GetSelection() == 3: self.track.affichage = "conso"
 
 # -------------------------------------------------------------------------------------------------------------------
             
