@@ -95,11 +95,11 @@ class Notebook(wx.Notebook):
         self.AssignImageList(il)
 
         # Création des pages
-        dictParametres = self.GetParametres()
+        self.dictParametres = self.GetParametres()
 
         index = 0
         for codePage, labelPage, ctrlPage, imgPage in self.listePages :
-            if dictParametres[codePage] == True :
+            if self.dictParametres[codePage] == True :
                 setattr(self, "page%s" % index, eval(ctrlPage))
                 self.AddPage(getattr(self, "page%s" % index), labelPage)
                 self.SetPageImage(index, getattr(self, "img%d" % index))
@@ -159,6 +159,7 @@ class Notebook(wx.Notebook):
             else :
                 afficher = True
             dictParametres[codePage] = afficher
+        dictParametres["individus_archives"] = parametres.get("individus_archives", True)
         return dictParametres
 
     def SelectionParametresPages(self):
@@ -177,8 +178,13 @@ class Notebook(wx.Notebook):
                 listeCodes.append(codePage)
                 index += 1
 
+        listeLabels.append("Individus archivés")
+        listeCodes.append("individus_archives")
+        if dictParametres.get("individus_archives", True):
+            listeSelections.append(len(self.listePages)-1)
+
         # Demande la sélection des pages
-        dlg = wx.MultiChoiceDialog( self, _(u"Cochez ou décochez les onglets à afficher ou à masquer :"), _(u"Afficher/masquer des onglets"), listeLabels)
+        dlg = wx.MultiChoiceDialog( self, _(u"Cochez ou décochez les éléments à afficher ou à masquer :"), _(u"Afficher/masquer des éléments"), listeLabels)
         dlg.SetSelections(listeSelections)
         dlg.SetSize((300, 350))
         dlg.CenterOnScreen()
@@ -230,10 +236,10 @@ class Dialog(wx.Dialog):
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_calendrier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Calendrier.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_liens_famille = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Composition.png"), wx.BITMAP_TYPE_ANY))
-        
+
         # Notebook
         self.notebook = Notebook(self, IDfamille=self.IDfamille)
-        
+
         # Boutons de commande
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_options = CTRL_Bouton_image.CTRL(self, texte=_(u"Options"), cheminImage="Images/32x32/Configuration2.png")
