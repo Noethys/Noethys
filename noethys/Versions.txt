@@ -1,3 +1,24 @@
+Version 1.3.3.9 (06/09/2024) :
+
+- Ajout de l'export des locations vers Noethysweb
+- Correction de la vignette des pièces de type PDF
+
+Version 1.3.3.8 (19/07/2024) :
+
+- Ajout de l'option Masquer les archivés dans les options de la fiche famille
+- Ajout du tableau des désinscriptions dans les statistiques
+- Ajout du tableau des tranches d'âges et du genre dans les statistiques
+- Ajout de l'option Afficher si conso dans les unités de la liste des consommations
+- Ajout de la modification globale des montants dans les contrats
+- Correction ouverture pièce de type PDF
+
+Version 1.3.3.6 (16/05/2024) :
+
+- Ajout du calcul par règlements dans les attestations fiscales
+- Correction récupération motif dans saisie lot prélèvements
+- Correction type champ numéro dans pièces pes
+- Correction export Cerig
+
 Version 1.3.3.4 (17/03/2024) :
 
 - Ajout procédure de génération des catégories de tarifs manquantes
