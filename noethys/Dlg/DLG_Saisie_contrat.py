@@ -204,7 +204,8 @@ class Dialog(wx.Dialog):
         self.bouton_ajouter_periode = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_modifier_periode = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer_periode = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
-        
+        self.bouton_modifier_montants = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Euro.png"), wx.BITMAP_TYPE_ANY))
+
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_consommations = CTRL_Bouton_image.CTRL(self, texte=_(u"Générer des consommations"), cheminImage="Images/32x32/Magique.png")
@@ -218,6 +219,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.ctrl_periodes.Ajouter, self.bouton_ajouter_periode)
         self.Bind(wx.EVT_BUTTON, self.ctrl_periodes.Modifier, self.bouton_modifier_periode)
         self.Bind(wx.EVT_BUTTON, self.ctrl_periodes.Supprimer, self.bouton_supprimer_periode)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_periodes.Modifier_montants, self.bouton_modifier_montants)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
@@ -254,6 +256,7 @@ class Dialog(wx.Dialog):
         self.bouton_assistant.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour générer automatiquement les périodes")))
         self.bouton_ajouter_periode.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une période")))
         self.bouton_modifier_periode.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la période sélectionnée")))
+        self.bouton_modifier_montants.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le montant de toutes les prestations non facturées")))
         self.bouton_supprimer_periode.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la période sélectionnée")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
@@ -287,12 +290,14 @@ class Dialog(wx.Dialog):
         box_periodes = wx.StaticBoxSizer(self.box_periodes_staticbox, wx.VERTICAL)
         grid_sizer_periodes = wx.FlexGridSizer(1, 2, 5, 5)
         grid_sizer_periodes.Add(self.listviewAvecFooter, 1, wx.EXPAND, 0)
-        grid_sizer_boutons_periodes = wx.FlexGridSizer(5, 1, 5, 5)
+        grid_sizer_boutons_periodes = wx.FlexGridSizer(7, 1, 5, 5)
         grid_sizer_boutons_periodes.Add(self.bouton_assistant, 0, 0, 0)
         grid_sizer_boutons_periodes.Add((10, 10), 0, wx.EXPAND, 0)
         grid_sizer_boutons_periodes.Add(self.bouton_ajouter_periode, 0, 0, 0)
         grid_sizer_boutons_periodes.Add(self.bouton_modifier_periode, 0, 0, 0)
         grid_sizer_boutons_periodes.Add(self.bouton_supprimer_periode, 0, 0, 0)
+        grid_sizer_boutons_periodes.Add((10, 10), 0, wx.EXPAND, 0)
+        grid_sizer_boutons_periodes.Add(self.bouton_modifier_montants, 0, 0, 0)
         grid_sizer_periodes.Add(grid_sizer_boutons_periodes, 1, wx.EXPAND, 0)
         grid_sizer_periodes.AddGrowableRow(0)
         grid_sizer_periodes.AddGrowableCol(0)
@@ -401,7 +406,7 @@ class Dialog(wx.Dialog):
 
         # Importation des périodes de contrat
         req = """SELECT prestations.IDprestation, forfait_date_debut, forfait_date_fin, label, montant, prestations.date,
-        prestations.IDfacture, factures.IDprefixe, factures_prefixe.prefixe, factures.numero,
+        prestations.IDfacture, factures.IDprefixe, factures_prefixes.prefixe, factures.numero,
         COUNT(consommations.IDconso)
         FROM prestations 
         LEFT JOIN consommations ON consommations.IDprestation = prestations.IDprestation
@@ -421,7 +426,7 @@ class Dialog(wx.Dialog):
             if IDprefixe != None :
                 numFacture = u"%s-%06d" % (prefixe, numFacture)
             else :
-                numFacture = u"%06d" % numFacture
+                numFacture = (u"%06d" % numFacture) if numFacture else None
 
             if IDprestation in dictConso and copie_conso == True :
                 listeConso = dictConso[IDprestation]
