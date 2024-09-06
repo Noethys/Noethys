@@ -288,13 +288,25 @@ class CTRL(wx.Panel):
         case = self.GetCase(IDunite, date)
         if case == None : 
             return _(u"Cette case est inexistante.")
-        if case.etat == None :
-            return _(u"Il n'existe aucune consommation à cette date et pour cette unité.")
-        if case.IDfacture != None :
-            return _(u"Interdit de supprimer une consommation déjà facturée.")
-        if case.etat in ("present", "absenti", "absentj") :
-            return _(u"Interdit de supprimer une consommation déjà pointée.")
-        case.OnClick(modeSilencieux=True, ForcerSuppr=True)
+        typeUnite = self.grille.dictUnites[IDunite]["type"]
+
+        if typeUnite == "Evenement":
+            evenement = case.liste_evenements[0] if case.liste_evenements else None
+            if evenement.conso:
+                prestation = self.grille.dictPrestations.get(evenement.conso.IDprestation, None)
+                if prestation and prestation["IDfacture"]:
+                    return _(u"Interdit de supprimer une consommation déjà facturée.")
+                if evenement.conso.etat in ("present", "absenti", "absentj"):
+                    return _(u"Interdit de supprimer une consommation déjà pointée.")
+                case.Supprimer_evenement(evenement=evenement)
+        else:
+            if case.etat == None :
+                return _(u"Il n'existe aucune consommation à cette date et pour cette unité.")
+            if case.IDfacture != None :
+                return _(u"Interdit de supprimer une consommation déjà facturée.")
+            if case.etat in ("present", "absenti", "absentj") :
+                return _(u"Interdit de supprimer une consommation déjà pointée.")
+            case.OnClick(modeSilencieux=True, ForcerSuppr=True)
         return True
 
     def ModifieEtat(self, IDunite=None, etat="reservation", date=None):
