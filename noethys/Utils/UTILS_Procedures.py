@@ -82,6 +82,7 @@ DICT_PROCEDURES = {
     "A9279" : _(u"Recherche les factures avec ventilation supérieure au montant de la facture"),
     "A9281" : _(u"Ajout du champ code_analytique"),
     "A9282" : _(u"Création des catégories de tarifs manquantes pour des inscriptions"),
+    "A9283" : _(u"Rattachement de mandats à des prélèvements pour Noethysweb"),
 }
 
 
@@ -1714,8 +1715,21 @@ def A9282():
     DB.Close()
 
 
+def A9283():
+    """ Rattachement des mandats existants à des prélèvements si IDmandat est NULL (pour migration Noethysweb) """
+    DB = GestionDB.DB()
+    req = """SELECT IDprelevement, prelevements.IDfamille, MIN(mandats.IDmandat) FROM prelevements
+    LEFT JOIN mandats ON mandats.IDfamille = prelevements.IDfamille
+    WHERE prelevements.IDmandat IS NULL
+    GROUP BY IDprelevement"""
+    DB.ExecuterReq(req)
+    for IDprelevement, IDfamille, IDmandat in DB.ResultatReq():
+        DB.ReqMAJ("prelevements", [("IDmandat", IDmandat),], "IDprelevement", IDprelevement)
+    DB.Close()
+
+
 if __name__ == u"__main__":
     app = wx.App(0)
     # TEST D'UNE PROCEDURE :
-    A9282()
+    A9283()
     app.MainLoop()
