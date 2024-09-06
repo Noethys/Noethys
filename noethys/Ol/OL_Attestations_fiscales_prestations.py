@@ -91,34 +91,33 @@ class ListView(FastObjectListView):
             conditionDateNaiss = ""
             
         DB = GestionDB.DB()
-        
+
         # Recherche de la ventilation
+        condition = "reglements.IDmode IN %s" % conditionModes
+        if self.methode == "reglements":
+            condition += " AND reglements.date >= '%s' AND reglements.date <= '%s'" % (self.date_debut, self.date_fin)
         req = """SELECT IDventilation, ventilation.IDreglement, IDprestation, ventilation.montant, reglements.IDmode
         FROM ventilation
         LEFT JOIN reglements ON reglements.IDreglement = ventilation.IDreglement
-        WHERE reglements.IDmode IN %s
-        ;""" % conditionModes
+        WHERE %s
+        ;""" % condition
         DB.ExecuterReq(req)
         listeVentilation = DB.ResultatReq()  
         dictVentilation = {}
         for IDventilation, IDreglement, IDprestation, montant, IDmode in listeVentilation :
             montant = FloatToDecimal(montant)
-            if (IDprestation in dictVentilation) == False :
+            if not IDprestation in dictVentilation:
                 dictVentilation[IDprestation] = FloatToDecimal(0.0)
             dictVentilation[IDprestation] += montant
-        
+
         # Recherche des prestations
-##        req = """SELECT prestations.label, prestations.IDactivite, activites.nom, COUNT(prestations.IDprestation), SUM(prestations.montant)
-##        FROM prestations
-##        LEFT JOIN activites ON activites.IDactivite = prestations.IDactivite
-##        LEFT JOIN individus ON individus.IDindividu = prestations.IDindividu
-##        WHERE prestations.IDactivite IN %s
-##        AND (prestations.date>='%s' AND prestations.date<='%s')
-##        AND prestations.categorie='consommation'
-##        %s
-##        GROUP BY prestations.label, prestations.IDactivite
-##        ;""" % (conditionActivites, self.date_debut, self.date_fin, conditionDateNaiss)
-        
+        condition = "(prestations.date>='%s' AND prestations.date<='%s')" % (self.date_debut, self.date_fin)
+        if self.methode == "reglements":
+            listeIDprestation = list(dictVentilation.keys())
+            if len(listeIDprestation) == 0: conditionPrestations = "()"
+            elif len(listeIDprestation) == 1: conditionPrestations = "(%d)" % listeIDprestation[0]
+            else: conditionPrestations = str(tuple(listeIDprestation))
+            condition = "prestations.IDprestation IN %s" % conditionPrestations
         req = """SELECT prestations.IDprestation, prestations.label, prestations.IDactivite, activites.nom, prestations.montant,
         prestations.IDcompte_payeur, prestations.IDfamille,
         individus.IDindividu, individus.nom, individus.prenom, individus.date_naiss, individus.IDcivilite
@@ -126,12 +125,13 @@ class ListView(FastObjectListView):
         LEFT JOIN activites ON activites.IDactivite = prestations.IDactivite
         LEFT JOIN individus ON individus.IDindividu = prestations.IDindividu
         WHERE prestations.IDactivite IN %s AND individus.IDindividu IS NOT NULL
-        AND (prestations.date>='%s' AND prestations.date<='%s')
+        AND %s
         %s
-        ;""" % (conditionActivites, self.date_debut, self.date_fin, conditionDateNaiss)
+        ;""" % (conditionActivites, condition, conditionDateNaiss)
         DB.ExecuterReq(req)
         listePrestations = DB.ResultatReq()  
-        DB.Close() 
+        DB.Close()
+
         dictPrestations = {}
         for IDprestation, label, IDactivite, nomActivite, montant, IDcompte_payeur, IDfamille, IDindividu, nom, prenom, date_naiss, IDcivilite in listePrestations :
             
@@ -140,12 +140,9 @@ class ListView(FastObjectListView):
                 if date_naiss < str(self.dateNaiss) :
                     valide = False
             
-            if valide == True :
+            if valide:
                 montant = FloatToDecimal(montant)
-                if IDprestation in dictVentilation :
-                    regle = dictVentilation[IDprestation] 
-                else :
-                    regle = FloatToDecimal(0.0)
+                regle = dictVentilation.get(IDprestation, FloatToDecimal(0.0))
                 impaye = montant - regle
                     
                 # Mémorisation
@@ -216,12 +213,13 @@ class ListView(FastObjectListView):
 
         self.cellEditMode = ObjectListView.CELLEDIT_SINGLECLICK # ObjectListView.CELLEDIT_DOUBLECLICK
        
-    def MAJ(self, date_debut=None, date_fin=None, dateNaiss=None, listeActivites=[], listeModes=[]):
+    def MAJ(self, date_debut=None, date_fin=None, dateNaiss=None, listeActivites=[], listeModes=[], methode=None):
         self.date_debut = date_debut
         self.date_fin = date_fin
         self.dateNaiss = dateNaiss
         self.listeActivites = listeActivites
         self.listeModes = listeModes
+        self.methode = methode
         self.InitModel()
         self.InitObjectListView()
         self._ResizeSpaceFillingColumns() 

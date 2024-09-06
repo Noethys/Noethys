@@ -240,9 +240,9 @@ class CTRL_Options(wx.Panel):
         self.label_signataire = wx.StaticText(self, -1, _(u"Signataire :"))
         self.ctrl_signataire = CTRL_Signataires(self)
 
-        self.label_montant = wx.StaticText(self, -1, _(u"Montant :"))
-        self.ctrl_montant = wx.Choice(self, -1, choices=[_(u"Réglé"), _(u"Facturé")])
-        self.ctrl_montant.Select(0)
+        # self.label_montant = wx.StaticText(self, -1, _(u"Montant :"))
+        # self.ctrl_montant = wx.Choice(self, -1, choices=[_(u"Réglé"), _(u"Facturé")])
+        # self.ctrl_montant.Select(0)
 
         self.label_intro = wx.StaticText(self, -1, _(u"Intro :"))
         self.ctrl_intro = wx.CheckBox(self, -1, u"")
@@ -279,7 +279,7 @@ class CTRL_Options(wx.Panel):
         self.ctrl_texte_intro.SetToolTip(wx.ToolTip(_(u"Vous pouvez modifier ici le texte d'introduction. \n\nUtilisez les mots-clés {GENRE}, {NOM}, {FONCTION}, {ENFANTS}, \n{DATE_DEBUT} et {DATE_FIN} pour inclure dynamiquement les \nvaleurs correspondantes.")))
         self.checkbox_repertoire.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour enregistrer un exemplaire de chaque attestation de rappel au format PDF dans le répertoire indiqué")))
         self.bouton_repertoire.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner un répertoire de destination")))
-        self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Sélectionnez le montant à afficher. Réglé par défaut.")))
+        # self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Sélectionnez le montant à afficher. Réglé par défaut.")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -300,11 +300,10 @@ class CTRL_Options(wx.Panel):
 
         grid_sizer_options_2 = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5)
         grid_sizer_options_2.Add(self.ctrl_signataire, 1, wx.EXPAND, 0)
-        grid_sizer_options_2.Add((5, 5), 1, wx.EXPAND, 0)
-        grid_sizer_options_2.Add(self.label_montant, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_options_2.Add(self.ctrl_montant, 1, wx.EXPAND, 0)
+        # grid_sizer_options_2.Add((5, 5), 1, wx.EXPAND, 0)
+        # grid_sizer_options_2.Add(self.label_montant, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        # grid_sizer_options_2.Add(self.ctrl_montant, 1, wx.EXPAND, 0)
         grid_sizer_options_2.AddGrowableCol(0)
-        grid_sizer_options_2.AddGrowableCol(3)
         grid_sizer_options.Add(grid_sizer_options_2, 1, wx.EXPAND, 0)
 
         # Intro
@@ -436,7 +435,9 @@ class CTRL_Options(wx.Panel):
         dictOptions["IDmodele"] = IDmodele
         dictOptions["repertoire"] = repertoire
         dictOptions["intro"] = intro
-        dictOptions["type_montant"] = "regle" if self.ctrl_montant.GetSelection() == 0 else "facture"
+
+        methode = self.parent.GetParent().page1.ctrl_parametres.ctrl_methode.GetValeur()
+        dictOptions["type_montant"] = "facture" if methode == "prestations" else "regle"
         
         return dictOptions
 

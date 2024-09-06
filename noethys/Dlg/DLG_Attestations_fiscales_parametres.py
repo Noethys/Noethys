@@ -89,7 +89,24 @@ class CTRL_Modes_reglements(wx.CheckListBox):
     
 # ----------------------------------------------------------------------------------------------------------------------------------
 
+class CTRL_Choix_methode(wx.Choice):
+    def __init__(self, parent):
+        wx.Choice.__init__(self, parent, -1)
+        self.parent = parent
+        self.MAJ()
 
+    def MAJ(self):
+        self.listeLabels = [_(u"Les prestations de la période"), _(u"Les prestations de la période réglées"), _(u"Les prestations réglées sur la période")]
+        self.SetItems(self.listeLabels)
+        self.Select(0)
+
+    def GetValeur(self):
+        index = self.GetSelection()
+        if index == 0: return "prestations"
+        if index == 1: return "prestations_reglees"
+        if index == 2: return "reglements"
+
+# ----------------------------------------------------------------------------------------------------------------------------------
 
 
 class Parametres(wx.Panel):
@@ -103,6 +120,10 @@ class Parametres(wx.Panel):
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_date_fin = wx.StaticText(self, -1, _(u"Au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
+
+        # Méthode
+        self.staticbox_methode_staticbox = wx.StaticBox(self, -1, _(u"Méthode de calcul"))
+        self.ctrl_methode = CTRL_Choix_methode(self)
 
         # Séparation
         self.staticbox_dateNaiss_staticbox = wx.StaticBox(self, -1, _(u"Limite d'âge"))
@@ -136,7 +157,7 @@ class Parametres(wx.Panel):
         self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser la liste")))
 
     def __do_layout(self):
-        grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
+        grid_sizer_base = wx.FlexGridSizer(rows=6, cols=1, vgap=10, hgap=10)
         
         # Date de référence
         staticbox_periode = wx.StaticBoxSizer(self.staticbox_periode_staticbox, wx.VERTICAL)
@@ -147,7 +168,12 @@ class Parametres(wx.Panel):
         grid_sizer_periode.Add(self.ctrl_date_fin, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         staticbox_periode.Add(grid_sizer_periode, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(staticbox_periode, 1, wx.RIGHT|wx.EXPAND, 5)
-        
+
+        # Méthode
+        staticbox_methode = wx.StaticBoxSizer(self.staticbox_methode_staticbox, wx.VERTICAL)
+        staticbox_methode.Add(self.ctrl_methode, 0, wx.EXPAND|wx.ALL, 5)
+        grid_sizer_base.Add(staticbox_methode, 1, wx.RIGHT|wx.EXPAND, 5)
+
         # Date de naissance max
         staticbox_dateNaiss = wx.StaticBoxSizer(self.staticbox_dateNaiss_staticbox, wx.VERTICAL)        
         grid_sizer_dateNaiss = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
@@ -170,7 +196,7 @@ class Parametres(wx.Panel):
 
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)
-        grid_sizer_base.AddGrowableRow(2)
+        grid_sizer_base.AddGrowableRow(3)
         grid_sizer_base.AddGrowableCol(0)
     
     def OnCheckAge(self, event):
@@ -261,8 +287,9 @@ class Parametres(wx.Panel):
         else:
             dateNaiss = None
         listeActivites = self.GetActivites() 
-        listeModes = self.GetModes() 
-        self.parent.ctrl_prestations.MAJ(date_debut, date_fin, dateNaiss, listeActivites, listeModes) 
+        listeModes = self.GetModes()
+        methode = self.ctrl_methode.GetValeur()
+        self.parent.ctrl_prestations.MAJ(date_debut, date_fin, dateNaiss, listeActivites, listeModes, methode)
     
     def GetActivites(self):
         return self.ctrl_activites.GetActivites() 
