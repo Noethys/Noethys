@@ -103,6 +103,13 @@ class Table():
                         # Ouverture de l'image
                         image = Image.open(six.BytesIO(valeur))
 
+                        # Redimmensionnement de l'image
+                        largeur_max = 400
+                        if image.size[0] > largeur_max:
+                            wpercent = (largeur_max / float(image.size[0]))
+                            hsize = int((float(image.size[1]) * float(wpercent)))
+                            image.resize((largeur_max, hsize), Image.LANCZOS)
+
                         # Création du nom du fichier image
                         nom_fichier_image = u"%s.%s" % (uuid.uuid4(), image.format.lower())
 
@@ -615,6 +622,11 @@ class Table_unites(Table):
         req = """SELECT IDunite, IDunite_incompatible FROM unites_incompat WHERE IDunite=%d;""" % data["pk"]
         self.parent.DB.ExecuterReq(req)
         return [IDunite_incompatible for IDunite, IDunite_incompatible in self.parent.DB.ResultatReq()]
+
+    def largeur(self, valeur=None, objet=None):
+        if not valeur:
+            valeur = 50
+        return valeur
 
 
 class Table_unites_remplissage(Table):
@@ -1742,12 +1754,29 @@ class Table_prelevements(Table):
         self.reglements = {}
         for IDreglement, IDprelevement in self.parent.DB.ResultatReq():
             self.reglements[IDprelevement] = IDreglement
+        # Importation de la table des factures
+        req = "SELECT IDfacture, numero FROM factures;"
+        self.parent.DB.ExecuterReq(req)
+        self.factures = []
+        for IDfacture, numero in self.parent.DB.ResultatReq():
+            self.factures.append(IDfacture)
 
         Table.__init__(self, parent, **kwds)
         del self.reglements
+        del self.factures
 
     def reglement(self, data={}):
         return self.reglements.get(data["IDprelevement"], None)
+
+    def type(self, valeur=None, objet=None):
+        if valeur == "facture" and objet[14] not in self.factures:
+            return "manuel"
+        return valeur
+
+    def IDfacture(self, valeur=None, objet=None):
+        if objet[13] == u"facture" and objet[14] not in self.factures:
+            return None
+        return valeur
 
 
 class Table_modeles_prelevements(Table):
