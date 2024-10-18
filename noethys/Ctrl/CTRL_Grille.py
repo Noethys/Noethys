@@ -1850,7 +1850,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             couleur = self.CreationCouleurForfait(index)
             
             # Création du dictTemp
-            if IDindividu != None and IDindividu != 0 :
+            if IDindividu != None and IDindividu != 0 and IDindividu in self.dictIndividus:
                 nomIndividu = u"%s %s" % (self.dictIndividus[IDindividu]["nom"], self.dictIndividus[IDindividu]["prenom"])
             else:
                 nomIndividu = u""
