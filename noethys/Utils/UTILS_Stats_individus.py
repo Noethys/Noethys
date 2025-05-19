@@ -133,19 +133,22 @@ def GetDictGenres(DB, dictParametres) :
 
 DICT_AGES = {"dictParametres" : {}, "dictAges" : {}, "dictAnnees" : {} }
 
-def GetDictAges(DB, dictParametres) :
+def GetDictAges(DB, dictParametres, mode_tranches=False) :
     # Vérifie si les données n'existent pas déjà
-    global DICT_AGES
-    if DICT_AGES["dictParametres"] == dictParametres :
-        return DICT_AGES["dictAges"], DICT_AGES["dictAnnees"]
+    # global DICT_AGES
+    # if DICT_AGES["dictParametres"] == dictParametres :
+    #     return DICT_AGES["dictAges"], DICT_AGES["dictAnnees"]
 
     # Recherche des paramètres
     date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
     conditionsActivites = MODELES.GetConditionActivites(dictParametres)
+
+    from Data import DATA_Civilites
+    dictCivilites = DATA_Civilites.GetDictCivilites()
     
     # Recherche des données par individus
     if dictParametres["mode"] == "presents" :
-        req = """SELECT individus.IDindividu, date_naiss
+        req = """SELECT individus.IDindividu, IDcivilite, date_naiss
         FROM individus
         LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu 
         WHERE date>='%s' AND date<='%s' 
@@ -154,7 +157,7 @@ def GetDictAges(DB, dictParametres) :
         GROUP BY individus.IDindividu
         ;""" % (date_debut, date_fin, conditionsActivites)
     else:
-        req = """SELECT individus.IDindividu, date_naiss
+        req = """SELECT individus.IDindividu, IDcivilite, date_naiss
         FROM individus
         LEFT JOIN inscriptions ON inscriptions.IDindividu = individus.IDindividu 
         WHERE inscriptions.statut='ok' AND IDactivite IN %s
@@ -167,8 +170,11 @@ def GetDictAges(DB, dictParametres) :
         return {}, {}
     
     dictAges = {}
+    dictAgesGenres = {}
     dictAnnees = {}
-    for IDindividu, date_naiss in listeDonnees :
+    for IDindividu, IDcivilite, date_naiss in listeDonnees :
+        genre = str(dictCivilites[IDcivilite]["sexe"])
+
         if date_naiss != None and date_naiss != "" :
             date_naiss = datetime.date(int(date_naiss[:4]), int(date_naiss[5:7]), int(date_naiss[8:10]))
             if str(date_fin) == "2999-01-01" :
@@ -191,11 +197,16 @@ def GetDictAges(DB, dictParametres) :
             dictAnnees[annee] = 0
         dictAnnees[annee] += 1
 
+        tranche = age / 10 if age else None
+        dictAgesGenres.setdefault(tranche, {})
+        dictAgesGenres[tranche].setdefault(genre, 0)
+        dictAgesGenres[tranche][genre] += 1
+
     # Mémorisation des résultats
     DICT_AGES["dictParametres"] = dictParametres
     DICT_AGES["dictAges"] = dictAges
     DICT_AGES["dictAnnees"] = dictAnnees
-    return dictAges, dictAnnees
+    return dictAgesGenres if mode_tranches else dictAges, dictAnnees
 
 
 DICT_DISTANCES_VILLES = {"dictParametres" : {}, "dictDistances" : {} }
@@ -418,6 +429,57 @@ def GetAnciennete(DB, dictParametres):
     DICT_ANCIENNETE["dictResultats"] = dictResultats
     DICT_ANCIENNETE["listeMoisPeriode"] = listeMoisPeriode
     return dictResultats, listeMoisPeriode
+
+
+DICT_DESINSCRITS = {"dictParametres": {}, "dictResultats": {}, "listeMoisPeriode": []}
+
+
+def GetDesinscrits(DB, dictParametres):
+    # V�rifie si les donn�es n'existent pas d�j�
+    global DICT_DESINSCRITS
+    if DICT_DESINSCRITS["dictParametres"] == dictParametres:
+        return DICT_DESINSCRITS["dictResultats"], DICT_DESINSCRITS["listeMoisPeriode"]
+
+    # Recherche des param�tres
+    date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
+    conditionsActivites = MODELES.GetConditionActivites(dictParametres)
+
+    if dictParametres["mode"] != "presents":
+        return {}, []
+
+    req = """SELECT IDindividu, date_desinscription
+    FROM inscriptions
+    WHERE date_desinscription>='%s' AND date_desinscription<='%s'
+    AND IDactivite IN %s
+    GROUP BY IDindividu
+    ;""" % (date_debut, date_fin, conditionsActivites)
+
+    DB.ExecuterReq(req)
+    listeDonnees = DB.ResultatReq()
+    if len(listeDonnees) == 0:
+        return {}, []
+
+    dictResultats = {}
+    for IDindividu, date_desinscription in listeDonnees:
+        date_desinscription = MODELES.DateEngEnDateDD(date_desinscription)
+        moisDepart = (date_desinscription.year, date_desinscription.month)
+        if (moisDepart in dictResultats) == False:
+            dictResultats[moisDepart] = 0
+        dictResultats[moisDepart] += 1
+
+    # Cr�e tous les mois de la p�riode
+    listeMoisPeriode = []
+    for annee in range(date_debut.year, date_fin.year + 1):
+        for mois in range(1, 13):
+            if (annee, mois) >= (date_debut.year, date_debut.month) and (annee, mois) <= (date_fin.year, date_fin.month):
+                listeMoisPeriode.append((annee, mois))
+
+    # M�morisation des r�sultats
+    DICT_DESINSCRITS["dictParametres"] = dictParametres
+    DICT_DESINSCRITS["dictResultats"] = dictResultats
+    DICT_DESINSCRITS["listeMoisPeriode"] = listeMoisPeriode
+    return dictResultats, listeMoisPeriode
+
 
 
 DICT_ECOLES = {"dictParametres" : {}, "listeResultats" : [] }
@@ -928,8 +990,38 @@ class Graphe_repartition_annees_naiss(MODELES.Graphe):
         ax.grid(True, linestyle=":")
         
         return figure
-    
 
+
+class Tableau_repartition_tranches_ages(MODELES.Tableau):
+    """ R�partition des individus par �ge """
+
+    def __init__(self):
+        MODELES.Tableau.__init__(self)
+        self.nom = _(u"R�partition des individus par tranches d'�ge et par genre")
+        self.code = "tableau_repartition_tranches_ages"
+
+    def MAJ(self, DB=None, dictParametres={}):
+        self.dictParametres = dictParametres
+        self.colonnes = []
+        self.lignes = []
+        self.totaux = []
+
+        dictAges, dictAnnees = GetDictAges(DB, dictParametres, mode_tranches=True)
+
+        # Cr�ation du tableau
+        self.largeur = "400"
+        self.colonnes = [(_(u"Tranche d'�ge"), "200"), (_(u"H"), "50"), (_(u"F"), "50"), (_(u"?"), "50"), (_(u"Total"), "50")]
+        self.lignes = []
+
+        listeTranches = list(dictAges.keys())
+        listeTranches.sort()
+
+        for tranche in listeTranches:
+            label_tranche = ("%d - %d" % (tranche*10, tranche*10 + 9)) if tranche else "Age inconnu"
+            nbreM = dictAges[tranche].get("M", 0)
+            nbreF = dictAges[tranche].get("F", 0)
+            nbreI = dictAges[tranche].get("None", 0)
+            self.lignes.append((label_tranche, nbreM, nbreF, nbreI, nbreM + nbreF + nbreI))
 
 
 class Tableau_repartition_villes(MODELES.Tableau):
@@ -1314,6 +1406,35 @@ class Graphe_arrivee_individus(MODELES.Graphe):
         figure.subplots_adjust(left=None, bottom=0.3, right=None, wspace=None, hspace=None)
         
         return figure
+
+
+class Tableau_anciens_individus(MODELES.Tableau):
+    """ D�inscrits aux activit�s """
+
+    def __init__(self):
+        MODELES.Tableau.__init__(self)
+        self.nom = _(u"Individus d�sinscrits durant la p�riode")
+        self.code = "tableau_anciens_individus"
+
+    def MAJ(self, DB=None, dictParametres={}):
+        self.dictParametres = dictParametres
+        self.colonnes = []
+        self.lignes = []
+        self.totaux = []
+
+        date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
+        dictResultats, listeMoisPeriode = GetDesinscrits(DB, dictParametres)
+
+        # Cr�ation du tableau
+        self.largeur = "400"
+        self.colonnes = [(_(u"Mois"), "250"), (_(u"Nombre d'individus"), "150")]
+        self.lignes = []
+
+        for annee, mois in listeMoisPeriode:
+            if (annee, mois) in dictResultats:
+                label = u"%s %s" % (MODELES.LISTE_NOMS_MOIS[mois - 1], annee)
+                self.lignes.append((label, dictResultats[(annee, mois)]))
+
 
 
 class Tableau_repartition_ecoles(MODELES.Tableau):

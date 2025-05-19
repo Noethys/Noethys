@@ -788,8 +788,9 @@ class DB:
         listeNomsChamps = []
         for fieldDesc in cursor.description:
             listeNomsChamps.append(fieldDesc[0])
-            
-        # Préparation des noms de champs pour le transfert
+        del listeDonneesTmp
+
+        # Pr�paration des noms de champs pour le transfert
         listeChamps = []
         listeMarks = []
         dictTypesChamps = GetChampsTable(nomTable)
@@ -806,17 +807,27 @@ class DB:
         # Récupération des données
         req = "SELECT %s FROM %s" % (", ".join(listeChamps), nomTable)
         cursor.execute(req)
-        listeDonnees = cursor.fetchall()
+        if nomTable == "documents":
+            while True:
+                tmp = cursor.fetchone()
+                if tmp != None:
+                    req = "INSERT INTO %s (%s) VALUES (%s)" % (nomTable, ", ".join(listeChamps), ", ".join(listeMarks))
+                    self.cursor.executemany(req, [tmp,])
+                    self.connexion.commit()
+                else:
+                    break
+        else:
+            listeDonnees = cursor.fetchall()
 
-        # Importation des données vers la nouvelle table
-        req = "INSERT INTO %s (%s) VALUES (%s)" % (nomTable, ", ".join(listeChamps), ", ".join(listeMarks))
-        try :
-            self.cursor.executemany(req, listeDonnees)
-        except Exception as err :
-            print("Erreur dans l'importation de la table %s :" % nomTable)
-            print(err)
-            return (False, "Erreur dans l'importation de la table %s : %s" % (nomTable, err))
-        self.connexion.commit()
+            # Importation des donn�es vers la nouvelle table
+            req = "INSERT INTO %s (%s) VALUES (%s)" % (nomTable, ", ".join(listeChamps), ", ".join(listeMarks))
+            try :
+                self.cursor.executemany(req, listeDonnees)
+            except Exception as err :
+                print("Erreur dans l'importation de la table %s :" % nomTable)
+                print(err)
+                return (False, "Erreur dans l'importation de la table %s : %s" % (nomTable, err))
+            self.connexion.commit()
         return (True, None)
 
     def Importation_table_reseau(self, nomTable="", nomFichier="", dictTables={}):

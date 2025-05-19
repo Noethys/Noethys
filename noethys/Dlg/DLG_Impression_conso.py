@@ -1595,6 +1595,7 @@ class Dialog(wx.Dialog):
         dictConso = {}
         dictIndividus = {}
         listeIDindividus = []
+        dictUnitesAvecConso = {}
         for IDconso, IDindividu, IDcivilite, IDactivite, IDunite, IDgroupe, heure_debut, heure_fin, etat, quantite, etiquettes, IDevenement, IDcivilite, nom, prenom, date_naiss, nomSieste, IDfamille, date, IDecole, IDclasse in listeConso :
             date = UTILS_Dates.DateEngEnDateDD(date)
             etiquettes = UTILS_Texte.ConvertStrToListe(etiquettes)
@@ -1656,7 +1657,12 @@ class Dialog(wx.Dialog):
 
                 dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette][IDindividu]["listeConso"][date][IDunite].append( { "heure_debut" : heure_debut, "heure_fin" : heure_fin, "etat" : etat, "quantite" : quantite, "IDfamille" : IDfamille, "IDevenement" : conso_IDevenement, "etiquettes" : etiquettes } )
 
-                # Mémorisation du IDindividu
+                # Mémorise si l'unité est utilisée pour cette date
+                dictUnitesAvecConso.setdefault(date, [])
+                if IDunite not in dictUnitesAvecConso[date]:
+                    dictUnitesAvecConso[date].append(IDunite)
+
+                # M�morisation du IDindividu
                 if IDindividu not in listeIDindividus :
                     listeIDindividus.append(IDindividu)
 
@@ -2047,7 +2053,7 @@ class Dialog(wx.Dialog):
                                         listeUnites = dictDatesUnites[date]
                                         positionG = indexCol
                                         for typeTemp, IDunite, affichage in dictChoixUnites[IDactivite] :
-                                            if (affichage == "utilise" and IDunite in listeUnites) or affichage == "toujours" :
+                                            if (affichage == "utilise" and IDunite in listeUnites) or (affichage == "conso" and IDunite in dictUnitesAvecConso.get(date, [])) or affichage == "toujours" :
                                                 if typeTemp == "conso" :
                                                     abregeUnite = dictUnites[IDunite]["abrege"]
                                                 else:
@@ -2205,7 +2211,7 @@ class Dialog(wx.Dialog):
                                             listeUnites = dictDatesUnites[date]
 
                                             for typeTemp, IDunite, affichage in dictChoixUnites[IDactivite] :
-                                                if (affichage == "utilise" and IDunite in listeUnites) or affichage == "toujours" :
+                                                if (affichage == "utilise" and IDunite in listeUnites) or (affichage == "conso" and IDunite in dictUnitesAvecConso.get(date, [])) or affichage == "toujours" :
                                                     listeLabels = []
                                                     quantite = None
 

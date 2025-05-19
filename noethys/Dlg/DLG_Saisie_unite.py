@@ -627,12 +627,12 @@ class Dialog(wx.Dialog):
             DB.Close()
 
             # Multihoraires
-            if len(listeDatesConso) > 0 and self.typeUnite == "Multihoraires" and self.ctrl_type.GetType() != "Multihoraires" :
-                periode = _(u"entre le %s et le %s") % (UTILS_Dates.DateDDEnFr(listeDatesConso[0]), UTILS_Dates.DateDDEnFr(listeDatesConso[-1]))
-                dlg = wx.MessageDialog(self, _(u"Des consommations multiples ont déjà été saisies sur %d dates (%s) !\n\nIl est donc impossible de convertir cette unité multihoraire en un autre type d'unité.") % (len(listeDatesConso), periode), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
-                dlg.ShowModal()
-                dlg.Destroy()
-                return
+            # if len(listeDatesConso) > 0 and self.typeUnite == "Multihoraires" and self.ctrl_type.GetType() != "Multihoraires" :
+            #     periode = _(u"entre le %s et le %s") % (UTILS_Dates.DateDDEnFr(listeDatesConso[0]), UTILS_Dates.DateDDEnFr(listeDatesConso[-1]))
+            #     dlg = wx.MessageDialog(self, _(u"Des consommations multiples ont déjé été saisies sur %d dates (%s) !\n\nIl est donc impossible de convertir cette unité multihoraire en un autre type d'unité.") % (len(listeDatesConso), periode), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+            #     dlg.ShowModal()
+            #     dlg.Destroy()
+            #     return
 
             # Evènements
             if (self.ctrl_type.GetType() == "Evenement" and self.typeUnite != "Evenement") or (self.ctrl_type.GetType() != "Evenement" and self.typeUnite == "Evenement") :

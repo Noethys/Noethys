@@ -82,6 +82,8 @@ DICT_PROCEDURES = {
     "A9277": _(u"Ajout du champ code_service"),
     "A9279": _(u"Recherche les factures avec ventilation supérieure au montant de la facture"),
     "A9281": _(u"Ajout du champ code_analytique"),
+    "A9282" : _(u"Création des catégories de tarifs manquantes pour des inscriptions"),
+    "A9283" : _(u"Rattachement de mandats à des prélèvements pour Noethysweb"),
 }
 
 
@@ -1868,8 +1870,38 @@ def A9281():
     DB.Close()
 
 
+def A9282():
+    """ Cr�ation des cat�gories de tarifs manquantes pour des inscriptions """
+    DB = GestionDB.DB()
+    req = """SELECT idactivite FROM inscriptions WHERE idcategorie_tarif IS NULL GROUP BY idactivite"""
+    DB.ExecuterReq(req)
+    dict_categories = {}
+    for IDactivite, in DB.ResultatReq():
+        dict_categories[IDactivite] = DB.ReqInsert("categories_tarifs", [("IDactivite", IDactivite), ("nom", u"Tarif normal")])
+
+    req = """SELECT IDinscription, IDactivite FROM inscriptions WHERE idcategorie_tarif IS NULL"""
+    DB.ExecuterReq(req)
+    for IDinscription, IDactivite in DB.ResultatReq():
+        DB.ReqMAJ("inscriptions", [("IDcategorie_tarif", dict_categories[IDactivite]),], "IDinscription", IDinscription)
+
+    DB.Close()
+
+
+def A9283():
+    """ Rattachement des mandats existants � des pr�l�vements si IDmandat est NULL (pour migration Noethysweb) """
+    DB = GestionDB.DB()
+    req = """SELECT IDprelevement, prelevements.IDfamille, MIN(mandats.IDmandat) FROM prelevements
+    LEFT JOIN mandats ON mandats.IDfamille = prelevements.IDfamille
+    WHERE prelevements.IDmandat IS NULL
+    GROUP BY IDprelevement"""
+    DB.ExecuterReq(req)
+    for IDprelevement, IDfamille, IDmandat in DB.ResultatReq():
+        DB.ReqMAJ("prelevements", [("IDmandat", IDmandat),], "IDprelevement", IDprelevement)
+    DB.Close()
+
+
 if __name__ == u"__main__":
     app = wx.App(0)
     # TEST D'UNE PROCEDURE :
-    A9279()
+    A9283()
     app.MainLoop()

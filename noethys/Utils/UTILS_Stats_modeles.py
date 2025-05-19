@@ -34,6 +34,7 @@ LISTE_NOMS_MOIS = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"M
 
 
 def DateEngEnDateDD(dateEng):
+    if type(dateEng) == datetime.date: return dateEng
     return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
 
 def DateEngFr(textDate):

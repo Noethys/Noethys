@@ -166,6 +166,7 @@ class Dialog(wx.Dialog):
                             INDIVIDUS.Tableau_nouveaux_individus(),
                             INDIVIDUS.Graphe_nouveaux_individus(),
                             INDIVIDUS.Graphe_arrivee_individus(),
+                            INDIVIDUS.Tableau_anciens_individus(),
                             ]},
 
                     {"nom" : _(u"Genre"), "code" : "individus_genre", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
@@ -178,6 +179,7 @@ class Dialog(wx.Dialog):
                             INDIVIDUS.Graphe_repartition_ages(),
                             INDIVIDUS.Tableau_repartition_annees_naiss(),
                             INDIVIDUS.Graphe_repartition_annees_naiss(),
+                            INDIVIDUS.Tableau_repartition_tranches_ages(),
                             ]},
 
                     {"nom" : _(u"Coordonnées"), "code" : "individus_coordonnees", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [

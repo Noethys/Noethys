@@ -712,7 +712,7 @@ class Dialog(wx.Dialog):
         # Récupération des infos sur le compte créditeur
         parametres = self.ctrl_parametres.GetParametres()
         IDcompte = parametres["IDcompte"]
-        motif = parametres["motif"]
+        motif = parametres.get("motif", "")
         dictCompte = self.ctrl_parametres.dictComptes[IDcompte]
         paiement_ics = dictCompte["code_ics"]
         creancier_nom = dictCompte["raison"]

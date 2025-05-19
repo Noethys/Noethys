@@ -291,7 +291,7 @@ class ListView(FastObjectListView):
             self.MAJ() 
         dlg.Destroy()
         
-    def Modifier(self, event):  
+    def Modifier(self, event):
         if len(self.Selection()) == 0 :
             dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune p√©riode √† modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -304,6 +304,24 @@ class ListView(FastObjectListView):
             self.listeDonnees[track.index] = dlg.GetDonnees() 
             self.MAJ() 
         dlg.Destroy()
+
+    def Modifier_montants(self, event):
+        nouveau_montant = None
+        dlg = wx.TextEntryDialog(self, _(u"Saisissez le montant ‡ appliquer ‡ toutes les prestations non facturÈes (Ex : 10.5) :"), _(u"Modification des montants"), u"")
+        if dlg.ShowModal() == wx.ID_OK:
+            try:
+                nouveau_montant = float(dlg.GetValue())
+            except:
+                dlg = wx.MessageDialog(self, _(u"Le montant saisi ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return
+        dlg.Destroy()
+        if nouveau_montant:
+            for dictTrack in self.listeDonnees:
+                if not dictTrack.get("numFacture", None):
+                    dictTrack["montant_prestation"] = nouveau_montant
+            self.MAJ()
 
     def Supprimer(self, event):  
         if len(self.Selection()) == 0 and len(self.GetTracksCoches()) == 0 :

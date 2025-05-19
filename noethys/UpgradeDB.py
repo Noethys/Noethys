@@ -1551,6 +1551,18 @@ class DB(GestionDB.DB):
 
         # =============================================================
 
+        versionFiltre = (1, 3, 3, 6)
+        if versionFichier < versionFiltre:
+            try:
+                if self.isNetwork == True:
+                    self.ExecuterReq("ALTER TABLE pes_pieces MODIFY COLUMN numero VARCHAR(400);")
+                    self.Commit()
+            except Exception as err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
+
+
 
         return True
 

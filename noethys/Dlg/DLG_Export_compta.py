@@ -190,7 +190,7 @@ class Donnees():
         req = """
         SELECT prestations.IDprestation, prestations.date, categorie, prestations.code_compta, tarifs.code_compta,
         prestations.label, prestations.montant, 
-        prestations.IDactivite, activites.nom, activites.abrege, activites.code_comptable,
+        prestations.IDactivite, activites.nom, activites.abrege, activites.code_comptable, activites.code_analytique,
         prestations.IDtarif, noms_tarifs.nom, categories_tarifs.nom, prestations.IDfacture,
         prestations.forfait, prestations.IDcategorie_tarif,
         prestations.IDindividu, individus.nom, individus.prenom,
@@ -211,7 +211,7 @@ class Donnees():
         listeDonnees = DB.ResultatReq() 
         DB.Close()
         listePrestations = []
-        for IDprestation, datePrestation, categorie, code_compta_prestation, code_compta_tarif, label, montant, IDactivite, nomActivite, nomAbregeActivite, CodeComptableActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, forfait, IDcategorie_tarif, IDindividu, nomIndividu, prenomIndividu, code_comptable_type_cotisation in listeDonnees :
+        for IDprestation, datePrestation, categorie, code_compta_prestation, code_compta_tarif, label, montant, IDactivite, nomActivite, nomAbregeActivite, CodeComptableActivite, code_analytique_activite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, forfait, IDcategorie_tarif, IDindividu, nomIndividu, prenomIndividu, code_comptable_type_cotisation in listeDonnees :
             if nomIndividu == None : nomIndividu = ""
             if prenomIndividu == None : prenomIndividu = ""
             if nomActivite == None : nomActivite = ""
@@ -1835,7 +1835,7 @@ class CTRL_Parametres_cerig(CTRL_Parametres) :
                     label = u"%s - %s" % (prenom_individu, label)
 
                 # Regroupement secondaire
-                cle_secondaire = code_compta
+                cle_secondaire = (label, code_compta)
 
                 if cle_secondaire not in dict_resultats[cle_primaire]["lignes"]:
                     dict_resultats[cle_primaire]["lignes"][cle_secondaire] = {"code_compta": code_compta, "code_analytique": code_analytique, "label": label, "montant": FloatToDecimal(0.0)}
@@ -1855,7 +1855,7 @@ class CTRL_Parametres_cerig(CTRL_Parametres) :
             montant_facture = dict_resultats[cle_primaire]["montant_facture"]
 
             for cle_secondaire, valeurs in dict_resultats[cle_primaire]["lignes"].items():
-                lignes.append((date_facture, noms_titulaires, label_facture, valeurs["label"], str(montant_facture), valeurs["code_compta"], valeurs["code_analytique"]))
+                lignes.append((date_facture, noms_titulaires, label_facture, valeurs["label"], str(valeurs["montant"]), valeurs["code_compta"], valeurs["code_analytique"]))
 
         # Si vide:
         if not lignes:

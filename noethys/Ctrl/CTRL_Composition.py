@@ -40,10 +40,11 @@ else :
 
 
 class GetValeurs() :
-    def __init__(self, IDfamille=None):
+    def __init__(self, IDfamille=None, dlgfamille=None):
         self.IDfamille = IDfamille
+        self.dlgfamille = dlgfamille
         self.listeIDindividus, self.dictInfosIndividus, self.listeLiens = self.GetInfosIndividus()
-        
+
     def GetLiensCadres(self):
         """ Retourne les liens de filiation ou de couple """
         dictRelations = {}
@@ -84,13 +85,19 @@ class GetValeurs() :
         listeIDindividus = []
         listeLiens = []
         
-        # Recherche des individus rattachés
+        # Recherche des individus rattach�s
+        condition = ""
+        if self.dlgfamille and self.dlgfamille.notebook.dictParametres.get("individus_archives", True) == False:
+            condition = """ AND individus.etat IS NULL"""
+
         DB = GestionDB.DB()
-        req = """SELECT IDrattachement, IDindividu, IDcategorie, titulaire
-        FROM rattachements WHERE IDfamille=%d;""" % self.IDfamille
+        req = """SELECT IDrattachement, rattachements.IDindividu, IDcategorie, titulaire
+        FROM rattachements 
+        LEFT JOIN individus ON individus.IDindividu = rattachements.IDindividu
+        WHERE IDfamille=%d %s;""" % (self.IDfamille, condition)
         DB.ExecuterReq(req)
         listeRattachements = DB.ResultatReq()
-        if len(listeRattachements) == 0 : 
+        if len(listeRattachements) == 0 :
             DB.Close()
             return listeIDindividus, dictInfos, listeLiens
         
@@ -653,7 +660,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
 
     def MAJ(self):
         # Récupération des valeurs
-        valeurs = GetValeurs(self.IDfamille)
+        valeurs = GetValeurs(self.IDfamille, dlgfamille=self.GetGrandParent())
         self.dictValeurs = valeurs
         self.dictCadres = valeurs.GetDictCadres()
         self.dictInfoBulles = valeurs.GetDictInfoBulles()
@@ -1480,8 +1487,8 @@ class CTRL_Liste(HTL.HyperTreeList):
         self.donnees = donnees
         
     def MAJ(self):
-        """ Met é jour (redessine) tout le contréle """
-        self.donnees = GetValeurs(self.IDfamille) 
+        """ Met à jour (redessine) tout le contrôle """
+        self.donnees = GetValeurs(self.IDfamille, dlgfamille=self.GetGrandParent())
         nbreBranches = self.GetChildrenCount(self.root)
         if nbreBranches > 1 :
             self.DeleteChildren(self.root)
