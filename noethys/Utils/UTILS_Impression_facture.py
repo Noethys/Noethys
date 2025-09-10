@@ -25,7 +25,7 @@ from Utils import UTILS_Dates
 from reportlab.platypus.doctemplate import PageTemplate, BaseDocTemplate, NextPageTemplate
 from reportlab.platypus import Paragraph, Spacer, Table, TableStyle, PageBreak
 from reportlab.platypus.flowables import ParagraphAndImage, Image
-from reportlab.platypus.frames import Frame, ShowBoundaryValue
+from reportlab.platypus.frames import Frame
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import inch, cm, mm
 from reportlab.lib.utils import ImageReader
@@ -649,7 +649,7 @@ class Impression():
                                     else :
                                         dataTableau.append([texteDate, texteIntitules, texteMontantsTTC])
 
-                            # Sous-total par activité
+                            # Sous-total par activitÃ©
                             if dictOptions.get("afficher_sous_total_activite", False) == True:
                                 total_activite = sum([dictDates["total"] for date, dictDates in dictActivites["presences"].items()])
                                 dataTableau.append([Paragraph(u"<para align='right'><i>Sous-total</i></para>", paraStyle), "", Paragraph(u"<para align='center'><i>%.02f %s</i></para>" % (total_activite, SYMBOLE), paraStyle)])

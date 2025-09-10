@@ -180,7 +180,7 @@ class CTRL(wx.StaticBitmap):
             largeurImage = largeurCadre - espace
             hauteurImage = largeurImage / ratioImage
         
-        img.Rescale(width=largeurImage, height=hauteurImage, quality=wx.IMAGE_QUALITY_HIGH)
+        img.Rescale(width=int(largeurImage), height=int(hauteurImage), quality=wx.IMAGE_QUALITY_HIGH)
         position = (((largeurCadre/2.0) - (largeurImage/2.0)), ((hauteurCadre/2.0) - (hauteurImage/2.0)))
         img.Resize(self.GetSize(), position, 255, 255, 255)
         # Affiche l'image

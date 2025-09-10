@@ -226,21 +226,21 @@ class CaseRenderer(GridCellRenderer):
 
             # Rond rouge
             padding = 1
-            xRond = rect.x + 3
-            yRond = rect.y + 3
-            hauteurRond = hauteurTexte + padding * 2
-            largeurRond = largeurTexte + padding * 2 + hauteurRond / 2.0
+            xRond = int(rect.x + 3)
+            yRond = int(rect.y + 3)
+            hauteurRond = int(hauteurTexte + padding * 2)
+            largeurRond = int(largeurTexte + padding * 2 + hauteurRond / 2.0)
             if largeurRond < hauteurRond:
                 largeurRond = hauteurRond
 
             if 'phoenix' in wx.PlatformInfo:
-                dc.DrawRoundedRectangle(int(wx.Rect(xRond, yRond, largeurRond, hauteurRond)), int(hauteurRond / 2.0))
+                dc.DrawRoundedRectangle(wx.Rect(xRond, yRond, largeurRond, hauteurRond), int(hauteurRond / 2.0))
             else :
-                dc.DrawRoundedRectangleRect(int(wx.Rect(xRond, yRond, largeurRond, hauteurRond)), int(hauteurRond / 2.0))
+                dc.DrawRoundedRectangleRect(wx.Rect(xRond, yRond, largeurRond, hauteurRond), int(hauteurRond / 2.0))
 
             # Texte
-            xTexte = xRond + largeurRond / 2.0 - largeurTexte / 2.0
-            yTexte = yRond + hauteurRond / 2.0 - hauteurTexte / 2.0
+            xTexte = int(xRond + largeurRond / 2.0 - largeurTexte / 2.0)
+            yTexte = int(yRond + hauteurRond / 2.0 - hauteurTexte / 2.0)
             dc.DrawText(texte, xTexte, yTexte)
 
             # dc.SetTextForeground(wx.Colour(180, 180, 180))

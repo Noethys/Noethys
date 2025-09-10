@@ -41,7 +41,7 @@ else:
 
 
 class Propriete_date(wxpg.PyProperty):
-    def __init__(self, label, name=wxpg.PG_LABEL, value=None):
+    def __init__(self, label, name=NAME, value=None):
         wxpg.PyProperty.__init__(self, label, name)
         self.SetValue(value)
 

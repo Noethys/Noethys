@@ -307,7 +307,7 @@ class ListView(FastObjectListView):
 
     def Modifier_montants(self, event):
         nouveau_montant = None
-        dlg = wx.TextEntryDialog(self, _(u"Saisissez le montant à appliquer à toutes les prestations non facturées (Ex : 10.5) :"), _(u"Modification des montants"), u"")
+        dlg = wx.TextEntryDialog(self, _(u"Saisissez le montant Ã  appliquer Ã  toutes les prestations non facturÃ©es (Ex : 10.5) :"), _(u"Modification des montants"), u"")
         if dlg.ShowModal() == wx.ID_OK:
             try:
                 nouveau_montant = float(dlg.GetValue())

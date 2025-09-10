@@ -1735,19 +1735,19 @@ class CTRL_Parametres_cerig(CTRL_Parametres) :
         cheminDefaut = sp.GetDocumentsDir()
 
         self.listeDonnees = [
-            _(u"Options gÈnÈrales"),
-            {"type": "check", "label": _(u"MÈmoriser les paramËtres"), "description": _(u"MÈmoriser les paramËtres"), "code": "memoriser_parametres", "tip": _(u"Cochez cette case pour mÈmoriser les paramËtres"), "defaut": True, "obligatoire": True},
-            {"type": "repertoire", "label": _(u"RÈpertoire de destination"), "description": _(u"RÈpertoire de destination"), "code": "cerig_repertoire", "tip": _(u"SÈlectionnez un rÈpertoire de destination"), "defaut": cheminDefaut, "obligatoire": True},
-            _(u"Codes par dÈfaut"),
-            {"type": "chaine", "label": _(u"Compte par dÈfaut"), "description": _(u"Code compte par dÈfaut"), "code": "cerig_code_comptable", "tip": _(u"Saisissez le code comptable par dÈfaut"), "defaut": _(u""), "obligatoire": False},
-            {"type": "chaine", "label": _(u"Analytique par dÈfaut"), "description": _(u"Code analytique par dÈfaut"), "code": "cerig_code_analytique", "tip": _(u"Saisissez le code analytique par dÈfaut"), "defaut": _(u""), "obligatoire": False},
+            _(u"Options g√©n√©rales"),
+            {"type": "check", "label": _(u"M√©moriser les param√®tres"), "description": _(u"M√©moriser les param√®tres"), "code": "memoriser_parametres", "tip": _(u"Cochez cette case pour m√©moriser les param√®tres"), "defaut": True, "obligatoire": True},
+            {"type": "repertoire", "label": _(u"R√©pertoire de destination"), "description": _(u"R√©pertoire de destination"), "code": "cerig_repertoire", "tip": _(u"S√©lectionnez un r√©pertoire de destination"), "defaut": cheminDefaut, "obligatoire": True},
+            _(u"Codes par d√©faut"),
+            {"type": "chaine", "label": _(u"Compte par d√©faut"), "description": _(u"Code compte par d√©faut"), "code": "cerig_code_comptable", "tip": _(u"Saisissez le code comptable par d√©faut"), "defaut": _(u""), "obligatoire": False},
+            {"type": "chaine", "label": _(u"Analytique par d√©faut"), "description": _(u"Code analytique par d√©faut"), "code": "cerig_code_analytique", "tip": _(u"Saisissez le code analytique par d√©faut"), "defaut": _(u""), "obligatoire": False},
         ]
         CTRL_Parametres.__init__(self, parent, self.listeDonnees)
 
     def Generation(self, format=None):
         if self.Validation() == False: return False
 
-        # RÈcupÈration des paramËtres
+        # R√©cup√©ration des param√®tres
         dictParametres = self.GetParametres()
 
         # Importation des familles
@@ -1817,7 +1817,7 @@ class CTRL_Parametres_cerig(CTRL_Parametres) :
 
                 if not code_compta:
                     if IDactivite:
-                        txt = u"Le code comptable de l'activitÈ %s est manquant." % nom_activite
+                        txt = u"Le code comptable de l'activit√© %s est manquant." % nom_activite
                     else:
                         txt = u"Le code comptable de la prestation %s est manquant." % label
                     if txt not in anomalies:
@@ -1830,7 +1830,7 @@ class CTRL_Parametres_cerig(CTRL_Parametres) :
                 if not code_analytique:
                     anomalies.append(u"Le code analytique de la prestation %s est manquant." % label)
 
-                # CrÈation label
+                # Cr√©ation label
                 if prenom_individu:
                     label = u"%s - %s" % (prenom_individu, label)
 
@@ -1846,7 +1846,7 @@ class CTRL_Parametres_cerig(CTRL_Parametres) :
         liste_clesprimaires = list(dict_resultats.keys())
         liste_clesprimaires.sort()
 
-        # CrÈation du fichier
+        # Cr√©ation du fichier
         lignes = []
         for cle_primaire in liste_clesprimaires:
             date_facture = dict_resultats[cle_primaire]["date_edition_facture"].strftime("%Y%m%d")
@@ -1859,7 +1859,7 @@ class CTRL_Parametres_cerig(CTRL_Parametres) :
 
         # Si vide:
         if not lignes:
-            dlg = wx.MessageDialog(self, _(u"Aucune donnÈe n'a ÈtÈ trouvÈe sur la pÈriode sÈlectionnÈe."), _(u"Erreur"), wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Aucune donn√©e n'a √©t√© trouv√©e sur la p√©riode s√©lectionn√©e."), _(u"Erreur"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -1871,13 +1871,13 @@ class CTRL_Parametres_cerig(CTRL_Parametres) :
             dlg.Destroy()
             return False
 
-        # GÈnÈration du fichier texte
+        # G√©n√©ration du fichier texte
         succes = self.CreationFichier(nom_fichier="export_cerig.txt", lignes=lignes)
         if not succes:
             return False
 
-        # SuccËs
-        dlg = wx.MessageDialog(self, _(u"Le fichier a ÈtÈ gÈnÈrÈ avec succËs dans le rÈpertoire %s.") % dictParametres["cerig_repertoire"], _(u"SuccËs"), wx.OK | wx.ICON_INFORMATION)
+        # Succ√®s
+        dlg = wx.MessageDialog(self, _(u"Le fichier a √©t√© g√©n√©r√© avec succ√®s dans le r√©pertoire %s.") % dictParametres["cerig_repertoire"], _(u"Succ√®s"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         return True
@@ -1887,13 +1887,13 @@ class CTRL_Parametres_cerig(CTRL_Parametres) :
 
         cheminFichier = os.path.join(dictParametres["cerig_repertoire"], nom_fichier)
         if os.path.isfile(cheminFichier):
-            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe dÈj‡. \n\nVoulez-vous le remplacer ?"),"Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe d√©j√†. \n\nVoulez-vous le remplacer ?"),"Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse == wx.ID_NO:
                 return False
 
-        # CrÈation d'un classeur et d'une feuille
+        # Cr√©ation d'un classeur et d'une feuille
         with codecs.open(cheminFichier, mode="w", encoding="utf-8") as fichier:
             for ligne in lignes:
                 fichier.write(u";".join(ligne) + "\n")

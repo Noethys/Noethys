@@ -165,12 +165,12 @@ class CaseStandard(GridCellRenderer):
             
             heure_debut = str(self.case.heure_debut)
             largeurFinaleTexte = dc.GetTextExtent(heure_debut)[0]
-            xTexte = rect[0] + ((rect[2] - largeurFinaleTexte) / 2.0)
+            xTexte = int(rect[0] + ((rect[2] - largeurFinaleTexte) / 2.0))
             dc.DrawText(heure_debut, xTexte-6, rect[1]+5)
             
             heure_fin = str(self.case.heure_fin)
             largeurFinaleTexte = dc.GetTextExtent(heure_fin)[0]
-            xTexte = rect[0] + ((rect[2] - largeurFinaleTexte) / 2.0)
+            xTexte = int(rect[0] + ((rect[2] - largeurFinaleTexte) / 2.0))
             dc.DrawText(heure_fin, xTexte-6, rect[1]+3 + tailleFont + 5)
 
         # Ecrit la quantité si c'est une conso QUANTITE
@@ -196,8 +196,8 @@ class CaseStandard(GridCellRenderer):
                     dc.SetFont(wx.Font(6, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
                     nomGroupe = self.AdapteTailleTexte(dc, nomGroupe, rect[2]-6)
                     largeurFinaleTexte = dc.GetTextExtent(nomGroupe)[0]
-                    xTexte = rect[0] + ((rect[2] - largeurFinaleTexte) / 2.0)
-                    dc.DrawText(nomGroupe, xTexte, rect.y + rect.height - 12)
+                    xTexte = int(rect[0] + ((rect[2] - largeurFinaleTexte) / 2.0))
+                    dc.DrawText(nomGroupe, xTexte, int(rect.y + rect.height - 12))
                     dc.SetTextForeground("BLACK")
         
         # Ecrit les étiquettes
@@ -917,8 +917,8 @@ class LabelLigneStandard(glr.GridLabelRenderer):
 
         dc.SetFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         tailleTexte = dc.GetTextExtent(texte)
-        x = rect.x + rect.width/2.0 - tailleTexte[0]/2.0
-        y = rect.y + rect.height/2.0 - tailleTexte[1]/2.0
+        x = int(rect.x + rect.width/2.0 - tailleTexte[0]/2.0)
+        y = int(rect.y + rect.height/2.0 - tailleTexte[1]/2.0)
         dc.DrawText(texte, x, y)
 
         # Indicateur date du jour

@@ -464,9 +464,9 @@ class CadreIndividu():
             if "linux" in sys.platform:
                 self.dc.DrawRectangle(wx.Rect(int(x), int(y), int(largeur), int(hauteur)))
             else:
-                self.dc.DrawRoundedRectangle(wx.Rect(int(x), int(y), int(largeur), int(hauteur)), int(radius=5*self.zoom))
+                self.dc.DrawRoundedRectangle(wx.Rect(int(x), int(y), int(largeur), int(hauteur)), radius=int(5*self.zoom))
         else :
-            self.dc.DrawRoundedRectangleRect(wx.Rect(int(x), int(y), int(largeur), int(hauteur)), int(radius=5*self.zoom))
+            self.dc.DrawRoundedRectangleRect(wx.Rect(int(x), int(y), int(largeur), int(hauteur)), radius=int(5*self.zoom))
 
         if "linux" not in sys.platform:
             coordsSpline = [(int(x+1), int(y+(hauteur/3))), (int(x+(largeur/2.5)), int(y+(hauteur/4.1))), (int(x+largeur-1), int(y+(hauteur/1.8)))]

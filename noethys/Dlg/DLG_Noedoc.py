@@ -3169,7 +3169,7 @@ class MovingScaledBitmap(FloatCanvas.ScaledBitmap, MovingObjectMixin):
             self.ScaledHeight = H
             if W < 1 : W = 1
             if H < 1 : H = 1
-            Img = self.Image.Scale(W, H)
+            Img = self.Image.Scale(float(W), float(H))
             if 'phoenix' in wx.PlatformInfo:
                 self.ScaledBitmap = wx.Bitmap(Img)
             else :

@@ -143,9 +143,9 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
-        # Afficher le sous-total par activité
-        propriete = wxpg.BoolProperty(label=_(u"Afficher le sous-total par activité"), name="afficher_sous_total_activite", value=False)
-        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher le sous-total par activité"))
+        # Afficher le sous-total par activitÃ©
+        propriete = wxpg.BoolProperty(label=_(u"Afficher le sous-total par activitÃ©"), name="afficher_sous_total_activite", value=False)
+        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher le sous-total par activitÃ©"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 

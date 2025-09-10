@@ -157,7 +157,7 @@ class ListView(FastObjectListView):
                 img = wx.Image(io, wx.BITMAP_TYPE_JPEG)
             else :
                 img = wx.ImageFromStream(io, wx.BITMAP_TYPE_JPEG)
-            bmp = img.Rescale(width=taille[0], height=taille[1], quality=wx.IMAGE_QUALITY_HIGH) 
+            bmp = img.Rescale(width=int(taille[0]), height=int(taille[1]), quality=wx.IMAGE_QUALITY_HIGH)
             bmp = bmp.ConvertToBitmap()
             return bmp
         else:
@@ -165,7 +165,7 @@ class ListView(FastObjectListView):
             if os.path.isfile(self.imageDefaut):
                 bmp = wx.Bitmap(self.imageDefaut, wx.BITMAP_TYPE_ANY)
                 bmp = bmp.ConvertToImage()
-                bmp = bmp.Rescale(width=taille[0], height=taille[1], quality=wx.IMAGE_QUALITY_HIGH) 
+                bmp = bmp.Rescale(width=int(taille[0]), height=int(taille[1]), quality=wx.IMAGE_QUALITY_HIGH)
                 bmp = bmp.ConvertToBitmap()
                 return bmp
             return None
@@ -173,11 +173,11 @@ class ListView(FastObjectListView):
     def ConvertTailleImage(self, bitmap=None, taille=None):
         """ Convertit la taille d'une image """
         if 'phoenix' in wx.PlatformInfo:
-            img = wx.Image(taille[0], taille[1], True)
-            img.SetRGB((0, 0, taille[0], taille[1]), 255, 255, 255)
+            img = wx.Image(int(taille[0]), int(taille[1]), True)
+            img.SetRGB((0, 0, int(taille[0]), int(taille[1])), 255, 255, 255)
         else :
-            img = wx.EmptyImage(taille[0], taille[1], True)
-            img.SetRGBRect((0, 0, taille[0], taille[1]), 255, 255, 255)
+            img = wx.EmptyImage(int(taille[0]), int(taille[1]), True)
+            img.SetRGBRect((0, 0, int(taille[0]), int(taille[1])), 255, 255, 255)
         bmp = img.ConvertToBitmap()
         dc = wx.MemoryDC()
         dc.SelectObject(bmp)
@@ -200,7 +200,7 @@ class ListView(FastObjectListView):
 
         # Image list
         dictImages = {"standard":{}, "modes":{}, "emetteurs":{} }
-        imageList = wx.ImageList(taille[0], taille[1])
+        imageList = wx.ImageList(int(taille[0]), int(taille[1]))
 
         # Images standard
         dictImages["standard"]["vert"] = imageList.Add(self.ConvertTailleImage(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ventilation_vert.png"), wx.BITMAP_TYPE_PNG), taille))
