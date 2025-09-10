@@ -790,7 +790,7 @@ class DB:
             listeNomsChamps.append(fieldDesc[0])
         del listeDonneesTmp
 
-        # Pr�paration des noms de champs pour le transfert
+        # Préparation des noms de champs pour le transfert
         listeChamps = []
         listeMarks = []
         dictTypesChamps = GetChampsTable(nomTable)
@@ -819,7 +819,7 @@ class DB:
         else:
             listeDonnees = cursor.fetchall()
 
-            # Importation des donn�es vers la nouvelle table
+            # Importation des données vers la nouvelle table
             req = "INSERT INTO %s (%s) VALUES (%s)" % (nomTable, ", ".join(listeChamps), ", ".join(listeMarks))
             try :
                 self.cursor.executemany(req, listeDonnees)

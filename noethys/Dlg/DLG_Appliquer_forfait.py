@@ -435,7 +435,7 @@ class Forfaits():
                                         # Recherche QF de la famille
                                         QFfamille = self.RechercheQF(dictQuotientsFamiliaux, dictTarif, self.IDfamille, date_facturation)
                                         if QFfamille == None:
-                                            dlg = wx.MessageDialog(None, _(u"Le tarif est basé sur le taux d'effort alors que cette famille n'a aucun quotient valide !"), "Erreur", wx.OK | wx.ICON_ERROR)
+                                            dlg = wx.MessageDialog(None, _(u"Le tarif est basÃ© sur le taux d'effort alors que cette famille n'a aucun quotient valide !"), "Erreur", wx.OK | wx.ICON_ERROR)
                                             dlg.ShowModal()
                                             dlg.Destroy()
                                             return False
@@ -448,7 +448,7 @@ class Forfaits():
                                             montant_max = ligneCalcul["montant_max"]
                                             ajustement = ligneCalcul["ajustement"]
 
-                                            # Vérifie si QF ok pour le calcul basé également sur paliers de QF
+                                            # VÃ©rifie si QF ok pour le calcul basÃ© Ã©galement sur paliers de QF
                                             conditions = True
                                             if methode_calcul == "taux_qf":
                                                 if QFfamille != None:
@@ -475,13 +475,13 @@ class Forfaits():
                                                     if montant_tarif > montant_max:
                                                         montant_tarif = montant_max
 
-                                                # Application de l'ajustement (majoration ou déduction)
+                                                # Application de l'ajustement (majoration ou dÃ©duction)
                                                 if ajustement != None:
                                                     montant_tarif = montant_tarif + ajustement
                                                     if montant_tarif < 0.0:
                                                         montant_tarif = 0.0
 
-                                                # Création du label personnalisé
+                                                # CrÃ©ation du label personnalisÃ©
                                                 label = ligneCalcul["label"]
                                                 if label != None and label != "":
                                                     if "{TAUX}" in label:

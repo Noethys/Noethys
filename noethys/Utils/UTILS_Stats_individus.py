@@ -435,12 +435,12 @@ DICT_DESINSCRITS = {"dictParametres": {}, "dictResultats": {}, "listeMoisPeriode
 
 
 def GetDesinscrits(DB, dictParametres):
-    # V�rifie si les donn�es n'existent pas d�j�
+    # Vérifie si les données n'existent pas déjà
     global DICT_DESINSCRITS
     if DICT_DESINSCRITS["dictParametres"] == dictParametres:
         return DICT_DESINSCRITS["dictResultats"], DICT_DESINSCRITS["listeMoisPeriode"]
 
-    # Recherche des param�tres
+    # Recherche des paramètres
     date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
     conditionsActivites = MODELES.GetConditionActivites(dictParametres)
 
@@ -467,14 +467,14 @@ def GetDesinscrits(DB, dictParametres):
             dictResultats[moisDepart] = 0
         dictResultats[moisDepart] += 1
 
-    # Cr�e tous les mois de la p�riode
+    # Crée tous les mois de la période
     listeMoisPeriode = []
     for annee in range(date_debut.year, date_fin.year + 1):
         for mois in range(1, 13):
             if (annee, mois) >= (date_debut.year, date_debut.month) and (annee, mois) <= (date_fin.year, date_fin.month):
                 listeMoisPeriode.append((annee, mois))
 
-    # M�morisation des r�sultats
+    # Mémorisation des résultats
     DICT_DESINSCRITS["dictParametres"] = dictParametres
     DICT_DESINSCRITS["dictResultats"] = dictResultats
     DICT_DESINSCRITS["listeMoisPeriode"] = listeMoisPeriode
@@ -993,11 +993,11 @@ class Graphe_repartition_annees_naiss(MODELES.Graphe):
 
 
 class Tableau_repartition_tranches_ages(MODELES.Tableau):
-    """ R�partition des individus par �ge """
+    """ Répartition des individus par age """
 
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = _(u"R�partition des individus par tranches d'�ge et par genre")
+        self.nom = _(u"Répartition des individus par tranches d'age et par genre")
         self.code = "tableau_repartition_tranches_ages"
 
     def MAJ(self, DB=None, dictParametres={}):
@@ -1008,9 +1008,9 @@ class Tableau_repartition_tranches_ages(MODELES.Tableau):
 
         dictAges, dictAnnees = GetDictAges(DB, dictParametres, mode_tranches=True)
 
-        # Cr�ation du tableau
+        # Création du tableau
         self.largeur = "400"
-        self.colonnes = [(_(u"Tranche d'�ge"), "200"), (_(u"H"), "50"), (_(u"F"), "50"), (_(u"?"), "50"), (_(u"Total"), "50")]
+        self.colonnes = [(_(u"Tranche d'age"), "200"), (_(u"H"), "50"), (_(u"F"), "50"), (_(u"?"), "50"), (_(u"Total"), "50")]
         self.lignes = []
 
         listeTranches = list(dictAges.keys())
@@ -1409,11 +1409,11 @@ class Graphe_arrivee_individus(MODELES.Graphe):
 
 
 class Tableau_anciens_individus(MODELES.Tableau):
-    """ D�inscrits aux activit�s """
+    """ Déinscrits aux activités """
 
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = _(u"Individus d�sinscrits durant la p�riode")
+        self.nom = _(u"Individus désinscrits durant la période")
         self.code = "tableau_anciens_individus"
 
     def MAJ(self, DB=None, dictParametres={}):
@@ -1425,7 +1425,7 @@ class Tableau_anciens_individus(MODELES.Tableau):
         date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
         dictResultats, listeMoisPeriode = GetDesinscrits(DB, dictParametres)
 
-        # Cr�ation du tableau
+        # Création du tableau
         self.largeur = "400"
         self.colonnes = [(_(u"Mois"), "250"), (_(u"Nombre d'individus"), "150")]
         self.lignes = []

@@ -110,7 +110,7 @@ class Table():
                             hsize = int((float(image.size[1]) * float(wpercent)))
                             image.resize((largeur_max, hsize), Image.LANCZOS)
 
-                        # Cr�ation du nom du fichier image
+                        # Création du nom du fichier image
                         nom_fichier_image = u"%s.%s" % (uuid.uuid4(), image.format.lower())
 
                         # Sauvegarde de l'image dans le répertoire
@@ -516,7 +516,7 @@ class Table_pieces(Table):
         for IDindividu, nom in self.parent.DB.ResultatReq():
             self.liste_individus.append(IDindividu)
 
-        # R�cup�ration des familles
+        # Récupération des familles
         req = """SELECT IDfamille, date_creation FROM familles;"""
         self.parent.DB.ExecuterReq(req)
         self.liste_familles = []
@@ -641,7 +641,7 @@ class Table_tarifs(Table):
     def __init__(self, parent, **kwds):
         self.parent = parent
 
-        # R�cup�ration des �v�nements
+        # Récupération des évènements
         req = """SELECT IDevenement, IDactivite FROM evenements;"""
         self.parent.DB.ExecuterReq(req)
         self.dict_evenements = {IDevenement: IDactivite for IDevenement, IDactivite in self.parent.DB.ResultatReq()}
@@ -712,7 +712,7 @@ class Table_tarifs_lignes(Table):
     def __init__(self, parent, **kwds):
         self.parent = parent
 
-        # R�cup�ration des tarifs
+        # Récupération des tarifs
         req = """SELECT IDtarif, date_debut FROM tarifs WHERE IDproduit IS NULL;"""
         self.parent.DB.ExecuterReq(req)
         self.liste_tarifs = [IDtarif for IDtarif, date_debut in self.parent.DB.ResultatReq()]
@@ -1017,7 +1017,7 @@ class Table_consommations(Table):
 
 class Table_evenements(Table):
     def __init__(self, parent, **kwds):
-        # Importe les unit�s de conso
+        # Importe les unités de conso
         req = """SELECT IDunite, nom FROM unites;"""
         parent.DB.ExecuterReq(req)
         self.dictUnites = {}
@@ -1027,7 +1027,7 @@ class Table_evenements(Table):
         del self.dictUnites
 
     def valide_ligne(self, data={}):
-        """ Incorpore la ligne uniquement l'unit� associ�e existe"""
+        """ Incorpore la ligne uniquement l'unité associée existe"""
         if data["fields"]["unite"] not in self.dictUnites:
             print("Table evenements : l'unite n'existe pas pour l'evenement ID%d" % data["pk"])
             return False
@@ -1434,7 +1434,7 @@ class Table_payeurs(Table):
     def __init__(self, parent, **kwds):
         self.parent = parent
 
-        # R�cup�ration des familles
+        # Récupèration des familles
         req = """select IDpayeur, familles.IDfamille FROM payeurs
         LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = payeurs.IDcompte_payeur
         LEFT JOIN familles ON familles.IDfamille = comptes_payeurs.IDfamille;"""
@@ -1756,7 +1756,7 @@ class Table_transports(Table):
 class Table_prelevements(Table):
     def __init__(self, parent, **kwds):
         self.parent = parent
-        # Importation de la table des r�glements
+        # Importation de la table des règlements
         req = "SELECT IDreglement, IDprelevement FROM reglements;"
         self.parent.DB.ExecuterReq(req)
         self.reglements = {}
@@ -1789,7 +1789,7 @@ class Table_prelevements(Table):
 
 class Table_modeles_prelevements(Table):
     def Get_data(self):
-        # G�n�ration de mod�les pour les lots de pr�l�vements
+        # Génération de modèles pour les lots de prélèvements
         req = "SELECT IDlot, format, IDcompte, IDmode, reglement_auto, encodage, IDperception, identifiant_service, poste_comptable FROM lots_prelevements;"
         self.parent.DB.ExecuterReq(req)
         liste_modeles = []
@@ -1806,7 +1806,7 @@ class Table_modeles_prelevements(Table):
 
         liste_xml = []
         for index, dict_modele in enumerate(liste_modeles, start=1):
-            dict_modele["nom"] = u"Mod�le %d" % index
+            dict_modele["nom"] = u"Modèle %d" % index
             liste_xml.append({"model": "core.PrelevementsModele", "pk": index, "fields": dict_modele})
         return liste_xml
 

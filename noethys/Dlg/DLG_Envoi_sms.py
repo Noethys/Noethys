@@ -560,7 +560,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
             _(u"Saisissez le nom de l'expéditeur. Exemples : 'MJC', 'ALSH', 'MAIRIE'..."))
         self.Append(propriete)
 
-        # Nbre caract�res max
+        # Nbre caractères max
         propriete = wxpg.IntProperty(label=_(
             u"Nombre maximal de caractères du message"), name="nbre_caracteres_max", value=160)
         propriete.SetHelpString(_(u"Nombre maximal de caractères du message"))
@@ -1128,7 +1128,7 @@ class Dialog(wx.Dialog, Base):
                 numero = numero.replace(".", "")
                 numero = "+33" + numero[1:]
 
-                # Cr�ation du message JSON
+                # Création du message JSON
                 params = {"account": self.dictDonnees["ovh_nom_compte"], "login": self.dictDonnees["ovh_identifiant"],
                           "password": self.dictDonnees["ovh_mot_passe"], "from": self.dictDonnees["ovh_nom_exp"], "to": numero,
                           "message": message, "noStop": 1, "contentType": "text/json"}
@@ -1140,10 +1140,10 @@ class Dialog(wx.Dialog, Base):
                 else:
                     print("Erreur envoi SMS :", reponse["message"])
                     texte_erreur = u"Erreur SMS : %s" % reponse["message"]
-                    dlg = DLG_Messagebox.Dialog(self, titre=_(u"Envoi de SMS"), introduction=_(u"L'envoi du SMS vers le num�ro %s a rencontr� une erreur :") % numero,
+                    dlg = DLG_Messagebox.Dialog(self, titre=_(u"Envoi de SMS"), introduction=_(u"L'envoi du SMS vers le numéro %s a rencontré une erreur :") % numero,
                                                 detail=texte_erreur, conclusion=_(
                                                     u"Que souhaitez-vous faire ?"),
-                                                icone=wx.ICON_ERROR, boutons=[_(u"Continuer l'envoi"), _(u"Arr�ter")])
+                                                icone=wx.ICON_ERROR, boutons=[_(u"Continuer l'envoi"), _(u"Arrêter")])
                     reponse = dlg.ShowModal()
                     dlg.Destroy()
                     if reponse == 1:
@@ -1159,7 +1159,7 @@ class Dialog(wx.Dialog, Base):
                 numero = numero.replace(".", "")
                 numero = "+33" + numero[1:]
 
-                # Cr�ation du message
+                # Création du message
                 headers = {"accept": "application/json",
                            "api-key": self.dictDonnees["token_sms_brevo"], "Content-Type": "application/json"}
                 data = {"sender": self.dictDonnees["sender_sms_brevo"],
@@ -1173,15 +1173,15 @@ class Dialog(wx.Dialog, Base):
                     print("Erreur envoi SMS :", dict_reponse["message"])
                     texte_erreur = "%s : %s" % (
                         dict_reponse["code"], dict_reponse["message"])
-                    dlg = DLG_Messagebox.Dialog(self, titre=_(u"Envoi de SMS"), introduction=_(u"L'envoi du SMS vers le num�ro %s a rencontr� une erreur :") % numero,
-                                                detail=texte_erreur, conclusion=_(u"Que souhaitez-vous faire ?"), icone=wx.ICON_ERROR, boutons=[_(u"Continuer l'envoi"), _(u"Arr�ter")])
+                    dlg = DLG_Messagebox.Dialog(self, titre=_(u"Envoi de SMS"), introduction=_(u"L'envoi du SMS vers le numéro %s a rencontré une erreur :") % numero,
+                                                detail=texte_erreur, conclusion=_(u"Que souhaitez-vous faire ?"), icone=wx.ICON_ERROR, boutons=[_(u"Continuer l'envoi"), _(u"Arrêter")])
                     reponse = dlg.ShowModal()
                     dlg.Destroy()
                     if reponse == 1:
                         return False
 
         # Confirmation d'envoi
-        dlg = wx.MessageDialog(self, _(u"Envoi des SMS termin�."), _(
+        dlg = wx.MessageDialog(self, _(u"Envoi des SMS terminé."), _(
             u"Confirmation"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()

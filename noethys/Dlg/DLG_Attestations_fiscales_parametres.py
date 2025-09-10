@@ -96,7 +96,7 @@ class CTRL_Choix_methode(wx.Choice):
         self.MAJ()
 
     def MAJ(self):
-        self.listeLabels = [_(u"Les prestations de la p�riode"), _(u"Les prestations de la p�riode r�gl�es"), _(u"Les prestations r�gl�es sur la p�riode")]
+        self.listeLabels = [_(u"Les prestations de la période"), _(u"Les prestations de la période règlées"), _(u"Les prestations règlées sur la période")]
         self.SetItems(self.listeLabels)
         self.Select(0)
 
@@ -121,11 +121,11 @@ class Parametres(wx.Panel):
         self.label_date_fin = wx.StaticText(self, -1, _(u"Au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
 
-        # M�thode
+        # Méthode
         self.staticbox_methode_staticbox = wx.StaticBox(self, -1, _(u"Méthode de calcul"))
         self.ctrl_methode = CTRL_Choix_methode(self)
 
-        # S�paration
+        # Séparation
         self.staticbox_dateNaiss_staticbox = wx.StaticBox(self, -1, _(u"Limite d'âge"))
         self.check_dateNaiss = wx.CheckBox(self, -1, _(u"Date de naissance min. :"))
         self.ctrl_dateNaiss = CTRL_Saisie_date.Date(self)
@@ -169,7 +169,7 @@ class Parametres(wx.Panel):
         staticbox_periode.Add(grid_sizer_periode, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(staticbox_periode, 1, wx.RIGHT|wx.EXPAND, 5)
 
-        # M�thode
+        # Méthode
         staticbox_methode = wx.StaticBoxSizer(self.staticbox_methode_staticbox, wx.VERTICAL)
         staticbox_methode.Add(self.ctrl_methode, 0, wx.EXPAND|wx.ALL, 5)
         grid_sizer_base.Add(staticbox_methode, 1, wx.RIGHT|wx.EXPAND, 5)
