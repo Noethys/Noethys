@@ -221,7 +221,7 @@ class Facturation():
         DB.ExecuterReq(req)
         listePrestations = DB.ResultatReq()
 
-        # Petite liste pour savoir si l'individu a des consommations sur la facture (pour l'option Inclure cotisations si individu sur activit�)
+        # Petite liste pour savoir si l'individu a des consommations sur la facture (pour l'option Inclure cotisations si individu sur activité)
         famille_has_prestations_activite = {
             valeurs[1]: True for valeurs in listePrestations if valeurs[3] == "consommation"}
 
@@ -441,7 +441,7 @@ class Facturation():
         for IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, tva, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDfamille, forfait_date_debut, forfait_date_fin in listePrestations:
             montant = FloatToDecimal(montant)
 
-            # On passe cette prestation si c'est une cotisation et que la famille n'a pas de consommations d'activit�s sur cette facture
+            # On passe cette prestation si c'est une cotisation et que la famille n'a pas de consommations d'activités sur cette facture
             if inclure_cotisations_si_conso and categorie == "cotisation" and IDcompte_payeur not in famille_has_prestations_activite:
                 continue
 

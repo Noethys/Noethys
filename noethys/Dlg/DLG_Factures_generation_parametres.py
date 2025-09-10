@@ -256,7 +256,7 @@ class Panel(wx.Panel):
         self.check_locations = wx.CheckBox(self, -1, _(u"Locations"))
         self.check_autres = wx.CheckBox(self, -1, _(u"Autres"))
         self.check_inclure_cotisations_si_conso = wx.CheckBox(
-            self, -1, _(u"Inclure cotisations uniquement si famille sur activit�s coch�es"))
+            self, -1, _(u"Inclure cotisations uniquement si famille sur activités cochées"))
 
         # Familles
         self.box_familles_staticbox = wx.StaticBox(

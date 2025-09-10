@@ -273,12 +273,12 @@ class CTRL_Options(wx.Panel):
         self.OnCheckRepertoire(None)
 
     def __set_properties(self):
-        self.ctrl_modele.SetToolTip(wx.ToolTip(_(u"S�lectionnez un mod�le de documents")))
-        self.ctrl_signataire.SetToolTip(wx.ToolTip(_(u"S�lectionnez ici le signataire du document")))
+        self.ctrl_modele.SetToolTip(wx.ToolTip(_(u"Sélectionnez un modéle de documents")))
+        self.ctrl_signataire.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici le signataire du document")))
         self.ctrl_intro.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure le texte d'introduction : 'Je soussigné... atteste...' ")))
         self.ctrl_texte_intro.SetToolTip(wx.ToolTip(_(u"Vous pouvez modifier ici le texte d'introduction. \n\nUtilisez les mots-clés {GENRE}, {NOM}, {FONCTION}, {ENFANTS}, \n{DATE_DEBUT} et {DATE_FIN} pour inclure dynamiquement les \nvaleurs correspondantes.")))
         self.checkbox_repertoire.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour enregistrer un exemplaire de chaque attestation de rappel au format PDF dans le répertoire indiqué")))
-        self.bouton_repertoire.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour s�lectionner un r�pertoire de destination")))
+        self.bouton_repertoire.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner un répertoire de destination")))
         # self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Sélectionnez le montant à afficher. Réglé par défaut.")))
 
     def __do_layout(self):

@@ -1662,7 +1662,7 @@ class Dialog(wx.Dialog):
                 if IDunite not in dictUnitesAvecConso[date]:
                     dictUnitesAvecConso[date].append(IDunite)
 
-                # M�morisation du IDindividu
+                # Mémorisation du IDindividu
                 if IDindividu not in listeIDindividus :
                     listeIDindividus.append(IDindividu)
 

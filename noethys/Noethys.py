@@ -4477,7 +4477,7 @@ def main():
     CUSTOMIZE = UTILS_Customize.Customize()
 
     # Crash report
-    UTILS_Rapport_bugs.Activer_rapport_erreurs(version=VERSION_APPLICATION)
+    # UTILS_Rapport_bugs.Activer_rapport_erreurs(version=VERSION_APPLICATION)
 
     # Log
     nomJournal = UTILS_Fichiers.GetRepUtilisateur(CUSTOMIZE.GetValeur("journal", "nom", "journal.log"))

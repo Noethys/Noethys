@@ -250,9 +250,9 @@ class Page_noethysweb(wx.Panel):
         self.bouton_imprimer = CTRL_Bouton_image.CTRL(self, texte=_(u"Bon de commande"), cheminImage="Images/32x32/Imprimante.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
-        # Propriétés
+        # PropriÃ©tÃ©s
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour en savoir plus sur Noethysweb Easy")))
-        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer le bon de commande et les conditions générales de vente")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer le bon de commande et les conditions gÃ©nÃ©rales de vente")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
 
         # Calcule les espaces du sizer
@@ -278,7 +278,7 @@ class Page_noethysweb(wx.Panel):
 
         self.SetSizer(grid_sizer_base)
 
-        # Calcule taille de la fenêtre
+        # Calcule taille de la fenÃ©tre
         self.SetMinSize(self.image_fond.GetSize())
         self.Layout()
 
@@ -311,7 +311,7 @@ class Page_noethysweb(wx.Panel):
         try:
             FonctionsPerso.LanceFichierExterne("https://www.noethysweb.com/bon_commande_noethysweb.pdf")
         except:
-            dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas ouvrir le PDF !\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan..."),_(u"Erreur"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas ouvrir le PDF !\n\nVeuillez vÃ©rifier qu'un autre PDF n'est pas dÃ©jï¿½ ouvert en arriï¿½re-plan..."),_(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
 

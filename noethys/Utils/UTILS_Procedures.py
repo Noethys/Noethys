@@ -1862,7 +1862,7 @@ def A9279():
 
 
 def A9281():
-    """ Ajout du champ code_analytique � la table activites """
+    """ Ajout du champ code_analytique à la table activites """
     DB = GestionDB.DB()
     DB.ExecuterReq(
         "ALTER TABLE activites ADD COLUMN code_analytique VARCHAR(200)")
@@ -1871,7 +1871,7 @@ def A9281():
 
 
 def A9282():
-    """ Cr�ation des cat�gories de tarifs manquantes pour des inscriptions """
+    """ Création des catégories de tarifs manquantes pour des inscriptions """
     DB = GestionDB.DB()
     req = """SELECT idactivite FROM inscriptions WHERE idcategorie_tarif IS NULL GROUP BY idactivite"""
     DB.ExecuterReq(req)
@@ -1888,7 +1888,7 @@ def A9282():
 
 
 def A9283():
-    """ Rattachement des mandats existants � des pr�l�vements si IDmandat est NULL (pour migration Noethysweb) """
+    """ Rattachement des mandats existants à des prélèvements si IDmandat est NULL (pour migration Noethysweb) """
     DB = GestionDB.DB()
     req = """SELECT IDprelevement, prelevements.IDfamille, MIN(mandats.IDmandat) FROM prelevements
     LEFT JOIN mandats ON mandats.IDfamille = prelevements.IDfamille

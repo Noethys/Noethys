@@ -302,7 +302,12 @@ Tous les fichiers (*.*)|*.*"
             else:
                 largeur = largeur * tailleMaxi / hauteur
                 hauteur = tailleMaxi
-            imgPIL = imgPIL.resize((largeur, hauteur), Image.ANTIALIAS) #.Rescale(width=largeur, height=hauteur, quality=qualite)
+            try:
+                # Pillow >= 10.0.0
+                imgPIL = imgPIL.resize((largeur, hauteur), Image.Resampling.LANCZOS) #.Rescale(width=largeur, height=hauteur, quality=qualite)
+            except AttributeError:
+                # Pillow < 10.0.0
+                imgPIL = imgPIL.resize((largeur, hauteur), Image.LANCZOS) #.Rescale(width=largeur, height=hauteur, quality=qualite
 
         # Met l'image dans un buffer
         buffer = six.BytesIO()

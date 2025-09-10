@@ -85,7 +85,7 @@ class GetValeurs() :
         listeIDindividus = []
         listeLiens = []
         
-        # Recherche des individus rattach�s
+        # Recherche des individus rattachés
         condition = ""
         if self.dlgfamille and self.dlgfamille.notebook.dictParametres.get("individus_archives", True) == False:
             condition = """ AND individus.etat IS NULL"""
