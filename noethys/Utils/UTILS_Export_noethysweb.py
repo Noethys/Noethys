@@ -1806,7 +1806,7 @@ class Table_modeles_prelevements(Table):
 
         liste_xml = []
         for index, dict_modele in enumerate(liste_modeles, start=1):
-            dict_modele["nom"] = u"Mod�le %d" % index
+            dict_modele["nom"] = u"Modèle %d" % index
             liste_xml.append({"model": "core.PrelevementsModele", "pk": index, "fields": dict_modele})
         return liste_xml
 
