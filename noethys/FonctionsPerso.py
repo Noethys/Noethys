@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -35,7 +35,7 @@ def DateFrEng(textDate):
 # --------------------------------------------------------------------------------------------------------
 
 def BoucleFrameOuverte(nom, WindowEnCours) :
-    """ Est utilisée dans FrameOuverte """
+    """ Est utilisÃ©e dans FrameOuverte """
     for children in WindowEnCours.GetChildren():
         if children.GetName() == nom : return children
         if len(children.GetChildren()) > 0 :
@@ -60,7 +60,7 @@ def SetModalFrameParente(frameActuelle):
         pass
 
 # -------------------------------------------------------------------------------------------------------
-# Fonction qui modifie le wx.StaticText pour gérer le redimensionnement des StaticText
+# Fonction qui modifie le wx.StaticText pour gÃ©rer le redimensionnement des StaticText
 
 class StaticWrapText(wx.StaticText):
     """A StaticText-like widget which implements word wrapping."""
@@ -89,7 +89,7 @@ class StaticWrapText(wx.StaticText):
         lines = []
 
         # get the maximum width (that of our parent)
-        max_width = self.GetParent().GetVirtualSizeTuple()[0]-20 # J'ai ajouté le -20 ici
+        max_width = self.GetParent().GetVirtualSizeTuple()[0]-20 # J'ai ajoutÃ© le -20 ici
         
         index = 0
         current = []
@@ -127,11 +127,11 @@ class TexteHtml(wx.Panel):
     def __init__(self, parent, texte="", Enabled=False, ID=-1):
         wx.Panel.__init__(self, parent, ID, style=wx.TAB_TRAVERSAL)
             
-        # Création du widget HTML
+        # CrÃ©ation du widget HTML
         self.pageHtml = html.HtmlWindow(self, -1)
         self.pageHtml.SetPage(texte)
 
-        # Paramètres du widget HTML
+        # ParamÃ¨tres du widget HTML
         #self.couleurFond = self.getRGB(win32api.GetSysColor(15)) # Pour archive
         self.couleurFond = wx.SystemSettings.GetColour(30)
         self.pageHtml.SetBackgroundColour(self.couleurFond)
@@ -156,38 +156,38 @@ class TexteHtml(wx.Panel):
 # ---------------------------------------------------------------------------------------------------------
 
 ##def Recup_liste_pb_personnes(recalc=False):
-##    """ Récupération de la liste des problèmes des personnes """
+##    """ RÃ©cupÃ©ration de la liste des problÃ¨mes des personnes """
 ##    try :
 ##        topWindow = wx.GetApp().GetTopWindow()
 ##        nomWindow = topWindow.GetName()
 ##    except :
 ##        nomWindow = None
 ##    if nomWindow == "general" : 
-##        # Si la frame 'General' est chargée, on y récupère la liste des problemes
+##        # Si la frame 'General' est chargÃ©e, on y rÃ©cupÃ¨re la liste des problemes
 ##        if recalc == True :
 ##            topWindow.dictNomsPersonnes, topWindow.dictProblemesPersonnes = Creation_liste_pb_personnes()
 ##        return topWindow.dictNomsPersonnes, topWindow.dictProblemesPersonnes
 ##    else:
-##        # On créée la liste
+##        # On crÃ©Ã©e la liste
 ##        dictNomsPersonnes, dictProblemesPersonnes = Creation_liste_pb_personnes()
 ##        return dictNomsPersonnes, dictProblemesPersonnes
 
 
 def Recup_liste_pb_personnes(recalc=False):
-    """ Récupération de la liste des problèmes des personnes """
+    """ RÃ©cupÃ©ration de la liste des problÃ¨mes des personnes """
     
     topWindow = wx.GetApp().GetTopWindow()
     nomWindow = topWindow.GetName()
 ##    print ">>>", nomWindow
-    # Si Recalcul des données obligatoire :
+    # Si Recalcul des donnÃ©es obligatoire :
     if recalc == True :
         print(_(u"Recalcul obligatoire des donnees"))
         topWindow.dictNomsPersonnes, topWindow.dictProblemesPersonnes = Creation_liste_pb_personnes()
         return topWindow.dictNomsPersonnes, topWindow.dictProblemesPersonnes
     
-    # Si ce n'est qu'une récupération des données :
+    # Si ce n'est qu'une rÃ©cupÃ©ration des donnÃ©es :
     try :
-        # On essaie de récupérer les dictionnaires dans la topWindow
+        # On essaie de rÃ©cupÃ©rer les dictionnaires dans la topWindow
         dictNomsPersonnes = topWindow.dictNomsPersonnes
         dictProblemesPersonnes = topWindow.dictProblemesPersonnes
 ##        print _(u"Recuperation dans le topWindow")
@@ -200,13 +200,13 @@ def Recup_liste_pb_personnes(recalc=False):
     
     
 def Creation_liste_pb_personnes():
-    """ Création de la liste des problèmes des personnes """
+    """ CrÃ©ation de la liste des problÃ¨mes des personnes """
     listeIDpersonne = Recherche_ContratsEnCoursOuAVenir()
     dictNomsPersonnes, dictProblemesPersonnes = Recherche_problemes_personnes(listeIDpersonnes = tuple(listeIDpersonne))
     return dictNomsPersonnes, dictProblemesPersonnes
                 
 def Recherche_problemes_personnes(listeIDpersonnes = (), infosPersonne=[]):
-    """ Recherche les problèmes dans les dossiers des personnes """
+    """ Recherche les problÃ¨mes dans les dossiers des personnes """
     
     dictProblemes = {}
     dictNoms = {}
@@ -225,7 +225,7 @@ def Recherche_problemes_personnes(listeIDpersonnes = (), infosPersonne=[]):
     DB.executerReq(req)
     listePersonnes = DB.resultatReq()
     
-    # Récupère ici les infos directement dans les contrôles de la fiche individuelle
+    # RÃ©cupÃ¨re ici les infos directement dans les contrÃ´les de la fiche individuelle
     if len(infosPersonne) != 0 :
         listePersonnes = infosPersonne
 
@@ -249,15 +249,15 @@ def Recherche_problemes_personnes(listeIDpersonnes = (), infosPersonne=[]):
         dictNoms[IDpersonne] = nom + " " + prenom
         problemesFiche = []
         
-        # Civilité
-        if civilite == "" or civilite == None : problemesFiche.append( (_(u"Civilité")) )
+        # CivilitÃ©
+        if civilite == "" or civilite == None : problemesFiche.append( (_(u"CivilitÃ©")) )
         # Nom
         if nom == "" or nom == None : problemesFiche.append( (_(u"Nom de famille")) )
         # Nom de jeune fille
         if civilite == "Mme" :
             if nom_jfille == "" or nom_jfille == None : problemesFiche.append( (_(u"Nom de jeune fille")) )
-        # Prénom
-        if prenom == "" or prenom == None : problemesFiche.append( (_(u"Prénom")) )
+        # PrÃ©nom
+        if prenom == "" or prenom == None : problemesFiche.append( (_(u"PrÃ©nom")) )
         # Date de naissance
         if str(date_naiss).strip(" ") == "" or date_naiss == None : problemesFiche.append( (_(u"Date de naissance")) )
         # CP_naissance
@@ -267,20 +267,20 @@ def Recherche_problemes_personnes(listeIDpersonnes = (), infosPersonne=[]):
         # Pays de naissance
         if pays_naiss == "" or pays_naiss == None or pays_naiss == 0 : problemesFiche.append( (_(u"Pays de naissance")) )
         # Nationalite
-        if nationalite == "" or nationalite == None or nationalite == 0 : problemesFiche.append( (_(u"Nationalité")) )
-        # Num Sécu
-        if str(num_secu).strip(" ") == "" or num_secu == None : problemesFiche.append( (_(u"Numéro de sécurité sociale")) )
-        # Adresse résidence
-        if adresse_resid == "" or adresse_resid == None : problemesFiche.append( (_(u"Adresse de résidence")) )
-        # Code postal résidence
-        if str(cp_resid).strip(" ") == "" or cp_resid == None : problemesFiche.append( (_(u"Code postal de résidence")) )
-        # Ville résidence
-        if ville_resid == "" or ville_resid == None : problemesFiche.append( (_(u"Ville de résidence")) )
+        if nationalite == "" or nationalite == None or nationalite == 0 : problemesFiche.append( (_(u"NationalitÃ©")) )
+        # Num SÃ©cu
+        if str(num_secu).strip(" ") == "" or num_secu == None : problemesFiche.append( (_(u"NumÃ©ro de sÃ©curitÃ© sociale")) )
+        # Adresse rÃ©sidence
+        if adresse_resid == "" or adresse_resid == None : problemesFiche.append( (_(u"Adresse de rÃ©sidence")) )
+        # Code postal rÃ©sidence
+        if str(cp_resid).strip(" ") == "" or cp_resid == None : problemesFiche.append( (_(u"Code postal de rÃ©sidence")) )
+        # Ville rÃ©sidence
+        if ville_resid == "" or ville_resid == None : problemesFiche.append( (_(u"Ville de rÃ©sidence")) )
         # Situation
         if IDsituation == "" or IDsituation == None or IDsituation == 0 : problemesFiche.append( (_(u"Situation sociale")) )
 
     
-        # Analyse des coordonnées
+        # Analyse des coordonnÃ©es
         req = """SELECT IDcoord
         FROM coordonnees
         WHERE IDpersonne=%d;
@@ -289,9 +289,9 @@ def Recherche_problemes_personnes(listeIDpersonnes = (), infosPersonne=[]):
         listeCoords = DB.resultatReq()
         
         if len(listeCoords) == 0 : 
-            problemesFiche.append( (_(u"Coordonnées téléphoniques")) )
+            problemesFiche.append( (_(u"CoordonnÃ©es tÃ©lÃ©phoniques")) )
         
-        # Met les données dans le dictionnaire
+        # Met les donnÃ©es dans le dictionnaire
         if len(problemesFiche) != 0 : 
             if (IDpersonne in dictProblemes) == False : dictProblemes[IDpersonne] = {}
             if len(problemesFiche) == 1 : 
@@ -302,12 +302,12 @@ def Recherche_problemes_personnes(listeIDpersonnes = (), infosPersonne=[]):
             
     
     #
-    # Analyse des pièces à fournir
+    # Analyse des piÃ¨ces Ã  fournir
     #
     
     date_jour = datetime.date.today()
     
-    # Initialisation de la base de données
+    # Initialisation de la base de donnÃ©es
     DB = GestionDB.DB()
         
     for IDpersonne in listeIDpersonnes :
@@ -315,7 +315,7 @@ def Recherche_problemes_personnes(listeIDpersonnes = (), infosPersonne=[]):
         piecesPerimees = []
         DictPieces = {}
         
-        # Recherche des pièces SPECIFIQUES que la personne doit fournir...
+        # Recherche des piÃ¨ces SPECIFIQUES que la personne doit fournir...
         req = """
         SELECT types_pieces.IDtype_piece, types_pieces.nom_piece
         FROM diplomes INNER JOIN diplomes_pieces ON diplomes.IDtype_diplome = diplomes_pieces.IDtype_diplome INNER JOIN types_pieces ON diplomes_pieces.IDtype_piece = types_pieces.IDtype_piece
@@ -327,7 +327,7 @@ def Recherche_problemes_personnes(listeIDpersonnes = (), infosPersonne=[]):
         if type(listePiecesAFournir) != list :
             listePiecesAFournir = list(listePiecesAFournir)
         
-        # Recherche des pièces BASIQUES que la personne doit fournir...
+        # Recherche des piÃ¨ces BASIQUES que la personne doit fournir...
         req = """
         SELECT diplomes_pieces.IDtype_piece, types_pieces.nom_piece
         FROM diplomes_pieces INNER JOIN types_pieces ON diplomes_pieces.IDtype_piece = types_pieces.IDtype_piece
@@ -338,7 +338,7 @@ def Recherche_problemes_personnes(listeIDpersonnes = (), infosPersonne=[]):
         
         listePiecesAFournir.extend(listePiecesBasiquesAFournir)
         
-        # Recherche des pièces que la personne possède
+        # Recherche des piÃ¨ces que la personne possÃ¨de
         req = """
         SELECT types_pieces.IDtype_piece, pieces.date_debut, pieces.date_fin
         FROM types_pieces LEFT JOIN pieces ON types_pieces.IDtype_piece = pieces.IDtype_piece
@@ -351,12 +351,12 @@ def Recherche_problemes_personnes(listeIDpersonnes = (), infosPersonne=[]):
         for IDtype_piece, date_debut, date_fin in listePieces :
             dictTmpPieces[IDtype_piece] = (date_debut, date_fin)
         
-        # Passe en revue toutes les pièces à fournir et regarde si la personne possède les pièces correspondantes
+        # Passe en revue toutes les piÃ¨ces Ã  fournir et regarde si la personne possÃ¨de les piÃ¨ces correspondantes
         for IDtype_piece, nom_piece in listePiecesAFournir :
             if (IDtype_piece in dictTmpPieces) == True :
                 date_debut = dictTmpPieces[IDtype_piece][0]
                 date_fin = dictTmpPieces[IDtype_piece][1]
-                # Recherche la validité
+                # Recherche la validitÃ©
                 date_fin = datetime.date(int(date_fin[:4]), int(date_fin[5:7]), int(date_fin[8:10]))
                 reste = str(date_fin - date_jour)
                 if reste != "0:00:00":
@@ -383,21 +383,21 @@ def Recherche_problemes_personnes(listeIDpersonnes = (), infosPersonne=[]):
                 piecesPerimees.append(nom_piece)
 
     
-        # Met les listes de problèmes dans un dictionnaire
+        # Met les listes de problÃ¨mes dans un dictionnaire
         if len(piecesManquantes) != 0 : 
             if (IDpersonne in dictProblemes) == False : dictProblemes[IDpersonne] = {}
             if len(piecesManquantes) == 1 : 
-                categorie = _(u"1 pièce manquante")
+                categorie = _(u"1 piÃ¨ce manquante")
             else:
-                categorie = str(len(piecesManquantes))  + _(u" pièces manquantes")
+                categorie = str(len(piecesManquantes))  + _(u" piÃ¨ces manquantes")
             dictProblemes[IDpersonne][categorie] = piecesManquantes
 
         if len(piecesPerimees) != 0 : 
             if (IDpersonne in dictProblemes) == False : dictProblemes[IDpersonne] = {}
             if len(piecesPerimees) == 1 : 
-                categorie = _(u"1 pièce bientôt périmée")
+                categorie = _(u"1 piÃ¨ce bientÃ´t pÃ©rimÃ©e")
             else:
-                categorie = str(len(piecesPerimees))  + _(u" pièces bientôt périmées")
+                categorie = str(len(piecesPerimees))  + _(u" piÃ¨ces bientÃ´t pÃ©rimÃ©es")
             dictProblemes[IDpersonne][categorie] = piecesPerimees
         
         
@@ -416,20 +416,20 @@ def Recherche_problemes_personnes(listeIDpersonnes = (), infosPersonne=[]):
             due = contrat[2]
             # Signature
             if signature == "" or signature == "Non" : 
-                txt = _(u"Contrat non signé")
+                txt = _(u"Contrat non signÃ©")
                 problemesContrats.append( (txt) )
             # DUE
             if due == "" or due == "Non" : 
-                txt = _(u"DUE à faire")
+                txt = _(u"DUE Ã  faire")
                 problemesContrats.append( (txt) )
         
-        # Met les données dans le dictionnaire
+        # Met les donnÃ©es dans le dictionnaire
         if len(problemesContrats) != 0 : 
             if (IDpersonne in dictProblemes) == False : dictProblemes[IDpersonne] = {}
             if len(problemesContrats) == 1 : 
-                categorie = _(u"1 contrat à voir")
+                categorie = _(u"1 contrat Ã  voir")
             else:
-                categorie = str(len(problemesContrats))  + _(u" contrats à voir")
+                categorie = str(len(problemesContrats))  + _(u" contrats Ã  voir")
             dictProblemes[IDpersonne][categorie] = problemesContrats
     
 
@@ -468,7 +468,7 @@ class BarreTitre(wx.Panel):
     def __init__(self, parent, titre=_(u"Titre"), infoBulle="", arrondis=False, couleurFondPanel=None):
         wx.Panel.__init__(self, parent, -1, size=(-1, 80))
         couleurFond = (70, 70, 70)
-        # Contrôles
+        # ContrÃ´les
         self.barreTitre = wx.StaticText(self, -1, " " + titre)
         self.barreTitre.SetFont(wx.Font(8, wx.DEFAULT, wx.NORMAL, wx.BOLD))
         self.barreTitre.SetBackgroundColour(couleurFond)
@@ -483,7 +483,7 @@ class BarreTitre(wx.Panel):
         self.SetSizer(sizer_base)
         
         if arrondis == True :
-            # Crée des coins arrondis
+            # CrÃ©e des coins arrondis
             self.couleurFondPanel = couleurFondPanel
             self.espaceBord = 0
             self.coinArrondi = 5
@@ -517,7 +517,7 @@ class PanelArrondi(wx.Panel):
         
         self.SetBackgroundColour((122, 161, 230))
         
-        # Création fond
+        # CrÃ©ation fond
         self.espaceBord = 10
         self.coinArrondi = 5
         self.hauteurTitre = 17
@@ -547,9 +547,9 @@ class PanelArrondi(wx.Panel):
         # Barre de titre
         dc.SetBrush(wx.Brush(self.couleurFondTitre))
         dc.DrawRoundedRectangle(0+self.espaceBord, 0+self.espaceBord, largeurDC-(self.espaceBord*2), self.hauteurTitre+self.coinArrondi, self.coinArrondi)
-        # Dégradé
+        # DÃ©gradÃ©
         dc.GradientFillLinear((self.espaceBord+1, self.espaceBord+7, largeurDC-(self.espaceBord*2)-2, self.hauteurTitre-2), (214, 223, 247), (0, 0, 0), wx.NORTH)
-        # Cache pour enlever l'arrondi inférieur de la barre de titre
+        # Cache pour enlever l'arrondi infÃ©rieur de la barre de titre
         dc.SetBrush(wx.Brush(self.couleurFondCadre))
         dc.SetPen(wx.Pen(self.couleurFondCadre, 0))
         dc.DrawRectangle(self.espaceBord+1, self.espaceBord+self.hauteurTitre+1, largeurDC-(self.espaceBord*2)-2, self.coinArrondi+5)
@@ -589,7 +589,7 @@ def sendTextMail():
 
 
 def EnvoyerMail(adresses = [], sujet="", message=""):
-    """ Envoyer un Email avec le client de messagerie par défaut """
+    """ Envoyer un Email avec le client de messagerie par dÃ©faut """
     if len(adresses) == 1 :
         commande = "mailto:%s" % adresses[0]
     else:
@@ -628,7 +628,7 @@ def Aide(numItem=None):
 ##    return
     
 ##    # ------- TEMPORAIRE : ---------------
-##    txtMessage = _(u"Le système d'aide n'est pas encore fonctionnel (actuellement en cours de rédaction).\n\nVous pouvez tout de même trouver actuellement de l'aide sur le forum de TeamWorks à l'adresse suivante : \nhttp://teamworks.forumactif.com (ou cliquez dans la barre de menu sur 'Aide' puis 'Accéder au Forum').")
+##    txtMessage = _(u"Le systÃ¨me d'aide n'est pas encore fonctionnel (actuellement en cours de rÃ©daction).\n\nVous pouvez tout de mÃªme trouver actuellement de l'aide sur le forum de TeamWorks Ã  l'adresse suivante : \nhttp://teamworks.forumactif.com (ou cliquez dans la barre de menu sur 'Aide' puis 'AccÃ©der au Forum').")
 ##    dlg = wx.MessageDialog(None, txtMessage, _(u"Aide"), wx.OK | wx.ICON_INFORMATION)
 ##    dlg.ShowModal()
 ##    dlg.Destroy()
@@ -642,22 +642,22 @@ def Aide(numItem=None):
     dictAide = {
         1 : ("Leplanning", "", _(u"planning")),
         2 : ("ImprimeruneDUE", "", _(u"Edition DUE")),
-        3 : ("Envoyerunmailgroup", "", _(u"Envoi mail groupé")),
-        4 : ("Creerunnouveaufichier", "", _(u"Créer un nouveau fichier")),
-        5 : ("Imprimerunelistedeprsences", "", _(u"Impression d'une liste de présences")),
+        3 : ("Envoyerunmailgroup", "", _(u"Envoi mail groupÃ©")),
+        4 : ("Creerunnouveaufichier", "", _(u"CrÃ©er un nouveau fichier")),
+        5 : ("Imprimerunelistedeprsences", "", _(u"Impression d'une liste de prÃ©sences")),
         6 : ("Lescontrats", "", _(u"Impression d'un contrat ou d'une DUE")),
         7 : ("Laprotectionparmotdepasse", "", _(u"Saisie du mot de passe d'ouverture")),
-        8 : ("Lescatgoriesdeprsences", "", _(u"Config Catégories de présences")),
-        9 : ("Lespriodesdevacances", "", _(u"Saisie d'une période de vacances")),
+        8 : ("Lescatgoriesdeprsences", "", _(u"Config CatÃ©gories de prÃ©sences")),
+        9 : ("Lespriodesdevacances", "", _(u"Saisie d'une pÃ©riode de vacances")),
         10 : ("Lestypesdecontrats", "", _(u"Config types de contrats")),
-        11 : ("Lescatgoriesdeprsences", "", _(u"Saisie d'une cat de présences")),
+        11 : ("Lescatgoriesdeprsences", "", _(u"Saisie d'une cat de prÃ©sences")),
         12 : ("Personnes", "", _(u"Panneau Personnes")),
         13 : ("Lesvaleursdepoints", "", _(u"Saisie val point")),
-        14 : ("Appliquerunmodledeprsences", "creer_modele", _(u"Saisie d'un modèle")),
+        14 : ("Appliquerunmodledeprsences", "creer_modele", _(u"Saisie d'un modÃ¨le")),
         15 : ("Lespaysetnationalits", "", _(u"Config pays")),
-        16 : ("Lestypesdepices", "", _(u"Config types pièces")),
+        16 : ("Lestypesdepices", "", _(u"Config types piÃ¨ces")),
         17 : ("Lasauvegardeautomatique", "", _(u"Panel sauvegarde automatique")),
-        18 : ("Creerunesauvegarde", "", _(u"Créer une sauvegarde occasionnelle")),
+        18 : ("Creerunesauvegarde", "", _(u"CrÃ©er une sauvegarde occasionnelle")),
         19 : ("Restaurerunesauvegarde", "", _(u"Restaurer une sauvegarde")),
         20 : ("Leschampsdecontrats", "", _(u"Saisie champs contrats")),
         21 : ("Ladresse", "", _(u"Gestion des villes")),
@@ -668,28 +668,28 @@ def Aide(numItem=None):
         26 : ("Laprotectionparmotdepasse", "", _(u"Config Password")),
         27 : ("Lesvaleursdepoints", "", _(u"Config val_point")),
         28 : ("Rechercherdesmisesjour", "", _(u"Updater")),
-        29 : ("Crerunepice", "", _(u"Saisie pièces")),
+        29 : ("Crerunepice", "", _(u"Saisie piÃ¨ces")),
         30 : ("Imprimerdesphotosdepersonnes", "", _(u"Impression_photo")),
-        31 : ("Lesmodlesdecontrats", "", u"wiz création modele contrat"),
+        31 : ("Lesmodlesdecontrats", "", u"wiz crÃ©ation modele contrat"),
         32 : ("Laprotectionparmotdepasse", "", _(u"Saisie pwd")),
-        33 : ("Saisirunetcheunique", "", _(u"Saisie d'une présence")),
-        34 : ("Lesjoursfris", "", _(u"Config jours fériés")),
+        33 : ("Saisirunetcheunique", "", _(u"Saisie d'une prÃ©sence")),
+        34 : ("Lesjoursfris", "", _(u"Config jours fÃ©riÃ©s")),
         35 : ("Leschampsdecontrats", "", _(u"Config champs contrats")),
         36 : ("Enregistrerunremboursement", "", _(u"Saisie remboursement")),
-        37 : ("Imprimeruncontrat", "", u"wiz édition contrat"),
+        37 : ("Imprimeruncontrat", "", u"wiz Ã©dition contrat"),
         38 : ("Lesclassifications", "", _(u"Config classifications")),
-        39 : ("Lesjoursfris", "", _(u"Saisie jour férié")),
-        40 : ("Appliquerunmodledeprsences", "", _(u"Application modèle de présences")),
+        39 : ("Lesjoursfris", "", _(u"Saisie jour fÃ©riÃ©")),
+        40 : ("Appliquerunmodledeprsences", "", _(u"Application modÃ¨le de prÃ©sences")),
         41 : ("Lestypesdecontrats", "", _(u"Saisie types contrats")),
         42 : ("Attribuerunephoto", "", _(u"Editeur photo")),
-        43 : ("Lespriodesdevacances", "", _(u"Config périodes vacances")),
-        44 : ("Enregistrerundplacement", "", _(u"Saisie déplacement")),
+        43 : ("Lespriodesdevacances", "", _(u"Config pÃ©riodes vacances")),
+        44 : ("Enregistrerundplacement", "", _(u"Saisie dÃ©placement")),
         45 : ("Lesgadgets", "", _(u"Config gadgets")),
         46 : ("ExporterlespersonnesdansMSOutl", "", _(u"Export Outlook")),
         47 : ("Ouvrirunfichier", "", _(u"Ouvrir un fichier")),
         48 : ("Lestypesdequalifications", "", _(u"Config types diplomes")),
-        49 : ("Assistantdemarrage", "", _(u"Assistant démarrage")),
-        50 : ("Lestypesdepices", "", _(u"Saisie types pièces")),
+        49 : ("Assistantdemarrage", "", _(u"Assistant dÃ©marrage")),
+        50 : ("Lestypesdepices", "", _(u"Saisie types piÃ¨ces")),
         51 : ("Lecalendrier", "", _(u"Le calendrier")),
         52 : ("Lesmodlesdecontrats", "", _(u"Config modeles contrats")),
         53 : ("Lalistedespersonnes", "Options", _(u"Config liste personnes")),
@@ -697,9 +697,9 @@ def Aide(numItem=None):
         55 : ("Lalistedespersonnes", "export_liste", _(u"export liste personnes")),
         56 : ("Lalistedespersonnes", "Imprimer_liste", _(u"Imprimer liste Personnes")),
         57 : ("Laficheindividuelle", "", _(u"Fiche individuelle")),
-        58 : ("Lagestiondesscnarios", "", _(u"Les scénarios")),
+        58 : ("Lagestiondesscnarios", "", _(u"Les scÃ©narios")),
         59 : ("Lesstatistiques", "", _(u"Les statistiques")),
-        60 : ("Lagestiondesutilisateurs", "", _(u"La gestion des utilisateurs réseau")),
+        60 : ("Lagestiondesutilisateurs", "", _(u"La gestion des utilisateurs rÃ©seau")),
         } # NumItem : nomPage, nomAncre, Description
     
     if numItem != None :
@@ -709,14 +709,14 @@ def Aide(numItem=None):
         
         # Aide LINUX : sur internet
         
-        # Préparation du fichier chm
+        # PrÃ©paration du fichier chm
         nomFichier = "http://www.clsh-lannilis.com/teamworks/aide/tw.htm"
-        # Préparation de la page HTML
+        # PrÃ©paration de la page HTML
         if nomPage != "" :
             page = "?" + nomPage + ".html"
         else:
             page = ""
-        # Préparation de l'ancre
+        # PrÃ©paration de l'ancre
         if nomAncre != "" :
             ancre = "#" + nomAncre
         else:
@@ -727,14 +727,14 @@ def Aide(numItem=None):
     else:
         # Aide WINDOWS avec le CHM
         
-        # Préparation du fichier chm
+        # PrÃ©paration du fichier chm
         nomFichier = "Aide/teamworks.chm"
-        # Préparation de la page HTML
+        # PrÃ©paration de la page HTML
         if nomPage != "" :
             page = "::/" + nomPage + ".html"
         else:
             page = ""
-        # Préparation de l'ancre
+        # PrÃ©paration de l'ancre
         if nomAncre != "" :
             ancre = "#" + nomAncre
         else:
@@ -750,17 +750,17 @@ class Aide_archive():
     def __init__(self, frameParente, sujet=""):
         self.frameParente = frameParente
         
-        # Création du widget
+        # CrÃ©ation du widget
         self.frameParente.frmAide = wx.html.HtmlHelpController()
         
-        # Création des pages
+        # CrÃ©ation des pages
         self.CreationPages()
             
-        # Choix de la page affichée
+        # Choix de la page affichÃ©e
         if sujet == "" : self.frameParente.frmAide.DisplayContents()
         else: self.frameParente.frmAide.Display(sujet)
         
-        # Réglages des propriétés de la frame Help
+        # RÃ©glages des propriÃ©tÃ©s de la frame Help
         self.frameAide = self.frameParente.frmAide.GetFrame()
         self.Proprietes()
         
@@ -787,13 +787,13 @@ class Aide_archive():
 
 def CompareVersions(versionApp="", versionMaj=""):
     """ Compare 2 versions """
-    """ Return True si la version MAJ est plus récente """
+    """ Return True si la version MAJ est plus rÃ©cente """
     a,b = [[int(n) for n in version.split(".")] for version in [versionMaj, versionApp]]
     return a>b
 
 
 def GetListeCadresPhotos():
-    """ Récupère la liste des noms des cadres photos dispo sur le DD """
+    """ RÃ©cupÃ¨re la liste des noms des cadres photos dispo sur le DD """
     listeNomCadres = []
     listeFichiers = os.listdir("Images/CadresPhotos")
     for nomFichier in listeFichiers :
@@ -804,7 +804,7 @@ def GetListeCadresPhotos():
     return listeNomCadres
 
 def RecupNomCadrePersonne(IDpersonne):
-    """ Récupère le nom du cadre de décoration pour une personne donnée """
+    """ RÃ©cupÃ¨re le nom du cadre de dÃ©coration pour une personne donnÃ©e """
     DB = GestionDB.DB()        
     req = "SELECT cadre_photo FROM personnes WHERE IDpersonne=%d;" % IDpersonne
     DB.executerReq(req)
@@ -816,7 +816,7 @@ def RecupNomCadrePersonne(IDpersonne):
     return cadre_photo
 
 def RecupTextePhotoPersonne(IDpersonne):
-    """ Récupère le contenu du texte photo pour une personne donnée """
+    """ RÃ©cupÃ¨re le contenu du texte photo pour une personne donnÃ©e """
     DB = GestionDB.DB()        
     req = "SELECT texte_photo FROM personnes WHERE IDpersonne=%d;" % IDpersonne
     DB.executerReq(req)
@@ -828,12 +828,12 @@ def RecupTextePhotoPersonne(IDpersonne):
     return texte_photo
 
 def CreationPhotoPersonne(IDpersonne=0, nomFichierPhoto="", tailleFinale = None, qualiteBmp = 50):
-    """ Création des photos avec cadre de décoration """
-    # Récupération de la photo
+    """ CrÃ©ation des photos avec cadre de dÃ©coration """
+    # RÃ©cupÃ©ration de la photo
     if os.path.isfile(nomFichierPhoto) == False : return None
     photo = wx.Bitmap(nomFichierPhoto, wx.BITMAP_TYPE_ANY)
     tailleInitiale = photo.GetSize()
-    # Création du dc temporaire
+    # CrÃ©ation du dc temporaire
     bmp = wx.EmptyBitmap(tailleInitiale[0], tailleInitiale[1])
     dc = wx.MemoryDC()
     dc.SelectObject(bmp)
@@ -841,7 +841,7 @@ def CreationPhotoPersonne(IDpersonne=0, nomFichierPhoto="", tailleFinale = None,
     dc.Clear()
     # Dessin de la photo
     dc.DrawBitmap(photo, 0, 0, 0)
-    # Dessin du cadre de décoration
+    # Dessin du cadre de dÃ©coration
     nomCadre = RecupNomCadrePersonne(IDpersonne)
     if nomCadre != None :
         masque = wx.Bitmap("Images/CadresPhotos/" + nomCadre + ".png", wx.BITMAP_TYPE_PNG)
@@ -855,7 +855,7 @@ def CreationPhotoPersonne(IDpersonne=0, nomFichierPhoto="", tailleFinale = None,
 
 
 def RecupIDfichier():
-    """ Récupère le code identifiant unique du fichier """
+    """ RÃ©cupÃ¨re le code identifiant unique du fichier """
     DB = GestionDB.DB()        
     req = "SELECT codeIDfichier FROM divers WHERE IDdivers=1;"
     DB.executerReq(req)
@@ -865,7 +865,7 @@ def RecupIDfichier():
     return codeIDfichier
 
 def VideRepertoireTemp():
-    """ Supprimer tous les fichiers du répertoire TEMP """
+    """ Supprimer tous les fichiers du rÃ©pertoire TEMP """
     for rep in ("Temp/", UTILS_Fichiers.GetRepTemp()) :
         if os.path.isdir(rep) :
             for nomFichier in os.listdir(rep) :
@@ -879,26 +879,26 @@ def VideRepertoireTemp():
                     print(err)
 
 def VideRepertoireUpdates(forcer=False):
-    """ Supprimer les fichiers temporaires du répertoire Updates """
+    """ Supprimer les fichiers temporaires du rÃ©pertoire Updates """
     try :
         listeReps = UTILS_Fichiers.GetRepUpdates()
         numVersionActuelle = GetVersionLogiciel()
         for nomRep in os.listdir(listeReps) :
             resultat = CompareVersions(versionApp=numVersionActuelle, versionMaj=nomRep)
             if resultat == False or forcer == True :
-                # Le rep est pour une version égale ou plus ancienne
+                # Le rep est pour une version Ã©gale ou plus ancienne
                 if numVersionActuelle != nomRep or forcer == True :
-                    # Si la version est ancienne, suppression du répertoire
+                    # Si la version est ancienne, suppression du rÃ©pertoire
                     shutil.rmtree(UTILS_Fichiers.GetRepUpdates(nomRep))
                 else:
-                    # La version est égale : on la laisse pour l'instant
+                    # La version est Ã©gale : on la laisse pour l'instant
                     pass
     except Exception as err:
         print(err)
         pass
         
 def ListeImprimantes():
-    """ Recherche les imprimantes installées """
+    """ Recherche les imprimantes installÃ©es """
     if sys.platform.startswith("win") :
         import win32print
         
@@ -926,11 +926,11 @@ def ListeImprimantes():
     return nomImprimanteDefaut, listeToutesImprimantes, listeImprimantesLocales, listeImprimantesReseau
 
 def EnleveAccents(chaineUnicode):
-    """ Enlève les accents d'une chaine unicode """
+    """ EnlÃ¨ve les accents d'une chaine unicode """
     import unicodedata
     if type(chaineUnicode) == str :
         if six.PY2:
-            chaineUnicode = chaineUnicode.decode("iso-8859-15")
+            chaineUnicode = chaineUnicode.decode("utf8")
     resultat = unicodedata.normalize('NFKD', chaineUnicode).encode('ascii','ignore')
     return resultat
 
@@ -968,13 +968,13 @@ def AfficheStatsProgramme():
                     if "prt.Print()" in line : nbreImpressionsOL += 1
                     # Recherche une impression PDF avec reportlab
                     if "doc.build(story)" in line : nbreImpressionsPDF += 1
-                    # Recherche des boîtes de dialogue
+                    # Recherche des boÃ®tes de dialogue
                     if "wx.MessageDialog(" in line : nbreBoitesDialogue += 1
                     # Recherche le nbre de fonctions
                     if " def " in line : nbreFonctions += 1
 
                 fichier.close()
-                # Mémorise les résultats
+                # MÃ©morise les rÃ©sultats
                 listeResultats.append((nomFichier, nbreLignes))
                 nbreLignesTotal += nbreLignes
     
@@ -982,7 +982,7 @@ def AfficheStatsProgramme():
     from DATA_Tables import DB_DATA
     nbreTables = len(list(DB_DATA.keys())) + 2
     
-    # Affiche les résultats
+    # Affiche les rÃ©sultats
     for nomFichier, nbreLignes in listeResultats :
         print("%s ---> %d lignes" % (nomFichier, nbreLignes))
     print("----------------------------------------")
@@ -995,7 +995,7 @@ def AfficheStatsProgramme():
     print("Nbre total d'impressions PDF = %d" % nbreImpressionsPDF) 
     print("Nbre total de boites de dialogue = %d" % nbreBoitesDialogue) 
     print("----------------------------------------")
-    print("Nbre tables de données = %d" % nbreTables)
+    print("Nbre tables de donnÃ©es = %d" % nbreTables)
 
 def GetRepertoireProjet(fichier=""):
     frozen = getattr(sys, 'frozen', '')
@@ -1006,7 +1006,7 @@ def GetRepertoireProjet(fichier=""):
     return os.path.join(chemin, fichier)
 
 def GetVersionLogiciel():
-    """ Recherche du numéro de version du logiciel """
+    """ Recherche du numÃ©ro de version du logiciel """
     fichierVersion = codecs.open(GetRepertoireProjet("Versions.txt"), encoding='utf-8', mode='r')
     txtVersion = fichierVersion.readlines()[0]
     fichierVersion.close() 
@@ -1033,10 +1033,10 @@ def GetNomDB():
     except :
         nomWindow = None
     if nomWindow == "general" : 
-        # Si la frame 'General' est chargée, on y récupère le dict de config
+        # Si la frame 'General' est chargÃ©e, on y rÃ©cupÃ¨re le dict de config
         nom = topWindow.userConfig["nomFichier"]
     else:
-        # Récupération du nom de la DB directement dans le fichier de config sur le disque dur
+        # RÃ©cupÃ©ration du nom de la DB directement dans le fichier de config sur le disque dur
         cfg = FichierConfig()
         nom = cfg.GetItemConfig("nomFichier")
     return nom
@@ -1046,28 +1046,28 @@ def supprime_accent(mot):
     """ supprime les accents du texte source """
     out = ""
     for c in mot:
-        if c == u'é' or c == u'è' or c == u'ê':
+        if c == u'Ã©' or c == u'Ã¨' or c == u'Ãª':
             c = 'e'
-        elif c == u'à':
+        elif c == u'Ã ':
             c = 'a'
-        elif c == u'ù' or c == u'û':
+        elif c == u'Ã¹' or c == u'Ã»':
             c = 'u'
-        elif c == u'î':
+        elif c == u'Ã®':
             c = 'i'
-        elif c == u'ç':
+        elif c == u'Ã§':
             c = 'c'
         out += c
     return str(out)
 
 def Supprime_accent(texte):
-    liste = [ (u"é", u"e"), (u"è", u"e"), (u"ê", u"e"), (u"ë", u"e"), (u"à", u"a"), (u"û", u"u"), (u"ô", u"o"), (u"ç", u"c"), (u"î", u"i"), (u"ï", u"i"), (u"/", u""), (u"\\", u""), ]
+    liste = [ (u"Ã©", u"e"), (u"Ã¨", u"e"), (u"Ãª", u"e"), (u"Ã«", u"e"), (u"Ã ", u"a"), (u"Ã»", u"u"), (u"Ã´", u"o"), (u"Ã§", u"c"), (u"Ã®", u"i"), (u"Ã¯", u"i"), (u"/", u""), (u"\\", u""), ]
     for a, b in liste :
         texte = texte.replace(a, b)
         texte = texte.replace(a.upper(), b.upper())
     return texte
 
 def Supprime_accent2(texte):
-    liste = [ (u"é", u"e"), (u"è", u"e"), (u"ê", u"e"), (u"ë", u"e"), (u"à", u"a"), (u"û", u"u"), (u"ô", u"o"), (u"ç", u"c"), (u"î", u"i"), (u"ï", u"i"), ]
+    liste = [ (u"Ã©", u"e"), (u"Ã¨", u"e"), (u"Ãª", u"e"), (u"Ã«", u"e"), (u"Ã ", u"a"), (u"Ã»", u"u"), (u"Ã´", u"o"), (u"Ã§", u"c"), (u"Ã®", u"i"), (u"Ã¯", u"i"), ]
     for a, b in liste :
         texte = texte.replace(a, b)
         texte = texte.replace(a.upper(), b.upper())
@@ -1087,7 +1087,7 @@ def RemplacerContenuFichier():
         if nomFichier.endswith(".py") :
             fichier = open(nomFichier, 'r')
             
-            # Recherche si fichier concerné ou non
+            # Recherche si fichier concernÃ© ou non
             trouve = False
             for old, new in listeRemplacements :
                 for line in fichier :
@@ -1112,19 +1112,19 @@ def RemplacerContenuFichier():
             
 
 def PreparationFichierDefaut(nomFichier=""):
-    """ Prépare le fichier de données par défaut """
+    """ PrÃ©pare le fichier de donnÃ©es par dÃ©faut """
     import DATA_Tables as Tables
     import sqlite3
     listeTablesObligatoires = []
-    # Récupère les tables optionnelles
+    # RÃ©cupÃ¨re les tables optionnelles
     for nom, listeTablesTmp, select in Tables.TABLES_IMPORTATION_OPTIONNELLES :
         for table in listeTablesTmp :
             listeTablesObligatoires.append(table)
-    # Récupère les tables optionnelles
+    # RÃ©cupÃ¨re les tables optionnelles
     for table in Tables.TABLES_IMPORTATION_OBLIGATOIRES :
         listeTablesObligatoires.append(table)
     
-    # Ouverture du fichier de référence
+    # Ouverture du fichier de rÃ©fÃ©rence
     connexion = sqlite3.connect(nomFichier.encode('utf-8'))
     cursor = connexion.cursor()
     
@@ -1132,7 +1132,7 @@ def PreparationFichierDefaut(nomFichier=""):
     cursor.execute("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;")
     listeTablesBase = cursor.fetchall()
     for nomTable, in listeTablesBase :
-        # Supprime les tables non nécessaires
+        # Supprime les tables non nÃ©cessaires
         if nomTable not in listeTablesObligatoires and nomTable != "sqlite_sequence"  :
             cursor.execute("DROP TABLE %s;" % nomTable)
     connexion.commit()
@@ -1147,7 +1147,7 @@ def PreparationFichierDefaut(nomFichier=""):
 def Formate_taille_octets(size):
     """
     fonction qui prend en argument un nombre d'octets
-    et renvoie la taille la plus adapté
+    et renvoie la taille la plus adaptÃ©
     """
     seuil_Kio = 1024
     seuil_Mio = 1024 * 1024
@@ -1163,7 +1163,7 @@ def Formate_taille_octets(size):
         return "%i o" % size
 
 def RechercheImports():
-    """ Renvoie la liste de tous les modules importés du logiciel """
+    """ Renvoie la liste de tous les modules importÃ©s du logiciel """
     listeImports = []
     listeFichiers = os.listdir(os.getcwd())
     listeExclusions = ("wx", "DLG", "OL", "CTRL", "UTILS", "DATA")
@@ -1272,7 +1272,7 @@ def PrepareFichierBIC():
     fichier.close()
 
 def RechercheModules(nomFichier="Noethys.py") :
-    """ Recherche les modules dépendants d'un script """
+    """ Recherche les modules dÃ©pendants d'un script """
     from modulefinder import ModuleFinder
     finder = ModuleFinder()
     finder.run_script(nomFichier)
@@ -1301,7 +1301,7 @@ def GetIDfichier():
     return IDfichier
 
 def GenerationIDdoc():
-    """ Génération d'un ID unique à base de la date, de l'heure de l'IDfichier et d'un numéro aléatoire """
+    """ GÃ©nÃ©ration d'un ID unique Ã  base de la date, de l'heure de l'IDfichier et d'un numÃ©ro alÃ©atoire """
     IDfichier = GetIDfichier()[14:17]
     numAleatoire = random.randint(100, 999)
     horodatage = datetime.datetime.now().strftime("%Y%m%d%H%M%S") 
@@ -1309,12 +1309,12 @@ def GenerationIDdoc():
     return IDdoc
 
 def GenerationNomDoc(prefixe="", extension="pdf"):
-    """ Génération d'un nom de document dans le répertoire Temp"""
+    """ GÃ©nÃ©ration d'un nom de document dans le rÃ©pertoire Temp"""
     nomDoc = "%s%s.%s" % (prefixe, GenerationIDdoc() , extension)
     return UTILS_Fichiers.GetRepTemp(nomDoc)
 
 def InsertUnicodeLiterals():
-    """ Pour insérer  dans tous les fichiers """
+    """ Pour insÃ©rer  dans tous les fichiers """
     # Get fichiers
     listeFichiers = os.listdir(os.getcwd())
     indexFichier = 0
@@ -1335,7 +1335,7 @@ def InsertUnicodeLiterals():
                 
                 listeLignes.append(ligne) 
                 
-            # Clôture des fichiers
+            # ClÃ´ture des fichiers
             fichier.close()
             
             # Ecriture du nouveau fichier
@@ -1351,7 +1351,7 @@ def InsertUnicodeLiterals():
 
 
 def InsertThemeDansOL():
-    """ Pour insérer la prise en charge des thèmes dans les OL """
+    """ Pour insÃ©rer la prise en charge des thÃ¨mes dans les OL """
     # Get fichiers
     listeFichiers = os.listdir(os.getcwd())
     indexFichier = 0
@@ -1379,7 +1379,7 @@ def InsertThemeDansOL():
 
                 listeLignes.append(ligne)
 
-            # Clôture des fichiers
+            # ClÃ´ture des fichiers
             fichier.close()
 
             # Ecriture du nouveau fichier
@@ -1409,14 +1409,14 @@ def RechercheWhere():
                     ligne = ligne.replace("  ", "")
                     print(ligne)
                 
-            # Clôture des fichiers
+            # ClÃ´ture des fichiers
             fichier.close()
             
     print("Fini !!!!!!!!!!!!!!!!!")
 
 
 def CreerDonneesVirtuelles(nbreFamilles=0):
-    """ Pour remplir la base artificiellement avec des données familles virtuelles """
+    """ Pour remplir la base artificiellement avec des donnÃ©es familles virtuelles """
     DB = GestionDB.DB()
     for x in range(0, nbreFamilles) :
         
@@ -1430,8 +1430,8 @@ def CreerDonneesVirtuelles(nbreFamilles=0):
         DB.ReqMAJ("familles", [("IDcompte_payeur", IDcompte_payeur),], "IDfamille", IDfamille)
         
         # Individus
-        IDpere = DB.ReqInsert("individus", [("IDcivilite", 1), ("nom", u"PERE%d" % IDfamille), ("prenom", u"Père%d" % IDfamille), ("rue_resid", u"10 rue des oiseaux"), ("cp_resid", "29200"), ("ville_resid", u"BREST"), ("date_creation", datetime.date.today())])
-        IDmere = DB.ReqInsert("individus", [("IDcivilite", 3), ("nom", u"MERE%d" % IDfamille), ("prenom", u"Mère%d" % IDfamille), ("rue_resid", u"10 rue des oiseaux"), ("cp_resid", "29200"), ("ville_resid", u"BREST"), ("date_creation", datetime.date.today())])
+        IDpere = DB.ReqInsert("individus", [("IDcivilite", 1), ("nom", u"PERE%d" % IDfamille), ("prenom", u"PÃ¨re%d" % IDfamille), ("rue_resid", u"10 rue des oiseaux"), ("cp_resid", "29200"), ("ville_resid", u"BREST"), ("date_creation", datetime.date.today())])
+        IDmere = DB.ReqInsert("individus", [("IDcivilite", 3), ("nom", u"MERE%d" % IDfamille), ("prenom", u"MÃ¨re%d" % IDfamille), ("rue_resid", u"10 rue des oiseaux"), ("cp_resid", "29200"), ("ville_resid", u"BREST"), ("date_creation", datetime.date.today())])
         IDenfant = DB.ReqInsert("individus", [("IDcivilite", 4), ("nom", u"ENFANT%d" % IDfamille), ("prenom", u"Enfant%d" % IDfamille), ("rue_resid", u"10 rue des oiseaux"), ("cp_resid", "29200"), ("ville_resid", u"BREST"), ("date_creation", datetime.date.today())])
         
         # Rattachements
@@ -1452,7 +1452,7 @@ def CreerDonneesVirtuelles(nbreFamilles=0):
         
         # Prestations et consommations
         date = datetime.date(2015, 6, 3)
-        IDprestation = DB.ReqInsert("prestations", [("IDcompte_payeur", IDcompte_payeur), ("date", date), ("categorie", "consommation"), ("label", u"Journée avec repas"), ("montant_initial", 13.0), ("montant", 13.0), ("IDactivite", 1), ("IDtarif", 33), ("IDfamille", IDfamille), ("IDindividu", IDenfant), ("temps_facture", "11:00"), ("IDcategorie_tarif", 1), ("date_valeur", str(datetime.date.today()))])
+        IDprestation = DB.ReqInsert("prestations", [("IDcompte_payeur", IDcompte_payeur), ("date", date), ("categorie", "consommation"), ("label", u"JournÃ©e avec repas"), ("montant_initial", 13.0), ("montant", 13.0), ("IDactivite", 1), ("IDtarif", 33), ("IDfamille", IDfamille), ("IDindividu", IDenfant), ("temps_facture", "11:00"), ("IDcategorie_tarif", 1), ("date_valeur", str(datetime.date.today()))])
         for IDunite in (1, 2) :
             IDconso = DB.ReqInsert("consommations", [("IDindividu", IDenfant), ("IDinscription", IDinscription), ("IDactivite", 1), ("date", date), ("IDunite", IDunite), ("IDgroupe", 1), ("etat", "reservation"), ("verrouillage", 0), ("date_saisie", datetime.date.today()), ("IDutilisateur", 1), ("IDcategorie_tarif", 1), ("IDcompte_payeur", IDcompte_payeur), ("IDprestation", IDprestation)])
         
@@ -1461,7 +1461,7 @@ def CreerDonneesVirtuelles(nbreFamilles=0):
 
 
 def CreerDonneesVirtuellesLocations(nbreFamilles=0):
-    """ Pour remplir la base artificiellement avec des données familles virtuelles """
+    """ Pour remplir la base artificiellement avec des donnÃ©es familles virtuelles """
     DB = GestionDB.DB()
 
     # Lecture des produits
@@ -1472,7 +1472,7 @@ def CreerDonneesVirtuellesLocations(nbreFamilles=0):
     for IDproduit, nom, IDcategorie in listeDonnees :
         listeProduits.append({"IDproduit" : IDproduit, "nom" : nom, "IDcategorie" : IDcategorie})
 
-    # Saisie des données
+    # Saisie des donnÃ©es
     for x in range(0, nbreFamilles):
 
         print("-----  Creation de la famille %d/%d... -----" % (x + 1, nbreFamilles))
@@ -1496,13 +1496,13 @@ def CreerDonneesVirtuellesLocations(nbreFamilles=0):
         aujourdhui = datetime.datetime(year=d.year, month=d.month, day=d.day, hour=d.hour, minute=d.minute)
 
         if x < len(listeProduits) :
-            # Création d'une location
+            # CrÃ©ation d'une location
             IDproduit = listeProduits[x]["IDproduit"]
             IDlocation = DB.ReqInsert("locations", [("IDfamille", IDfamille), ("IDproduit", IDproduit), ("observations", ""), ("date_saisie", datetime.date.today()), ("date_debut", aujourdhui)])
             print("Location ID%d du produit ID%d" % (IDlocation, IDproduit))
         else :
 
-            # Création d'une demande de location
+            # CrÃ©ation d'une demande de location
             dictProduit = random.choice(listeProduits)
             categories = str(dictProduit["IDcategorie"])
             produits = None #str(dictProduit["IDproduit"])
@@ -1511,7 +1511,7 @@ def CreerDonneesVirtuellesLocations(nbreFamilles=0):
             IDdemande = DB.ReqInsert("locations_demandes", [("date", aujourdhui),("IDfamille", IDfamille), ("observations", ""), ("categories", categories), ("produits", produits), ("statut", statut), ("motif_refus", motif_refus)])
             print("Demande ID%d" % IDdemande)
 
-            # Création d'un filtre pour la demande
+            # CrÃ©ation d'un filtre pour la demande
             liste_choix = ["6", "12", "18", "24", "30", "36", "48"]
             listeDonnees = [
                 ("IDquestion", 5),
@@ -1526,13 +1526,13 @@ def CreerDonneesVirtuellesLocations(nbreFamilles=0):
 
 
 def InsertCode():
-    """ Pour insérer  dans tous les fichiers """
+    """ Pour insÃ©rer  dans tous les fichiers """
     import re
     x = re.compile(r'(wx.Bitmap\()(.*?)(,)')
 
     for repertoire in ("Ctrl", "Dlg", "Ol", "Utils") :
     #for repertoire in ("",) :
-        # Création du répertoire temporaire
+        # CrÃ©ation du rÃ©pertoire temporaire
         if not os.path.isdir("%s/New" % repertoire):
             os.mkdir("%s/New" % repertoire)
 
@@ -1592,7 +1592,7 @@ def InsertCode():
 
                     listeLignes.append(ligne)
 
-                # Clôture des fichiers
+                # ClÃ´ture des fichiers
                 fichier.close()
 
                 # Ecriture du nouveau fichier
@@ -1608,13 +1608,13 @@ def InsertCode():
 
 
 def InsertCodeToolTip():
-    """ Pour insérer  dans tous les fichiers """
+    """ Pour insÃ©rer  dans tous les fichiers """
     import re
     #x = re.compile(r'\.SetToolTipString\((.*?\))')
     x = re.compile(r'\.SetToolTip\(')
 
     for repertoire in ("Ctrl", "Dlg", "Ol", "Utils") :
-        # Création du répertoire temporaire
+        # CrÃ©ation du rÃ©pertoire temporaire
         if not os.path.isdir("%s/New" % repertoire):
             os.mkdir("%s/New" % repertoire)
 
@@ -1642,7 +1642,7 @@ def InsertCodeToolTip():
 
                     listeLignes.append(ligne)
 
-                # Clôture des fichiers
+                # ClÃ´ture des fichiers
                 fichier.close()
 
                 # Ecriture du nouveau fichier
@@ -1672,7 +1672,7 @@ if __name__ == "__main__":
 ##    app = wx.App(0)
 ##    import wx.lib.dialogs as dialogs
 ##    image = wx.Bitmap("Images/32x32/Activite.png", wx.BITMAP_TYPE_ANY)
-##    message2 = _(u"Ceci est un message super méga long qui doit prendre pas mal de place !\n") * 50
+##    message2 = _(u"Ceci est un message super mÃ©ga long qui doit prendre pas mal de place !\n") * 50
 ##    dlg = dialogs.MultiMessageDialog(None, _(u"Ceci est le message 1"), caption = "Message Box", msg2=message2, style = wx.ICON_EXCLAMATION | wx.OK | wx.CANCEL, icon=None, btnLabels={wx.ID_OK : _(u"Ok"), wx.ID_CANCEL : _(u"Annuler")})
 ##    dlg.ShowModal() 
 ##    dlg.Destroy() 
@@ -1684,10 +1684,10 @@ if __name__ == "__main__":
 ##        print x
 ##    print "-------------------- Modules trouves : %d --------------------" % len(listeModules) 
     
-    # Créer des données virtuelles dans DB
+    # CrÃ©er des donnÃ©es virtuelles dans DB
     #InsertThemeDansOL()
 
-    # Génération d'un nom de document
+    # GÃ©nÃ©ration d'un nom de document
     #print GenerationNomDoc("document", "pdf")
     
     #VideRepertoireUpdates(forcer=True)

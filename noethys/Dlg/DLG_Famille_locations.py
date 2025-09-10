@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -41,10 +41,10 @@ class Page_locations(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl_locations.Modifier, self.bouton_modifier_location)
         self.Bind(wx.EVT_BUTTON, self.ctrl_locations.Supprimer, self.bouton_supprimer_location)
 
-        # Propriétés
+        # PropriÃ©tÃ©s
         self.bouton_ajouter_location.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir une location")))
-        self.bouton_modifier_location.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la location sélectionnée")))
-        self.bouton_supprimer_location.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la location sélectionnée")))
+        self.bouton_modifier_location.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la location sÃ©lectionnÃ©e")))
+        self.bouton_supprimer_location.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la location sÃ©lectionnÃ©e")))
 
         # --- Layout ---
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=0, hgap=0)
@@ -96,10 +96,10 @@ class Page_demandes(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl_demandes.Modifier, self.bouton_modifier_demande)
         self.Bind(wx.EVT_BUTTON, self.ctrl_demandes.Supprimer, self.bouton_supprimer_demande)
 
-        # Propriétés
+        # PropriÃ©tÃ©s
         self.bouton_ajouter_demande.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir une demande de location")))
-        self.bouton_modifier_demande.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la demande de location sélectionnée")))
-        self.bouton_supprimer_demande.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la demande de location sélectionnée")))
+        self.bouton_modifier_demande.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la demande de location sÃ©lectionnÃ©e")))
+        self.bouton_supprimer_demande.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la demande de location sÃ©lectionnÃ©e")))
 
         # --- Layout ---
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=0, hgap=0)
@@ -170,7 +170,7 @@ class Panel(wx.Panel):
             index += 1
 
     def OnPageChanged(self, event):
-        """ Quand une page du notebook est sélectionnée """
+        """ Quand une page du notebook est sÃ©lectionnÃ©e """
         index = event.GetSelection()
         self.MAJpage(index)
         event.Skip()
@@ -191,7 +191,7 @@ class Panel(wx.Panel):
         self.Refresh()
         
     def ValidationData(self):
-        """ Return True si les données sont valides et pretes à être sauvegardées """
+        """ Return True si les donnÃ©es sont valides et pretes Ã  Ãªtre sauvegardÃ©es """
         return True
     
     def Sauvegarde(self):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -19,14 +19,14 @@ import six
 
 
 def ConvertVersionTuple(texteVersion=""):
-    """ Convertit un numéro de version texte en tuple """
+    """ Convertit un numÃ©ro de version texte en tuple """
     tupleTemp = []
     for num in texteVersion.split(".") :
         tupleTemp.append(int(num))
     return tuple(tupleTemp)
 
 def GetAnnonce():
-    """ Fonction de récupération de l'annonce à afficher """
+    """ Fonction de rÃ©cupÃ©ration de l'annonce Ã© afficher """
     dateJour = datetime.date.today() 
     dictAnnonce = None
     found = False
@@ -43,20 +43,20 @@ def GetAnnonce():
     #                 versionLogiciel = ConvertVersionTuple("1.0.5.6")#FonctionsPerso.GetVersionLogiciel())
     #                 version = ConvertVersionTuple(version)
     #                 if versionLogiciel < version :
-    #                     dictAnnonce = {"IDannonce":None, "image":image, "titre":titre.decode("iso-8859-15"), "texte_html":texte_html.decode("iso-8859-15")}
+    #                     dictAnnonce = {"IDannonce":None, "image":image, "titre":titre.decode("utf8"), "texte_html":texte_html.decode("utf8")}
     #                     found = True
     #             else :
-    #                 dictAnnonce = {"IDannonce":None, "image":image, "titre":titre.decode("iso-8859-15"), "texte_html":texte_html.decode("iso-8859-15")}
+    #                 dictAnnonce = {"IDannonce":None, "image":image, "titre":titre.decode("utf8"), "texte_html":texte_html.decode("utf8")}
     #                 found = True
     # except :
     #     pass
         
-    # Recherche Annonces stockées dans la base de données
+    # Recherche Annonces stockÃ©es dans la base de donnÃ©es
     if found == False :
         
         try :
             
-            # Init base de données
+            # Init base de donnÃ©es
             con = sqlite3.connect(Chemins.GetStaticPath("Databases/Annonces.dat"))
             cur = con.cursor()
             
@@ -113,7 +113,7 @@ class Panel(wx.Panel):
     def __init__(self, parent, size=(-1, -1)):
         wx.Panel.__init__(self, parent, name="panel_accueil", id=-1, size=size, style=wx.TAB_TRAVERSAL)
 
-        # Récupération des données de l'interface
+        # RÃ©cupÃ©ration des donnÃ©es de l'interface
         theme = UTILS_Interface.GetTheme()
         nom_fichier = "Fond.jpg"
         if six.PY3 and theme == "Vert":
@@ -129,7 +129,7 @@ class Panel(wx.Panel):
         self.Refresh()
 
     def OnPaint(self, event):
-        """ Préparation du DC """
+        """ PrÃ©paration du DC """
         dc = wx.BufferedPaintDC(self)
         if wx.VERSION < (2, 9, 0, 0) :
             self.PrepareDC(dc)
@@ -140,7 +140,7 @@ class Panel(wx.Panel):
         # Dessine le fond
         dc.DrawBitmap(self.image_fond, 0, 0)
 
-        # Récupère l'annonce
+        # RÃ©cupÃ©re l'annonce
         dictAnnonce = GetAnnonce()
         if dictAnnonce != None :
 
@@ -149,7 +149,7 @@ class Panel(wx.Panel):
             titre = dictAnnonce["titre"]
             texte_html = dictAnnonce["texte_html"]
 
-            # Préparation du dessin
+            # PrÃ©paration du dessin
             x, y = 20, 20
             taille_police = 8
             largeurTexte = 300
@@ -159,7 +159,7 @@ class Panel(wx.Panel):
                 dc.SetTextForeground("#6A9742")
 
             # Dessine l'image
-            dc.DrawBitmap(bmp, x, y)
+            dc.DrawBitmap(bmp, int(x), int(y))
 
             # Dessine le titre
             dc.SetFont(wx.Font(taille_police, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, "MS Shell Dlg 2"))
@@ -172,7 +172,7 @@ class Panel(wx.Panel):
                 largeur, hauteur, hauteurLigne = dc.GetFullMultiLineTextExtent(texte)
             else :
                 largeur, hauteur, hauteurLigne = dc.GetMultiLineTextExtent(texte)
-            dc.DrawLabel(texte, wx.Rect(x, y + 22, largeurTexte, hauteur))
+            dc.DrawLabel(texte, wx.Rect(int(x), int(y + 22), int(largeurTexte), int(hauteur)))
 
 
 

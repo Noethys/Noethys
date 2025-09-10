@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -54,11 +54,11 @@ class Barre(object):
             else :
                 setattr(self, champ, None)
 
-        # Quantité
+        # quantitÃ©
         if self.quantite == None :
             self.quantite = 1
 
-        # Période
+        # pÃ©riode
         if isinstance(self.date_debut, str) or isinstance(self.date_debut, six.text_type) :
             self.date_debut = datetime.datetime.strptime(self.date_debut, "%Y-%m-%d %H:%M:%S")
 
@@ -68,7 +68,7 @@ class Barre(object):
         if isinstance(self.date_fin, str) or isinstance(self.date_fin, six.text_type) :
             self.date_fin = datetime.datetime.strptime(self.date_fin, "%Y-%m-%d %H:%M:%S")
 
-        # Récupération des réponses des questionnaires
+        # RÃ©cupÃ©ration des rÃ©ponses des questionnaires
         # for dictQuestion in grid.liste_questions :
         #     setattr(self, "question_%d" % dictQuestion["IDquestion"], grid.GetReponse(dictQuestion["IDquestion"], self.IDproduit))
 
@@ -129,10 +129,10 @@ class Barre(object):
     def GetTexteStatusBar(self):
         debut = UTILS_Dates.DatetimeEnFr(self.date_debut)
         if self.date_fin.year == 2999:
-            fin = u"\nFin non définie"
+            fin = u"\nFin non dÃ©finie"
         else:
             fin = UTILS_Dates.DatetimeEnFr(self.date_fin)
-        texte = _(u"%s -> %s (de %s à %s)") % (self.nomTitulaires, self.parent.dict_produits[self.IDproduit]["nom"], debut, fin)
+        texte = _(u"%s -> %s (de %s Ã  %s)") % (self.nomTitulaires, self.parent.dict_produits[self.IDproduit]["nom"], debut, fin)
         return texte
 
     def Draw(self, dc=None, num_sousligne=1, rect_fenetre=None):
@@ -166,13 +166,13 @@ class Barre(object):
 
             if left != None and right != None and y != None :
                 largeur = right - left
-                rect = wx.Rect(left + self.parent.delta[0], y, largeur, hauteur)
+                rect = wx.Rect(int(left + self.parent.delta[0]), int(y), int(largeur), int(hauteur))
                 rect.Deflate(0, 6)
 
-                # Recherche si l'event doit apparaître dans le cadre
+                # Recherche si l'event doit apparaÃªtre dans le cadre
                 if rect.Intersects(rect_fenetre) == True :
 
-                    # Sélection de la couleur de barre
+                    # sÃ©lection de la couleur de barre
                     if self.IDfamille in self.parent.dict_couleurs:
                         self.couleur_barre = self.parent.dict_couleurs[self.IDfamille]
                     else:
@@ -223,7 +223,7 @@ class Barre(object):
                     #texte_debut, texte_debut_largeur, texte_hauteur = GetTailleTexte(dc, texte_debut, texte_largeur_max)
                     texte_fin = self.date_fin.strftime("%Hh%M")
                     if self.date_fin.year == 2999:
-                        texte_fin = _(u"Illimitée")
+                        texte_fin = _(u"IllimitÃ©e")
                     else :
                         if self.parent.dict_options["date_debut"] <= self.date_fin.date() <= self.parent.dict_options["date_fin"]:
                             texte_fin = self.date_fin.strftime("%Hh%M")
@@ -242,7 +242,7 @@ class Barre(object):
                         dc.DrawText(texte_fin, rect.right - texte_fin_largeur - padding_h, rect.bottom - texte_hauteur)
 
 
-                    # Poignées
+                    # PoignÃ©es
                     if self.parent.barre_selectionnee == self :
                         dc.SetPen(wx.Pen(wx.BLACK))
                         dc.SetBrush(wx.Brush(wx.BLACK))
@@ -253,10 +253,10 @@ class Barre(object):
                         self.poignees = {}
 
                         if self.parent.dict_options["date_debut"] <= self.date_debut.date() <= self.parent.dict_options["date_fin"]:
-                            self.poignees["gauche"] = wx.Rect(x, y, taille_poignee, taille_poignee)
+                            self.poignees["gauche"] = wx.Rect(int(x), int(y), int(taille_poignee), int(taille_poignee))
                         if self.parent.dict_options["date_debut"] <= self.date_fin.date() <= self.parent.dict_options["date_fin"] :
-                            self.poignees["centre"] = wx.Rect(x + rect.Width / 2, y, taille_poignee, taille_poignee)
-                            self.poignees["droite"] = wx.Rect(x + rect.Width - taille_poignee, y, taille_poignee, taille_poignee)
+                            self.poignees["centre"] = wx.Rect(int(x + rect.Width / 2), int(y), int(taille_poignee), int(taille_poignee))
+                            self.poignees["droite"] = wx.Rect(int(x + rect.Width - taille_poignee), int(y), int(taille_poignee), int(taille_poignee))
 
                         dc.SetBrush(wx.Brush("BLACK", wx.SOLID))
                         dc.SetPen(wx.Pen("BLACK", 1, wx.SOLID))
@@ -307,7 +307,7 @@ class CTRL(wx.Panel):
             "autoriser_changement_ligne" : True,
         }
 
-        # Contrôles
+        # ContrÃ´les
         self.ctrl_tableau = CTRL_Tableau(self)
         self.ctrl_infos_1 = CTRL_Infos(self, titre=_(u"POSITION"), min_size=(-1, 20), style=wx.BORDER_THEME)
         self.ctrl_infos_2 = CTRL_Infos(self, titre=_(u"SELECTION"), min_size=(-1, 20), style=wx.BORDER_THEME)
@@ -381,7 +381,7 @@ class CTRL(wx.Panel):
             self.ctrl_tableau.SetDelta(h=0)
             nbre_colonnes = (1 + len(self.ctrl_tableau.liste_colonnes))
             nbre_colonnes_visibles = 1 + largeur_reelle / self.dict_options["case_largeur"]
-            self.scrollbar_h.SetScrollbar(0, nbre_colonnes_visibles, nbre_colonnes, nbre_colonnes_visibles)
+            self.scrollbar_h.SetScrollbar(0, int(nbre_colonnes_visibles), nbre_colonnes, int(nbre_colonnes_visibles))
 
         if v == True :
             self.ctrl_tableau.SetDelta(v=0)
@@ -396,7 +396,7 @@ class CTRL(wx.Panel):
                 nbre_lignes_total += nbre
 
             nbre_lignes_visibles = (hauteur_reelle / self.dict_options["case_hauteur"])
-            self.scrollbar_v.SetScrollbar(0, nbre_lignes_visibles, nbre_lignes_total+1, nbre_lignes_visibles)
+            self.scrollbar_v.SetScrollbar(0, int(nbre_lignes_visibles), nbre_lignes_total+1, int(nbre_lignes_visibles))
 
     def SetWheel(self, valeur=0):
         position_actuelle = self.scrollbar_v.GetThumbPosition()
@@ -473,9 +473,9 @@ class Colonne(object):
                     texte = "%dh" % dt.hour
                     largTexte, hautTexte = dc.GetTextExtent(texte)
                     if ecartGraduations > 5 :
-                        x_texte = x - (largTexte / 2) + rect.x
+                        x_texte = x - largTexte / 2 + rect.x
                         if x_texte - largTexte > rect.x and x_texte + largTexte < rect.right :
-                            dc.DrawText(texte, x_texte, posY + 2)
+                            dc.DrawText(texte, int(x_texte), posY + 2)
                         hauteurGraduations = 10
                     else :
                         hauteurGraduations = 4
@@ -484,7 +484,8 @@ class Colonne(object):
                 elif dt.minute == 30:
                     hauteurTrait = 2.5
                 if x > 2 and x < rect.width - 2 :
-                    dc.DrawLine(x + rect.x, posY + hautTexte + hautTraitHeures - hauteurTrait, x + rect.x, posY + hautTexte + hautTraitHeures)
+                    
+                    dc.DrawLine(int(x) + rect.x, int(posY + hautTexte + hautTraitHeures - hauteurTrait), int(x) + rect.x, int(posY + hautTexte + hautTraitHeures))
                 index += 1
 
         # Label
@@ -494,7 +495,7 @@ class Colonne(object):
         if self.date == datetime.date.today() :
             dc.SetTextForeground("red")
 
-        # Définit le texte du label
+        # dÃ©finit le texte du label
         if self.dict_options["case_largeur"] < 80 :
             texte = str(self.date.day)
         elif self.dict_options["case_largeur"] < 120 :
@@ -508,7 +509,7 @@ class Colonne(object):
         texte, largTexte, hautTexte = GetTailleTexte(dc, texte, rect.width)
         x = rect.width / 2.0 - largTexte / 2.0 + rect.x
         y = rect.height / 2.0 - hautTexte / 2.0 - hauteurGraduations
-        dc.DrawText(texte, x, y)
+        dc.DrawText(texte, int(x), int(y))
 
 
 class Ligne(object):
@@ -538,7 +539,7 @@ class Ligne(object):
         texte, largTexte, hautTexte = GetTailleTexte(dc, texte, rect.width)
         x = rect.x + rect.width / 2.0 - largTexte / 2.0
         y = rect.y + rect.height / 2.0 - hautTexte / 2.0
-        dc.DrawText(texte, x, y)
+        dc.DrawText(texte, int(x), int(y))
 
 
 
@@ -574,7 +575,7 @@ class CTRL_Tableau(wx.Panel):
 
         # Init Tooltip
         self.tip = STT.SuperToolTip(u"")
-        self.tip.SetEndDelay(10000) # Fermeture auto du tooltip après 10 secs
+        self.tip.SetEndDelay(10000) # Fermeture auto du tooltip aprÃ¨s 10 secs
         self.SetToolTip(wx.ToolTip(""))
 
         # Variables
@@ -602,7 +603,7 @@ class CTRL_Tableau(wx.Panel):
         return u""
 
     def Importation(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         # Importation des titulaires
         self.dict_titulaires = UTILS_Titulaires.GetTitulaires()
 
@@ -663,11 +664,11 @@ class CTRL_Tableau(wx.Panel):
         # Importation
         self.Importation()
 
-        # Mémorise la position du scroll
+        # mÃ©morise la position du scroll
         # posScrollH = self.parent.scrollbar_h.GetScrollPos(wx.HORIZONTAL)
         # posScrollV = self.parent.scrollbar_v.GetScrollPos(wx.VERTICAL)
 
-        # Création des colonnes
+        # crÃ©ation des colonnes
         date_debut = self.dict_options["date_debut"]
         date_fin = self.dict_options["date_fin"]
         if date_debut == None or date_fin == None :
@@ -686,7 +687,7 @@ class CTRL_Tableau(wx.Panel):
 
         self.parent.ctrl_infos_2.SetTexte("")
 
-        # Sélection selon IDlocation
+        # sÃ©lection selon IDlocation
         if select_location != None:
             for barre in self.liste_barres:
                 if barre.IDlocation == select_location:
@@ -743,7 +744,7 @@ class CTRL_Tableau(wx.Panel):
         x, y = self.ScreenToClient(wx.GetMousePosition())
         self.ActiveTooltip(actif=False)
 
-        # Recherche la barre survolée
+        # Recherche la barre survolÃ©e
         barre = self.FindBarre(x, y)
 
         texte_infos = ""
@@ -760,7 +761,7 @@ class CTRL_Tableau(wx.Panel):
         if self.barre_selectionnee != None:
             date_debut = self.barre_selectionnee.date_debut.strftime("%d/%m/%Y %Hh%M")
             if self.barre_selectionnee.date_fin.year == 2999 :
-                date_fin = _(u"Illimitée")
+                date_fin = _(u"IllimitÃ©e")
                 duree = ""
             else :
                 date_fin = self.barre_selectionnee.date_fin.strftime("%d/%m/%Y %Hh%M")
@@ -882,7 +883,7 @@ class CTRL_Tableau(wx.Panel):
         if self.dragging != None and self.dragging["region"] in ("gauche", "droite"):
             x += self.dragging["ecart"]
 
-        # Recherche la case survolée
+        # Recherche la case survolÃ©e
         heure = None
         IDproduit = None
         texte_infos = ""
@@ -895,7 +896,7 @@ class CTRL_Tableau(wx.Panel):
             texte_infos = u"%s : %s" % (heure.strftime("%d/%m/%Y %Hh%M"), nomProduit)
         self.parent.ctrl_infos_1.SetTexte(texte_infos)
 
-        # Recherche la barre survolée
+        # Recherche la barre survolÃ©e
         barre = self.FindBarre(x, y)
 
         # Tooltip
@@ -906,7 +907,7 @@ class CTRL_Tableau(wx.Panel):
         else:
             self.ActiveTooltip(actif=False)
 
-        # Mémorise la barre survolée
+        # mÃ©morise la barre survolÃ©e
         region = None
         if barre != None :
             self.barre_survolee = barre
@@ -914,7 +915,7 @@ class CTRL_Tableau(wx.Panel):
         else :
             self.barre_survolee = None
 
-        # Création d'une nouvelle barre
+        # crÃ©ation d'une nouvelle barre
         nouvelle_barre = False
         if self.barre_selectionnee == None and heure != None and wx.GetKeyState(wx.WXK_CONTROL) and wx.GetMouseState().LeftIsDown():
             barre = Barre(self, donnees={"IDproduit": IDproduit, "date_debut": heure, "date_fin": heure + datetime.timedelta(minutes=10)})
@@ -923,7 +924,7 @@ class CTRL_Tableau(wx.Panel):
             self.barre_selectionnee = barre
             nouvelle_barre = True
             self.Redraw()
-            # Déplace la souris vers la poignée droite
+            # DÃ©place la souris vers la poignÃ©e droite
             x_poignee_droite = barre.poignees["droite"].left + barre.poignees["droite"].width / 2
             y_poignee_droite = barre.poignees["droite"].bottom + barre.poignees["droite"].height / 2
             self.WarpPointer(x_poignee_droite, y_poignee_droite)
@@ -945,11 +946,11 @@ class CTRL_Tableau(wx.Panel):
                     self.dragging["barre"].date_fin = heure
 
                 if region == "centre" :
-                    # Déplacement latéral
+                    # DÃ©placement latÃ©ral
                     self.dragging["barre"].date_debut = heure - self.dragging["delta_heure"]
                     self.dragging["barre"].date_fin = self.dragging["barre"].date_debut + self.dragging["duree"]
 
-                    # Déplacement vertical : Changement de ligne (de produit)
+                    # DÃ©placement vertical : Changement de ligne (de produit)
                     if self.dict_options["autoriser_changement_ligne"] == True :
                         self.dragging["barre"].IDproduit = IDproduit
 
@@ -1077,7 +1078,7 @@ class CTRL_Tableau(wx.Panel):
         self.Draw_entetes_colonnes(dc)
         self.Draw_entetes_lignes(dc)
 
-        # Calcule la taille de la fenetre affichée
+        # Calcule la taille de la fenetre affichÃ©e
         if 'phoenix' not in wx.PlatformInfo:
             taille_fenetre = self.GetClientSizeTuple()
         else :
@@ -1086,7 +1087,7 @@ class CTRL_Tableau(wx.Panel):
         y_fenetre = self.dict_options["entete_colonne_hauteur"]
         largeur_fenetre = taille_fenetre[0] - x_fenetre
         hauteur_fenetre = taille_fenetre[1] - y_fenetre
-        rect_cadre_central = wx.Rect(x_fenetre, y_fenetre, largeur_fenetre, hauteur_fenetre)
+        rect_cadre_central = wx.Rect(int(x_fenetre), int(y_fenetre), int(largeur_fenetre), int(hauteur_fenetre))
 
         if 'phoenix' in wx.PlatformInfo:
             dc.SetClippingRegion(rect_cadre_central)
@@ -1121,7 +1122,7 @@ class CTRL_Tableau(wx.Panel):
 
 
     def MAJ_colonnes(self):
-        # Création des colonnes
+        # crÃ©ation des colonnes
         self.liste_colonnes = []
         self.dict_colonnes = {}
         liste_dates = list(rrule.rrule(rrule.DAILY, dtstart=self.dict_options["date_debut"], until=self.dict_options["date_fin"]))
@@ -1140,7 +1141,7 @@ class CTRL_Tableau(wx.Panel):
         fenetre_largeur = taille_fenetre[0] - fenetre_x
         fenetre_hauteur = self.dict_options["entete_colonne_hauteur"]
 
-        rect_fenetre = wx.Rect(fenetre_x, fenetre_y, fenetre_largeur+2, fenetre_hauteur)
+        rect_fenetre = wx.Rect(int(fenetre_x), int(fenetre_y), int(fenetre_largeur+2), int(fenetre_hauteur))
 
         if 'phoenix' in wx.PlatformInfo:
             dc.SetClippingRegion(rect_fenetre)
@@ -1155,7 +1156,7 @@ class CTRL_Tableau(wx.Panel):
         for colonne in self.liste_colonnes :
             x = (num_colonne * self.dict_options["case_largeur"]) + self.delta[0]
             y = 0
-            rect = wx.Rect(x, y, self.dict_options["case_largeur"], self.dict_options["entete_colonne_hauteur"])
+            rect = wx.Rect(int(x), int(y), int(self.dict_options["case_largeur"]), int(self.dict_options["entete_colonne_hauteur"]))
 
             # Dessin de la colonne
             if rect.Intersects(rect_fenetre):
@@ -1167,7 +1168,7 @@ class CTRL_Tableau(wx.Panel):
 
 
     def MAJ_lignes(self):
-        # Création des lignes
+        # crÃ©ation des lignes
         self.liste_lignes = []
         self.dict_lignes = {}
         num_ligne = 0
@@ -1184,7 +1185,7 @@ class CTRL_Tableau(wx.Panel):
         fenetre_largeur = self.dict_options["entete_ligne_largeur"]
         fenetre_hauteur = taille_fenetre[1] - fenetre_y
 
-        rect_fenetre = wx.Rect(fenetre_x, fenetre_y, fenetre_largeur, fenetre_hauteur)
+        rect_fenetre = wx.Rect(int(fenetre_x), int(fenetre_y), int(fenetre_largeur), int(fenetre_hauteur))
 
         if 'phoenix' in wx.PlatformInfo:
             dc.SetClippingRegion(rect_fenetre)
@@ -1206,14 +1207,14 @@ class CTRL_Tableau(wx.Panel):
 
             x = 0
             hauteur = self.parent.dict_options["case_hauteur"] * nbre_souslignes
-            rect = wx.Rect(x, y, self.dict_options["entete_ligne_largeur"], hauteur)
+            rect = wx.Rect(int(x), int(y), int(self.dict_options["entete_ligne_largeur"]), int(hauteur))
 
             # Dessin de la colonne
             if rect.Intersects(rect_fenetre):
                 ligne.Draw(dc, rect)
                 self.liste_lignes_affichees.append(ligne)
 
-            # Prépare prochaine ligne
+            # PrÃ©pare prochaine ligne
             y += hauteur
 
         dc.DestroyClippingRegion()
@@ -1236,7 +1237,7 @@ class CTRL_Tableau(wx.Panel):
                 self.timerTip.Start(800)
                 self.tip.barre = barre
         else:
-            # Désactive le tooltip
+            # DÃ©sactive le tooltip
             if hasattr(self, "timerTip"):
                 if self.timerTip.IsRunning():
                     self.timerTip.Stop()
@@ -1246,10 +1247,10 @@ class CTRL_Tableau(wx.Panel):
             self.barre_survolee = None
 
     def AfficheTooltip(self):
-        """ Création du supertooltip """
+        """ crÃ©ation du supertooltip """
         barre = self.tip.barre
 
-        # Paramétrage du tooltip
+        # ParamÃ©trage du tooltip
         font = self.GetFont()
         self.tip.SetHyperlinkFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
 
@@ -1281,21 +1282,21 @@ class CTRL_Tableau(wx.Panel):
             texte = u""
             texte += u"Description : %s" % (barre.description or "")
             texte += u"\nProduit : %s" % self.dict_produits[barre.IDproduit]["nom"]
-            texte += u"\nCatégorie : %s" % self.dict_produits[barre.IDproduit]["nom_categorie"]
+            texte += u"\nCatÃ©gorie : %s" % self.dict_produits[barre.IDproduit]["nom_categorie"]
             texte += u"\n"
-            texte += u"\nDébut : %s" % UTILS_Dates.DatetimeEnFr(barre.date_debut)
+            texte += u"\ndÃ©but : %s" % UTILS_Dates.DatetimeEnFr(barre.date_debut)
             if barre.date_fin.year == 2999 :
-                texte += u"\nFin : Non définie"
+                texte += u"\nFin : Non dÃ©finie"
             else :
                 texte += u"\nFin : %s" % UTILS_Dates.DatetimeEnFr(barre.date_fin)
             texte += u"\n"
-            texte += u"\nQuantité : %s" % barre.quantite
+            texte += u"\nquantitÃ© : %s" % barre.quantite
             if len(self.liste_questions) > 0 :
                 texte += u"\n"
                 for dictQuestion in self.liste_questions :
                     texte += u"\n%s : %s" % (dictQuestion["label"], self.GetReponse(dictQuestion["IDquestion"], barre.IDlocation))
         else :
-            texte = _(u"Aucune location n'est enregistrée à cette date.\n\n")
+            texte = _(u"Aucune location n'est enregistrÃ©e Ã  cette date.\n\n")
         self.tip.SetMessage(texte)
 
         # Pied du tooltip
@@ -1315,9 +1316,9 @@ class CTRL_Tableau(wx.Panel):
         self.tipFrame.SetPosition((x + 15, y + 17))
         self.tipFrame.DropShadow(True)
         self.tipFrame.Show()
-        #self.tipFrame.StartAlpha(True)  # ou .Show() pour un affichage immédiat
+        #self.tipFrame.StartAlpha(True)  # ou .Show() pour un affichage immÃ©diat
 
-        # Arrêt du timer
+        # ArrÃªt du timer
         self.timerTip.Stop()
         del self.timerTip
 
@@ -1330,7 +1331,7 @@ class CTRL_Tableau(wx.Panel):
             ]
         DB.ReqMAJ("locations", listeDonnees, "IDlocation", barre.IDlocation)
         label_produit = u"%s (%s)" % (self.dict_produits[barre.IDproduit]["nom"], self.dict_produits[barre.IDproduit]["nom_categorie"])
-        periode = _(u"%s - %s") % (barre.date_debut.strftime("%d/%m/%Y %H:%M:%S"), barre.date_fin.strftime("%d/%m/%Y %H:%M:%S") if (barre.date_fin and barre.date_fin.year != 2999) else _(u"Illimitée"))
+        periode = _(u"%s - %s") % (barre.date_debut.strftime("%d/%m/%Y %H:%M:%S"), barre.date_fin.strftime("%d/%m/%Y %H:%M:%S") if (barre.date_fin and barre.date_fin.year != 2999) else _(u"IllimitÃ©e"))
         texte_historique = _(u"Modification de la location ID%d : %s %s") % (barre.IDlocation, label_produit, periode)
         UTILS_Historique.InsertActions([{"IDfamille": barre.IDfamille, "IDcategorie": 38, "action": texte_historique, "IDdonnee": barre.IDlocation}], DB=DB)
         DB.Close()
@@ -1343,7 +1344,7 @@ class CTRL_Tableau(wx.Panel):
         frame = wx.GetApp().GetTopWindow()
         if not printer.Print(frame, printout, True):
             if printer.GetLastError() == wx.PRINTER_ERROR:
-                wx.MessageBox(_(u"Problème d'impression. Peut-être votre imprimante n'est-elle pas configurée correctement ?"), "Impression", wx.OK)
+                wx.MessageBox(_(u"problÃ¨me d'impression. Peut-Ãªtre votre imprimante n'est-elle pas configurÃ©e correctement ?"), "Impression", wx.OK)
         else:
             self.printData = wx.PrintData( printer.GetPrintDialogData().GetPrintData() )
         printout.Destroy()
@@ -1354,10 +1355,10 @@ class CTRL_Tableau(wx.Panel):
         printout = TableauPrintout(self, False)
         self.preview = wx.PrintPreview(printout_preview, printout, data)
         if not self.preview.IsOk():
-            logging.debug(_(u"Impossible d'afficher l'aperçu avant impression...\n"))
+            logging.debug(_(u"Impossible d'afficher l'aperÃ§u avant impression...\n"))
             return
         frame = wx.GetApp().GetTopWindow()
-        pfrm = wx.PreviewFrame(self.preview, frame, _(u"Aperçu avant impression"))
+        pfrm = wx.PreviewFrame(self.preview, frame, _(u"aperÃ§u avant impression"))
         pfrm.Initialize()
         pfrm.SetPosition(frame.GetPosition())
         pfrm.SetSize(frame.GetSize())
@@ -1371,7 +1372,7 @@ class CTRL_Infos(wx.Panel):
         self.titre = titre
         self.texte = ""
 
-        # Propriétés
+        # PropriÃ©tÃ©s
         self.SetMinSize(min_size)
         self.SetBackgroundColour(wx.WHITE)
         self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
@@ -1423,7 +1424,7 @@ class CTRL_Infos(wx.Panel):
             self.MAJ_affichage()
 
     def Draw(self, dc):
-        rect = wx.Rect(0, 0, self.GetSize()[0], self.GetSize()[1])
+        rect = wx.Rect(0, 0, int(self.GetSize()[0]), int(self.GetSize()[1]))
 
         # Clipping
         if 'phoenix' in wx.PlatformInfo:
@@ -1442,11 +1443,11 @@ class CTRL_Infos(wx.Panel):
             padding_titre = 2
             tmp, largTitre, hautTitre = GetTailleTexte(dc, self.titre, rect.width)
             if 'phoenix' not in wx.PlatformInfo:
-                dc.DrawRectangleRect(wx.Rect(0, 0, largTitre + padding_titre*4, rect.height-padding_titre*2))
+                dc.DrawRectangleRect(wx.Rect(0, 0, int(largTitre + padding_titre*4), int(rect.height-padding_titre*2)))
             else :
-                dc.DrawRectangle(wx.Rect(0, 0, largTitre + padding_titre * 4, rect.height - padding_titre * 2))
+                dc.DrawRectangle(wx.Rect(0, 0, int(largTitre + padding_titre * 4), int(rect.height - padding_titre * 2)))
             y = rect.height / 2.0 - hautTitre / 2.0
-            dc.DrawText(self.titre, padding_titre*2, y-2)
+            dc.DrawText(self.titre, padding_titre*2, int(y)-2)
             x_texte = largTitre + 12
 
         # Affiche le texte
@@ -1454,7 +1455,7 @@ class CTRL_Infos(wx.Panel):
         dc.SetTextForeground((0, 0, 0))
         largTexte, hautTexte, descent, externalLeading = dc.GetFullTextExtent(self.texte)
         y = rect.height / 2.0 - hautTexte / 2.0
-        dc.DrawText(self.texte, x_texte, y-2)
+        dc.DrawText(self.texte, x_texte, int(y)-2)
 
         dc.DestroyClippingRegion()
 
@@ -1547,7 +1548,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
 
-        # Contrôles
+        # ContrÃ´les
         self.ctrl_tableau = CTRL(panel)
 
         # Tests

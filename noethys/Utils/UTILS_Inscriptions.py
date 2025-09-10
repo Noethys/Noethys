@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -39,11 +39,11 @@ from Utils import UTILS_Fichiers
 
 class Inscription():
     def __init__(self):
-        """ Récupération de toutes les données de base """
+        """ RÃ©cupÃ©ration de toutes les donnÃ©es de base """
 
         DB = GestionDB.DB()
 
-        # Récupération des infos sur l'organisme
+        # RÃ©cupÃ©ration des infos sur l'organisme
         req = """SELECT nom, rue, cp, ville, tel, fax, mail, site, num_agrement, num_siret, code_ape
         FROM organisateur
         WHERE IDorganisateur=1;"""
@@ -70,16 +70,16 @@ class Inscription():
         self.dictTitulaires = UTILS_Titulaires.GetTitulaires()
         self.dictIndividus = UTILS_Titulaires.GetIndividus()
 
-        # Récupération des infos de base individus et familles
+        # RÃ©cupÃ©ration des infos de base individus et familles
         self.infosIndividus = UTILS_Infos_individus.Informations()
 
-        # Récupération des questionnaires
+        # RÃ©cupÃ©ration des questionnaires
         self.Questionnaires_familles = UTILS_Questionnaires.ChampsEtReponses(type="famille")
         self.Questionnaires_individus = UTILS_Questionnaires.ChampsEtReponses(type="individu")
         self.Questionnaires_inscriptions = UTILS_Questionnaires.ChampsEtReponses(type="inscription")
 
     def Supprime_accent(self, texte):
-        liste = [(u"é", u"e"), (u"è", u"e"), (u"ê", u"e"), (u"ë", u"e"), (u"à", u"a"), (u"û", u"u"), (u"ô", u"o"), (u"ç", u"c"), (u"î", u"i"), (u"ï", u"i"), ]
+        liste = [(u"Ã©", u"e"), (u"Ã¨", u"e"), (u"Ãª", u"e"), (u"Ã«", u"e"), (u"Ã ", u"a"), (u"Ã»", u"u"), (u"Ã´", u"o"), (u"Ã§", u"c"), (u"Ã®", u"i"), (u"Ã¯", u"i"), ]
         for a, b in liste:
             texte = texte.replace(a, b)
             texte = texte.replace(a.upper(), b.upper())
@@ -94,9 +94,9 @@ class Inscription():
 
     def GetDonneesImpression(self, listeInscriptions=[]):
         """ Impression des inscriptions """
-        dlgAttente = wx.BusyInfo(_(u"Recherche des données..."), None)
+        dlgAttente = wx.BusyInfo(_(u"Recherche des donnÃ©es..."), None)
 
-        # Récupère les données de la facture
+        # RÃ©cupÃ¨re les donnÃ©es de la facture
         if len(listeInscriptions) == 0:
             conditions = "()"
         elif len(listeInscriptions) == 1:
@@ -104,7 +104,7 @@ class Inscription():
         else:
             conditions = str(tuple(listeInscriptions))
 
-        # Récupération des informations sur l'inscription
+        # RÃ©cupÃ©ration des informations sur l'inscription
         dictChamps = {
             "inscriptions.IDinscription": "IDINSCRIPTION",
             "inscriptions.date_inscription": "DATE_INSCRIPTION",
@@ -198,7 +198,7 @@ class Inscription():
                 famille_cp = ""
                 famille_ville = ""
 
-            # Mémorisation des données
+            # MÃ©morisation des donnÃ©es
             dictDonnee.update({
                 "select": True,
                 "{IDFAMILLE}": str(IDfamille),
@@ -221,15 +221,15 @@ class Inscription():
                 "{DATE_EDITION_LONG}": UTILS_Dates.DateComplete(datetime.date.today()),
                 })
 
-            # Formatage spécial
+            # Formatage spÃ©cial
             dictDonnee["{DATE_INSCRIPTION}"] = UTILS_Dates.DateEngFr(dictDonnee["{DATE_INSCRIPTION}"])
             dictDonnee["{INDIVIDU_DATE_NAISS}"] = UTILS_Dates.DateEngFr(dictDonnee["{INDIVIDU_DATE_NAISS}"])
 
-            # Autres données
+            # Autres donnÃ©es
             if IDfamille != None:
                 dictDonnee.update(self.infosIndividus.GetDictValeurs(mode="famille", ID=IDfamille, formatChamp=True))
 
-            # Ajoute les réponses des questionnaires
+            # Ajoute les rÃ©ponses des questionnaires
             for dictReponse in self.Questionnaires_familles.GetDonnees(IDfamille):
                 dictDonnee[dictReponse["champ"]] = dictReponse["reponse"]
                 if dictReponse["controle"] == "codebarres":
@@ -260,16 +260,16 @@ class Inscription():
         """ Impression des inscriptions """
         from Utils import UTILS_Impression_inscription
 
-        # Récupération des données à partir des IDinscription
+        # RÃ©cupÃ©ration des donnÃ©es Ã  partir des IDinscription
         resultat = self.GetDonneesImpression(listeInscriptions)
         if resultat == False:
             return False
         dictInscriptions, dictChampsFusion = resultat
 
-        # Récupération des paramètres d'affichage
+        # RÃ©cupÃ©ration des paramÃ¨tres d'affichage
         if dictOptions == None:
             if afficherDoc == False:
-                dlg = DLG_Apercu_inscription.Dialog(None, titre=_(u"Sélection des paramètres de l'inscription"), intro=_(u"Sélectionnez ici les paramètres d'affichage de l'inscription."))
+                dlg = DLG_Apercu_inscription.Dialog(None, titre=_(u"SÃ©lection des paramÃ¨tres de l'inscription"), intro=_(u"SÃ©lectionnez ici les paramÃ¨tres d'affichage de l'inscription."))
                 dlg.bouton_ok.SetImageEtTexte("Images/32x32/Valider.png", _("Ok"))
             else:
                 dlg = DLG_Apercu_inscription.Dialog(None)
@@ -280,10 +280,10 @@ class Inscription():
                 dlg.Destroy()
                 return False
 
-        # Création des PDF à l'unité
+        # CrÃ©ation des PDF Ã  l'unitÃ©
         def CreationPDFunique(repertoireCible=""):
             dictPieces = {}
-            dlgAttente = wx.BusyInfo(_(u"Génération des PDF à l'unité en cours..."), None)
+            dlgAttente = wx.BusyInfo(_(u"GÃ©nÃ©ration des PDF Ã  l'unitÃ© en cours..."), None)
             try:
                 index = 0
                 for IDinscription, dictInscription in dictInscriptions.items():
@@ -302,18 +302,18 @@ class Inscription():
             except Exception as err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
-                dlg = wx.MessageDialog(None, _(u"Désolé, le problème suivant a été rencontré dans l'édition des inscriptions : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(None, _(u"DÃ©solÃ©, le problÃ¨me suivant a Ã©tÃ© rencontrÃ© dans l'Ã©dition des inscriptions : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
 
-        # Répertoire souhaité par l'utilisateur
+        # RÃ©pertoire souhaitÃ© par l'utilisateur
         if repertoire != None:
             resultat = CreationPDFunique(repertoire)
             if resultat == False:
                 return False
 
-        # Répertoire TEMP (pour Emails)
+        # RÃ©pertoire TEMP (pour Emails)
         dictPieces = {}
         if repertoireTemp == True:
             dictPieces = CreationPDFunique(UTILS_Fichiers.GetRepTemp())
@@ -322,7 +322,7 @@ class Inscription():
 
         # Sauvegarde dans un porte-documents
         if dictOptions["questionnaire"] != None :
-            # Création des PDF
+            # CrÃ©ation des PDF
             if len(dictPieces) == 0 :
                 dictPieces = CreationPDFunique(UTILS_Fichiers.GetRepTemp())
 
@@ -342,7 +342,7 @@ class Inscription():
 
             DB = GestionDB.DB(suffixe="DOCUMENTS")
             for IDinscription, cheminFichier in dictPieces.items():
-                # Préparation du blob
+                # PrÃ©paration du blob
                 fichier = open(cheminFichier, "rb")
                 data = fichier.read()
                 fichier.close()
@@ -352,7 +352,7 @@ class Inscription():
                 if IDinscription in dictReponses:
                     IDreponse = dictReponses[IDinscription]
                 else :
-                    # Création d'une réponse de questionnaire
+                    # CrÃ©ation d'une rÃ©ponse de questionnaire
                     listeDonnees = [
                         ("IDquestion", IDquestion),
                         ("reponse", "##DOCUMENTS##"),
@@ -370,8 +370,8 @@ class Inscription():
 
         # Fabrication du PDF global
         if repertoireTemp == False:
-            dlgAttente = wx.BusyInfo(_(u"Création du PDF en cours..."), None)
-            self.EcritStatusbar(_(u"Création du PDF des inscriptions en cours... veuillez patienter..."))
+            dlgAttente = wx.BusyInfo(_(u"CrÃ©ation du PDF en cours..."), None)
+            self.EcritStatusbar(_(u"CrÃ©ation du PDF des inscriptions en cours... veuillez patienter..."))
             try:
                 UTILS_Impression_inscription.Impression(dictInscriptions, dictOptions, IDmodele=dictOptions["IDmodele"], ouverture=afficherDoc, nomFichier=nomDoc)
                 self.EcritStatusbar("")
@@ -379,7 +379,7 @@ class Inscription():
             except Exception as err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
-                dlg = wx.MessageDialog(None, u"Désolé, le problème suivant a été rencontré dans l'édition des inscriptions : \n\n%s" % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(None, u"DÃ©solÃ©, le problÃ¨me suivant a Ã©tÃ© rencontrÃ© dans l'Ã©dition des inscriptions : \n\n%s" % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False

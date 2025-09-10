@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -175,7 +175,7 @@ class Questionnaires():
 
 
     def GetReponses(self, type="individu"):
-        """ Récupération des réponses des questionnaires """
+        """ RÃ©cupÃ©ration des rÃ©ponses des questionnaires """
         # Importation des questions
         DB = GestionDB.DB()        
         req = """SELECT IDreponse, questionnaire_reponses.IDquestion, IDindividu, IDfamille, reponse, 
@@ -194,13 +194,13 @@ class Questionnaires():
             filtre = self.GetFiltre(controle)
             if filtre != None :
                 
-                # Formatage de la réponse
+                # Formatage de la rÃ©ponse
                 if reponse == None :
                     texteReponse = u""
                 else :
                     texteReponse = self.FormatageReponse(reponse, controle)
 
-                # Mémorisation
+                # MÃ©morisation
                 if IDindividu != None :
                     ID = IDindividu
                 elif IDfamille != None :
@@ -231,7 +231,7 @@ class Questionnaires():
         filtre = self.GetFiltre(controle)
         texteReponse = None
         if filtre != None :
-            # Formatage de la réponse
+            # Formatage de la rÃ©ponse
             if reponse == None :
                 texteReponse = u""
             else :
@@ -240,7 +240,7 @@ class Questionnaires():
         
 
 class ChampsEtReponses():
-    """ Retourne une donnée de type "{QUESTION_24}" = valeur """
+    """ Retourne une donnÃ©e de type "{QUESTION_24}" = valeur """
     def __init__(self, type="individu"):
         Q = Questionnaires()
         self.listeQuestions = Q.GetQuestions(type=type)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -64,12 +64,12 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         dictTitulaires = UTILS_Titulaires.GetTitulaires()
         
         DB = GestionDB.DB()
         
-        # Récupération des inscriptions existantes
+        # RÃ©cupÃ©ration des inscriptions existantes
         req = """SELECT IDinscription, IDindividu, IDfamille, IDactivite, IDgroupe, IDcategorie_tarif, IDcompte_payeur, date_inscription, parti
         FROM inscriptions
         WHERE inscriptions.statut='ok';"""
@@ -79,7 +79,7 @@ class ListView(FastObjectListView):
         for IDinscription, IDindividu, IDfamille, IDactivite, IDgroupe, IDcategorie_tarif, IDcompte_payeur, date_inscription, parti in listeDonnees :
             self.dictInscriptions[(IDindividu, IDfamille, IDactivite) ] = {"IDinscription" : IDinscription, "IDgroupe" : IDgroupe, "IDcategorie_tarif" : IDcategorie_tarif} 
         
-        # Récupération des individus
+        # RÃ©cupÃ©ration des individus
         req = """SELECT individus.IDindividu, nom, prenom, date_naiss, rattachements.IDfamille, comptes_payeurs.IDcompte_payeur
         FROM individus
         LEFT JOIN rattachements ON rattachements.IDindividu = individus.IDindividu
@@ -129,7 +129,7 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"IDindividu"), "left", 0, "IDindividu", typeDonnee="entier"),
             ColumnDefn(_(u"Inscrit"), 'left', 50, "inscrit", typeDonnee="texte", stringConverter=FormateInscrit),
             ColumnDefn(_(u"Nom"), 'left', 120, "nom", typeDonnee="texte"),
-            ColumnDefn(_(u"Prénom"), "left", 120, "prenom", typeDonnee="texte"),
+            ColumnDefn(_(u"PrÃ©nom"), "left", 120, "prenom", typeDonnee="texte"),
             ColumnDefn(_(u"Date naiss."), "left", 80, "date_naiss", typeDonnee="date", stringConverter=FormateDate),
             ColumnDefn(_(u"Age"), "left", 60, "age", typeDonnee="entier", stringConverter=FormateAge),
             ColumnDefn(_(u"Famille"), "left", 280, "nomTitulaires", typeDonnee="texte"),
@@ -155,11 +155,11 @@ class ListView(FastObjectListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -193,21 +193,21 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des individus à inscrire"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des individus Ã  inscrire"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des individus à inscrire"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des individus Ã  inscrire"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Liste des individus à inscrire"))
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des individus Ã  inscrire"))
         
     def ExportExcel(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Liste des individus à inscrire"))
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des individus Ã  inscrire"))
     
     def SetIDactivite(self, IDactivite=None):
         self.IDactivite = IDactivite
@@ -222,7 +222,7 @@ class ListView(FastObjectListView):
         self.RefreshObjects(listeTemp) 
         
     def Inscrire(self, IDactivite=None, nomActivite="", IDgroupe=None, nomGroupe="", IDcategorie_tarif=None, nomCategorie=""):
-        """ Lance la procédure d'inscription """
+        """ Lance la procÃ©dure d'inscription """
         tracks = self.GetCheckedObjects() 
         if len(tracks) == 0 :
             dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins un individu dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
@@ -230,13 +230,13 @@ class ListView(FastObjectListView):
             dlg.Destroy()
             return
 
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment inscrire %d individus à l'activité '%s' ?") % (len(tracks), nomActivite), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment inscrire %d individus Ã  l'activitÃ© '%s' ?") % (len(tracks), nomActivite), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         reponse = dlg.ShowModal()
         dlg.Destroy() 
         if reponse  != wx.ID_YES :
             return
         
-        dlgprogress = wx.ProgressDialog(_(u"Veuillez patienter"), _(u"Lancement de la procédure..."), maximum=len(tracks), parent=None, style= wx.PD_SMOOTH | wx.PD_ESTIMATED_TIME | wx.PD_REMAINING_TIME | wx.PD_CAN_ABORT | wx.PD_AUTO_HIDE | wx.PD_APP_MODAL)
+        dlgprogress = wx.ProgressDialog(_(u"Veuillez patienter"), _(u"Lancement de la procÃ©dure..."), maximum=len(tracks), parent=None, style= wx.PD_SMOOTH | wx.PD_ESTIMATED_TIME | wx.PD_REMAINING_TIME | wx.PD_CAN_ABORT | wx.PD_AUTO_HIDE | wx.PD_APP_MODAL)
         
         listeAnomalies = []
         listeValidees = []
@@ -250,9 +250,9 @@ class ListView(FastObjectListView):
             
             keepGoing, skip = dlgprogress.Update(index, _(u"[%d/%d] Inscription de %s...") % (index, len(tracks), nomIndividu))
             
-            # Vérifie si individu déjà inscrit
+            # VÃ©rifie si individu dÃ©jÃ  inscrit
             if track.inscrit == "oui" :
-                listeAnomalies.append(_(u"%s (Famille de %s) : Individu déjà inscrit") % (nomIndividu, track.nomTitulaires))
+                listeAnomalies.append(_(u"%s (Famille de %s) : Individu dÃ©jÃ  inscrit") % (nomIndividu, track.nomTitulaires))
                 index += 1
                 
             else :
@@ -272,12 +272,12 @@ class ListView(FastObjectListView):
                 IDinscription = DB.ReqInsert("inscriptions", listeDonnees)
                 DB.Close()
                 
-                # Mémorise l'action dans l'historique
+                # MÃ©morise l'action dans l'historique
                 UTILS_Historique.InsertActions([{
                     "IDindividu" : track.IDindividu,
                     "IDfamille" : track.IDfamille,
                     "IDcategorie" : 18, 
-                    "action" : _(u"Inscription à l'activité '%s' sur le groupe '%s' avec la tarification '%s'") % (nomActivite, nomGroupe, nomCategorie)
+                    "action" : _(u"Inscription Ã  l'activitÃ© '%s' sur le groupe '%s' avec la tarification '%s'") % (nomActivite, nomGroupe, nomCategorie)
                     },])
                 
                 # Saisie de forfaits auto
@@ -294,7 +294,7 @@ class ListView(FastObjectListView):
                 time.sleep(0.2)
                 index += 1
             
-            # Stoppe la procédure
+            # Stoppe la procÃ©dure
             if keepGoing == False :
                 break
             
@@ -303,13 +303,13 @@ class ListView(FastObjectListView):
         
         # Messages de fin
         if len(listeAnomalies) > 0 :
-            message1 = _(u"%d inscriptions ont été créées avec succès mais les %d anomalies suivantes ont été trouvées :") % (len(listeValidees), len(listeAnomalies))
+            message1 = _(u"%d inscriptions ont Ã©tÃ© crÃ©Ã©es avec succÃ¨s mais les %d anomalies suivantes ont Ã©tÃ© trouvÃ©es :") % (len(listeValidees), len(listeAnomalies))
             message2 = u"\n".join(listeAnomalies)
             dlg = dialogs.MultiMessageDialog(self, message1, caption = _(u"Inscription"), msg2=message2, style = wx.ICON_EXCLAMATION | wx.YES|wx.YES_DEFAULT, btnLabels={wx.ID_YES : _(u"Ok")})
             reponse = dlg.ShowModal() 
             dlg.Destroy() 
         else :
-            dlg = wx.MessageDialog(self, _(u"%d inscriptions ont été créées avec succès !") % len(listeValidees), _(u"Fin"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"%d inscriptions ont Ã©tÃ© crÃ©Ã©es avec succÃ¨s !") % len(listeValidees), _(u"Fin"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
 

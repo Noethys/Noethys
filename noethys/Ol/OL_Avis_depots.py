@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -64,11 +64,11 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Index"), "left", 0, "index", typeDonnee="entier"),
             ColumnDefn(_(u"Famille"), "left", 240, "nomTitulaires", typeDonnee="texte"),
             ColumnDefn(_(u"Email"), 'left', 180, "adresse", typeDonnee="texte"),
-            ColumnDefn(_(u"Règlement"), "left", 200, "detail_reglement", typeDonnee="texte"), 
+            ColumnDefn(_(u"RÃ¨glement"), "left", 200, "detail_reglement", typeDonnee="texte"), 
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucune donnée"))
+        self.SetEmptyListMsg(_(u"Aucune donnÃ©e"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[2])
         self.CreateCheckStateColumn(1)
@@ -81,7 +81,7 @@ class ListView(FastObjectListView):
     
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
             
         # Item Tout cocher
@@ -91,8 +91,8 @@ class ListView(FastObjectListView):
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheTout, id=70)
 
-        # Item Tout décocher
-        item = wx.MenuItem(menuPop, 80, _(u"Tout décocher"))
+        # Item Tout dÃ©cocher
+        item = wx.MenuItem(menuPop, 80, _(u"Tout dÃ©cocher"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Decocher.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -101,7 +101,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -135,21 +135,21 @@ class ListView(FastObjectListView):
     
     def Apercu(self, event=None):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des avis de dépôts"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des avis de dÃ©pÃ´ts"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event=None):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des avis de dépôts"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des avis de dÃ©pÃ´ts"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event=None):
         from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Liste des avis de dépôts"))
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des avis de dÃ©pÃ´ts"))
         
     def ExportExcel(self, event=None):
         from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Liste des avis de dépôts"))
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des avis de dÃ©pÃ´ts"))
 
     def CocheTout(self, event=None):
         if self.GetFilter() != None :
@@ -229,7 +229,7 @@ class MyFrame(wx.Frame):
         self.SetSizer(sizer_1)
 
         listeDonnees = [
-            {"IDfamille" : 10, "nomTitulaires": "DUPOND", "adresse" : "dupond@test.test", "pieces" : [], "champs" : {"{DATE_REGLEMENT}" : "01/01/2011", "{MODE_REGLEMENT}" : _(u"Chèque"), "{MONTANT_REGLEMENT}" : u"10.00"} }
+            {"IDfamille" : 10, "nomTitulaires": "DUPOND", "adresse" : "dupond@test.test", "pieces" : [], "champs" : {"{DATE_REGLEMENT}" : "01/01/2011", "{MODE_REGLEMENT}" : _(u"ChÃ¨que"), "{MONTANT_REGLEMENT}" : u"10.00"} }
             ]
 
         self.myOlv = ListView(panel, -1, listeDonnees=listeDonnees, style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER)

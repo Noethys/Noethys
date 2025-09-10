@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -34,7 +34,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.IDactivite = kwds.pop("IDactivite", None)
         self.selectionID = None
         self.selectionTrack = None
@@ -56,7 +56,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT IDgroupe, IDactivite, nom, ordre, abrege, nbre_inscrits_max
@@ -90,7 +90,7 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"ID"), "left", 0, "IDgroupe"),
             ColumnDefn(_(u"Ordre"), "left", 0, "ordre"),
             ColumnDefn(_(u"Nom"), 'left', 300, "nom", isSpaceFilling=True),
-            ColumnDefn(_(u"AbrÈgÈ"), 'left', 160, "abrege"),
+            ColumnDefn(_(u"Abr√©g√©"), 'left', 160, "abrege"),
             ColumnDefn(_(u"Nbre inscrits max."), 'left', 150, "nbre_inscrits_max"),
             ]
         
@@ -109,7 +109,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -127,7 +127,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDgroupe
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -158,15 +158,15 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
         
         # Item Deplacer vers le haut
-        item = wx.MenuItem(menuPop, 60, _(u"DÈplacer vers le haut"))
+        item = wx.MenuItem(menuPop, 60, _(u"D√©placer vers le haut"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_haut.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Monter, id=60)
         if noSelection == True : item.Enable(False)
         
-        # Item DÈplacer vers le bas
-        item = wx.MenuItem(menuPop, 70, _(u"DÈplacer vers le bas"))
+        # Item D√©placer vers le bas
+        item = wx.MenuItem(menuPop, 70, _(u"D√©placer vers le bas"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_bas.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -176,7 +176,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -204,7 +204,7 @@ class ListView(FastObjectListView):
 
 
     def Ajouter(self, event):
-        # Recherche numÈro d'ordre ‡ appliquer
+        # Recherche num√©ro d'ordre √† appliquer
         listeTemp = []
         for track in self.donnees :
             listeTemp.append(track.ordre)
@@ -227,7 +227,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun groupe ‡ modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun groupe √† modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -252,13 +252,13 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun groupe ‡ supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun groupe √† supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDgroupe = self.Selection()[0].IDgroupe
         
-        # VÈrifie que le groupe n'est pas dÈj‡ attribuÈ ‡ une unitÈ de consommation
+        # V√©rifie que le groupe n'est pas d√©j√† attribu√© √† une unit√© de consommation
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDunite_groupe)
         FROM unites_groupes 
@@ -268,12 +268,12 @@ class ListView(FastObjectListView):
         nbreUnites = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreUnites > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce groupe a dÈj‡ ÈtÈ attribuÈ ‡ %d unitÈ(s) de consommation.\n\nVous ne pouvez donc pas le supprimer !") % nbreUnites, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce groupe a d√©j√† √©t√© attribu√© √† %d unit√©(s) de consommation.\n\nVous ne pouvez donc pas le supprimer !") % nbreUnites, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # VÈrifie que le groupe n'est pas dÈj‡ attribuÈ ‡ une ouverture
+        # V√©rifie que le groupe n'est pas d√©j√† attribu√© √† une ouverture
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDouverture)
         FROM ouvertures 
@@ -283,12 +283,12 @@ class ListView(FastObjectListView):
         nbreOuvertures = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreOuvertures > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce groupe a dÈj‡ ÈtÈ attribuÈ ‡ %d ouverture(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreOuvertures, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce groupe a d√©j√† √©t√© attribu√© √† %d ouverture(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreOuvertures, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # VÈrifie que le groupe n'est pas dÈj‡ attribuÈ ‡ un remplissage
+        # V√©rifie que le groupe n'est pas d√©j√† attribu√© √† un remplissage
 ##        DB = GestionDB.DB()
 ##        req = """SELECT COUNT(IDremplissage)
 ##        FROM remplissage
@@ -298,12 +298,12 @@ class ListView(FastObjectListView):
 ##        nbreRemplissages = int(DB.ResultatReq()[0][0])
 ##        DB.Close()
 ##        if nbreRemplissages > 0 :
-##            dlg = wx.MessageDialog(self, _(u"Ce groupe a dÈj‡ ÈtÈ attribuÈ ‡ %d remplissage(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreRemplissages, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+##            dlg = wx.MessageDialog(self, _(u"Ce groupe a d√©j√† √©t√© attribu√© √† %d remplissage(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreRemplissages, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
 ##            dlg.ShowModal()
 ##            dlg.Destroy()
 ##            return
 
-        # VÈrifie que le groupe n'est pas dÈj‡ attribuÈ ‡ une inscription
+        # V√©rifie que le groupe n'est pas d√©j√† attribu√© √† une inscription
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDinscription)
         FROM inscriptions 
@@ -313,12 +313,12 @@ class ListView(FastObjectListView):
         nbreInscriptions = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreInscriptions > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce groupe a dÈj‡ ÈtÈ attribuÈ ‡ %d inscription(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreInscriptions, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce groupe a d√©j√† √©t√© attribu√© √† %d inscription(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreInscriptions, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # VÈrifie que le groupe n'est pas dÈj‡ attribuÈ ‡ une consommation
+        # V√©rifie que le groupe n'est pas d√©j√† attribu√© √† une consommation
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDconso)
         FROM consommations 
@@ -328,12 +328,12 @@ class ListView(FastObjectListView):
         nbreConsommations = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreConsommations > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce groupe a dÈj‡ ÈtÈ attribuÈ ‡ %d consommation(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreConsommations, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce groupe a d√©j√† √©t√© attribu√© √† %d consommation(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreConsommations, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # VÈrifie que le groupe n'est pas dÈj‡ attribuÈ ‡ un tarif
+        # V√©rifie que le groupe n'est pas d√©j√† attribu√© √† un tarif
         DB = GestionDB.DB()
         req = """SELECT IDtarif, groupes
         FROM tarifs 
@@ -349,7 +349,7 @@ class ListView(FastObjectListView):
                     if int(IDgroupeTemp) == IDgroupe :
                         nbreTarifs += 1
         if nbreTarifs > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce groupe a dÈj‡ ÈtÈ attribuÈ ‡ %d tarif(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreTarifs, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce groupe a d√©j√† √©t√© attribu√© √† %d tarif(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreTarifs, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -378,7 +378,7 @@ class ListView(FastObjectListView):
 
     def Monter(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun groupe dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun groupe dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -399,7 +399,7 @@ class ListView(FastObjectListView):
     
     def Descendre(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun groupe dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun groupe dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

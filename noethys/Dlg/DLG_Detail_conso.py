@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -88,8 +88,8 @@ class Dialog(wx.Dialog):
         self.dictInfoConso = dictConso
         self.texteInfoBulle = texteInfoBulle
         
-        intro = _(u"Prenez connaissance des informations détaillées concernant cette consommation et modifier certains de ses paramètres.")
-        titre = _(u"Détail d'une consommation")
+        intro = _(u"Prenez connaissance des informations dÃ©taillÃ©es concernant cette consommation et modifier certains de ses paramÃ¨tres.")
+        titre = _(u"DÃ©tail d'une consommation")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Calendrier_zoom.png")
 
         # Informations
@@ -97,14 +97,14 @@ class Dialog(wx.Dialog):
         self.staticbox_infos = wx.StaticBox(self, -1, _(u"Informations"))
         self.ctrl_infos = wx.TextCtrl(self, -1, texteInfos, style=wx.TE_MULTILINE) #MyHtml(self, texteInfos)
         
-        # Paramètres
-        self.staticbox_param = wx.StaticBox(self, -1, _(u"Paramètres"))
+        # ParamÃ¨tres
+        self.staticbox_param = wx.StaticBox(self, -1, _(u"ParamÃ¨tres"))
         
         self.label_groupe = wx.StaticText(self, -1, _(u"Groupe :"))
         self.ctrl_groupe = Groupe(self, IDactivite=self.dictInfoConso.IDactivite)
         self.ctrl_groupe.SetID(self.dictInfoConso.IDgroupe)
         
-        self.label_heure_debut = wx.StaticText(self, -1, _(u"Heure de début :"))
+        self.label_heure_debut = wx.StaticText(self, -1, _(u"Heure de dÃ©but :"))
         self.ctrl_heure_debut = CTRL_Saisie_heure.Heure(self)
         self.ctrl_heure_debut.SetHeure(self.dictInfoConso.heure_debut)
         
@@ -124,7 +124,7 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.SetTitle(_(u"Détail d'une consommation"))
+        self.SetTitle(_(u"DÃ©tail d'une consommation"))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -177,9 +177,9 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Lagrilledesconsommations")
 
     def OnBoutonOk(self, event):
-        # Vérification des données saisies
+        # VÃ©rification des donnÃ©es saisies
         if self.ctrl_heure_debut.Validation() == False or self.ctrl_heure_debut.GetHeure() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une heure de début !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une heure de dÃ©but !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -189,7 +189,7 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return
                     
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
     
     def GetIDgroupe(self):
@@ -212,7 +212,7 @@ class Dialog(wx.Dialog):
         texte +="\n----------------------------------------------------\n"
         
         if self.dictInfoConso.IDconso == None :
-            texte += _(u"IDconso : Consommation non enregistrée\n")
+            texte += _(u"IDconso : Consommation non enregistrÃ©e\n")
         else:
             texte += _(u"IDconso : %d\n") % self.dictInfoConso.IDconso
         

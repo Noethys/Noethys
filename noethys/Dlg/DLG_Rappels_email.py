@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -31,7 +31,7 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = _(u"Cochez les lettres de rappel à envoyer par Email puis cliquez sur le bouton 'Transférer vers l'éditeur d'Emails'.")
+        intro = _(u"Cochez les lettres de rappel Ã  envoyer par Email puis cliquez sur le bouton 'TransfÃ©rer vers l'Ã©diteur d'Emails'.")
         titre = _(u"Envoi de letttres de rappel par Email")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Emails_piece.png")
@@ -46,7 +46,7 @@ class Dialog(wx.Dialog):
         
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Transférer vers l'éditeur d'Emails"), cheminImage="Images/32x32/Emails_piece.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"TransfÃ©rer vers l'Ã©diteur d'Emails"), cheminImage="Images/32x32/Emails_piece.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
@@ -57,13 +57,13 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
-        # Init Contrôles
+        # Init ContrÃ´les
         self.ctrl_liste_rappels.MAJ() 
                 
 
     def __set_properties(self):
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour transférer les rappels vers l'éditeur d'Emails")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour transfÃ©rer les rappels vers l'Ã©diteur d'Emails")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((850, 700))
 
@@ -106,16 +106,16 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
 
     def OnBoutonOk(self, event): 
-        """ Aperçu PDF des rappels """
-        # Validation des données saisies
+        """ AperÃ§u PDF des rappels """
+        # Validation des donnÃ©es saisies
         tracks = self.ctrl_liste_rappels.GetTracksCoches() 
         if len(tracks) == 0 : 
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune lettre de rappel à envoyer par Email !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune lettre de rappel Ã  envoyer par Email !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # Création des rappels sélectionnées
+        # CrÃ©ation des rappels sÃ©lectionnÃ©es
         listeIDrappel = []
         for track in tracks :
             listeIDrappel.append(track.IDrappel) 
@@ -133,7 +133,7 @@ class Dialog(wx.Dialog):
             for IDrappel, fichier in dictPieces.items() :
                 os.remove(fichier)  
 
-        # Récupération de toutes les adresses Emails
+        # RÃ©cupÃ©ration de toutes les adresses Emails
         DB = GestionDB.DB()
         req = """SELECT IDindividu, mail, travail_mail
         FROM individus;"""
@@ -144,14 +144,14 @@ class Dialog(wx.Dialog):
         for IDindividu, mail, travail_mail in listeAdressesIndividus :
             dictAdressesIndividus[IDindividu] = {"perso" : mail, "travail" : travail_mail}
                 
-        # Récupération des données adresse + champs + pièces
+        # RÃ©cupÃ©ration des donnÃ©es adresse + champs + piÃ¨ces
         listeDonnees = []
         listeAnomalies = []
         listeEnvoiNonDemande = []
         for track in tracks :
             liste_adresses = []
             
-            # Si Famille inscrite à l'envoi par Email :
+            # Si Famille inscrite Ã  l'envoi par Email :
             if track.email == True :
                 for valeur in track.email_factures.split("##"):
                     IDindividu, categorie, adresse = valeur.split(";")
@@ -160,14 +160,14 @@ class Dialog(wx.Dialog):
                             adresse = dictAdressesIndividus[int(IDindividu)][categorie]
                             liste_adresses.append(adresse)
             
-            # Si famille non inscrite à l'envoi par Email
+            # Si famille non inscrite Ã  l'envoi par Email
             else :
                 adresse = UTILS_Envoi_email.GetAdresseFamille(track.IDfamille, choixMultiple=False, muet=True, nomTitulaires=track.nomsTitulaires)
                 if adresse == False:
                     return False
                 liste_adresses.append(adresse)
             
-            # Mémorisation des données
+            # MÃ©morisation des donnÃ©es
             for adresse in liste_adresses :
                 if adresse not in (None, "", []) :
                     fichier = dictPieces[track.IDrappel]
@@ -179,10 +179,10 @@ class Dialog(wx.Dialog):
                     listeAnomalies.append(track.nomsTitulaires)
 
         
-        # Annonce les anomalies trouvées
+        # Annonce les anomalies trouvÃ©es
         if len(listeAnomalies) > 0 :
-            dlg = DLG_Messagebox.Dialog(self, titre=_(u"Avertissement"), introduction=u"%d des familles sélectionnées n'ont pas d'adresse Email :" % len(listeAnomalies),
-                                        detail=u"".join([u"- %s\n" % nom for nom in listeAnomalies]), conclusion=u"Souhaitez-vous quand même continuer avec les %d autres familles ?" % len(listeDonnees),
+            dlg = DLG_Messagebox.Dialog(self, titre=_(u"Avertissement"), introduction=u"%d des familles sÃ©lectionnÃ©es n'ont pas d'adresse Email :" % len(listeAnomalies),
+                                        detail=u"".join([u"- %s\n" % nom for nom in listeAnomalies]), conclusion=u"Souhaitez-vous quand mÃªme continuer avec les %d autres familles ?" % len(listeDonnees),
                                         icone=wx.ICON_WARNING, boutons=[_(u"Oui"), _(u"Non"), _(u"Annuler")])
             reponse = dlg.ShowModal()
             dlg.Destroy()
@@ -190,10 +190,10 @@ class Dialog(wx.Dialog):
                 SupprimerFichiersTemp()
                 return False
 
-        # Annonce les envois non demandés
+        # Annonce les envois non demandÃ©s
         if len(listeEnvoiNonDemande) > 0 :
-            texte = _(u"%d des familles sélectionnées n'ont pas demandé d'envoi par Email de leur facture :\n\n") % len(listeEnvoiNonDemande)
-            texte += _(u"Souhaitez-vous quand même leur envoyer une lettre de rappel ?")
+            texte = _(u"%d des familles sÃ©lectionnÃ©es n'ont pas demandÃ© d'envoi par Email de leur facture :\n\n") % len(listeEnvoiNonDemande)
+            texte += _(u"Souhaitez-vous quand mÃªme leur envoyer une lettre de rappel ?")
             dlg = wx.MessageDialog(self, texte, _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
@@ -201,15 +201,15 @@ class Dialog(wx.Dialog):
                 SupprimerFichiersTemp()
                 return        
         
-        # Dernière vérification avant transfert
+        # DerniÃ¨re vÃ©rification avant transfert
         if len(listeDonnees) == 0 : 
-            dlg = wx.MessageDialog(self, _(u"Il ne reste finalement aucune lettre de rappel à envoyer par Email !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il ne reste finalement aucune lettre de rappel Ã  envoyer par Email !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             SupprimerFichiersTemp()
             return
 
-        # Transfert des données vers DLG Mailer
+        # Transfert des donnÃ©es vers DLG Mailer
         from Dlg import DLG_Mailer
         dlg = DLG_Mailer.Dialog(self, categorie="rappel")
         dlg.SetDonnees(listeDonnees, modificationAutorisee=False)

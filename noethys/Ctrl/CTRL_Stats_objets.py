@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -29,7 +29,7 @@ class CTRL_Objets(CT.CustomTreeCtrl):
         self.SetAGWWindowStyleFlag(wx.TR_HIDE_ROOT | wx.TR_HAS_VARIABLE_ROW_HEIGHT | CT.TR_AUTO_CHECK_PARENT | CT.TR_AUTO_CHECK_CHILD)
         self.EnableSelectionVista(True)
 
-        # Création de l'ImageList
+        # CrÃ©ation de l'ImageList
         self.dictImages = {
             "rubrique" : {"img" : wx.Bitmap(Chemins.GetStaticPath('Images/16x16/Rubrique.png'), wx.BITMAP_TYPE_PNG), "index" : None},
             "page" : {"img" : wx.Bitmap(Chemins.GetStaticPath('Images/16x16/Page.png'), wx.BITMAP_TYPE_PNG), "index" : None},
@@ -90,7 +90,7 @@ class CTRL_Objets(CT.CustomTreeCtrl):
         etat = self.IsItemChecked(item)
         
     def GetCoches(self):
-        """ Obtient la liste des éléments cochés """
+        """ Obtient la liste des Ã©lÃ©ments cochÃ©s """
         listeCodes = []
         
         def hasEnfantsCoches(branche):

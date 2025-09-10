@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -48,7 +48,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.ctrl_factures.MAJ() 
 
     def __set_properties(self):
@@ -84,7 +84,7 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("ExportversHelios")
 
     def GetFactures(self):
-        """ Recherche si la facture est déjà présente dans un autre bordereau """
+        """ Recherche si la facture est dÃ©jÃ  prÃ©sente dans un autre bordereau """
         DB = GestionDB.DB()
         req = """SELECT IDpiece, pes_pieces.IDlot, IDfacture, prelevement_statut, pes_lots.nom
         FROM pes_pieces
@@ -101,10 +101,10 @@ class Dialog(wx.Dialog):
         return dictFactures
 
     def OnBoutonOk(self, event):
-        # Validation des données
+        # Validation des donnÃ©es
         tracks = self.ctrl_factures.GetTracksCoches()
         if len(tracks) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune facture à inclure dans votre lot !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune facture Ã  inclure dans votre lot !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -115,15 +115,15 @@ class Dialog(wx.Dialog):
         listeErreursRIB = []
         for track in tracks :
             
-            # Vérifie que la facture est bien impayée
+            # VÃ©rifie que la facture est bien impayÃ©e
             if track.soldeActuel >= 0.0 :
                 listeErreursSoldes.append(track)
             
-##            # Vérifie que la famille a une autorisation de prélèvement
+##            # VÃ©rifie que la famille a une autorisation de prÃ©lÃ¨vement
 ##            if track.prelevement not in (True, 1) :
 ##                listeErreursRIB.append(track)
             
-            # Recherche si la facture n'est pas déjà dans un autre prélèvement
+            # Recherche si la facture n'est pas dÃ©jÃ  dans un autre prÃ©lÃ¨vement
             listeAutresLots = []
             if track.IDfacture in dictFactures :
                 for dictTemp in dictFactures[track.IDfacture] :
@@ -133,7 +133,7 @@ class Dialog(wx.Dialog):
                         listeAutresLots.append(_(u"- %s (avec le statut '%s')") % (nomLot, statut.capitalize()))
                         
             if len(listeAutresLots) > 0 :
-                message1 = _(u"La facture n°%s est déjà présente dans les autres lots suivants. Souhaitez-vous tout de même l'inclure de votre lot actuel ?") % track.numero
+                message1 = _(u"La facture nÂ°%s est dÃ©jÃ  prÃ©sente dans les autres lots suivants. Souhaitez-vous tout de mÃªme l'inclure de votre lot actuel ?") % track.numero
                 message2 = "\n".join(listeAutresLots)
                 dlg = dialogs.MultiMessageDialog(self, message1, caption=_(u"Avertissement"), msg2=message2, style = wx.ICON_QUESTION |wx.NO | wx.CANCEL | wx.YES | wx.YES_DEFAULT, icon=None, btnLabels={wx.ID_YES : _(u"Oui"), wx.ID_NO : _(u"Non"), wx.ID_CANCEL : _(u"Annuler")})
                 reponse = dlg.ShowModal() 
@@ -142,14 +142,14 @@ class Dialog(wx.Dialog):
                     return False
                     
         if len(listeErreursSoldes) > 0 :
-            dlg = wx.MessageDialog(None, _(u"Vous avez sélectionné %d factures qui ont déjà été payées.\n\nSouhaitez-vous tout de même les inclure dans le lot ?") % len(listeErreursSoldes), _(u"Réinitialisation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(None, _(u"Vous avez sÃ©lectionnÃ© %d factures qui ont dÃ©jÃ  Ã©tÃ© payÃ©es.\n\nSouhaitez-vous tout de mÃªme les inclure dans le lot ?") % len(listeErreursSoldes), _(u"RÃ©initialisation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
                 return False
             
 ##        if len(listeErreursRIB) > 0 :
-##            dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné %d factures pour des familles qui n'ont pas d'autorisation de prélèvement !") % len(listeErreursRIB), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+##            dlg = wx.MessageDialog(self, _(u"Vous avez sÃ©lectionnÃ© %d factures pour des familles qui n'ont pas d'autorisation de prÃ©lÃ¨vement !") % len(listeErreursRIB), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
 ##            dlg.ShowModal()
 ##            dlg.Destroy()
 ##            return False

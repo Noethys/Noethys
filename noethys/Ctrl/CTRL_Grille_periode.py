@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -32,7 +32,7 @@ class MyDatePickerCtrl(DatePickerCtrl):
         self.Bind(wx.EVT_CHILD_FOCUS, self.OnFocus)
             
     def OnFocus(self,event):
-        event.Skip(False)       #évite la propagation vers le 'PySwigObject' object    
+        event.Skip(False)       #Ã©vite la propagation vers le 'PySwigObject' object    
 
     def SetDate(self, dateDD=None):
         jour = dateDD.day
@@ -56,7 +56,7 @@ class CTRL_Annee(wx.SpinCtrl):
         wx.SpinCtrl.__init__(self, parent, -1, min=1977, max=2999) 
         self.parent = parent
         self.SetMinSize((60, -1))
-        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez une année")))
+        self.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une annÃ©e")))
         annee_actuelle = datetime.date.today().year
         self.SetAnnee(annee_actuelle)
     
@@ -75,7 +75,7 @@ class CTRL_ListBox(wx.ListBox):
     def __init__(self, parent):
         wx.ListBox.__init__(self, parent, -1, style=wx.LB_EXTENDED) 
         self.parent = parent
-        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez une ou plusieurs périodes avec les touches SHIFT ou CTRL")))
+        self.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une ou plusieurs pÃ©riodes avec les touches SHIFT ou CTRL")))
         self.listeChoix = []
     
     def SetListeChoix(self, listeChoix=[], conserveSelections=False):
@@ -121,9 +121,9 @@ class Mois(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
-        self.listeMois = [_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre")]
+        self.listeMois = [_(u"Janvier"), _(u"FÃ©vrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"AoÃ»t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"DÃ©cembre")]
         # Controles
-        self.label_annee = wx.StaticText(self, -1, _(u"Année :"))
+        self.label_annee = wx.StaticText(self, -1, _(u"AnnÃ©e :"))
         self.ctrl_annee = CTRL_Annee(self)
         self.label_mois = wx.StaticText(self, -1, _(u"Mois :"))
         self.ctrl_mois = CTRL_ListBox(self)
@@ -175,7 +175,7 @@ class Annee(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
         # Controles
-        self.label_annee = wx.StaticText(self, -1, _(u"Année :"))
+        self.label_annee = wx.StaticText(self, -1, _(u"AnnÃ©e :"))
         self.ctrl_annee = CTRL_Annee(self)
         # Layout
         grid_sizer_annee = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
@@ -199,9 +199,9 @@ class Vacances(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
         # Controles
-        self.label_annee = wx.StaticText(self, -1, _(u"Année :"))
+        self.label_annee = wx.StaticText(self, -1, _(u"AnnÃ©e :"))
         self.ctrl_annee = CTRL_Annee(self)
-        self.label_periode = wx.StaticText(self, -1, _(u"Période :"))
+        self.label_periode = wx.StaticText(self, -1, _(u"PÃ©riode :"))
         self.ctrl_periode = CTRL_ListBox(self)
         # Layout
         grid_sizer_vacances = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
@@ -230,7 +230,7 @@ class Vacances(wx.Panel):
     
     def MAJ(self):
         annee = self.ctrl_annee.GetAnnee()
-        # Récupération des périodes de vacances
+        # RÃ©cupÃ©ration des pÃ©riodes de vacances
         DB = GestionDB.DB()
         req = """SELECT nom, date_debut, date_fin
         FROM vacances 
@@ -240,7 +240,7 @@ class Vacances(wx.Panel):
         DB.ExecuterReq(req)
         listeVacances = DB.ResultatReq()
         DB.Close()
-        # Création de la liste de choix pour le listBox
+        # CrÃ©ation de la liste de choix pour le listBox
         listeChoix = []
         index = 0
         for nom, date_debut, date_fin in listeVacances :
@@ -264,8 +264,8 @@ class Dates(wx.Panel):
         self.ctrl_date_debut = MyDatePickerCtrl(self)
         self.label_date_fin = wx.StaticText(self, -1, _(u"Au :"))
         self.ctrl_date_fin = MyDatePickerCtrl(self)
-        # Propriétés
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez une date de début")))
+        # PropriÃ©tÃ©s
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez une date de dÃ©but")))
         self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez une date de fin")))
         # Layout
         grid_sizer_dates = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=5)
@@ -296,7 +296,7 @@ class Dates(wx.Panel):
 
 class CTRL(wx.Panel):
     def __init__(self, parent):
-        u""" Selection d'une période pour la grille de saisie des conso u"""
+        u""" Selection d'une pÃ©riode pour la grille de saisie des conso u"""
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
         self.nomParent = self.GetParent().GetName() 
@@ -312,7 +312,7 @@ class CTRL(wx.Panel):
         
         self.notebook.AddPage(self.page_mois, _(u"Mois"))
         self.notebook.AddPage(self.page_vacances, _(u"Vacances"))
-        self.notebook.AddPage(self.page_annee, _(u"Année"))
+        self.notebook.AddPage(self.page_annee, _(u"AnnÃ©e"))
         self.notebook.AddPage(self.page_dates, _(u"Dates"))
 
         self.__do_layout()
@@ -327,7 +327,7 @@ class CTRL(wx.Panel):
     
     
     def OnSelection(self):
-        """ Quand une sélection de période est effectuée dans l'une des pages du notebook """
+        """ Quand une sÃ©lection de pÃ©riode est effectuÃ©e dans l'une des pages du notebook """
         self.evtActif = False
         
         if self.nomParent == "grille" :
@@ -343,7 +343,7 @@ class CTRL(wx.Panel):
             
     
     def OnPageChanged(self, event):
-        """ Quand une page du notebook est sélectionnée """
+        """ Quand une page du notebook est sÃ©lectionnÃ©e """
         old = event.GetOldSelection()
         if old==-1:
             return
@@ -361,7 +361,7 @@ class CTRL(wx.Panel):
         return page.GetDatesSelections()
     
     def SetVisibleSelection(self):
-        """ Si on est sur un listBox, on fait défiler jusqu'à l'item sélectionné """
+        """ Si on est sur un listBox, on fait dÃ©filer jusqu'Ã  l'item sÃ©lectionnÃ© """
         try :
             indexPage = self.notebook.GetSelection()
             page = self.notebook.GetPage(indexPage)
@@ -408,7 +408,7 @@ class CTRL(wx.Panel):
                 page.ctrl_periode.SetSelectionIndex(index)
         
         if numPage == 2 :
-            # Année
+            # AnnÃ©e
             if annee != None :
                 page.ctrl_annee.SetValue(annee)
         
@@ -446,7 +446,7 @@ class CTRL(wx.Panel):
             dictDonnees["dateDebut"] = None
             dictDonnees["dateFin"] = None
         
-        # Année
+        # AnnÃ©e
         if numPage == 2 :
             dictDonnees["page"] = 2
             dictDonnees["listeSelections"] = []

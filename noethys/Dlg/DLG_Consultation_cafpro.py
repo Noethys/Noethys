@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -29,8 +29,8 @@ class CTRL_Drag(wx.TextCtrl):
         self.SetBackgroundColour(wx.Colour(248, 248, 248))
         self.SetValue(texte)
 
-        # Propriétés
-        self.SetToolTip(wx.ToolTip(_(u"Faites un glisser-déposer pour envoyer cette information dans le formulaire de votre navigateur internet")))
+        # PropriÃ©tÃ©s
+        self.SetToolTip(wx.ToolTip(_(u"Faites un glisser-dÃ©poser pour envoyer cette information dans le formulaire de votre navigateur internet")))
 
         # Binds
         self.Bind(wx.EVT_MOTION, self.OnStartDrag)
@@ -59,7 +59,7 @@ class MyTextDropTarget(wx.TextDropTarget):
         try :
             quotient = int(text)
         except :
-            dlg = wx.MessageDialog(self.window, _(u"La donnée que vous avez déposé ne semble pas valide. Il ne peut s'agit que d'un nombre entier !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self.window, _(u"La donnÃ©e que vous avez dÃ©posÃ© ne semble pas valide. Il ne peut s'agit que d'un nombre entier !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -79,8 +79,8 @@ class CTRL_Drop_archive(wx.TextCtrl):
         dt = MyTextDropTarget(self)
         self.SetDropTarget(dt)
 
-        # Propriétés
-        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez le quotient dans votre navigateur internet et glissez-le jusqu'ici")))
+        # PropriÃ©tÃ©s
+        self.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le quotient dans votre navigateur internet et glissez-le jusqu'ici")))
 
     def SetTexte(self, texte=None):
         if texte == None :
@@ -101,7 +101,7 @@ class CTRL_Drop(wx.StaticBitmap):
         dt = MyTextDropTarget(self)
         self.SetDropTarget(dt)
 
-        # Propriétés
+        # PropriÃ©tÃ©s
         self.SetToolTip(wx.ToolTip(tip))
 
         # Binds
@@ -126,7 +126,7 @@ class CTRL_Drop(wx.StaticBitmap):
             try :
                 quotient = int(texte)
             except :
-                dlg = wx.MessageDialog(self, _(u"La donnée que vous avez saisi ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"La donnÃ©e que vous avez saisi ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -146,8 +146,8 @@ class CTRL_Drop(wx.StaticBitmap):
         return self.texte
 
     def CreationImageDrop(self):
-        """ Création d'une image pour la réception drop de données """
-        # Création du bitmap
+        """ CrÃ©ation d'une image pour la rÃ©ception drop de donnÃ©es """
+        # CrÃ©ation du bitmap
         largeurImage, hauteurImage = self.taille
         if 'phoenix' in wx.PlatformInfo:
             bmp = wx.Bitmap(largeurImage, hauteurImage)
@@ -160,7 +160,7 @@ class CTRL_Drop(wx.StaticBitmap):
 
         # Texte
         if self.texte == None :
-            # Texte par défaut si valeur vide
+            # Texte par dÃ©faut si valeur vide
             taille_police = 7
             couleur_texte = wx.Colour(150, 150, 150)
             couleur_fond = wx.Colour(248, 248, 248)
@@ -218,7 +218,7 @@ class Frame(wx.Frame):
 
         # Bandeau
         titre = _(u"Consultation CAF-CDAP")
-        intro = _(u"Glissez-déposez le numéro d'allocataire et le nom vers le formulaire de CDAP. Puis sélectionnez et glissez-déposez le QF ou le revenu ci-dessous.")
+        intro = _(u"Glissez-dÃ©posez le numÃ©ro d'allocataire et le nom vers le formulaire de CDAP. Puis sÃ©lectionnez et glissez-dÃ©posez le QF ou le revenu ci-dessous.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self.panel, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Caf.png")
 
@@ -226,13 +226,13 @@ class Frame(wx.Frame):
         self.box_informations = wx.StaticBox(self.panel, -1, _(u"Informations"))
         self.label_nom = wx.StaticText(self.panel, -1, _(u"Nom de famille :"))
         self.ctrl_nom = CTRL_Drag(self.panel, texte="")
-        self.label_numero = wx.StaticText(self.panel, -1, _(u"Numéro d'allocataire :"))
+        self.label_numero = wx.StaticText(self.panel, -1, _(u"NumÃ©ro d'allocataire :"))
         self.ctrl_numero = CTRL_Drag(self.panel, texte="")
 
         # Informations
         self.box_quotient = wx.StaticBox(self.panel, -1, _(u"Quotient familial/Revenu"))
-        self.ctrl_quotient = CTRL_Drop(self.panel, taille=(180, 80), texte_defaut=_(u"Sélectionnez et glissez-déposez\nle quotient familial ici"), tip=_(u"Double-cliquez sur le quotient dans votre navigateur internet pour le sélectionner et glissez-le jusqu'ici.\n\nVous pouvez également faire un double-clic pour saisir ou modifier la valeur manuellement."))
-        self.ctrl_revenu = CTRL_Drop(self.panel, taille=(180, 80), texte_defaut=_(u"Sélectionnez et glissez-déposez\nle revenu annuel ici"), tip=_(u"Double-cliquez sur le revenu dans votre navigateur internet pour le sélectionner et glissez-le jusqu'ici.\n\nVous pouvez également faire un double-clic pour saisir ou modifier la valeur manuellement."))
+        self.ctrl_quotient = CTRL_Drop(self.panel, taille=(180, 80), texte_defaut=_(u"SÃ©lectionnez et glissez-dÃ©posez\nle quotient familial ici"), tip=_(u"Double-cliquez sur le quotient dans votre navigateur internet pour le sÃ©lectionner et glissez-le jusqu'ici.\n\nVous pouvez Ã©galement faire un double-clic pour saisir ou modifier la valeur manuellement."))
+        self.ctrl_revenu = CTRL_Drop(self.panel, taille=(180, 80), texte_defaut=_(u"SÃ©lectionnez et glissez-dÃ©posez\nle revenu annuel ici"), tip=_(u"Double-cliquez sur le revenu dans votre navigateur internet pour le sÃ©lectionner et glissez-le jusqu'ici.\n\nVous pouvez Ã©galement faire un double-clic pour saisir ou modifier la valeur manuellement."))
 
         texte_dernier_qf = self.GetTexteDernierQF()
         self.label_dernier_qf = wx.StaticText(self.panel, -1, texte_dernier_qf, style=wx.ALIGN_CENTER)
@@ -323,7 +323,7 @@ class Frame(wx.Frame):
         self.panel.SetSizer(grid_sizer_base)
         self.Layout()
 
-        # Position de la fenêtre
+        # Position de la fenÃªtre
         position = UTILS_Config.GetParametre("position_fenetre_cafpro", defaut=None)
         if position != None:
             self.SetPosition(position)
@@ -363,7 +363,7 @@ class Frame(wx.Frame):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
-        texte = _(u"Aucun précédent QF")
+        texte = _(u"Aucun prÃ©cÃ©dent QF")
         if len(listeDonnees) > 0 :
             date_debut, date_fin, quotient, revenu, nom_quotient = listeDonnees[0]
             date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)

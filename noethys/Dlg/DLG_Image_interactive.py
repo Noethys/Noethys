@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -50,12 +50,12 @@ class Track(object):
             for dictLocation in self.liste_locations:
                 self.disponible -= dictLocation["quantite"]
 
-        # Récupération des réponses des questionnaires
+        # RÃ©cupÃ©ration des rÃ©ponses des questionnaires
         for dictQuestion in parent.liste_questions :
             setattr(self, "question_%d" % dictQuestion["IDquestion"], parent.GetReponse(dictQuestion["IDquestion"], self.IDproduit))
 
     def GetTexteInfoBulle(self):
-        # Génération du texte de l'infobulle
+        # GÃ©nÃ©ration du texte de l'infobulle
         texte = u""
 
         # Location en cours
@@ -66,7 +66,7 @@ class Track(object):
                 texte_location = _(u"1 location")
             else :
                 texte_location = _(u"%d locations") % len(self.liste_locations)
-            texte += u"%s en cours (Quantité louée : %d / Stock : %d) :\n\n" % (texte_location, self.quantite-self.disponible, self.quantite)
+            texte += u"%s en cours (QuantitÃ© louÃ©e : %d / Stock : %d) :\n\n" % (texte_location, self.quantite-self.disponible, self.quantite)
 
             for dictLocation in self.liste_locations:
                 IDfamille = dictLocation["IDfamille"]
@@ -81,11 +81,11 @@ class Track(object):
                     quantite = 1
                 date_debut_str = datetime.datetime.strftime(date_debut, "%d/%m/%Y-%Hh%M")
                 if date_fin == None:
-                    date_fin_str = u"[Illimité]"
+                    date_fin_str = u"[IllimitÃ©]"
                 else:
                     date_fin_str = datetime.datetime.strftime(date_fin, "%d/%m/%Y-%Hh%M")
 
-                texte += u"- %s (Du %s au %s, quantité : %d)\n" % (nomTitulaires, date_debut_str, date_fin_str, quantite)
+                texte += u"- %s (Du %s au %s, quantitÃ© : %d)\n" % (nomTitulaires, date_debut_str, date_fin_str, quantite)
 
         texte += "\n"
 
@@ -104,7 +104,7 @@ class Track(object):
         dictDonnees = {
             "titre" : u"%s (%s)" % (self.nom, self.nomCategorie),
             "texte" : texte,
-            "pied" : u"Double-cliquez pour accéder au détail",
+            "pied" : u"Double-cliquez pour accÃ©der au dÃ©tail",
             }
         return dictDonnees
 
@@ -160,7 +160,7 @@ class Data():
         # Importation des locations en cours
         self.dictLocations = UTILS_Locations.GetProduitsLoues(DB=DB)
 
-        # Importation des caractéristiques du modèle
+        # Importation des caractÃ©ristiques du modÃ¨le
         req = """SELECT categorie, IDdonnee
         FROM documents_modeles
         WHERE IDmodele=%d;""" % self.IDmodele
@@ -216,14 +216,14 @@ class CTRL(wx.Panel):
         self._mgr = aui.AuiManager()
         self._mgr.SetManagedWindow(self)
 
-        # Propriétés
+        # PropriÃ©tÃ©s
         self.SetMinSize((920, 740))
 
-        # Importation des données
+        # Importation des donnÃ©es
         # interactive_data = Data(IDmodele=IDmodele)
         # categorie = interactive_data.categorie
 
-        # Création des widgets
+        # CrÃ©ation des widgets
         couleur_zone_travail = wx.Colour(255, 255, 255)
         self.ctrl_canvas = Panel_canvas(self, IDmodele=self.IDmodele, categorie="", couleur_zone_travail=couleur_zone_travail,
                                         mode="visualisation")#, interactive_data=interactive_data)
@@ -232,10 +232,10 @@ class CTRL(wx.Panel):
         self.toolbar1 = self.MakeToolBar1()
         self.toolbar2 = self.MakeToolBar2()
 
-        # Création du panel central
+        # CrÃ©ation du panel central
         self._mgr.AddPane(self.ctrl_canvas, aui.AuiPaneInfo().Name("canvas").CenterPane())
 
-        # Création des barres d'outils
+        # CrÃ©ation des barres d'outils
         self._mgr.AddPane(self.toolbar1, aui.AuiPaneInfo().
                           Name("barreOutil_modes").Caption("Modes").
                           ToolbarPane().Top().
@@ -282,11 +282,11 @@ class CTRL(wx.Panel):
         tbar.ToggleTool(ID_OUTIL_CURSEUR, True)
 
         ID_OUTIL_DEPLACER = wx.Window.NewControlId()
-        tbar.AddSimpleTool(ID_OUTIL_DEPLACER, _(u"Déplacer"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Main.png"), wx.BITMAP_TYPE_ANY), _(u"Déplacer"), aui.ITEM_RADIO)
+        tbar.AddSimpleTool(ID_OUTIL_DEPLACER, _(u"DÃ©placer"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Main.png"), wx.BITMAP_TYPE_ANY), _(u"DÃ©placer"), aui.ITEM_RADIO)
         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_deplacer, id=ID_OUTIL_DEPLACER)
 
         ID_OUTIL_ZOOM_OUT = wx.Window.NewControlId()
-        tbar.AddSimpleTool(ID_OUTIL_ZOOM_OUT, _(u"Zoom arrière"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/zoom_moins.png"), wx.BITMAP_TYPE_ANY), _(u"Zoom arrière"), aui.ITEM_RADIO)
+        tbar.AddSimpleTool(ID_OUTIL_ZOOM_OUT, _(u"Zoom arriÃ¨re"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/zoom_moins.png"), wx.BITMAP_TYPE_ANY), _(u"Zoom arriÃ¨re"), aui.ITEM_RADIO)
         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_zoom_moins, id=ID_OUTIL_ZOOM_OUT)
 
         ID_OUTIL_ZOOM_IN = wx.Window.NewControlId()
@@ -302,7 +302,7 @@ class CTRL(wx.Panel):
         tbar.AddSeparator()
 
         ID_OUTIL_AFFICHAGE_APERCU = wx.Window.NewControlId()
-        tbar.AddSimpleTool(ID_OUTIL_AFFICHAGE_APERCU, _(u"Afficher un aperçu PDF"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Pdf.png"), wx.BITMAP_TYPE_ANY), _(u"Afficher un aperçu PDF"))
+        tbar.AddSimpleTool(ID_OUTIL_AFFICHAGE_APERCU, _(u"Afficher un aperÃ§u PDF"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Pdf.png"), wx.BITMAP_TYPE_ANY), _(u"Afficher un aperÃ§u PDF"))
         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnAffichage_apercu, id=ID_OUTIL_AFFICHAGE_APERCU)
 
         tbar.Realize()
@@ -313,22 +313,22 @@ class CTRL(wx.Panel):
         tbar.SetToolBitmapSize(wx.Size(32, 32))
 
         ID_OUTIL_AFFICHAGE_LABELS = wx.Window.NewControlId()
-        tbar.AddSimpleTool(ID_OUTIL_AFFICHAGE_LABELS, _(u"Afficher les labels associés aux données"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Calque_label.png"), wx.BITMAP_TYPE_ANY), _(u"Afficher les labels associés aux données"), aui.ITEM_CHECK)
+        tbar.AddSimpleTool(ID_OUTIL_AFFICHAGE_LABELS, _(u"Afficher les labels associÃ©s aux donnÃ©es"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Calque_label.png"), wx.BITMAP_TYPE_ANY), _(u"Afficher les labels associÃ©s aux donnÃ©es"), aui.ITEM_CHECK)
         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnAffichage_labels, id=ID_OUTIL_AFFICHAGE_LABELS)
         tbar.ToggleTool(ID_OUTIL_AFFICHAGE_LABELS, True)
 
         ID_OUTIL_AFFICHAGE_REMPLISSAGE = wx.Window.NewControlId()
-        tbar.AddSimpleTool(ID_OUTIL_AFFICHAGE_REMPLISSAGE, _(u"Afficher le remplissage des objets associés aux données"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Calque_fond.png"), wx.BITMAP_TYPE_ANY), _(u"Afficher le remplissage des objets associés aux données"), aui.ITEM_CHECK)
+        tbar.AddSimpleTool(ID_OUTIL_AFFICHAGE_REMPLISSAGE, _(u"Afficher le remplissage des objets associÃ©s aux donnÃ©es"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Calque_fond.png"), wx.BITMAP_TYPE_ANY), _(u"Afficher le remplissage des objets associÃ©s aux donnÃ©es"), aui.ITEM_CHECK)
         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnAffichage_remplissage, id=ID_OUTIL_AFFICHAGE_REMPLISSAGE)
         tbar.ToggleTool(ID_OUTIL_AFFICHAGE_REMPLISSAGE, True)
 
         ID_OUTIL_AFFICHAGE_COULEURS = wx.Window.NewControlId()
-        tbar.AddSimpleTool(ID_OUTIL_AFFICHAGE_COULEURS, _(u"Synchroniser les couleurs du remplissage avec les données"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Calque_couleurs.png"), wx.BITMAP_TYPE_ANY), _(u"Synchroniser les couleurs du remplissage avec les données"), aui.ITEM_CHECK)
+        tbar.AddSimpleTool(ID_OUTIL_AFFICHAGE_COULEURS, _(u"Synchroniser les couleurs du remplissage avec les donnÃ©es"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Calque_couleurs.png"), wx.BITMAP_TYPE_ANY), _(u"Synchroniser les couleurs du remplissage avec les donnÃ©es"), aui.ITEM_CHECK)
         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnAffichage_couleurs, id=ID_OUTIL_AFFICHAGE_COULEURS)
         tbar.ToggleTool(ID_OUTIL_AFFICHAGE_COULEURS, True)
 
         ID_OUTIL_AFFICHAGE_BORDS = wx.Window.NewControlId()
-        tbar.AddSimpleTool(ID_OUTIL_AFFICHAGE_BORDS, _(u"Afficher les bords des objets associés aux données"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Calque_bords.png"), wx.BITMAP_TYPE_ANY), _(u"Afficher les bords des objets associés aux données"), aui.ITEM_CHECK)
+        tbar.AddSimpleTool(ID_OUTIL_AFFICHAGE_BORDS, _(u"Afficher les bords des objets associÃ©s aux donnÃ©es"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Calque_bords.png"), wx.BITMAP_TYPE_ANY), _(u"Afficher les bords des objets associÃ©s aux donnÃ©es"), aui.ITEM_CHECK)
         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnAffichage_bords, id=ID_OUTIL_AFFICHAGE_BORDS)
         tbar.ToggleTool(ID_OUTIL_AFFICHAGE_BORDS, True)
 

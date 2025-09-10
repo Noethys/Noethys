@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -34,7 +34,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -55,7 +55,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT IDanalytique, nom, abrege, defaut
@@ -83,7 +83,7 @@ class ListView(FastObjectListView):
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
         
-        # PrÈparation de la listeImages
+        # Pr√©paration de la listeImages
         imgDefaut = self.AddNamedImages("defaut", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok.png"), wx.BITMAP_TYPE_PNG))
         
         def GetImageDefaut(track):
@@ -93,7 +93,7 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(u"", "left", 21, "IDanalytique", typeDonnee="entier", imageGetter=GetImageDefaut),
             ColumnDefn(_(u"Nom"), 'left', 200, "nom", typeDonnee="texte", isSpaceFilling=True),
-            ColumnDefn(_(u"AbrÈgÈ"), 'left', 200, "abrege", typeDonnee="texte"),
+            ColumnDefn(_(u"Abr√©g√©"), 'left', 200, "abrege", typeDonnee="texte"),
             ]
 
         self.SetColumns(liste_Colonnes)
@@ -111,7 +111,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -129,7 +129,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDanalytique
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -159,8 +159,8 @@ class ListView(FastObjectListView):
         
         menuPop.AppendSeparator()
 
-        # Item Par dÈfaut
-        item = wx.MenuItem(menuPop, 60, _(u"DÈfinir comme poste analytique par dÈfaut"))
+        # Item Par d√©faut
+        item = wx.MenuItem(menuPop, 60, _(u"D√©finir comme poste analytique par d√©faut"))
         if noSelection == False :
             if self.Selection()[0].defaut == 1 :
                 bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok.png"), wx.BITMAP_TYPE_PNG)
@@ -172,7 +172,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -213,7 +213,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_analytiques", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun poste analytique ‡ modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun poste analytique √† modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -226,13 +226,13 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_analytiques", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun poste analytique ‡ supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun poste analytique √† supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDanalytique = self.Selection()[0].IDanalytique
         
-        # VÈrifie que ce poste analytique n'a pas dÈj‡ ÈtÈ attribuÈ ‡ une ventilation d'opÈration
+        # V√©rifie que ce poste analytique n'a pas d√©j√† √©t√© attribu√© √† une ventilation d'op√©ration
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDventilation)
         FROM compta_ventilation 
@@ -242,7 +242,7 @@ class ListView(FastObjectListView):
         nbreVentilations = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreVentilations > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce poste analytique a dÈj‡ ÈtÈ attribuÈ ‡ %d ventilation(s) d'opÈration(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreVentilations, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce poste analytique a d√©j√† √©t√© attribu√© √† %d ventilation(s) d'op√©ration(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreVentilations, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -251,9 +251,9 @@ class ListView(FastObjectListView):
         dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce poste analytique ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
-            # Suppression de l'identitÈ
+            # Suppression de l'identit√©
             DB.ReqDEL("compta_analytiques", "IDanalytique", IDanalytique)
-            # Attribue le DÈfaut ‡ un autre compte
+            # Attribue le D√©faut √† un autre compte
             if self.Selection()[0].defaut == 1 :
                 req = """SELECT IDanalytique, defaut
                 FROM compta_analytiques

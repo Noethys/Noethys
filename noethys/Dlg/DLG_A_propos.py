@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -25,21 +25,21 @@ anneeActuelle = str(datetime.date.today().year)
 TEXTE_ACCUEIL = u"""
 <BR>
 <B><FONT SIZE=6>NOETHYS</B></FONT><BR>
-<B><FONT SIZE=4>Logiciel de gestion multi-activités</B></FONT><BR>
+<B><FONT SIZE=4>Logiciel de gestion multi-activitÃ©s</B></FONT><BR>
 <FONT SIZE=2>
 <B>Version %s</B><BR><BR>
-<B>Copyright © 2010-%s Ivan LUCAS</B><BR>
+<B>Copyright Â© 2010-%s Ivan LUCAS</B><BR>
 <BR><BR>
 <U>Remerciements :</U>
 <BR><BR>
-- Aurélie, pour son soutien et son aide technique<BR>
+- AurÃ©lie, pour son soutien et son aide technique<BR>
 - Jacques Delage pour les beta-tests et les suggestions<BR>
 - Robin Dunn, pour ses travaux et son aide sur wxPython<BR>
-- Les communautés Python et wxPython<BR>
+- Les communautÃ©s Python et wxPython<BR>
 - Tous les beta-testeurs pour leur suggestions et leurs remarques<BR>
 <BR>
 Et en vrac : 
-Guido van Rossum (Python), Gerhard Häring (pysqlite), <BR>
+Guido van Rossum (Python), Gerhard HÃ¤ring (pysqlite), <BR>
 reportLab team (reportlab), Mark Hammond (pywin32), <BR>
 Phillip Piper (ObjectListView), Armin Rigo (Psycho)...<BR>
 </FONT>
@@ -95,7 +95,7 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"A propos"))
-        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer cette fenêtre")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer cette fenÃªtre")))
         self.SetMinSize((600, 500))
 
     def __do_layout(self):

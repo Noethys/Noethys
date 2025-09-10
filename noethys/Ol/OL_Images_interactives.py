@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -38,7 +38,7 @@ class Track(object):
         self.observations = donnees[4]
         self.IDdonnee = donnees[5]
 
-        # Récupération du nom de la donnée associée
+        # RÃ©cupÃ©ration du nom de la donnÃ©e associÃ©e
         if self.IDdonnee in parent.dictNomsDonnees :
             self.nomDonnee = parent.dictNomsDonnees[self.IDdonnee]
         else:
@@ -47,7 +47,7 @@ class Track(object):
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.categorie = kwds.pop("categorie", "")
         self.selectionID = None
         self.selectionTrack = None
@@ -69,7 +69,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeID = None
         DB = GestionDB.DB()
 
@@ -81,12 +81,12 @@ class ListView(FastObjectListView):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
 
-        # Recherche du nom de la donnée associée
+        # Recherche du nom de la donnÃ©e associÃ©e
         self.dictNomsDonnees = {}
         self.champs_interactifs = {}
 
         if self.categorie == "produits_categories" :
-            # Importation des catégories
+            # Importation des catÃ©gories
             req = """SELECT IDcategorie, nom
             FROM produits_categories;"""
             DB.ExecuterReq(req)
@@ -128,7 +128,7 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(u"", "left", 0, "IDmodele", typeDonnee="entier"),
             ColumnDefn(_(u"Nom"), "left", 200, "nom", typeDonnee="texte"),
-            ColumnDefn(_(u"Donnée associée"), "left", 200, "nomDonnee", typeDonnee="texte"),
+            ColumnDefn(_(u"DonnÃ©e associÃ©e"), "left", 200, "nomDonnee", typeDonnee="texte"),
             ColumnDefn(_(u"Observations"), "left", 120, "observations", typeDonnee="texte", isSpaceFilling=True),
             ]
         
@@ -149,7 +149,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -171,7 +171,7 @@ class ListView(FastObjectListView):
         else:
             noSelection = False
 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ajouter
@@ -239,7 +239,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -268,7 +268,7 @@ class ListView(FastObjectListView):
     def Ajouter(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_images_interactives", "creer") == False : return
 
-        # Demande le nom et la donnée associée
+        # Demande le nom et la donnÃ©e associÃ©e
         from Dlg import DLG_Saisie_nom_image_interactive
         dlg = DLG_Saisie_nom_image_interactive.Dialog(self, categorie=self.categorie)
         if dlg.ShowModal() == wx.ID_OK:
@@ -278,7 +278,7 @@ class ListView(FastObjectListView):
             dlg.Destroy()
             return False
 
-        # Ouvre l'éditeur d'images interactives
+        # Ouvre l'Ã©diteur d'images interactives
         if dictResultats["IDdonnee"] in self.champs_interactifs :
             champs_interactifs = self.champs_interactifs[dictResultats["IDdonnee"]]
         else :
@@ -294,7 +294,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_images_interactives", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune image à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune image Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -315,15 +315,15 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_images_interactives", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune image à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune image Ã  supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDmodele = self.Selection()[0].IDmodele
 
-        # Vérifie qu'il est autorisé de supprimer ce modèle
+        # VÃ©rifie qu'il est autorisÃ© de supprimer ce modÃ¨le
         if self.Selection()[0].supprimable == 0 :
-            dlg = wx.MessageDialog(self, _(u"Cette image ne peut pas être supprimé !"), _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cette image ne peut pas Ãªtre supprimÃ© !"), _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -338,10 +338,10 @@ class ListView(FastObjectListView):
         dlg.Destroy()
     
     def Dupliquer(self, event):
-        """ Dupliquer un modèle """
+        """ Dupliquer un modÃ¨le """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_images_interactives", "creer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune image à dupliquer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune image Ã  dupliquer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -350,7 +350,7 @@ class ListView(FastObjectListView):
         
         DB = GestionDB.DB()
         
-        # Duplication du modèle
+        # Duplication du modÃ¨le
         conditions = "IDmodele=%d" % IDmodele
         dictModifications = {"nom" : _(u"Copie de %s") % nom, "defaut" : 0}
         newIDmodele = DB.Dupliquer("documents_modeles", "IDmodele", conditions, dictModifications)
@@ -364,13 +364,13 @@ class ListView(FastObjectListView):
         self.MAJ(newIDmodele)
 
     def Importer(self, event):
-        """ Importer un modèle """
+        """ Importer un modÃ¨le """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_images_interactives", "creer") == False : return
-        # Ouverture de la fenêtre de dialogue
+        # Ouverture de la fenÃªtre de dialogue
         wildcard = u"Image interactive Noethys (*.ndi)|*.ndi|Tous les fichiers (*.*)|*.*"
         sp = wx.StandardPaths.Get()
         dlg = wx.FileDialog(
-            self, message=_(u"Choisissez un modèle à importer"),
+            self, message=_(u"Choisissez un modÃ¨le Ã  importer"),
             defaultDir=sp.GetDocumentsDir(), 
             defaultFile="",
             wildcard=wildcard,
@@ -393,7 +393,7 @@ class ListView(FastObjectListView):
             if code == categorie :
                 labelCategorie = label
         
-        message = _(u"Confirmez-vous l'importation de l'image suivante ?\n\nNom : %s\nCatégorie : %s\n") % (nom , labelCategorie)
+        message = _(u"Confirmez-vous l'importation de l'image suivante ?\n\nNom : %s\nCatÃ©gorie : %s\n") % (nom , labelCategorie)
         dlg = wx.MessageDialog(self, message, _(u"Importer une image interactive"), wx.YES_NO|wx.YES_DEFAULT|wx.ICON_QUESTION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
@@ -406,15 +406,15 @@ class ListView(FastObjectListView):
         self.SelectionModele(IDmodele)
         
         # Confirmation
-        dlg = wx.MessageDialog(self, _(u"L'image interactive a été importée avec succès dans la catégorie '%s' !") % labelCategorie, _(u"Importation"), wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"L'image interactive a Ã©tÃ© importÃ©e avec succÃ¨s dans la catÃ©gorie '%s' !") % labelCategorie, _(u"Importation"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         
     def Exporter(self, event):
-        """ Exporter le modèle sélectionné """
+        """ Exporter le modÃ¨le sÃ©lectionnÃ© """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_images_interactives", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune image dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune image dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -435,9 +435,9 @@ class ListView(FastObjectListView):
         if path == None :
             return
 
-        # Le fichier de destination existe déjà :
+        # Le fichier de destination existe dÃ©jÃ  :
         if os.path.isfile(path) == True :
-            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe dÃ©jÃ . \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
             if dlg.ShowModal() == wx.ID_NO :
                 return False
                 dlg.Destroy()
@@ -448,13 +448,13 @@ class ListView(FastObjectListView):
         UTILS_Export_documents.Exporter(IDmodele, path)
 
         # Confirmation
-        dlg = wx.MessageDialog(self, _(u"L'image interactive a été exportée avec succès !"), _(u"Exportation"), wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"L'image interactive a Ã©tÃ© exportÃ©e avec succÃ¨s !"), _(u"Exportation"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         
     def Visualiser(self, event=None):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune image à visualiser dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune image Ã  visualiser dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

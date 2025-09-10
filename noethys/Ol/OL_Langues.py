@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -48,7 +48,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         # Langues existantes
         dictLangues = {}
         for rep in (Chemins.GetStaticPath("Lang"), UTILS_Fichiers.GetRepLang()) :
@@ -112,7 +112,7 @@ class ListView(FastObjectListView):
         else:
             noSelection = False
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -160,7 +160,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -205,7 +205,7 @@ class ListView(FastObjectListView):
         
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune langue ‡ modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune langue √† modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -218,19 +218,19 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun fichier de traduction ‡ supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun fichier de traduction √† supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
 
         if track.perso == 0 :
-            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune traduction personnalisÈe ‡ supprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune traduction personnalis√©e √† supprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce fichier de traduction personnalisÈ (%d traductions) ?\n\nAttention, toute suppression est irrÈversible.") % track.perso, _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce fichier de traduction personnalis√© (%d traductions) ?\n\nAttention, toute suppression est irr√©versible.") % track.perso, _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             nomFichier = UTILS_Fichiers.GetRepLang(u"%s.xlang" % track.code)
             os.remove(nomFichier)
@@ -239,11 +239,11 @@ class ListView(FastObjectListView):
     
     def Importer(self, event):
         """ Importer un fichier de langue """
-        # Ouverture de la fenÍtre de dialogue
+        # Ouverture de la fen√™tre de dialogue
         wildcard = "Fichiers de langue (*.lang, *.xlang)|*.lang;*.xlang|Tous les fichiers (*.*)|*.*"
         sp = wx.StandardPaths.Get()
         dlg = wx.FileDialog(
-            self, message=_(u"Choisissez un fichier de langue ‡ importer"),
+            self, message=_(u"Choisissez un fichier de langue √† importer"),
             defaultDir=sp.GetDocumentsDir(), 
             defaultFile="",
             wildcard=wildcard,
@@ -257,12 +257,12 @@ class ListView(FastObjectListView):
             dlg.Destroy()
             return
         
-        # VÈrifie si un fichier existe dÈj‡
+        # V√©rifie si un fichier existe d√©j√†
         if os.path.isfile(UTILS_Fichiers.GetRepLang(nomFichierCourt)) == False :
             shutil.copyfile(nomFichierLong, UTILS_Fichiers.GetRepLang(nomFichierCourt))
             self.MAJ()
         else :
-            dlg = DLG_Messagebox.Dialog(self, titre=_(u"Importer"), introduction=_(u"Ce fichier est dÈj‡ prÈsent !"), detail=None, conclusion=_(u"Souhaitez-vous le remplacer ou les fusionner ?"), icone=wx.ICON_EXCLAMATION, boutons=[_(u"Fusionner"), _(u"Remplacer"), _(u"Annuler")])
+            dlg = DLG_Messagebox.Dialog(self, titre=_(u"Importer"), introduction=_(u"Ce fichier est d√©j√† pr√©sent !"), detail=None, conclusion=_(u"Souhaitez-vous le remplacer ou les fusionner ?"), icone=wx.ICON_EXCLAMATION, boutons=[_(u"Fusionner"), _(u"Remplacer"), _(u"Annuler")])
             reponse = dlg.ShowModal()
             dlg.Destroy()
             
@@ -286,7 +286,7 @@ class ListView(FastObjectListView):
                 UTILS_Json.Ecrire(nomFichier, data=dictDonnees)
                 self.MAJ()
 
-                dlg = wx.MessageDialog(self, _(u"Le fichier a ÈtÈ importÈ avec succËs !"), _(u"Confirmation"), wx.OK | wx.ICON_INFORMATION)
+                dlg = wx.MessageDialog(self, _(u"Le fichier a √©t√© import√© avec succ√®s !"), _(u"Confirmation"), wx.OK | wx.ICON_INFORMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
 
@@ -298,12 +298,12 @@ class ListView(FastObjectListView):
                 if reponse == wx.ID_NO :
                     return
                 
-                # Copie du fichier vers le rÈpertoire Lang
+                # Copie du fichier vers le r√©pertoire Lang
                 os.remove(UTILS_Fichiers.GetRepLang(nomFichierCourt))
                 shutil.copyfile(nomFichierLong, UTILS_Fichiers.GetRepLang(nomFichierCourt))
                 self.MAJ()
  
-                dlg = wx.MessageDialog(self, _(u"Le fichier a ÈtÈ importÈ avec succËs !"), _(u"Confirmation"), wx.OK | wx.ICON_INFORMATION)
+                dlg = wx.MessageDialog(self, _(u"Le fichier a √©t√© import√© avec succ√®s !"), _(u"Confirmation"), wx.OK | wx.ICON_INFORMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                
@@ -311,16 +311,16 @@ class ListView(FastObjectListView):
                 return False
         
     def Exporter(self, event):
-        """ Exporter le modËle sÈlectionnÈ """
+        """ Exporter le mod√®le s√©lectionn√© """
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune langue dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune langue dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
         
         if track.perso == 0 :
-            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune traduction personnalisÈe ‡ exporter !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune traduction personnalis√©e √† exporter !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -329,7 +329,7 @@ class ListView(FastObjectListView):
         
         # Demande le chemin pour la sauvegarde du fichier
         standardPath = wx.StandardPaths.Get()
-        dlg = wx.FileDialog(self, message=_(u"Envoyer le fichier de traduction personnalisÈ vers..."),
+        dlg = wx.FileDialog(self, message=_(u"Envoyer le fichier de traduction personnalis√© vers..."),
                             defaultDir = standardPath.GetDocumentsDir(), defaultFile=nomFichier,
                             wildcard="Fichier de traduction (*.xlang)|*.xlang", style=wx.FD_SAVE)
         if dlg.ShowModal() == wx.ID_OK:
@@ -340,9 +340,9 @@ class ListView(FastObjectListView):
         if path == None :
             return
 
-        # Le fichier de destination existe dÈj‡ :
+        # Le fichier de destination existe d√©j√† :
         if os.path.isfile(path) == True :
-            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe dÈj‡. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe d√©j√†. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
             if dlg.ShowModal() == wx.ID_NO :
                 return False
                 dlg.Destroy()
@@ -353,7 +353,7 @@ class ListView(FastObjectListView):
         shutil.copyfile(UTILS_Fichiers.GetRepLang(nomFichier), path)
 
         # Confirmation
-        dlg = wx.MessageDialog(self, _(u"Le fichier de traduction a ÈtÈ exportÈ avec succËs !"), _(u"Exportation"), wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Le fichier de traduction a √©t√© export√© avec succ√®s !"), _(u"Exportation"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         
@@ -372,7 +372,7 @@ class Saisie(wx.Dialog):
         self.SetTitle(_(u"Saisie d'une nouvelle traduction"))
         self.SetMinSize((400, 400)) 
         
-        self.label_langue = wx.StaticText(self, -1, _(u"SÈlectionnez une langue :"))
+        self.label_langue = wx.StaticText(self, -1, _(u"S√©lectionnez une langue :"))
         self.ctrl_langue = langlistctrl.LanguageListCtrl(self, -1, filter=langlistctrl.LC_ALL)
         self.dictLangues = langlistctrl.BuildLanguageCountryMapping() 
         
@@ -400,7 +400,7 @@ class Saisie(wx.Dialog):
     def OnBoutonOk(self, event):
         index = self.ctrl_langue.GetLanguage()
         if index == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÈlectionner une langue dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement s√©lectionner une langue dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

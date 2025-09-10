@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -36,8 +36,8 @@ class Track(object):
         self.type = donnees[3]
         
         if self.type == "Unitaire" : self.type = _(u"Standard")
-        if self.type == "Quantite" : self.type = _(u"QuantitÈ")
-        if self.type == "Evenement": self.type = _(u"EvËnementiel")
+        if self.type == "Quantite" : self.type = _(u"Quantit√©")
+        if self.type == "Evenement": self.type = _(u"Ev√®nementiel")
         
         self.date_debut = donnees[4]
         self.date_fin = donnees[5]
@@ -50,7 +50,7 @@ class Track(object):
             self.autogen_active_str = ""
 
         if self.date_debut == "1977-01-01" and self.date_fin == "2999-01-01" :
-            self.periode_validite = _(u"IllimitÈe")
+            self.periode_validite = _(u"Illimit√©e")
         else:
             self.periode_validite = _(u"Du %s au %s") % (DateEngFr(self.date_debut), DateEngFr(self.date_fin))
         
@@ -58,7 +58,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.IDactivite = kwds.pop("IDactivite", None)
         self.selectionID = None
         self.selectionTrack = None
@@ -80,7 +80,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT IDunite, nom, abrege, type, date_debut, date_fin, ordre, autogen_active
@@ -115,14 +115,14 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"ID"), "left", 0, "IDunite", typeDonnee="entier"),
             ColumnDefn(_(u"Ordre"), "left", 70, "ordre", typeDonnee="entier"),
             ColumnDefn(_(u"Nom"), 'left', 190, "nom", typeDonnee="texte"),
-            ColumnDefn(_(u"AbrÈgÈ"), "left", 80, "abrege", typeDonnee="texte"),
+            ColumnDefn(_(u"Abr√©g√©"), "left", 80, "abrege", typeDonnee="texte"),
             ColumnDefn(_(u"Type"), "left", 120, "type", typeDonnee="texte"),
-            ColumnDefn(_(u"PÈriode de validitÈ"), "left", 210, "periode_validite", typeDonnee="texte"),
+            ColumnDefn(_(u"P√©riode de validit√©"), "left", 210, "periode_validite", typeDonnee="texte"),
             ColumnDefn(_(u"Auto-gen."), "left", 70, "autogen_active_str", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucune unitÈ de consommation"))
+        self.SetEmptyListMsg(_(u"Aucune unit√© de consommation"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -136,7 +136,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -153,7 +153,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDunite
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -184,14 +184,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
         
         # Item Deplacer vers le haut
-        item = wx.MenuItem(menuPop, 40, _(u"DÈplacer vers le haut"))
+        item = wx.MenuItem(menuPop, 40, _(u"D√©placer vers le haut"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_haut.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Monter, id=40)
 
-        # Item DÈplacer vers le bas
-        item = wx.MenuItem(menuPop, 50, _(u"DÈplacer vers le bas"))
+        # Item D√©placer vers le bas
+        item = wx.MenuItem(menuPop, 50, _(u"D√©placer vers le bas"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_bas.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -201,7 +201,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 60, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 60, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -219,12 +219,12 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des unitÈs"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des unit√©s"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des unitÈs"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des unit√©s"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def Ajouter(self, event):
@@ -237,7 +237,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune unitÈ ‡ modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune unit√© √† modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -250,13 +250,13 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune unitÈ ‡ supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune unit√© √† supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDunite = self.Selection()[0].IDunite
         
-        # VÈrifie que l'unitÈ n'est pas dÈj‡ attribuÈe ‡ une unitÈ de remplissage
+        # V√©rifie que l'unit√© n'est pas d√©j√† attribu√©e √† une unit√© de remplissage
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDunite_remplissage)
         FROM unites_remplissage_unites 
@@ -266,12 +266,12 @@ class ListView(FastObjectListView):
         nbreUnites = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreUnites > 0 :
-            dlg = wx.MessageDialog(self, _(u"Cette unitÈ de consommation a dÈj‡ ÈtÈ attribuÈe ‡ %d unitÈ(s) de remplissage.\n\nVous ne pouvez donc pas la supprimer !") % nbreUnites, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cette unit√© de consommation a d√©j√† √©t√© attribu√©e √† %d unit√©(s) de remplissage.\n\nVous ne pouvez donc pas la supprimer !") % nbreUnites, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # VÈrifie que l'unitÈ n'est pas dÈj‡ attribuÈe ‡ une ouverture
+        # V√©rifie que l'unit√© n'est pas d√©j√† attribu√©e √† une ouverture
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDouverture)
         FROM ouvertures 
@@ -281,12 +281,12 @@ class ListView(FastObjectListView):
         nbreOuvertures = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreOuvertures > 0 :
-            dlg = wx.MessageDialog(self, _(u"Cette unitÈ de consommation a dÈj‡ ÈtÈ attribuÈe ‡ %d ouverture(s).\n\nVous ne pouvez donc pas la supprimer !") % nbreOuvertures, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cette unit√© de consommation a d√©j√† √©t√© attribu√©e √† %d ouverture(s).\n\nVous ne pouvez donc pas la supprimer !") % nbreOuvertures, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # VÈrifie que l'unitÈ n'est pas dÈj‡ attribuÈe ‡ un tarif
+        # V√©rifie que l'unit√© n'est pas d√©j√† attribu√©e √† un tarif
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDcombi_tarif)
         FROM combi_tarifs_unites 
@@ -296,12 +296,12 @@ class ListView(FastObjectListView):
         nbreCombiTarifs = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreCombiTarifs > 0 :
-            dlg = wx.MessageDialog(self, _(u"Cette unitÈ de consommation a dÈj‡ ÈtÈ attribuÈe ‡ une ou plusieurs combinaisons de tarifs.\n\nVous ne pouvez donc pas la supprimer !"), _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cette unit√© de consommation a d√©j√† √©t√© attribu√©e √† une ou plusieurs combinaisons de tarifs.\n\nVous ne pouvez donc pas la supprimer !"), _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # VÈrifie que l'unitÈ n'est pas dÈj‡ attribuÈe ‡ une aide
+        # V√©rifie que l'unit√© n'est pas d√©j√† attribu√©e √† une aide
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDaide_combi_unite)
         FROM aides_combi_unites 
@@ -311,13 +311,13 @@ class ListView(FastObjectListView):
         nbreCombiAides = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreCombiAides > 0 :
-            dlg = wx.MessageDialog(self, _(u"Cette unitÈ de consommation a dÈj‡ ÈtÈ attribuÈe ‡ une ou plusieurs combinaisons d'aides journaliËres.\n\nVous ne pouvez donc pas la supprimer !"), _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cette unit√© de consommation a d√©j√† √©t√© attribu√©e √† une ou plusieurs combinaisons d'aides journali√®res.\n\nVous ne pouvez donc pas la supprimer !"), _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         # Confirmation de suppression
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette unitÈ ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette unit√© ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("unites", "IDunite", IDunite)
@@ -340,7 +340,7 @@ class ListView(FastObjectListView):
 
     def Monter(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune unitÈ dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune unit√© dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -361,7 +361,7 @@ class ListView(FastObjectListView):
     
     def Descendre(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune unitÈ dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune unit√© dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -398,7 +398,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(_(u"Rechercher une unitÈ"))
+        self.SetDescriptiveText(_(u"Rechercher une unit√©"))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

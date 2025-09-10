@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-21 Ivan LUCAS
@@ -16,10 +16,10 @@ from Data import DATA_Bic
 
 
 def GetXML(dictDonnees={}):
-    """ GÈnÈration du fichier d'import Corail """
+    """ G√©n√©ration du fichier d'import Corail """
     doc = Document()
 
-    # GÈnÈration du document XML
+    # G√©n√©ration du document XML
     racine = doc.createElement("ImportCosoluce")
     doc.appendChild(racine)
 
@@ -27,7 +27,7 @@ def GetXML(dictDonnees={}):
     Information = doc.createElement("Information")
     racine.appendChild(Information)
 
-    # Nom de la collectivitÈ
+    # Nom de la collectivit√©
     NomCollectivite = doc.createElement("NomCollectivite")
     NomCollectivite.setAttribute("V", dictDonnees["nom_collectivite"])
     Information.appendChild(NomCollectivite)
@@ -58,7 +58,7 @@ def GetXML(dictDonnees={}):
 
     # TypePiece
     TypePiece = doc.createElement("TypePiece")
-    TypePiece.setAttribute("V", u"PiËce EnCours")
+    TypePiece.setAttribute("V", u"Pi√®ce EnCours")
     TypePieceImport.appendChild(TypePiece)
 
     # Sens
@@ -114,7 +114,7 @@ def GetXML(dictDonnees={}):
         TypeTiers.setAttribute("V", "D")
         InfoTiers.appendChild(TypeTiers)
 
-        # CivilitÈ
+        # Civilit√©
         civilite = dictPiece["titulaire_civilite"]
         if civilite == "M.": civilite = "Mr"
         if civilite == "Melle": civilite = "Mme"
@@ -247,7 +247,7 @@ def GetXML(dictDonnees={}):
             TypeTiersTiersSolidaire.setAttribute("V", "D")
             InfoTiersSolidaire.appendChild(TypeTiersTiersSolidaire)
 
-            # CivilitÈTiersSolidaire
+            # Civilit√©TiersSolidaire
             civilite = dictPiece["tiersSolidaire_civilite"]
             if civilite == "M.": civilite = "Mr"
             if civilite == "Melle": civilite = "Mme"

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-19 Ivan LUCAS
@@ -27,14 +27,14 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = _(u"Vous pouvez consulter ici la liste des consommations badgées sur une période choisie. Commencez par sélectionner une période de référence puis actualisez l'affichage de la liste.")
-        titre = _(u"Consommations badgées")
+        intro = _(u"Vous pouvez consulter ici la liste des consommations badgÃ©es sur une pÃ©riode choisie. Commencez par sÃ©lectionner une pÃ©riode de rÃ©fÃ©rence puis actualisez l'affichage de la liste.")
+        titre = _(u"Consommations badgÃ©es")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Badgeage.png")
         
-        # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
-        self.label_date_debut = wx.StaticText(self, -1, _(u"Période :"))
+        # ParamÃ¨tres
+        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"ParamÃ¨tres"))
+        self.label_date_debut = wx.StaticText(self, -1, _(u"PÃ©riode :"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_date_fin = wx.StaticText(self, -1, _(u"Au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
@@ -69,12 +69,12 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonFermer, self.bouton_fermer)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonActualiser, self.bouton_actualiser)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.Actualiser() 
         
     def __set_properties(self):
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Sélectionnez une date")))
-        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Sélectionnez une date")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une date")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une date")))
         self.bouton_log_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un apercu avant impression")))
         self.bouton_log_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer")))
         self.bouton_log_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
@@ -153,7 +153,7 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Badgeage")
         
     def OnBoutonFermer(self, event): 
-        # Fermeture fenêtre
+        # Fermeture fenÃªtre
         self.EndModal(wx.ID_OK)
 
 

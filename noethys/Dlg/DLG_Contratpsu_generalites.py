@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -22,15 +22,15 @@ class Panel(wx.Panel):
         self.clsbase = clsbase
         self.MAJ_effectuee = False
 
-        # Période
+        # PÃ©riode
         self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"Dates du contrat"))
         self.label_date_debut = wx.StaticText(self, -1, _(u"Du"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_date_fin = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
 
-        # Paramètres
-        self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, _(u"Autres paramètres"))
+        # ParamÃ¨tres
+        self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, _(u"Autres paramÃ¨tres"))
         self.label_observations = wx.StaticText(self, -1, _(u"Observations :"))
         self.ctrl_observations = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE)
 
@@ -38,14 +38,14 @@ class Panel(wx.Panel):
         self.__do_layout()
 
     def __set_properties(self):
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début du contrat")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de dÃ©but du contrat")))
         self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin du contrat")))
-        self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez d'éventuelles observations")))
+        self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez d'Ã©ventuelles observations")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         
-        # Période
+        # PÃ©riode
         staticbox_periode = wx.StaticBoxSizer(self.staticbox_periode_staticbox, wx.VERTICAL)
         grid_sizer_periode = wx.FlexGridSizer(rows=1, cols=5, vgap=10, hgap=10)
         x = self.label_observations.GetSize()[0] - self.label_date_debut.GetSize()[0] - 10
@@ -57,7 +57,7 @@ class Panel(wx.Panel):
         staticbox_periode.Add(grid_sizer_periode, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(staticbox_periode, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
         
-        # Paramètres
+        # ParamÃ¨tres
         staticbox_parametres = wx.StaticBoxSizer(self.staticbox_parametres_staticbox, wx.VERTICAL)
         grid_sizer_parametres = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=10)
         grid_sizer_parametres.Add(self.label_observations, 1, wx.ALIGN_RIGHT, 0)
@@ -74,7 +74,7 @@ class Panel(wx.Panel):
 
     def Validation(self):
         if self.ctrl_date_debut.Validation() == False or self.ctrl_date_debut.GetDate() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début de contrat valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de dÃ©but de contrat valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
@@ -88,7 +88,7 @@ class Panel(wx.Panel):
             return False
 
         if self.ctrl_date_debut.GetDate() > self.ctrl_date_fin.GetDate() :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas avoir une date de début de contrat supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas avoir une date de dÃ©but de contrat supÃ©rieure Ã  la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -56,13 +56,13 @@ class Track(object):
         self.individu_prenom = donnees[11]
         self.titre = donnees[12]
         
-        # Nbre documents scannés
+        # Nbre documents scannÃ©s
         if self.IDpiece in DICT_DOCUMENTS :
             self.nbre_documents = DICT_DOCUMENTS[self.IDpiece]
         else:
             self.nbre_documents = 0
         
-        # Validité de la pièce
+        # ValiditÃ© de la piÃ¨ce
         if str(datetime.date.today()) <= self.date_fin :
             self.valide = True
         else:
@@ -79,7 +79,7 @@ class Track(object):
 
         # Nom des titulaires de famille
         if self.IDfamille != None :
-            self.nomTitulaires = _(u"IDfamille n°%d") % self.IDfamille
+            self.nomTitulaires = _(u"IDfamille nÂ°%d") % self.IDfamille
             if parent.dictFamillesRattachees != None :
                 if self.IDfamille in parent.dictFamillesRattachees :
                     self.nomTitulaires = parent.dictFamillesRattachees[self.IDfamille]["nomsTitulaires"]
@@ -90,7 +90,7 @@ class Track(object):
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.IDindividu = kwds.pop("IDindividu", None)
         self.IDfamille = kwds.pop("IDfamille", None)
         self.dictFamillesRattachees = kwds.pop("dictFamillesRattachees", None)
@@ -117,7 +117,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeID = None
         db = GestionDB.DB()
         
@@ -199,7 +199,7 @@ class ListView(FastObjectListView):
         return listeListeView
     
     def GetDocumentsScan(self):
-        """ Retourne le nbre de documents scannés pour chaque pièce """
+        """ Retourne le nbre de documents scannÃ©s pour chaque piÃ¨ce """
         DB = GestionDB.DB(suffixe="DOCUMENTS")
         req = "SELECT IDdocument, IDpiece FROM documents;"
         DB.ExecuterReq(req)
@@ -224,7 +224,7 @@ class ListView(FastObjectListView):
         
         def FormateDate(dateStr):
             if dateStr == "" : return ""
-            if dateStr == "2999-01-01" : return _(u"Illimitée")
+            if dateStr == "2999-01-01" : return _(u"IllimitÃ©e")
             date = str(datetime.date(year=int(dateStr[:4]), month=int(dateStr[5:7]), day=int(dateStr[8:10])))
             text = str(date[8:10]) + "/" + str(date[5:7]) + "/" + str(date[:4])
             return text
@@ -246,14 +246,14 @@ class ListView(FastObjectListView):
                     ColumnDefn(_(u"ID"), "left", 0, "IDpiece", typeDonnee="entier"),
                     ColumnDefn(u"Du", "left", 85, "date_debut", typeDonnee="date", stringConverter=FormateDate), 
                     ColumnDefn(_(u"au"), "left", 85, "date_fin", typeDonnee="date", stringConverter=FormateDate), 
-                    ColumnDefn(_(u"Nom de la pièce"), 'left', 190, "nom", typeDonnee="texte", imageGetter=GetImageDocument, isSpaceFilling=True),
+                    ColumnDefn(_(u"Nom de la piÃ¨ce"), 'left', 190, "nom", typeDonnee="texte", imageGetter=GetImageDocument, isSpaceFilling=True),
                     ]
             else:
                 liste_Colonnes = [
                     ColumnDefn(_(u"ID"), "left", 0, "IDpiece", typeDonnee="entier"),
                     ColumnDefn(u"Du", "left", 85, "date_debut", typeDonnee="date", stringConverter=FormateDate), 
                     ColumnDefn(_(u"au"), "left", 85, "date_fin", typeDonnee="date", stringConverter=FormateDate), 
-                    ColumnDefn(_(u"Nom de la pièce"), 'left', 165, "nom", typeDonnee="texte", imageGetter=GetImageDocument, isSpaceFilling=True),
+                    ColumnDefn(_(u"Nom de la piÃ¨ce"), 'left', 165, "nom", typeDonnee="texte", imageGetter=GetImageDocument, isSpaceFilling=True),
                     ColumnDefn(_(u"Famille"), 'left', 150, "nomTitulaires", typeDonnee="texte"),
                     ]
         else :
@@ -263,20 +263,20 @@ class ListView(FastObjectListView):
                     ColumnDefn(_(u"ID"), "left", 0, "IDpiece", typeDonnee="entier"),
                     ColumnDefn(u"Du", "left", 85, "date_debut", typeDonnee="date", stringConverter=FormateDate), 
                     ColumnDefn(_(u"au"), "left", 85, "date_fin", typeDonnee="date", stringConverter=FormateDate), 
-                    ColumnDefn(_(u"Nom de la pièce"), 'left', 340, "nom", typeDonnee="texte", imageGetter=GetImageDocument, isSpaceFilling=True),
+                    ColumnDefn(_(u"Nom de la piÃ¨ce"), 'left', 340, "nom", typeDonnee="texte", imageGetter=GetImageDocument, isSpaceFilling=True),
                     ]
             else:
                 liste_Colonnes = [
                     ColumnDefn(_(u"ID"), "left", 0, "IDpiece", typeDonnee="entier"),
                     ColumnDefn(u"Du", "left", 85, "date_debut", typeDonnee="date", stringConverter=FormateDate), 
                     ColumnDefn(_(u"au"), "left", 85, "date_fin", typeDonnee="date", stringConverter=FormateDate), 
-                    ColumnDefn(_(u"Nom de la pièce"), 'left', 165, "nom", typeDonnee="texte", imageGetter=GetImageDocument, isSpaceFilling=True),
+                    ColumnDefn(_(u"Nom de la piÃ¨ce"), 'left', 165, "nom", typeDonnee="texte", imageGetter=GetImageDocument, isSpaceFilling=True),
                     ColumnDefn(_(u"Famille"), 'left', 150, "nomTitulaires", typeDonnee="texte"),
                     ]
         
         self.rowFormatter = rowFormatter
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucune pièce"))
+        self.SetEmptyListMsg(_(u"Aucune piÃ¨ce"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -290,7 +290,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -312,7 +312,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDpiece
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -343,7 +343,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -377,39 +377,39 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des pièces"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des piÃ¨ces"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des pièces"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des piÃ¨ces"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Liste des pièces"))
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des piÃ¨ces"))
         
     def ExportExcel(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Liste des pièces"))
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des piÃ¨ces"))
 
     def AjoutExpress(self, IDfamille=None, IDtype_piece=None, IDindividu=None):
         if IDfamille != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_pieces", "creer") == False : return
         if IDindividu != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_pieces", "creer") == False : return
         
-        # Vérifie que l'individu est rattaché comme REPRESENTANT ou ENFANT à une famille
+        # VÃ©rifie que l'individu est rattachÃ© comme REPRESENTANT ou ENFANT Ã  une famille
         if self.dictFamillesRattachees != None :
             valide = False
             for IDfamilleTmp, dictFamille in self.dictFamillesRattachees.items() :
                 if dictFamille["IDcategorie"] in (1, 2) :
                     valide = True
             if valide == False :
-                dlg = wx.MessageDialog(self, _(u"Pour saisir une pièce, un individu doit obligatoirement être\nrattaché comme représentant ou enfant à une fiche famille !"), _(u"Saisie de pièce impossible"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Pour saisir une piÃ¨ce, un individu doit obligatoirement Ãªtre\nrattachÃ© comme reprÃ©sentant ou enfant Ã  une fiche famille !"), _(u"Saisie de piÃ¨ce impossible"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
 
-        # Ouverture de la fenêtre de saisie
+        # Ouverture de la fenÃªtre de saisie
         from Dlg import DLG_Saisie_piece
         dlg = DLG_Saisie_piece.Dialog(self, IDpiece=None, IDfamille=self.IDfamille, IDindividu=self.IDindividu, dictFamillesRattachees=self.dictFamillesRattachees)
         dlg.SelectPiece(IDfamille, IDtype_piece, IDindividu)
@@ -429,19 +429,19 @@ class ListView(FastObjectListView):
         if self.IDfamille != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_pieces", "creer") == False : return
         if self.IDindividu != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_pieces", "creer") == False : return
 
-        # Vérifie que l'individu est rattaché comme REPRESENTANT ou ENFANT à une famille
+        # VÃ©rifie que l'individu est rattachÃ© comme REPRESENTANT ou ENFANT Ã  une famille
         if self.dictFamillesRattachees != None :
             valide = False
             for IDfamilleTmp, dictFamille in self.dictFamillesRattachees.items() :
                 if dictFamille["IDcategorie"] in (1, 2) :
                     valide = True
             if valide == False :
-                dlg = wx.MessageDialog(self, _(u"Pour saisir une pièce, un individu doit obligatoirement être\nrattaché comme représentant ou enfant à une fiche famille !"), _(u"Saisie de pièce impossible"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Pour saisir une piÃ¨ce, un individu doit obligatoirement Ãªtre\nrattachÃ© comme reprÃ©sentant ou enfant Ã  une fiche famille !"), _(u"Saisie de piÃ¨ce impossible"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
 
-        # Ouverture de la fenêtre de saisie
+        # Ouverture de la fenÃªtre de saisie
         from Dlg import DLG_Saisie_piece
         dlg = DLG_Saisie_piece.Dialog(self, IDpiece=None, IDfamille=self.IDfamille, IDindividu=self.IDindividu, dictFamillesRattachees=self.dictFamillesRattachees)
         if dlg.ShowModal() == wx.ID_OK:
@@ -455,7 +455,7 @@ class ListView(FastObjectListView):
         if self.IDindividu != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_pieces", "modifier") == False : return
         
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune pièce à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune piÃ¨ce Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -472,7 +472,7 @@ class ListView(FastObjectListView):
         if self.IDindividu != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_pieces", "supprimer") == False : return
 
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune pièce à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune piÃ¨ce Ã  supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -480,22 +480,22 @@ class ListView(FastObjectListView):
         nomPiece = self.Selection()[0].nom
         IDindividu = self.Selection()[0].IDindividu
         IDfamille = self.Selection()[0].IDfamille
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette pièce ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette piÃ¨ce ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
-            # Suppression de la pièce
+            # Suppression de la piÃ¨ce
             DB = GestionDB.DB()
             DB.ReqDEL("pieces", "IDpiece", IDpiece)
             DB.Close() 
-            # Suppression des documents scannés rattachés
+            # Suppression des documents scannÃ©s rattachÃ©s
             DB = GestionDB.DB(suffixe="DOCUMENTS")
             DB.ReqDEL("documents", "IDpiece", IDpiece)
             DB.Close()
-            # Mémorise l'action dans l'historique
+            # MÃ©morise l'action dans l'historique
             UTILS_Historique.InsertActions([{
                 "IDindividu" : IDindividu,
                 "IDfamille" : IDfamille,
                 "IDcategorie" : 17, 
-                "action" : _(u"Suppression de la pièce ID%d '%s'") % (IDpiece, nomPiece),
+                "action" : _(u"Suppression de la piÃ¨ce ID%d '%s'") % (IDpiece, nomPiece),
                 },])
                 
             # Actualisation de l'affichage
@@ -512,7 +512,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(_(u"Rechercher une pièce..."))
+        self.SetDescriptiveText(_(u"Rechercher une piÃ¨ce..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

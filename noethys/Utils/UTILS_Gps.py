@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -21,7 +21,7 @@ def GPS(numero="", rue="", cp="", ville="", pays=""):
         xml = f.read()
         data = json.loads(xml)
         
-        # Recherche coordonnées
+        # Recherche coordonnÃ©es
         lat = data['results'][0]['geometry']['location']['lat']
         long = data['results'][0]['geometry']['location']['lng']
         # Recherche Pays

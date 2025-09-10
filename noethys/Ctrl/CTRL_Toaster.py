@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -18,7 +18,7 @@ import wx.lib.agw.toasterbox as Toaster
 
 
 def ToasterUtilisateur(parent, titre=u"", prenom=_(u"Philippe"), nomImage="Femme", taille=(200, 100), couleurFond="#000000"):
-    """ Affiche une boîte de dialogue temporaire """
+    """ Affiche une boÃ®te de dialogue temporaire """
     largeur, hauteur = (400, 148) #taille
     tb = Toaster.ToasterBox(parent, Toaster.TB_COMPLEX, Toaster.TB_DEFAULT_STYLE, Toaster.TB_ONTIME) # TB_CAPTION
     tb.SetTitle(titre)

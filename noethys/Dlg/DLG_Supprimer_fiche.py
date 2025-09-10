@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -32,7 +32,7 @@ class Dialog(wx.Dialog):
         self.IDfamille = IDfamille
         
         self.staticbox_staticbox = wx.StaticBox(self, -1, u"")
-        self.label_intro = wx.StaticText(self, -1, _(u"Souhaitez-vous détacher ou supprimer cette fiche ?"))
+        self.label_intro = wx.StaticText(self, -1, _(u"Souhaitez-vous dÃ©tacher ou supprimer cette fiche ?"))
         
         self.bouton_detacher = wx.BitmapButton(self, ID_BOUTON_DETACHER, wx.Bitmap(Chemins.GetStaticPath("Images/BoutonsImages/Detacher_fiche.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer = wx.BitmapButton(self, ID_BOUTON_SUPPRIMER, wx.Bitmap(Chemins.GetStaticPath("Images/BoutonsImages/Supprimer_fiche.png"), wx.BITMAP_TYPE_ANY))
@@ -51,7 +51,7 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Supprimer une fiche"))
-        self.bouton_detacher.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour détacher la fiche")))
+        self.bouton_detacher.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dÃ©tacher la fiche")))
         self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la fiche")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -93,10 +93,10 @@ class Dialog(wx.Dialog):
         if resultat == "famille" : self.EndModal(ID_SUPPRIMER_FAMILLE)
     
     def Detacher(self):
-        """ Processus de détachement d'une fiche individuelle """
+        """ Processus de dÃ©tachement d'une fiche individuelle """
         DB = GestionDB.DB()
     
-        # Vérifie si des pièces n'existent pas
+        # VÃ©rifie si des piÃ¨ces n'existent pas
         req = """
         SELECT IDpiece, IDtype_piece
         FROM pieces
@@ -105,13 +105,13 @@ class Dialog(wx.Dialog):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         if len(listeDonnees) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas détacher cette fiche car %d pièce(s) existent déjà pour cet individu sur cette fiche famille !") % len(listeDonnees), _(u"Détachement impossible"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas dÃ©tacher cette fiche car %d piÃ¨ce(s) existent dÃ©jÃ  pour cet individu sur cette fiche famille !") % len(listeDonnees), _(u"DÃ©tachement impossible"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             DB.Close()
             return False
 
-        # Vérifie si des cotisations n'existent pas
+        # VÃ©rifie si des cotisations n'existent pas
         req = """
         SELECT IDcotisation, IDfamille
         FROM cotisations
@@ -120,13 +120,13 @@ class Dialog(wx.Dialog):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         if len(listeDonnees) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas détacher cette fiche car %d cotisation(s) individuelle(s) existe(nt) déjà pour cet individu sur cette fiche famille !") % len(listeDonnees), _(u"Détachement impossible"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas dÃ©tacher cette fiche car %d cotisation(s) individuelle(s) existe(nt) dÃ©jÃ  pour cet individu sur cette fiche famille !") % len(listeDonnees), _(u"DÃ©tachement impossible"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             DB.Close()
             return False
         
-        # Vérifie si des inscriptions n'existent pas
+        # VÃ©rifie si des inscriptions n'existent pas
         req = """
         SELECT IDinscription, IDactivite
         FROM inscriptions
@@ -135,13 +135,13 @@ class Dialog(wx.Dialog):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         if len(listeDonnees) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas détacher cette fiche car cet individu est déjà inscrit à %d activité(s) sur cette fiche famille !") % len(listeDonnees), _(u"Détachement impossible"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas dÃ©tacher cette fiche car cet individu est dÃ©jÃ  inscrit Ã  %d activitÃ©(s) sur cette fiche famille !") % len(listeDonnees), _(u"DÃ©tachement impossible"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             DB.Close()
             return False
         
-        # Vérifie si des consommations n'existent pas
+        # VÃ©rifie si des consommations n'existent pas
         req = """
         SELECT IDconso, IDactivite
         FROM consommations
@@ -151,13 +151,13 @@ class Dialog(wx.Dialog):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         if len(listeDonnees) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas détacher cette fiche car %d consommation(s) ont déjà été enregistrée(s) pour cet individu sur cette fiche famille !") % len(listeDonnees), _(u"Détachement impossible"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas dÃ©tacher cette fiche car %d consommation(s) ont dÃ©jÃ  Ã©tÃ© enregistrÃ©e(s) pour cet individu sur cette fiche famille !") % len(listeDonnees), _(u"DÃ©tachement impossible"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             DB.Close()
             return False
 
-        # Vérifie si des prestations n'existent pas
+        # VÃ©rifie si des prestations n'existent pas
         req = """
         SELECT IDprestation, label
         FROM prestations
@@ -166,13 +166,13 @@ class Dialog(wx.Dialog):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         if len(listeDonnees) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas détacher cette fiche car %d prestations(s) ont déjà été enregistrée(s) pour cet individu sur cette fiche famille !") % len(listeDonnees), _(u"Détachement impossible"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas dÃ©tacher cette fiche car %d prestations(s) ont dÃ©jÃ  Ã©tÃ© enregistrÃ©e(s) pour cet individu sur cette fiche famille !") % len(listeDonnees), _(u"DÃ©tachement impossible"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             DB.Close()
             return False
 
-        # Vérifie si des messages n'existent pas
+        # VÃ©rifie si des messages n'existent pas
         req = """
         SELECT IDmessage, type
         FROM messages
@@ -181,13 +181,13 @@ class Dialog(wx.Dialog):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         if len(listeDonnees) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas détacher cette fiche car %d message(s) ont déjà été enregistré(s) pour cet individu sur cette fiche famille !") % len(listeDonnees), _(u"Détachement impossible"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas dÃ©tacher cette fiche car %d message(s) ont dÃ©jÃ  Ã©tÃ© enregistrÃ©(s) pour cet individu sur cette fiche famille !") % len(listeDonnees), _(u"DÃ©tachement impossible"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             DB.Close()
             return False
         
-        # Compte le nbre d'individus présents dans la fiche
+        # Compte le nbre d'individus prÃ©sents dans la fiche
         req = """
         SELECT IDrattachement, IDindividu
         FROM rattachements
@@ -197,7 +197,7 @@ class Dialog(wx.Dialog):
         listeDonnees = DB.ResultatReq()
         nbreAutresIndividus = len(listeDonnees)
         
-        # Vérifie qu'il ne s'agit pas du dernier titulaire
+        # VÃ©rifie qu'il ne s'agit pas du dernier titulaire
         req = """
         SELECT IDrattachement, IDindividu
         FROM rattachements
@@ -212,28 +212,28 @@ class Dialog(wx.Dialog):
         if dernierTitulaire == True :
             if nbreAutresIndividus > 0 :
             # S'il s'agit du dernier titulaire mais qu'il y a d'autres membres dans la fiche famille
-                dlg = wx.MessageDialog(self, _(u"Il s'agit du dernier titulaire du dossier, vous ne pouvez donc pas le détacher !\n\n(Si vous souhaitez supprimer la fiche famille, commencez pas détacher ou supprimer tous les autres membres de cette fiche)"), _(u"Détachement impossible"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Il s'agit du dernier titulaire du dossier, vous ne pouvez donc pas le dÃ©tacher !\n\n(Si vous souhaitez supprimer la fiche famille, commencez pas dÃ©tacher ou supprimer tous les autres membres de cette fiche)"), _(u"DÃ©tachement impossible"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 DB.Close()
                 return False
             else:
                 # S'il s'agit du dernier membre de la famille
-                dlg = wx.MessageDialog(self, _(u"Il s'agit du dernier membre de cette famille.\n\nSouhaitez-vous détacher la fiche individuelle et supprimer la fiche famille ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Il s'agit du dernier membre de cette famille.\n\nSouhaitez-vous dÃ©tacher la fiche individuelle et supprimer la fiche famille ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
                 reponse = dlg.ShowModal()
                 dlg.Destroy()
                 if reponse !=  wx.ID_YES :
-                    dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas détacher le dernier membre d'une famille sans supprimer la fiche famille !"), _(u"Détachement impossible"), wx.OK | wx.ICON_ERROR)
+                    dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas dÃ©tacher le dernier membre d'une famille sans supprimer la fiche famille !"), _(u"DÃ©tachement impossible"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
                 
-                # Vérifie qu'il est possible de supprimer la fiche famille
+                # VÃ©rifie qu'il est possible de supprimer la fiche famille
                 req = """SELECT IDaide, nom FROM aides WHERE IDfamille=%d""" % self.IDfamille
                 DB.ExecuterReq(req)
                 listeDonnees = DB.ResultatReq()
                 if len(listeDonnees) >0 :
-                    dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer la fiche famille car il y a déjà %d aide(s) journalière(s) enregistrée(s) dans cette fiche.") % len(listeDonnees), _(u"Détachement impossible"), wx.OK | wx.ICON_ERROR)
+                    dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer la fiche famille car il y a dÃ©jÃ  %d aide(s) journaliÃ¨re(s) enregistrÃ©e(s) dans cette fiche.") % len(listeDonnees), _(u"DÃ©tachement impossible"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
@@ -242,7 +242,7 @@ class Dialog(wx.Dialog):
                 DB.ExecuterReq(req)
                 listeDonnees = DB.ResultatReq()
                 if len(listeDonnees) >0 :
-                    dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer la fiche famille car il y a déjà %d cotisation(s) enregistrée(s) dans cette fiche.") % len(listeDonnees), _(u"Détachement impossible"), wx.OK | wx.ICON_ERROR)
+                    dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer la fiche famille car il y a dÃ©jÃ  %d cotisation(s) enregistrÃ©e(s) dans cette fiche.") % len(listeDonnees), _(u"DÃ©tachement impossible"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
@@ -253,12 +253,12 @@ class Dialog(wx.Dialog):
                 DB.ExecuterReq(req)
                 listeDonnees = DB.ResultatReq()
                 if len(listeDonnees) >0 :
-                    dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer la fiche famille car il y a déjà %d règlement(s) enregistré(s) dans cette fiche.") % len(listeDonnees), _(u"Détachement impossible"), wx.OK | wx.ICON_ERROR)
+                    dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer la fiche famille car il y a dÃ©jÃ  %d rÃ¨glement(s) enregistrÃ©(s) dans cette fiche.") % len(listeDonnees), _(u"DÃ©tachement impossible"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
 
-                # Détachement de la fiche individu
+                # DÃ©tachement de la fiche individu
                 req = "DELETE FROM rattachements WHERE IDfamille=%d AND IDindividu=%d;" % (self.IDfamille, self.IDindividu)
                 DB.ExecuterReq(req)
                 
@@ -270,7 +270,7 @@ class Dialog(wx.Dialog):
                 
         else :
             # Suppression du rattachement de l'individu
-            dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de vouloir détacher cette fiche ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Etes-vous sÃ»r de vouloir dÃ©tacher cette fiche ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse !=  wx.ID_YES :
@@ -280,12 +280,12 @@ class Dialog(wx.Dialog):
             DB.Commit() 
             DB.Close()
         
-            # Mémorise l'action dans l'historique
+            # MÃ©morise l'action dans l'historique
             UTILS_Historique.InsertActions([{
                     "IDfamille" : self.IDfamille,
                     "IDindividu" : self.IDindividu,
                     "IDcategorie" : 14, 
-                    "action" : _(u"Détachement de la fiche individuelle ID%d de la famille ID %d") % (self.IDindividu, self.IDfamille),
+                    "action" : _(u"DÃ©tachement de la fiche individuelle ID%d de la famille ID %d") % (self.IDindividu, self.IDfamille),
                     },])
                     
             return True
@@ -302,7 +302,7 @@ class Dialog(wx.Dialog):
         """ Processus de suppression d'une fiche individuelle """
         DB = GestionDB.DB()
         
-        # Vérifie si cet individu n'est pas rattaché à une autre famille
+        # VÃ©rifie si cet individu n'est pas rattachÃ© Ã  une autre famille
         req = """
         SELECT IDrattachement, IDfamille
         FROM rattachements
@@ -311,13 +311,13 @@ class Dialog(wx.Dialog):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         if len(listeDonnees) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer cette fiche car elle est également rattachée à %d autre(s) famille(s).\n\nSi vous souhaitez vraiment la supprimer, veuillez la détacher de l'autre famille !") % len(listeDonnees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer cette fiche car elle est Ã©galement rattachÃ©e Ã  %d autre(s) famille(s).\n\nSi vous souhaitez vraiment la supprimer, veuillez la dÃ©tacher de l'autre famille !") % len(listeDonnees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             DB.Close()
             return False
         
-        # Vérifie si des pièces n'existent pas
+        # VÃ©rifie si des piÃ¨ces n'existent pas
         req = """
         SELECT IDpiece, IDtype_piece
         FROM pieces
@@ -326,13 +326,13 @@ class Dialog(wx.Dialog):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         if len(listeDonnees) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer cette fiche car %d pièce(s) existent déjà pour cet individu sur cette fiche famille !") % len(listeDonnees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer cette fiche car %d piÃ¨ce(s) existent dÃ©jÃ  pour cet individu sur cette fiche famille !") % len(listeDonnees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             DB.Close()
             return False
 
-        # Vérifie si des cotisations n'existent pas
+        # VÃ©rifie si des cotisations n'existent pas
         req = """
         SELECT IDcotisation, IDfamille
         FROM cotisations
@@ -341,13 +341,13 @@ class Dialog(wx.Dialog):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         if len(listeDonnees) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer cette fiche car %d cotisation(s) individuelle(s) existe(nt) déjà pour cet individu sur cette fiche famille !") % len(listeDonnees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer cette fiche car %d cotisation(s) individuelle(s) existe(nt) dÃ©jÃ  pour cet individu sur cette fiche famille !") % len(listeDonnees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             DB.Close()
             return False
         
-        # Vérifie si des inscriptions n'existent pas
+        # VÃ©rifie si des inscriptions n'existent pas
         req = """
         SELECT IDinscription, IDactivite
         FROM inscriptions
@@ -356,13 +356,13 @@ class Dialog(wx.Dialog):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         if len(listeDonnees) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer cette fiche car cet individu est déjà inscrit à %d activité(s) sur cette fiche famille !") % len(listeDonnees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer cette fiche car cet individu est dÃ©jÃ  inscrit Ã  %d activitÃ©(s) sur cette fiche famille !") % len(listeDonnees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             DB.Close()
             return False
         
-        # Vérifie si des consommations n'existent pas
+        # VÃ©rifie si des consommations n'existent pas
         req = """
         SELECT IDconso, IDactivite
         FROM consommations
@@ -372,13 +372,13 @@ class Dialog(wx.Dialog):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         if len(listeDonnees) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer cette fiche car %d consommation(s) ont déjà été enregistrée(s) pour cet individu sur cette fiche famille !") % len(listeDonnees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer cette fiche car %d consommation(s) ont dÃ©jÃ  Ã©tÃ© enregistrÃ©e(s) pour cet individu sur cette fiche famille !") % len(listeDonnees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             DB.Close()
             return False
 
-        # Vérifie si des prestations n'existent pas
+        # VÃ©rifie si des prestations n'existent pas
         req = """
         SELECT IDprestation, label
         FROM prestations
@@ -387,13 +387,13 @@ class Dialog(wx.Dialog):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         if len(listeDonnees) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer cette fiche car %d prestations(s) ont déjà été enregistrée(s) pour cet individu sur cette fiche famille !") % len(listeDonnees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer cette fiche car %d prestations(s) ont dÃ©jÃ  Ã©tÃ© enregistrÃ©e(s) pour cet individu sur cette fiche famille !") % len(listeDonnees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             DB.Close()
             return False
 
-        # Vérifie si des messages n'existent pas
+        # VÃ©rifie si des messages n'existent pas
         req = """
         SELECT IDmessage, type
         FROM messages
@@ -402,13 +402,13 @@ class Dialog(wx.Dialog):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         if len(listeDonnees) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer cette fiche car %d message(s) ont déjà été enregistré(s) pour cet individu sur cette fiche famille !") % len(listeDonnees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer cette fiche car %d message(s) ont dÃ©jÃ  Ã©tÃ© enregistrÃ©(s) pour cet individu sur cette fiche famille !") % len(listeDonnees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             DB.Close()
             return False
         
-        # Compte le nbre d'individus présents dans la fiche
+        # Compte le nbre d'individus prÃ©sents dans la fiche
         req = """
         SELECT IDrattachement, IDindividu
         FROM rattachements
@@ -418,7 +418,7 @@ class Dialog(wx.Dialog):
         listeDonnees = DB.ResultatReq()
         nbreAutresIndividus = len(listeDonnees)
         
-        # Vérifie qu'il ne s'agit pas du dernier titulaire
+        # VÃ©rifie qu'il ne s'agit pas du dernier titulaire
         req = """
         SELECT IDrattachement, IDindividu
         FROM rattachements
@@ -433,7 +433,7 @@ class Dialog(wx.Dialog):
         if dernierTitulaire == True :
             if nbreAutresIndividus > 0 :
                 # S'il s'agit du dernier titulaire mais qu'il y a d'autres membres dans la fiche famille
-                dlg = wx.MessageDialog(self, _(u"Il s'agit du dernier titulaire du dossier, vous ne pouvez donc pas le supprimer !\n\n(Si vous souhaitez supprimer la fiche famille, commencez pas détacher ou supprimer tous les autres membres de cette fiche)"), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Il s'agit du dernier titulaire du dossier, vous ne pouvez donc pas le supprimer !\n\n(Si vous souhaitez supprimer la fiche famille, commencez pas dÃ©tacher ou supprimer tous les autres membres de cette fiche)"), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 DB.Close()
@@ -450,12 +450,12 @@ class Dialog(wx.Dialog):
                     DB.Close()
                     return False
                 
-                # Vérifie qu'il est possible de supprimer la fiche famille
+                # VÃ©rifie qu'il est possible de supprimer la fiche famille
                 req = """SELECT IDaide, nom FROM aides WHERE IDfamille=%d""" % self.IDfamille
                 DB.ExecuterReq(req)
                 listeDonnees = DB.ResultatReq()
                 if len(listeDonnees) >0 :
-                    dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer la fiche famille car il y a déjà %d aide(s) journalière(s) enregistrée(s) dans cette fiche.") % len(listeDonnees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
+                    dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer la fiche famille car il y a dÃ©jÃ  %d aide(s) journaliÃ¨re(s) enregistrÃ©e(s) dans cette fiche.") % len(listeDonnees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
                     DB.Close()
@@ -465,7 +465,7 @@ class Dialog(wx.Dialog):
                 DB.ExecuterReq(req)
                 listeDonnees = DB.ResultatReq()
                 if len(listeDonnees) >0 :
-                    dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer la fiche famille car il y a déjà %d cotisation(s) enregistrée(s) dans cette fiche.") % len(listeDonnees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
+                    dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer la fiche famille car il y a dÃ©jÃ  %d cotisation(s) enregistrÃ©e(s) dans cette fiche.") % len(listeDonnees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
                     DB.Close()
@@ -477,7 +477,7 @@ class Dialog(wx.Dialog):
                 DB.ExecuterReq(req)
                 listeDonnees = DB.ResultatReq()
                 if len(listeDonnees) >0 :
-                    dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer la fiche famille car il y a déjà %d règlement(s) enregistré(s) dans cette fiche.") % len(listeDonnees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
+                    dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer la fiche famille car il y a dÃ©jÃ  %d rÃ¨glement(s) enregistrÃ©(s) dans cette fiche.") % len(listeDonnees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
                     DB.Close()
@@ -493,7 +493,7 @@ class Dialog(wx.Dialog):
                 
         else :
             # Suppression de la fiche individuelle
-            dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de vouloir supprimer cette fiche ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Etes-vous sÃ»r de vouloir supprimer cette fiche ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse !=  wx.ID_YES :

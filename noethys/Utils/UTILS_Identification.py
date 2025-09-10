@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -13,7 +13,7 @@ from Ctrl import CTRL_Bouton_image
 
 
 def GetIDutilisateur():
-    """ Récupère le IDutilisateur actif dans la fenêtre principale """
+    """ RÃ©cupÃ¨re le IDutilisateur actif dans la fenÃªtre principale """
     IDutilisateur = None
     topWindow = wx.GetApp().GetTopWindow()
     nomWindow = topWindow.GetName()
@@ -25,7 +25,7 @@ def GetIDutilisateur():
     
 
 def GetDictUtilisateur():
-    """ Récupère le dictUtilisateur actif dans la fenêtre principale """
+    """ RÃ©cupÃ¨re le dictUtilisateur actif dans la fenÃªtre principale """
     dictUtilisateur = None
     topWindow = wx.GetApp().GetTopWindow()
     nomWindow = topWindow.GetName()
@@ -34,7 +34,7 @@ def GetDictUtilisateur():
     return dictUtilisateur
 
 def GetAutreDictUtilisateur(IDutilisateur=None):
-    """ Récupère un dictUtilisateur autre que l'utilisateur actif """
+    """ RÃ©cupÃ¨re un dictUtilisateur autre que l'utilisateur actif """
     dictUtilisateur = None
     topWindow = wx.GetApp().GetTopWindow()
     nomWindow = topWindow.GetName()

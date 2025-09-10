@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -27,14 +27,14 @@ TEXTE_ACCUEIL = u"""
 <B><FONT SIZE=10>Bienvenue !</B></FONT><BR>
 <BR><BR>
 <FONT SIZE=3>
-Bienvenue dans Noethys, le logiciel libre et gratuit de gestion multi-activités pour les accueils de 
-loisirs, crèches, cantines, garderies périscolaires, secteurs jeunes, activités sportives et culturelles, etc...
-Pour découvrir toutes les fonctionnalités du logiciel, suivre l'évolution du projet, 
-ou échanger sur le forum d'entraide, consultez le site dédié <A HREF="Saisie">www.noethys.com</A>.
+Bienvenue dans Noethys, le logiciel libre et gratuit de gestion multi-activitÃ©s pour les accueils de 
+loisirs, crÃ¨ches, cantines, garderies pÃ©riscolaires, secteurs jeunes, activitÃ©s sportives et culturelles, etc...
+Pour dÃ©couvrir toutes les fonctionnalitÃ©s du logiciel, suivre l'Ã©volution du projet, 
+ou Ã©changer sur le forum d'entraide, consultez le site dÃ©diÃ© <A HREF="Saisie">www.noethys.com</A>.
 <BR><BR>
-Si vous utilisez Noethys pour la première fois, il vous est recommandé de charger 
-dès à présent un des fichiers exemples proposés ci-dessous dont les données fictives vous permettront
-d'appréhender rapidement les principales fonctionnalités du logiciel.
+Si vous utilisez Noethys pour la premiÃ¨re fois, il vous est recommandÃ© de charger 
+dÃ¨s Ã  prÃ©sent un des fichiers exemples proposÃ©s ci-dessous dont les donnÃ©es fictives vous permettront
+d'apprÃ©hender rapidement les principales fonctionnalitÃ©s du logiciel.
 (Notez que vous pourrez toujours le faire plus tard depuis le menu Fichier > Ouvrir un fichier)
 </FONT>
 """ 
@@ -78,7 +78,7 @@ class Dialog(wx.Dialog):
         self.ctrl_html = MyHtml(self, texte=TEXTE_ACCUEIL, hauteur=230)
         
         # Liste Fichiers exemples
-        self.label_fichiers = wx.StaticText(self, -1, _(u"Sélectionnez un fichier exemple puis cliquez sur Ok :"))
+        self.label_fichiers = wx.StaticText(self, -1, _(u"SÃ©lectionnez un fichier exemple puis cliquez sur Ok :"))
         self.label_fichiers.SetFont(wx.Font(9, wx.SWISS, wx.NORMAL, wx.BOLD))
         self.ctrl_fichiers = CTRL_Liste_fichiers.CTRL(self, prefixe="EXEMPLE_", details=False, mode="local")
         self.ctrl_fichiers.SetMinSize((-1, 100))
@@ -98,8 +98,8 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Bienvenue"))
-        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir le fichier sélectionné dans la liste")))
-        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer cette fenêtre")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir le fichier sÃ©lectionnÃ© dans la liste")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer cette fenÃªtre")))
         self.SetMinSize((800, 640))
 
     def __do_layout(self):
@@ -140,7 +140,7 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event):
         index = self.ctrl_fichiers.GetFirstSelected()
         if index == -1 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun fichier dans la liste !\n\nSi vous ne souhaitez pas ouvrir de fichier maintenant, cliquez sur le bouton Fermer. Vous pourrez le faire ultérieurement depuis le menu Fichier > Ouvrir un fichier."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun fichier dans la liste !\n\nSi vous ne souhaitez pas ouvrir de fichier maintenant, cliquez sur le bouton Fermer. Vous pourrez le faire ultÃ©rieurement depuis le menu Fichier > Ouvrir un fichier."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return 
@@ -151,7 +151,7 @@ class Dialog(wx.Dialog):
         dictItem = self.ctrl_fichiers.GetItemPyData(index)
         nomFichier = dictItem["titre"]
         if six.PY2:
-            nomFichier = nomFichier.decode("iso-8859-15")
+            nomFichier = nomFichier.decode("utf8")
         return nomFichier
 
 

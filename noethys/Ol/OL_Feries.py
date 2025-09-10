@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -29,7 +29,7 @@ from Utils import UTILS_Utilisateurs
 
 def dateEnDateComplet(jour, mois, annee):
     """ Transforme le format "aaaa-mm-jj" en "mercredi 12 septembre 2008" """
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     listeJours = (_(u"lundi"), _(u"mardi"), _(u"mercredi"), _(u"jeudi"), _(u"vendredi"), _(u"samedi"), _(u"dimanche"))
     jourSemaine = int(datetime.date(annee, mois, jour).strftime("%w"))
     texte = listeJours[jourSemaine-1] + " " + str(jour) + " " + listeMois[mois-1] + " " + str(annee)
@@ -59,7 +59,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.type = kwds.pop("type", None)
         self.selectionID = None
         self.selectionTrack = None
@@ -81,7 +81,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT IDferie, type, nom, jour, mois, annee
@@ -110,7 +110,7 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
         
         def FormateDate(valeur):
-            listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+            listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
             annee, mois, jour = valeur.split("-")
             if annee != "0" :
                 texte = _(u"Le %s") % dateEnDateComplet(int(jour), int(mois), int(annee))
@@ -125,7 +125,7 @@ class ListView(FastObjectListView):
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucun jour férié %s") % self.type)
+        self.SetEmptyListMsg(_(u"Aucun jour fÃ©riÃ© %s") % self.type)
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[2])
         self.SetObjects(self.donnees)
@@ -139,7 +139,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -156,7 +156,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDferie
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -187,7 +187,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -205,12 +205,12 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des jours fériés"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des jours fÃ©riÃ©s"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des jours fériés"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des jours fÃ©riÃ©s"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
 
@@ -238,7 +238,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_feries", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun jour férié à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun jour fÃ©riÃ© Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -275,11 +275,11 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_feries", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun jour férié à supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun jour fÃ©riÃ© Ã  supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce jour férié ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce jour fÃ©riÃ© ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             IDferie = self.Selection()[0].IDferie
             DB = GestionDB.DB()
@@ -335,7 +335,7 @@ class Saisie(wx.Dialog):
         for x in range(1, 32) : choices.append(str(x))
         self.choice_jour_fixe = wx.Choice(self, -1, choices=choices)
         self.label_mois_fixe = wx.StaticText(self, -1, _(u"Mois :"))
-        self.choice_mois_fixe = wx.Choice(self, -1, choices=[_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre")])
+        self.choice_mois_fixe = wx.Choice(self, -1, choices=[_(u"Janvier"), _(u"FÃ©vrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"AoÃ»t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"DÃ©cembre")])
         self.label_date_variable = wx.StaticText(self, -1, _(u"Date :"))
         self.datepicker_date_variable = MyDatePickerCtrl(self)
         
@@ -343,7 +343,7 @@ class Saisie(wx.Dialog):
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         
-        # Affiche en fonction du type de de jour férié
+        # Affiche en fonction du type de de jour fÃ©riÃ©
         if self.type == "fixe" :
             self.label_date_variable.Show(False)
             self.datepicker_date_variable.Show(False)
@@ -353,26 +353,26 @@ class Saisie(wx.Dialog):
             self.label_mois_fixe.Show(False)
             self.choice_mois_fixe.Show(False)
             
-        # Propriétés
+        # PropriÃ©tÃ©s
         self.choice_jour_fixe.SetMinSize((50, -1))
         self.choice_mois_fixe.SetMinSize((130, 21))
-        self.text_ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour ce jour férié (ex: 'Noël', 'Ascension', 'Jour de l'an', etc...)")))
-        self.choice_jour_fixe.SetToolTip(wx.ToolTip(_(u"Sélectionnez le jour")))
-        self.choice_mois_fixe.SetToolTip(wx.ToolTip(_(u"Sélectionnez le mois")))
-        self.datepicker_date_variable.SetToolTip(wx.ToolTip(_(u"Saisissez ou sélectionnez une date pour ce jour férié")))
+        self.text_ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour ce jour fÃ©riÃ© (ex: 'NoÃ«l', 'Ascension', 'Jour de l'an', etc...)")))
+        self.choice_jour_fixe.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le jour")))
+        self.choice_mois_fixe.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le mois")))
+        self.datepicker_date_variable.SetToolTip(wx.ToolTip(_(u"Saisissez ou sÃ©lectionnez une date pour ce jour fÃ©riÃ©")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler la saisie")))
         if IDferie == None :
             if self.type == "fixe" :
-                self.SetTitle(_(u"Saisie d'un jour férié fixe"))
+                self.SetTitle(_(u"Saisie d'un jour fÃ©riÃ© fixe"))
             else:
-                self.SetTitle(_(u"Saisie d'un jour férié variable"))
+                self.SetTitle(_(u"Saisie d'un jour fÃ©riÃ© variable"))
         else:
             if self.type == "fixe" :
-                self.SetTitle(_(u"Modification d'un jour férié fixe"))
+                self.SetTitle(_(u"Modification d'un jour fÃ©riÃ© fixe"))
             else:
-                self.SetTitle(_(u"Modification d'un jour férié variable"))
+                self.SetTitle(_(u"Modification d'un jour fÃ©riÃ© variable"))
         self.SetMinSize((350, -1))
     
         # Layout
@@ -451,7 +451,7 @@ class Saisie(wx.Dialog):
             
     def OnBoutonOk(self, event):
         if self.GetNom() == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour ce jour férié !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour ce jour fÃ©riÃ© !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.text_ctrl_nom.SetFocus()
@@ -459,13 +459,13 @@ class Saisie(wx.Dialog):
         if self.type == "fixe" :
             # Variable
             if self.GetJour() == 0 :
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un jour !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un jour !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.choice_jour_fixe.SetFocus()
                 return
             if self.GetMois() == 0 :
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un mois !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un mois !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.choice_mois_fixe.SetFocus()
@@ -487,7 +487,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(_(u"Rechercher un jour férié %s...") % self.parent.type)
+        self.SetDescriptiveText(_(u"Rechercher un jour fÃ©riÃ© %s...") % self.parent.type)
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -49,20 +49,20 @@ LISTE_STYLES = [
     ]
     
 LISTE_THEMES = [
-    {"code" : "defaut", "label" : _(u"DÈfaut"), "image" : "Theme_defaut.png", "dlg" : {"couleurClaire" : wx.Colour(206, 196, 190), "couleurFoncee" : wx.Colour(169, 156, 146)}, },
+    {"code" : "defaut", "label" : _(u"d√©faut"), "image" : "Theme_defaut.png", "dlg" : {"couleurClaire" : wx.Colour(206, 196, 190), "couleurFoncee" : wx.Colour(169, 156, 146)}, },
     {"code" : "newyork", "label" : _(u"New-York"), "image" : "Theme_newyork.jpg", "dlg" : {"couleurClaire" : wx.Colour(186, 186, 186), "couleurFoncee" : wx.Colour(60, 60, 60)}, },
-    {"code" : "ocean", "label" : _(u"OcÈan"), "image" : "Theme_ocean.jpg", "dlg" : {"couleurClaire" : wx.Colour(229, 195, 149), "couleurFoncee" : wx.Colour(2, 134, 183)}, },
-    {"code" : "bleu", "label" : _(u"Bleu mÈtal"), "image" : "Theme_bleu.jpg", "dlg" : {"couleurClaire" : wx.Colour(164, 182, 193), "couleurFoncee" : wx.Colour(63, 79, 94)}, },
+    {"code" : "ocean", "label" : _(u"Oc√©an"), "image" : "Theme_ocean.jpg", "dlg" : {"couleurClaire" : wx.Colour(229, 195, 149), "couleurFoncee" : wx.Colour(2, 134, 183)}, },
+    {"code" : "bleu", "label" : _(u"Bleu m√©tal"), "image" : "Theme_bleu.jpg", "dlg" : {"couleurClaire" : wx.Colour(164, 182, 193), "couleurFoncee" : wx.Colour(63, 79, 94)}, },
     {"code" : "vert", "label" : _(u"Vert pomme"), "image" : "Theme_vert.jpg", "dlg" : {"couleurClaire" : wx.Colour(212, 238, 115), "couleurFoncee" : wx.Colour(71, 85, 24)}, },
-    {"code" : "sommets", "label" : _(u"Sommets enneigÈs"), "image" : "Theme_sommets.jpg", "dlg" : {"couleurClaire" : wx.Colour(186, 186, 186), "couleurFoncee" : wx.Colour(60, 60, 60)}, },
+    {"code" : "sommets", "label" : _(u"Sommets enneig√©s"), "image" : "Theme_sommets.jpg", "dlg" : {"couleurClaire" : wx.Colour(186, 186, 186), "couleurFoncee" : wx.Colour(60, 60, 60)}, },
     {"code" : "hiver", "label" : _(u"Ciel d'hiver "), "image" : "Theme_hiver.jpg", "dlg" : {"couleurClaire" : wx.Colour(111, 151, 255), "couleurFoncee" : wx.Colour(36, 67, 148)}, },
-    {"code" : "noel", "label" : _(u"NoÎl "), "image" : "Theme_noel.jpg", "dlg" : {"couleurClaire" : wx.Colour(255, 98, 89), "couleurFoncee" : wx.Colour(120, 7, 15)}, },
-    {"code" : "personnalise", "label" : _(u"PersonnalisÈ"), "dlg" : {"couleurClaire" : wx.Colour(206, 196, 190), "couleurFoncee" : wx.Colour(169, 156, 146)}, },
+    {"code" : "noel", "label" : _(u"No√´l "), "image" : "Theme_noel.jpg", "dlg" : {"couleurClaire" : wx.Colour(255, 98, 89), "couleurFoncee" : wx.Colour(120, 7, 15)}, },
+    {"code" : "personnalise", "label" : _(u"Personnalis√©"), "dlg" : {"couleurClaire" : wx.Colour(206, 196, 190), "couleurFoncee" : wx.Colour(169, 156, 146)}, },
     ]
 
 
 def GetTheme(code=""):
-    """ RÈcupËre un thËme d'aprËs son code """
+    """ R√©cup√®re un th√®me d'apr√®s son code """
     for dictTemp in LISTE_THEMES :
         if dictTemp["code"] == code :
             return dictTemp
@@ -86,18 +86,18 @@ def DateEngFr(textDate):
     return text
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complËte : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date compl√®te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"fÈvrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"ao˚t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÈcembre"))
+    listeMois = (_(u"janvier"), _(u"f√©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"ao√ªt"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"D√©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
 def GetInfosActivite(IDactivite=None, date=None):
-    """ RÈcupÈration des infos sur une activitÈ """
+    """ R√©cup√©ration des infos sur une activit√© """
     dictActivite = {} 
     DB = GestionDB.DB()
     
-    # Recherche des infos sur l'activitÈ
+    # Recherche des infos sur l'activit√©
     req = """SELECT nom, abrege, date_debut, date_fin 
     FROM activites
     WHERE IDactivite=%d;""" % IDactivite
@@ -106,7 +106,7 @@ def GetInfosActivite(IDactivite=None, date=None):
     nom, abrege, date_debut, date_fin = listeDonnees[0]
     dictActivite = {"nom":nom, "abrege":abrege, "date_debut":date_debut, "date_fin":date_fin}
     
-    # Recherche des unitÈs de l'activitÈs
+    # Recherche des unit√©s de l'activit√©s
     req = """SELECT IDunite, ordre, nom, abrege, type, heure_debut, heure_debut_fixe, heure_fin, heure_fin_fixe
     FROM unites
     WHERE IDactivite=%d;""" % IDactivite
@@ -117,7 +117,7 @@ def GetInfosActivite(IDactivite=None, date=None):
         dictUnites[IDunite] = {"ordre":ordre, "nom":nom, "abrege":abrege, "type":type, "heure_debut":heure_debut, 
                                         "heure_debut_fixe":heure_debut_fixe, "heure_fin":heure_fin_fixe}
 
-    # Recherche des groupes de l'activitÈs
+    # Recherche des groupes de l'activit√©s
     req = """SELECT IDgroupe, nom, abrege, ordre
     FROM groupes
     WHERE IDactivite=%d;""" % IDactivite
@@ -127,7 +127,7 @@ def GetInfosActivite(IDactivite=None, date=None):
     for IDgroupe, nom, abrege, ordre in listeDonnees :
         dictGroupes[IDgroupe] = {"ordre":ordre, "nom":nom, "abrege":abrege}
 
-    # Recherche des ouvertures des unitÈs
+    # Recherche des ouvertures des unit√©s
     req = """SELECT IDouverture, IDunite, IDgroupe
     FROM ouvertures 
     WHERE IDactivite=%d AND date='%s'; """ % (IDactivite, str(date))
@@ -147,14 +147,14 @@ class InfosIndividus():
         self.dictCodesbarres = self.GetCodebarres()
         
     def RechercheIndividu(self, IDindividu=None):
-        """ Recherche un individu d'aprËs son IDindividu """
+        """ Recherche un individu d'apr√®s son IDindividu """
         if (IDindividu in self.dictIndividus) == False :
             return None
         # Renvoie les informations
         return self.dictIndividus[IDindividu]
 
     def Importation(self):
-        """ Importation de tous les individus de la base de donnÈes """
+        """ Importation de tous les individus de la base de donn√©es """
         DB = GestionDB.DB()
         req = """SELECT IDindividu, IDcivilite, nom, prenom FROM individus;"""
         DB.ExecuterReq(req)
@@ -174,14 +174,14 @@ class InfosIndividus():
         if len(cb) > 7 : cb = cb[:7]
         if cb in self.dictCodesbarres["standard"] :
             return self.dictCodesbarres["standard"][cb]
-        # Si aucun rÈsultat
+        # Si aucun r√©sultat
         return None
 
     def GetCodebarres(self):
-        """ RÈcupËre les codes-barres des individus """
+        """ R√©cup√®re les codes-barres des individus """
         dictCodesbarres = {"standard" : {}, "questionnaire" : {} }
         
-        # RÈcupËre les codes-barres des questionnaires
+        # R√©cup√®re les codes-barres des questionnaires
         DB = GestionDB.DB()
         req = """SELECT questionnaire_reponses.IDquestion, IDindividu, reponse, controle
         FROM questionnaire_reponses
@@ -194,7 +194,7 @@ class InfosIndividus():
         for IDquestion, IDindividu, reponse, controle in listeDonnees :
             dictCodesbarres["questionnaire"][reponse] = IDindividu
             
-        # CrÈation des codesbarres des individus
+        # cr√©ation des codesbarres des individus
         for IDindividu, dictTemp in self.dictIndividus.items() :
             cb = "I%06d" % IDindividu
             dictCodesbarres["standard"][cb] = IDindividu
@@ -208,7 +208,7 @@ class InfosIndividus():
         return None
 
     def GetInscriptions(self, IDindividu=None):
-        """ Renvoie les inscriptions aux activitÈs de l'individu donnÈ """
+        """ Renvoie les inscriptions aux activit√©s de l'individu donn√© """
         DB = GestionDB.DB()
         req = """SELECT IDfamille, IDactivite, IDgroupe, IDcategorie_tarif, parti
         FROM inscriptions
@@ -247,10 +247,10 @@ class CTRL_Interface(wx.Panel):
         except Exception as err:
             self.vocal = None
             
-        # Importation de la procÈdure
+        # Importation de la proc√©dure
         self.dictProcedure = self.ImportationProcedure() 
         
-        # Choix du systËme d'identification
+        # Choix du syst√®me d'identification
         self.nomControleActif = self.dictProcedure["parametres"]["systeme"]
         if importationManuelle != False :
             self.nomControleActif = "importation"
@@ -258,7 +258,7 @@ class CTRL_Interface(wx.Panel):
         # Initialisation de la liste des individus
         self.infosIndividus = InfosIndividus()
         
-        # CrÈation des contrÙles
+        # cr√©ation des Contr√¥les
         self.ctrl_grille = DLG_Badgeage_grille.CTRL(self, usage="badgeage")
         self.ctrl_grille.SetSize((800, 120))
         self.ctrl_grille.SetPosition((20, 20))
@@ -304,7 +304,7 @@ class CTRL_Interface(wx.Panel):
         else :
             self.timer = None
             
-        # Init contrÙles
+        # Init Contr√¥les
         self.AfficherControleActif() 
         
         # Importation manuelle de badgeages
@@ -359,7 +359,7 @@ class CTRL_Interface(wx.Panel):
             self.Refresh() 
 
     def OnPaint(self, event):
-        """ PrÈparation du DC """
+        """ Pr√©paration du DC """
         dc = wx.BufferedPaintDC(self)
         if wx.VERSION < (2, 9, 0, 0) :
             self.PrepareDC(dc)
@@ -367,13 +367,13 @@ class CTRL_Interface(wx.Panel):
         dc.SetBackground(bg)
         dc.Clear()
         
-        # Redimensionne l'image ‡ la taille de l'Ècran
+        # Redimensionne l'image √† la taille de l'√©cran
         largeur, hauteur = self.bmp_fond.GetSize()
         tailleDC = self.GetSize()
         x, y = (tailleDC[0]-largeur)/2.0, (tailleDC[1]-hauteur)/2.0
-        dc.DrawBitmap(self.bmp_fond, x, y)
+        dc.DrawBitmap(self.bmp_fond, int(x), int(y))
         
-        # Update de la zone modifiÈe
+        # Update de la zone modifi√©e
         rgn = self.GetUpdateRegion()
         r = rgn.GetBox()
         self.pdc.DrawToDCClipped(dc, r)
@@ -393,10 +393,10 @@ class CTRL_Interface(wx.Panel):
         self.listeObjets = (self.barreNum, self.clavierNum, self.listeIndividus, self.importation)
     
     def AfficherControleActif(self):
-        """ Affiche le contrÙle actif """
-        # Cache tous les contrÙles
+        """ Affiche le contr√¥le actif """
+        # Cache tous les Contr√¥les
         self.CacherControleActif() 
-        # Affiche le contrÙle actif
+        # Affiche le contr√¥le actif
         if self.nomControleActif == "barre_numerique" :
             self.barreNum.Afficher() 
             self.ctrl_barre_numerique.SetFocus()
@@ -417,7 +417,7 @@ class CTRL_Interface(wx.Panel):
         self.importation.Cacher()
     
     def ValidationIdentification(self, IDindividu=None):
-        """ VÈrifie qu'un IDindividu est correct """
+        """ V√©rifie qu'un IDindividu est correct """
         infos = self.infosIndividus.RechercheIndividu(IDindividu)
         if infos == None :
             return False
@@ -431,11 +431,11 @@ class CTRL_Interface(wx.Panel):
         return self.infosIndividus.IdentificationRFID(rfid)
 
     def ImportationProcedure(self):
-        """ Importation de la procÈdure """
+        """ Importation de la proc√©dure """
         dictProcedure = {} 
         DB = GestionDB.DB()
         
-        # ParamËtres de la procÈdure
+        # Param√™tres de la proc√©dure
         req = """SELECT nom, style, theme, image, systeme, activites, confirmation, vocal, tutoiement
         FROM badgeage_procedures
         WHERE IDprocedure=%d;
@@ -498,11 +498,11 @@ class CTRL_Interface(wx.Panel):
         return dictProcedure
         
     def Procedure(self, IDindividu=None, date=None, heure=None):
-        """ Lance une procÈdure pour l'individu donnÈ """
+        """ Lance une proc√©dure pour l'individu donn√© """
         if date == None : date = self.date
         if heure == None : heure = time.strftime('%H:%M', time.localtime())
                 
-        # Cache le contrÙle de saisie
+        # Cache le contr√¥le de saisie
         self.CacherControleActif()
         
         # Recherche le nom de l'individu
@@ -511,12 +511,12 @@ class CTRL_Interface(wx.Panel):
         prenom = infos["prenom"]
         nomIndividu = u"%s %s" % (nom, prenom)
         
-        # Demande de confirmation de l'identitÈ
+        # Demande de confirmation de l'Identit√©
         if self.dictProcedure["parametres"]["confirmation"] == 1 and self.importationManuelle == False :
             if self.dictProcedure["parametres"]["tutoiement"] == 1 :
-                message = _(u"Confirmes-tu Ítre %s %s ?") % (prenom, nom)
+                message = _(u"Confirmes-tu √™tre %s %s ?") % (prenom, nom)
             else :
-                message = _(u"Confirmez-vous Ítre %s %s ?") % (prenom, nom)
+                message = _(u"Confirmez-vous √™tre %s %s ?") % (prenom, nom)
             dlg = DIALOGUES.DLG_Question(self, message=message, icone="question")
             reponse = dlg.ShowModal()
             dlg.Destroy()
@@ -529,18 +529,18 @@ class CTRL_Interface(wx.Panel):
         
         # Lancement des actions
         for dictAction in self.dictProcedure["actions"] :
-            # VÈrifie les conditions
+            # V√©rifie les conditions
             if self.VerificationConditionsAction(dictAction, IDindividu, date, heure) == True :
                 if dictAction["action"] == "message" : self.Procedure_message(dictAction, IDindividu, date, heure)
                 if dictAction["action"] == "enregistrer" : self.Procedure_enregistrer(dictAction, IDindividu, date, heure)
                 if dictAction["action"] == "reserver" : self.Procedure_reserver(dictAction, IDindividu, date, heure)
                         
-        # RÈ-affiche le contrÙle de saisie
+        # R√©-affiche le contr√¥le de saisie
         self.AfficherControleActif()
     
     def VerificationConditionsAction(self, dictAction, IDindividu, date, heure):
-        """ VÈrification si les conditions de l'action sont bonnes """
-        # Condition individu inscrit aux activitÈs donnÈes
+        """ V√©rification si les conditions de l'action sont bonnes """
+        # Condition individu inscrit aux activit√©s donn√©es
         if dictAction["condition_activite"] != None :
             listeActivites = ConvertStrToListe(dictAction["condition_activite"])
             valide = False
@@ -571,10 +571,10 @@ class CTRL_Interface(wx.Panel):
             if valide == False :
                 return False
 
-        # Condition jours pÈriode scolaires ou vacances
+        # Condition jours p√©riode scolaires ou vacances
         if dictAction["condition_periode"] != None :
             
-            # Recherche des pÈriodes de vacances
+            # Recherche des p√©riodes de vacances
             DB = GestionDB.DB()
             req = """SELECT date_debut, date_fin, nom, annee
             FROM vacances 
@@ -582,7 +582,7 @@ class CTRL_Interface(wx.Panel):
             DB.ExecuterReq(req)
             listeVacances = DB.ResultatReq()
             DB.Close()
-            # VÈrifie si la date est en vacances ou non
+            # V√©rifie si la date est en vacances ou non
             estEnVacances = False
             for valeurs in listeVacances :
                 date_debut = valeurs[0]
@@ -601,7 +601,7 @@ class CTRL_Interface(wx.Panel):
             if valide == False :
                 return False
 
-        # Condition Poste rÈseau
+        # Condition Poste r√©seau
         if dictAction["condition_poste"] != None :
             listePostes = dictAction["condition_poste"].split(";")
             DB = GestionDB.DB()
@@ -615,7 +615,7 @@ class CTRL_Interface(wx.Panel):
             listeFiltres = dictAction["condition_questionnaire"].split("##")
             DB = GestionDB.DB()
             
-            # Recherche des contrÙles et des types
+            # Recherche des Contr√¥les et des types
             req = """SELECT IDquestion,type, controle
             FROM questionnaire_questions
             LEFT JOIN questionnaire_categories ON questionnaire_categories.IDcategorie = questionnaire_questions.IDcategorie;"""
@@ -630,7 +630,7 @@ class CTRL_Interface(wx.Panel):
                 IDquestion, choix, criteres = filtre.split(";;")
                 IDquestion = int(IDquestion) 
                 
-                # Recherche les rÈponses
+                # Recherche les r√©ponses
                 if dictQuestions[IDquestion]["type"] == "individu" :
                     req = """SELECT IDreponse, reponse
                     FROM questionnaire_reponses
@@ -645,7 +645,7 @@ class CTRL_Interface(wx.Panel):
 ##                    DB.ExecuterReq(req)
 ##                    listeReponses = DB.ResultatReq()     
                 
-                # Compare le filtre avec les rÈponses
+                # Compare le filtre avec les r√©ponses
                 for IDreponse, reponse in listeReponses :
                     resultat = UTILS_Filtres_questionnaires.Filtre(controle=dictQuestions[IDquestion]["controle"], choix=choix, criteres=criteres, reponse=reponse)
                     if resultat == False :
@@ -660,7 +660,7 @@ class CTRL_Interface(wx.Panel):
         
         
     def Procedure_message(self, dictAction, IDindividu, date, heure):
-        """ ProcÈdure message """
+        """ proc√©dure message """
         messageUnique = dictAction["action_message"]
         listeMessages = dictAction["action_messages"]
         icone = dictAction["action_icone"]
@@ -668,9 +668,9 @@ class CTRL_Interface(wx.Panel):
         frequence = int(dictAction["action_frequence"])
         vocal = int(dictAction["action_vocal"])
         
-        # DÈcide si affichage en fonction de la frÈquence demandÈe
+        # D√©cide si affichage en fonction de la fr√©quence demand√©e
         if 1 <= random.randrange(1, 100)  <= frequence :
-            # SÈlectionne le texte
+            # s√©lectionne le texte
             if len(listeMessages) == 0 :
                 texte = messageUnique
             else :
@@ -695,7 +695,7 @@ class CTRL_Interface(wx.Panel):
         return texte
     
     def RechercheInscription(self, IDindividu, nomIndividu, IDactivite, dictActivite, nomAction=u""):
-        """ RÈcupËre IDfamille et IDgroupe """
+        """ R√©cup√®re IDfamille et IDgroupe """
         listeInscriptions = self.infosIndividus.GetInscriptions(IDindividu)
         listeIDfamille = []
         for dictInscription in listeInscriptions :
@@ -703,43 +703,43 @@ class CTRL_Interface(wx.Panel):
                 listeIDfamille.append((dictInscription["IDfamille"], dictInscription["IDgroupe"]))
         
         if len(listeIDfamille) == 0 :
-            # Individu pas inscrit ‡ cette activitÈ
-            self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=nomAction, resultat=_(u"Individu non inscrit ‡ l'activitÈ"))
+            # Individu pas inscrit √† cette activit√©
+            self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=nomAction, resultat=_(u"Individu non inscrit √† l'activit√©"))
             if self.infosIndividus.RechercheIndividu(IDindividu)["genre"] == "F" :
                 feminin = "e"
             else :
                 feminin = ""
             if self.dictProcedure["parametres"]["tutoiement"] == 1 :
-                message = _(u"Tu n'es pas inscrit%s ‡ l'activitÈ '%s' !") % (feminin, dictActivite["nom"])
+                message = _(u"Tu n'es pas inscrit%s √† l'activit√© '%s' !") % (feminin, dictActivite["nom"])
             else :
-                message = _(u"Vous n'Ítes pas inscrit%s ‡ l'activitÈ '%s' !") % (feminin, dictActivite["nom"])
+                message = _(u"Vous n'√™tes pas inscrit%s √† l'activit√© '%s' !") % (feminin, dictActivite["nom"])
             DIALOGUES.DLG_Message(self, message=message, icone="erreur")
             return False, False
         
         elif len(listeIDfamille) > 1 :
-            # RattachÈ ‡ plusieurs familles sur cette activitÈ
+            # Rattach√© √† plusieurs familles sur cette activit√©
             listeNomsTitulaires = []
             for IDfamille, IDgroupe in listeIDfamille :
                 listeNomsTitulaires.append(self.infosIndividus.GetNomsTitulaires(IDfamille))
-            dlg = DIALOGUES.DLG_Choix(self, message=_(u"Sur quel dossier faut-il facturer l'activitÈ '%s' ?") % dictActivite["nom"], listeItems=listeNomsTitulaires, multiSelection=False)
+            dlg = DIALOGUES.DLG_Choix(self, message=_(u"Sur quel dossier faut-il facturer l'activit√© '%s' ?") % dictActivite["nom"], listeItems=listeNomsTitulaires, multiSelection=False)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse == wx.ID_YES :
                 index = dlg.GetSelections()[0]
                 IDfamille, IDgroupe = listeIDfamille[index]
-                self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=_(u"Choix d'une famille ‡ facturer sur l'activitÈ '%s' : %s.") % (dictActivite["nom"], listeNomsTitulaires[index]), resultat=True)
+                self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=_(u"Choix d'une famille √† facturer sur l'activit√© '%s' : %s.") % (dictActivite["nom"], listeNomsTitulaires[index]), resultat=True)
             else :
-                self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=_(u"Choix d'une famille ‡ facturer sur l'activitÈ '%s'.") % dictActivite["nom"], resultat=_(u"Annulation lors du choix de la famille rattachÈe."))
+                self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=_(u"Choix d'une famille √† facturer sur l'activit√© '%s'.") % dictActivite["nom"], resultat=_(u"Annulation lors du choix de la famille rattach√©e."))
                 return False, False
 
         else :
-            # 1 seule famille rattachÈe sur cette activitÈ
+            # 1 seule famille rattach√©e sur cette activit√©
             IDfamille, IDgroupe = listeIDfamille[0]
         
         return IDfamille, IDgroupe
 
     def Procedure_enregistrer(self, dictAction, IDindividu, date, heure):
-        """ ProcÈdure enregistrer """
+        """ proc√©dure enregistrer """
         IDactivite = int(dictAction["action_activite"])
         IDunite = int(dictAction["action_unite"])
         etat = dictAction["action_etat"]
@@ -755,25 +755,25 @@ class CTRL_Interface(wx.Panel):
         badgeage_fin = None
         maintenant = datetime.datetime(date.year, date.month, date.day, int(heure.split(":")[0]), int(heure.split(":")[1]))
         
-        # RÈcupÈration des infos sur l'activitÈ et sur l'individu
+        # R√©cup√©ration des infos sur l'activit√© et sur l'individu
         dictActivite, dictUnites, listeOuvertures, dictGroupes = GetInfosActivite(IDactivite, date) 
         nomIndividu = u"%s %s" % (self.infosIndividus.RechercheIndividu(IDindividu)["nom"], self.infosIndividus.RechercheIndividu(IDindividu)["prenom"])
         nomAction = _(u"Enregistrement d'une consommation '%s'") % dictUnites[IDunite]["nom"]
         
-        # Recherche si l'individu est bien inscrit ‡ l'activitÈ
+        # Recherche si l'individu est bien inscrit √† l'activit√©
         IDfamille, IDgroupe = self.RechercheInscription(IDindividu, nomIndividu, IDactivite, dictActivite, nomAction)
         if IDfamille == False :
             return False
         
-        # Recherche si l'unitÈ est ouverte pour ce groupe ‡ cette date
+        # Recherche si l'unit√© est ouverte pour ce groupe √† cette date
         if (IDunite, IDgroupe) not in listeOuvertures :
-            self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=nomAction, resultat=_(u"UnitÈ '%s' fermÈe le %s") % (dictUnites[IDunite]["nom"], DateEngFr(str(date))))
+            self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=nomAction, resultat=_(u"unit√© '%s' ferm√©e le %s") % (dictUnites[IDunite]["nom"], DateEngFr(str(date))))
             return False
         
         # Initialisation de la grille des conso
         self.ctrl_grille.InitGrille(IDindividu=IDindividu, IDfamille=IDfamille, IDactivite=IDactivite, date=date)
         
-        # Si demande dÈbut ou fin
+        # Si demande d√©but ou fin
         if demande == 1 :
             if self.dictProcedure["parametres"]["tutoiement"] == 1 :
                 texte = _(u"Est-ce que tu arrives ? Ou est-ce que tu pars ?")
@@ -800,7 +800,7 @@ class CTRL_Interface(wx.Panel):
                 return False
             
         else :
-            # Recherche l'heure de dÈbut ‡ appliquer
+            # Recherche l'heure de d√©but √† appliquer
             if heure_debut == "defaut":
                 heureDebut = "defaut"
             elif heure_debut == "pointee":
@@ -808,7 +808,7 @@ class CTRL_Interface(wx.Panel):
             else:
                 heureDebut = heure_debut
 
-            # Recherche l'heure de fin ‡ appliquer
+            # Recherche l'heure de fin √† appliquer
             if heure_fin == "defaut":
                 heureFin = "defaut"
             elif heure_fin == "pointee":
@@ -818,19 +818,19 @@ class CTRL_Interface(wx.Panel):
 
             if heure_debut == "pointee" and heure_fin == "pointee":
 
-                # Recherche si une conso a dÈj‡ un badgeage de dÈbut
+                # Recherche si une conso a d√©j√† un badgeage de d√©but
                 case = self.ctrl_grille.GetCase(IDunite, date)
                 if case != None:
                     for conso in case.GetListeConso():
                         if conso.badgeage_debut != None and conso.badgeage_fin == None:
                             conso_a_modifier = conso
                         if case.GetTypeUnite() != "Multihoraires" and conso.badgeage_debut != None and conso.badgeage_fin != None:
-                            DIALOGUES.DLG_Message(self, message=_(u"Les heures d'arrivÈe et de dÈpart ont dÈj‡ ÈtÈ enregistrÈes !"), icone="erreur")
-                            self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=nomAction, resultat=_(u"UnitÈ '%s' dÈj‡ badgÈe ‡ l'arrivÈe et au dÈpart !") % dictUnites[IDunite]["nom"])
+                            DIALOGUES.DLG_Message(self, message=_(u"Les heures d'arriv√©e et de d√©part ont d√©j√† √©t√© enregistr√©es !"), icone="erreur")
+                            self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=nomAction, resultat=_(u"unit√© '%s' d√©j√† badg√©e √† l'arriv√©e et au d√©part !") % dictUnites[IDunite]["nom"])
                             return False
 
                 if conso_a_modifier == None :
-                    # Si on doit crÈer une nouvelle conso
+                    # Si on doit cr√©er une nouvelle conso
                     heureDebut = heure
                     heureFin = "defaut"
                     badgeage_debut = maintenant
@@ -841,10 +841,10 @@ class CTRL_Interface(wx.Panel):
                     badgeage_debut = conso.badgeage_debut
                     badgeage_fin = maintenant
 
-                    # On vÈrifie que le badgeage de dÈbut date de plus d'une minute
+                    # On V√©rifie que le badgeage de d√©but date de plus d'une minute
                     if UTILS_Dates.HeureStrEnDelta(heureFin) - UTILS_Dates.HeureStrEnDelta(heureDebut) < UTILS_Dates.HeureStrEnDelta("00:01"):
-                        DIALOGUES.DLG_Message(self, message=_(u"L'heure d'arrivÈe a ÈtÈ enregistrÈe il y a moins d'une minute !"), icone="erreur")
-                        self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=nomAction, resultat=_(u"UnitÈ '%s' badgÈe il y a moins d'une minute!") % dictUnites[IDunite]["nom"])
+                        DIALOGUES.DLG_Message(self, message=_(u"L'heure d'arriv√©e a √©t√© enregistr√©e il y a moins d'une minute !"), icone="erreur")
+                        self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=nomAction, resultat=_(u"unit√© '%s' badg√©e il y a moins d'une minute!") % dictUnites[IDunite]["nom"])
                         return False
 
 
@@ -883,7 +883,7 @@ class CTRL_Interface(wx.Panel):
             return False
     
     def RechercheProchaineOuverture(self, IDactivite=None, date=None):
-        """ Recherche la prochaine date d'ouverture de l'activitÈ """
+        """ Recherche la prochaine date d'ouverture de l'activit√© """
         DB = GestionDB.DB()
         req = """SELECT IDouverture, date
         FROM ouvertures 
@@ -898,7 +898,7 @@ class CTRL_Interface(wx.Panel):
         return DateEngEnDateDD(dateTmp)
         
     def Procedure_reserver(self, dictAction, IDindividu, date, heure):
-        """ ProcÈdure RÈserver """
+        """ proc√©dure R√©server """
         IDactivite = int(dictAction["action_activite"])
         listeUnites = ConvertStrToListe(dictAction["action_unite"])
         etat = dictAction["action_etat"]
@@ -908,40 +908,40 @@ class CTRL_Interface(wx.Panel):
         confirmation = dictAction["action_message"]
         vocal = int(dictAction["action_vocal"])
         
-        # Recherche la date proposÈe
+        # Recherche la date propos√©e
         if dateTmp == "date_actuelle" :
             dateTmp = date
         elif dateTmp == "prochaine_ouverture" :
             dateTmp = self.RechercheProchaineOuverture(IDactivite, date)
             if dateTmp == None :
-                self.log.AjouterAction(action=_(u"RÈservation de consommations"), resultat=_(u"Pas d'ouvertures futures pour cette activitÈ"))
+                self.log.AjouterAction(action=_(u"R√©servation de consommations"), resultat=_(u"Pas d'ouvertures futures pour cette activit√©"))
                 return False
         else :
             return False
         
-        # RÈcupÈration des infos sur l'activitÈ et sur l'individu
+        # R√©cup√©ration des infos sur l'activit√© et sur l'individu
         dictActivite, dictUnites, listeOuvertures, dictGroupes = GetInfosActivite(IDactivite, dateTmp) 
         nomIndividu = u"%s %s" % (self.infosIndividus.RechercheIndividu(IDindividu)["nom"], self.infosIndividus.RechercheIndividu(IDindividu)["prenom"])
-        nomAction = _(u"RÈservation de consommations '%s'") % dictActivite["nom"]
+        nomAction = _(u"R√©servation de consommations '%s'") % dictActivite["nom"]
         
-        # Recherche si l'individu est bien inscrit ‡ l'activitÈ
+        # Recherche si l'individu est bien inscrit √† l'activit√©
         IDfamille, IDgroupe = self.RechercheInscription(IDindividu, nomIndividu, IDactivite, dictActivite, nomAction)
         if IDfamille == False :
             return False
         
-        # Recherche si l'unitÈ est ouverte pour ce groupe ‡ cette date
+        # Recherche si l'unit√© est ouverte pour ce groupe √† cette date
         listeUnitesOuvertes = []
         for IDunite in listeUnites :
             if (IDunite, IDgroupe) in listeOuvertures :
                 listeUnitesOuvertes.append(IDunite)
         if len(listeUnitesOuvertes) == 0 :
-            self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=nomAction, resultat=_(u"Aucune unitÈ ouverte le %s") % DateEngFr(str(dateTmp)))
+            self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=nomAction, resultat=_(u"Aucune unit√© ouverte le %s") % DateEngFr(str(dateTmp)))
             return False
         
-        # Proposition ‡ l'individu
+        # Proposition √† l'individu
         if len(listeUnitesOuvertes) == 1 :
             
-            # Si une seule unitÈ ‡ proposer
+            # Si une seule unit√© √† proposer
             texte = self.RemplacementVariablesMessages(question, heure, IDindividu, dateTmp)
             dlg = DIALOGUES.DLG_Question(self, message=texte, icone="question")
             reponse = dlg.ShowModal()
@@ -951,7 +951,7 @@ class CTRL_Interface(wx.Panel):
             listeUnitesChoisies = listeUnitesOuvertes
         
         else :
-            # Si plusieurs unitÈs ‡ proposer
+            # Si plusieurs unit√©s √† proposer
             listeLabelsUnites = []
             for IDunite in listeUnitesOuvertes :
                 listeLabelsUnites.append(dictUnites[IDunite]["nom"])
@@ -971,7 +971,7 @@ class CTRL_Interface(wx.Panel):
         # Initialisation de la grille des conso
         self.ctrl_grille.InitGrille(IDindividu=IDindividu, IDfamille=IDfamille, IDactivite=IDactivite, date=dateTmp)
         
-        # VÈrifie qu'il y a des places disponibles
+        # V√©rifie qu'il y a des places disponibles
         listeUnitesCompletes = []
         for IDunite in listeUnitesChoisies :
             placeDispo = self.ctrl_grille.HasPlacesDisponibles(IDunite) 
@@ -979,9 +979,9 @@ class CTRL_Interface(wx.Panel):
                 listeUnitesCompletes.append(dictUnites[IDunite]["nom"])
                     
         if len(listeUnitesCompletes) > 0 :
-            texte = _(u"DÈsolÈ mais il est possible qu'il n'y ait plus de places. Contactez un responsable.")
+            texte = _(u"D√©sol√© mais il est possible qu'il n'y ait plus de places. Contactez un responsable.")
             DIALOGUES.DLG_Message(self, message=texte, icone="exclamation")
-            self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=nomAction, resultat=_(u"Plus de places sur les unitÈs %s") % u", ".join(listeUnitesCompletes))
+            self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=nomAction, resultat=_(u"Plus de places sur les unit√©s %s") % u", ".join(listeUnitesCompletes))
             return False
             
         # Saisie de la consommation
@@ -998,7 +998,7 @@ class CTRL_Interface(wx.Panel):
         return True
 
     def ImportationBadgeage(self):
-        """ Analyse de badgeages importÈs """
+        """ Analyse de badgeages import√©s """
         # Traitement
         for track in self.importationManuelle :
             IDindividu = self.IdentificationCodebarre(track.codebarres)
@@ -1021,7 +1021,7 @@ class Dialog(wx.Dialog):
         self.importationManuelle = importationManuelle
         self.mode_debug = mode_debug
         
-        # CrÈation d'une dlg d'attente durant l'initialisation
+        # cr√©ation d'une dlg d'attente durant l'initialisation
         try :
             if importationManuelle == False :
                 texte = _(u"Veuillez patienter durant l'initialisation de l'interface de badgeage...")
@@ -1063,7 +1063,7 @@ class Dialog(wx.Dialog):
         except Exception as err:
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
-            dlg = wx.MessageDialog(self, _(u"DÈsolÈ, le problËme suivant a ÈtÈ rencontrÈ dans l'initialisation de l'interface de badgeage : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"D√©sol√©, le probl√®me suivant a √©t√© rencontr√© dans l'initialisation de l'interface de badgeage : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             self.Destroy()
@@ -1082,7 +1082,7 @@ class Dialog(wx.Dialog):
         
         
 class LogTest():
-    """ Une dÈviation du log pour les tests uniquement """
+    """ Une d√©viation du log pour les tests uniquement """
     def __init__(self):
         pass
     def AjouterAction(self, individu=u"", IDindividu=None, action=u"", resultat=True):

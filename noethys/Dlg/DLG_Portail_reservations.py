@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -56,8 +56,8 @@ class Dialog(wx.Dialog):
         self.reponse = ""
 
         # Bandeau
-        intro = _(u"Vous pouvez gérer ici la demande de façon manuelle. Commencez par cliquer sur le bouton 'Appliquer la demande' pour voir apparaître les modifications demandées dans la grille des conso. Vous pouvez alors effectuer manuellement d'éventuelles modifications avant de valider.")
-        titre = _(u"Traitement manuel des réservations")
+        intro = _(u"Vous pouvez gÃ©rer ici la demande de faÃ§on manuelle. Commencez par cliquer sur le bouton 'Appliquer la demande' pour voir apparaÃ®tre les modifications demandÃ©es dans la grille des conso. Vous pouvez alors effectuer manuellement d'Ã©ventuelles modifications avant de valider.")
+        titre = _(u"Traitement manuel des rÃ©servations")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Calendrier_modifier.png")
 
@@ -66,8 +66,8 @@ class Dialog(wx.Dialog):
         self.ctrl_facturation = CTRL_Grille_facturation.CTRL(self)
         self.ctrl_facturation.SetMinSize((275, 100))
 
-        # Détail demande
-        self.box_demande_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Détail de la demande"))
+        # DÃ©tail demande
+        self.box_demande_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"DÃ©tail de la demande"))
         self.ctrl_demande = CTRL_Html(self, couleurFond=self.GetBackgroundColour())
         self.ctrl_demande.SetMinSize((275, 100))
 
@@ -75,14 +75,14 @@ class Dialog(wx.Dialog):
         self.box_grille_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Grille des consommations"))
         self.ctrl_grille = DLG_Badgeage_grille.CTRL(self, panel_facturation=self.ctrl_facturation)
 
-        # Panel Forfait-crédits
+        # Panel Forfait-crÃ©dits
         if self.ctrl_grille.grille.tarifsForfaitsCreditsPresents:
-            self.box_forfaits_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Forfaits-crédits"))
+            self.box_forfaits_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Forfaits-crÃ©dits"))
             self.panel_forfaits = CTRL_Grille_forfaits.CTRL(self, grille=self.ctrl_grille.grille)
             self.panel_forfaits.SetMinSize((-1, 95))
 
         # Journal
-        self.box_journal_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Journal d'évènements"))
+        self.box_journal_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Journal d'Ã©vÃ¨nements"))
         self.ctrl_log = CTRL_Log(self)
         self.ctrl_log.SetMinSize((100, 80))
         self.bouton_traiter = CTRL_Bouton_image.CTRL(self, texte=_(u"Appliquer la demande"), cheminImage="Images/32x32/Fleche_bas.png")
@@ -114,7 +114,7 @@ class Dialog(wx.Dialog):
         self.bouton_traiter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour appliquer la demande")))
         self.bouton_reinit.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler les modifications")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder au menu des outils")))
+        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der au menu des outils")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour commencer le traitement des demandes")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((900, 700))
@@ -132,7 +132,7 @@ class Dialog(wx.Dialog):
         box_grille.Add(self.ctrl_grille, 1, wx.ALL | wx.EXPAND, 10)
         grid_sizer_gauche.Add(box_grille, 1, wx.EXPAND, 10)
 
-        # Forfaits-crédits
+        # Forfaits-crÃ©dits
         if hasattr(self, "panel_forfaits"):
             box_forfaits = wx.StaticBoxSizer(self.box_forfaits_staticbox, wx.VERTICAL)
             box_forfaits.Add(self.panel_forfaits, 1, wx.ALL | wx.EXPAND, 10)
@@ -208,7 +208,7 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
 
     def OnBoutonOutils(self, event):
-        # Création du menu Outils
+        # CrÃ©ation du menu Outils
         menuPop = UTILS_Adaptations.Menu()
 
         item = wx.MenuItem(menuPop, 10, _(u"Recalculer toutes les prestations"), _(u"Recalculer toutes les prestations"))
@@ -218,12 +218,12 @@ class Dialog(wx.Dialog):
 
         menuPop.AppendSeparator()
 
-        item = wx.MenuItem(menuPop, 20, _(u"Imprimer la liste des réservations"), _(u"Imprimer la liste des réservations affichées"))
+        item = wx.MenuItem(menuPop, 20, _(u"Imprimer la liste des rÃ©servations"), _(u"Imprimer la liste des rÃ©servations affichÃ©es"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ctrl_grille.grille.Imprimer, id=20)
 
-        item = wx.MenuItem(menuPop, 30, _(u"Envoyer la liste des réservations par Email"), _(u"Envoyer la liste des réservations affichées par Email"))
+        item = wx.MenuItem(menuPop, 30, _(u"Envoyer la liste des rÃ©servations par Email"), _(u"Envoyer la liste des rÃ©servations affichÃ©es par Email"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Emails_exp.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ctrl_grille.grille.EnvoyerEmail, id=30)

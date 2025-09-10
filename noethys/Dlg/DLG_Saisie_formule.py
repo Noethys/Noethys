@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -18,16 +18,16 @@ import re
 import wx.lib.agw.hyperlink as Hyperlink
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 OPERATEURS = [
-    (_(u"est égal à"), "="),
-    (_(u"est différent de"), "<>"),
-    (_(u"est supérieur à"), ">"),
-    (_(u"est inférieur à"), "<"),
-    (_(u"est supérieur ou égal à"), ">="),
-    (_(u"est inférieur ou égal à"), "<="),
+    (_(u"est Ã©gal Ã "), "="),
+    (_(u"est diffÃ©rent de"), "<>"),
+    (_(u"est supÃ©rieur Ã "), ">"),
+    (_(u"est infÃ©rieur Ã "), "<"),
+    (_(u"est supÃ©rieur ou Ã©gal Ã "), ">="),
+    (_(u"est infÃ©rieur ou Ã©gal Ã "), "<="),
     (_(u"est vide"), "null"),
     (_(u"n'est pas vide"), "notnull"),
     ]
@@ -63,7 +63,7 @@ class Hyperlien(Hyperlink.HyperLinkCtrl):
         self.Bind(Hyperlink.EVT_HYPERLINK_LEFT, self.OnLeftLink)
         
     def OnLeftLink(self, event):
-        dlg = wx.SingleChoiceDialog(None, _(u"Sélectionnez un champ à insérer :"), _(u"Insérer un champ"), GetLabelsChamps(self.parent.listeChamps), wx.CHOICEDLG_STYLE)
+        dlg = wx.SingleChoiceDialog(None, _(u"SÃ©lectionnez un champ Ã  insÃ©rer :"), _(u"InsÃ©rer un champ"), GetLabelsChamps(self.parent.listeChamps), wx.CHOICEDLG_STYLE)
         if dlg.ShowModal() == wx.ID_OK:
             champ = self.parent.listeChamps[dlg.GetSelection()][2]
             self.parent.InsertTexte(champ)
@@ -91,7 +91,7 @@ class Dialog(wx.Dialog):
         self.label_afficher = wx.StaticText(self, -1, _(u"Afficher :"))
         self.ctrl_afficher = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
 
-        self.hyper_formule = Hyperlien(self, label=_(u"Insérer un champ"), infobulle=_(u"Cliquez ici pour insérer un champ"), URL="")
+        self.hyper_formule = Hyperlien(self, label=_(u"InsÃ©rer un champ"), infobulle=_(u"Cliquez ici pour insÃ©rer un champ"), URL="")
 
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
@@ -105,16 +105,16 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
-        # Init Contrôles
+        # Init ContrÃ´les
         self.ctrl_operateur.SetSelection(0)
         
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'une formule conditionnelle"))
-        self.ctrl_champ.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici un champ dans la liste")))
-        self.ctrl_operateur.SetToolTip(wx.ToolTip(_(u"Sélectionnez un opérateur dans la liste")))
-        self.ctrl_condition.SetToolTip(wx.ToolTip(_(u"Saisissez ici la valeur conditionnelle. Il peut s'agir \nd'un mot ou d'une phrase. Vous pouvez également \nsaisir ' OU ' entre plusieurs mots pour saisir plusieurs \nconditions avec l'opérateur =.")))
-        self.ctrl_afficher.SetToolTip(wx.ToolTip(_(u"Saisissez ici le texte à afficher si la condition est vraie.\nIl peut s'agir d'un mot ou d'une phrase mais aussi \nd'un mot-clé. Ex : 'bonjour', '{INDIVIDU_NOM}',\n'123', etc...")))
+        self.ctrl_champ.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici un champ dans la liste")))
+        self.ctrl_operateur.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un opÃ©rateur dans la liste")))
+        self.ctrl_condition.SetToolTip(wx.ToolTip(_(u"Saisissez ici la valeur conditionnelle. Il peut s'agir \nd'un mot ou d'une phrase. Vous pouvez Ã©galement \nsaisir ' OU ' entre plusieurs mots pour saisir plusieurs \nconditions avec l'opÃ©rateur =.")))
+        self.ctrl_afficher.SetToolTip(wx.ToolTip(_(u"Saisissez ici le texte Ã  afficher si la condition est vraie.\nIl peut s'agir d'un mot ou d'une phrase mais aussi \nd'un mot-clÃ©. Ex : 'bonjour', '{INDIVIDU_NOM}',\n'123', etc...")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -166,7 +166,7 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event): 
         # Validation
         if self.ctrl_champ.GetSelection() == -1 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un champ SI dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un champ SI dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_champ.SetFocus()
@@ -174,7 +174,7 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_OK)
 
     def GetFormule(self):
-        """ Rédaction de la formule """
+        """ RÃ©daction de la formule """
         champ = self.listeChamps[self.ctrl_champ.GetSelection()][2]
         operateur = OPERATEURS[self.ctrl_operateur.GetSelection()][1]
         condition = self.ctrl_condition.GetValue()
@@ -196,28 +196,28 @@ class Dialog(wx.Dialog):
 
 
 
-####-----Résolveur de formule-----------------------------------------------------------------
+####-----RÃ©solveur de formule-----------------------------------------------------------------
 
 
 def ResolveurCalcul(texte=u"", dictValeurs={}):
-    """ Pour résoudre les calculs """
+    """ Pour rÃ©soudre les calculs """
     resultat = ""
     resultatEuros = False
     # Remplacement des valeurs
     for motcle, valeur in dictValeurs.items() :
         if motcle in texte :
             # Conversion de la valeur
-            if u"¤" in valeur :
+            if u"â‚¬" in valeur :
                 resultatEuros = True
                 
-            for caract in u" ¤abcdefghijklmnopqrstuvwxyzéè-_" :
+            for caract in u" â‚¬abcdefghijklmnopqrstuvwxyzÃ©Ã¨-_" :
                 valeur = valeur.replace(caract, "")
                 valeur = valeur.replace(caract.upper(), "")
             
             # Remplacement des valeurs
             texte = texte.replace(motcle, valeur)
             
-    # Réalisation du calcul
+    # RÃ©alisation du calcul
     try :
         resultat = eval(texte)
         if resultatEuros == True :
@@ -233,14 +233,14 @@ def ResolveurCalcul(texte=u"", dictValeurs={}):
     
     
 def ResolveurFormule(formule=u"", listeChamps=[], dictValeurs={}):
-    """ Permet de résoudre une formule """
+    """ Permet de rÃ©soudre une formule """
     formule = formule.rstrip("]]")
     formule = formule.lstrip("[[")
     # Recherche les infos dans la formule
     regex = re.compile(r"[^SI]({.+})(<>|>=|<=|>|<|=)(.*)->(.*)",re.S)
     resultat = regex.search(formule)
     if resultat == None or len(resultat.groups()) != 4 : 
-        # Si aucune formule conditionnelle trouvée, regarde si c'est un calcul à effectuer
+        # Si aucune formule conditionnelle trouvÃ©e, regarde si c'est un calcul Ã  effectuer
         resultat = ResolveurCalcul(texte=formule, dictValeurs=dictValeurs)
         return resultat
     
@@ -254,7 +254,7 @@ def ResolveurFormule(formule=u"", listeChamps=[], dictValeurs={}):
     if champ in dictValeurs:
         valeurChamp = dictValeurs[champ]
         
-        # Essaye de convertir les données
+        # Essaye de convertir les donnÃ©es
 ##        try : # Entier
 ##            valeurChamp = int(valeurChamp)
 ##            condition = int(condition) 
@@ -284,7 +284,7 @@ def ResolveurFormule(formule=u"", listeChamps=[], dictValeurs={}):
         except :
             return u""
             
-    # Renvoie la formule si elle n'a pas été résolue
+    # Renvoie la formule si elle n'a pas Ã©tÃ© rÃ©solue
     return u""
 
 def DetecteFormule(texte):
@@ -294,7 +294,7 @@ def DetecteFormule(texte):
 
 def ResolveurTexte(texte=u"", listeChamps=[], dictValeurs={}):
     formules = DetecteFormule(texte)
-    # Si aucune formule trouvée
+    # Si aucune formule trouvÃ©e
     if len(formules) == 0 : return texte
     # On recherche la solution d'une formule
     for formule in formules :
@@ -319,7 +319,7 @@ if __name__ == u"__main__":
     dictValeurs = {
         "{ORGANISATEUR_NOM}" : _(u"Association Noethys"),
         "{FAMILLE_VILLE}" : _(u"QUIMPER"),
-        "{MONTANT}" : u"2.00 ¤",
+        "{MONTANT}" : u"2.00 â‚¬",
         }
     
 ##    dialog_1 = Dialog(None, listeChamps=listeChamps)
@@ -329,7 +329,7 @@ if __name__ == u"__main__":
     
     # Test des formules conditionnelles
     resultat = ResolveurTexte(
-                texte=_(u"Ceci est [[SI {FAMILLE_VILLE}<>->Bonjour brest !]] et voilà et aussi [[SI {FAMILLE_VILLE}=QUIMPER ->Salut quimper !]]. Je veux aussi résoudre le calcul suivant : [[1+2.0]] Euros"), 
+                texte=_(u"Ceci est [[SI {FAMILLE_VILLE}<>->Bonjour brest !]] et voilÃ  et aussi [[SI {FAMILLE_VILLE}=QUIMPER ->Salut quimper !]]. Je veux aussi rÃ©soudre le calcul suivant : [[1+2.0]] Euros"), 
                 listeChamps=listeChamps, 
                 dictValeurs=dictValeurs)
     print((resultat,))

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -20,16 +20,16 @@ import GestionDB
 from Ctrl import CTRL_Saisie_date
 
 
-LISTE_MOIS = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
+LISTE_MOIS = (_(u"Janvier"), _(u"FÃ©vrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"AoÃ»t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"DÃ©cembre"))
 
 def DateEngFr(textDate):
     text = str(textDate[8:10]) + "/" + str(textDate[5:7]) + "/" + str(textDate[:4])
     return text
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -55,14 +55,14 @@ class Dialog(wx.Dialog):
         
         # Options
         self.box_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
-        self.check_impayes = wx.CheckBox(self, -1, _(u"Uniquement les impayés"))
-        self.check_conso = wx.CheckBox(self, -1, _(u"Détailler les consommations"))
+        self.check_impayes = wx.CheckBox(self, -1, _(u"Uniquement les impayÃ©s"))
+        self.check_conso = wx.CheckBox(self, -1, _(u"DÃ©tailler les consommations"))
         self.check_regroupement = wx.CheckBox(self, -1, _(u"Regrouper par"))
-        self.ctrl_regroupement_date = wx.Choice(self, -1, choices=["Date", _(u"Mois"), _(u"Année")])
+        self.ctrl_regroupement_date = wx.Choice(self, -1, choices=["Date", _(u"Mois"), _(u"AnnÃ©e")])
         
-        # Période
-        self.box_periode_staticbox = wx.StaticBox(self, -1, _(u"Période"))
-        self.radio_tout = wx.RadioButton(self, -1, _(u"Toutes les périodes"), style=wx.RB_GROUP)
+        # PÃ©riode
+        self.box_periode_staticbox = wx.StaticBox(self, -1, _(u"PÃ©riode"))
+        self.radio_tout = wx.RadioButton(self, -1, _(u"Toutes les pÃ©riodes"), style=wx.RB_GROUP)
         self.radio_dates = wx.RadioButton(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_au = wx.StaticText(self, -1, _(u"au"))
@@ -72,12 +72,12 @@ class Dialog(wx.Dialog):
         self.radio_jusquau = wx.RadioButton(self, -1, _(u"Jusqu'au"))
         self.ctrl_date_jusquau = CTRL_Saisie_date.Date2(self)
         self.radio_mois = wx.RadioButton(self, -1, _(u"Mois de"))
-        self.ctrl_mois = wx.Choice(self, -1, choices=[_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre")])
+        self.ctrl_mois = wx.Choice(self, -1, choices=[_(u"Janvier"), _(u"FÃ©vrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"AoÃ»t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"DÃ©cembre")])
         self.ctrl_mois_annee = wx.SpinCtrl(self, -1, str(datetime.date.today().year), min=1900, max=2099)
-        self.radio_annee = wx.RadioButton(self, -1, _(u"Année"))
+        self.radio_annee = wx.RadioButton(self, -1, _(u"AnnÃ©e"))
         self.ctrl_annee = wx.SpinCtrl(self, -1, u"2012", min=1900, max=2099)
         self.radio_vacances = wx.RadioButton(self, -1, _(u"Vacances de"))
-        self.ctrl_vacances = wx.Choice(self, -1, choices=[_(u"Février"), _(u"Pâques"), _(u"Eté"), _(u"Toussaint"), _(u"Noël")])
+        self.ctrl_vacances = wx.Choice(self, -1, choices=[_(u"FÃ©vrier"), _(u"PÃ¢ques"), _(u"EtÃ©"), _(u"Toussaint"), _(u"NoÃ«l")])
         self.ctrl_vacances_annee = wx.SpinCtrl(self, -1, u"2012", min=1900, max=2099)
         
         # Boutons
@@ -102,19 +102,19 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
-        # Init Contrôles
+        # Init ContrÃ´les
         self.dictVacances = self.GetListeVacances() 
         self.OnRadioType(None)
         self.OnRadioPeriode(None)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Saisie d'une période"))
-        self.radio_type_prestations.SetToolTip(wx.ToolTip(_(u"Sélectionnez le type de données à afficher")))
-        self.radio_type_factures.SetToolTip(wx.ToolTip(_(u"Sélectionnez le type de données à afficher")))
-        self.check_impayes.SetToolTip(wx.ToolTip(_(u"Uniquement les impayés")))
+        self.SetTitle(_(u"Saisie d'une pÃ©riode"))
+        self.radio_type_prestations.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le type de donnÃ©es Ã  afficher")))
+        self.radio_type_factures.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le type de donnÃ©es Ã  afficher")))
+        self.check_impayes.SetToolTip(wx.ToolTip(_(u"Uniquement les impayÃ©s")))
         self.check_regroupement.SetToolTip(wx.ToolTip(_(u"Regroupement des prestations")))
         self.ctrl_regroupement_date.SetSelection(0)
-        self.check_conso.SetToolTip(wx.ToolTip(_(u"Détailler les consommations")))
+        self.check_conso.SetToolTip(wx.ToolTip(_(u"DÃ©tailler les consommations")))
         self.ctrl_mois.SetSelection(0)
         self.ctrl_mois_annee.SetMinSize((60, -1))
         self.ctrl_annee.SetMinSize((60, -1))
@@ -241,7 +241,7 @@ class Dialog(wx.Dialog):
         else:
             self.ctrl_mois.Enable(False)
             self.ctrl_mois_annee.Enable(False)
-        # Année
+        # AnnÃ©e
         if self.radio_annee.GetValue() == True :
             self.ctrl_annee.Enable(True)
         else:
@@ -259,7 +259,7 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Editerunrelevdesprestations")
 
     def OnBoutonAnnuler(self, event): 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_CANCEL)
 
     def GetListeVacances(self):
@@ -305,11 +305,11 @@ class Dialog(wx.Dialog):
         date_debut = None
         date_fin = None
 
-        # Toutes les périodes
+        # Toutes les pÃ©riodes
         if self.radio_tout.GetValue() == True :
             date_debut = datetime.date(1900, 1, 1)
             date_fin = datetime.date(2999, 1, 1)
-            parametres = {"code":"tout", "date_debut":date_debut, "date_fin":date_fin, "label":_(u"Toutes les périodes")}
+            parametres = {"code":"tout", "date_debut":date_debut, "date_fin":date_fin, "label":_(u"Toutes les pÃ©riodes")}
 
         # Dates
         if self.radio_dates.GetValue() == True :
@@ -337,12 +337,12 @@ class Dialog(wx.Dialog):
             date_fin = datetime.date(annee, mois, calendar.monthrange(annee, mois)[1])
             parametres = {"code":"mois", "mois":mois, "annee":annee, "date_debut":date_debut, "date_fin":date_fin, "label":_(u"Mois de %s %d") % (LISTE_MOIS[mois-1], annee) }
             
-        # Année
+        # AnnÃ©e
         if self.radio_annee.GetValue() == True :
             annee = self.ctrl_annee.GetValue()
             date_debut = datetime.date(annee, 1, 1)
             date_fin = datetime.date(annee, 12, 31)
-            parametres = {"code":"annee", "annee":annee, "date_debut":date_debut, "date_fin":date_fin, "label":_(u"Année %d") % annee }
+            parametres = {"code":"annee", "annee":annee, "date_debut":date_debut, "date_fin":date_fin, "label":_(u"AnnÃ©e %d") % annee }
             
         # Vacances
         if self.radio_vacances.GetValue() == True :
@@ -360,7 +360,7 @@ class Dialog(wx.Dialog):
         self.OnRadioType(None)
 
     def SetOptions(self, dictOptions={}):
-        # Impayés
+        # ImpayÃ©s
         if "impayes" in dictOptions :
             self.check_impayes.SetValue(dictOptions["impayes"])
         # Regroupement
@@ -374,7 +374,7 @@ class Dialog(wx.Dialog):
             elif dictOptions["regroupement"] == "annee" :
                 self.ctrl_regroupement_date.SetSelection(2)
                 self.check_regroupement.SetValue(True) 
-        # Détail consommations
+        # DÃ©tail consommations
         if "conso" in dictOptions :
             self.check_conso.SetValue(dictOptions["conso"])
 
@@ -407,7 +407,7 @@ class Dialog(wx.Dialog):
             self.ctrl_mois.SetSelection(parametres["mois"]-1)
             self.ctrl_mois_annee.SetValue(parametres["annee"])
 
-        # Année
+        # AnnÃ©e
         if code == "annee" :
             self.radio_annee.SetValue(True)
             self.ctrl_annee.SetValue(parametres["annee"])
@@ -433,15 +433,15 @@ class Dialog(wx.Dialog):
         self.SetOptions(dictParametres["options"])
         
     def OnBoutonOk(self, event): 
-        # Validation de la période
+        # Validation de la pÃ©riode
         parametres = self.GetPeriode() 
         if parametres["date_debut"] == None or parametres["date_fin"] == None :
-            dlg = wx.MessageDialog(self, _(u"La période sélectionnée ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La pÃ©riode sÃ©lectionnÃ©e ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -9,7 +9,7 @@
 #-----------------------------------------------------------
 
 
-""" Liste des civilités d'individus (pour la fiche individu)"""
+""" Liste des civilitÃ©s d'individus (pour la fiche individu)"""
 
 LISTE_CIVILITES = (
     (u"ADULTE", 
@@ -20,17 +20,17 @@ LISTE_CIVILITES = (
         )),
     (u"ENFANT", 
         (
-        (4, u"Garçon", None, "Garcon.png", "M"),
+        (4, u"GarÃ§on", None, "Garcon.png", "M"),
         (5, u"Fille", None, "Fille.png", "F"),
         )),
     (u"AUTRE", 
         (
-        (6, u"Collectivité", None, "Organisme.png", None),
+        (6, u"CollectivitÃ©", None, "Organisme.png", None),
         (7, u"Association", None,  "Organisme.png", None),
         (8, u"Organisme", None, "Organisme.png", None),
         (9, u"Entreprise", None, "Organisme.png", None),
         )),
-    ) # Rubrique > (ID, CiviliteLong, CiviliteAbrege, nomImage, Masculin/Féminin)
+    ) # Rubrique > (ID, CiviliteLong, CiviliteAbrege, nomImage, Masculin/FÃ©minin)
 
 
 def GetDictCivilites():

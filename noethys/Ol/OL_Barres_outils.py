@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -48,7 +48,7 @@ class ListView(FastObjectListView):
         else :
             self.listeTextesBarres = []
         
-        # Recherche si barres affichées ou non
+        # Recherche si barres affichÃ©es ou non
         self.listeCoches = []
         for texteBarre in self.listeTextesBarres :
             codeBarre, label, observations, style, contenu = texteBarre.split("###")
@@ -69,7 +69,7 @@ class ListView(FastObjectListView):
         self.Modifier(None)
 
     def InitModel(self):
-        # Création des tracks
+        # CrÃ©ation des tracks
         self.donnees = []
         index = 0
         for texteBarre in self.listeTextesBarres :
@@ -85,7 +85,7 @@ class ListView(FastObjectListView):
                 
         liste_Colonnes = [
             ColumnDefn(_(u"Nom"), 'left', 200, "label"),
-            ColumnDefn(_(u"Nbre éléments"), "left", 90, "nbreElements"),
+            ColumnDefn(_(u"Nbre Ã©lÃ©ments"), "left", 90, "nbreElements"),
             ColumnDefn(_(u"Observations"), "left", 250, "observations"),
             ]
         
@@ -132,7 +132,7 @@ class ListView(FastObjectListView):
             
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """            
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         item = wx.MenuItem(menuPop, 70, _(u"Ajouter"))
@@ -159,20 +159,20 @@ class ListView(FastObjectListView):
 
         menuPop.AppendSeparator()
         
-        # Tout sélectionner
+        # Tout sÃ©lectionner
         item = wx.MenuItem(menuPop, 20, _(u"Tout cocher"))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheTout, id=20)
 
-        # Tout dé-sélectionner
-        item = wx.MenuItem(menuPop, 30, _(u"Tout décocher"))
+        # Tout dÃ©-sÃ©lectionner
+        item = wx.MenuItem(menuPop, 30, _(u"Tout dÃ©cocher"))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheRien, id=30)
         
         menuPop.AppendSeparator()
         
         # Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -206,7 +206,7 @@ class ListView(FastObjectListView):
 
     def Impression(self, mode="preview"):
         if self.donnees == None or len(self.donnees) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune donnée à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune donnÃ©e Ã  imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -242,7 +242,7 @@ class ListView(FastObjectListView):
         
     def Modifier(self, event=None):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune barre d'outils à modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune barre d'outils Ã  modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -257,7 +257,7 @@ class ListView(FastObjectListView):
         
     def Supprimer(self, event=None):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune période à supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune pÃ©riode Ã  supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

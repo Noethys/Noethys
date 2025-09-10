@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -39,10 +39,10 @@ class CTRL(HTL.HyperTreeList):
         from Utils import UTILS_Linux
         UTILS_Linux.AdaptePolice(self)
                 
-        # Création des colonnes
+        # CrÃ©ation des colonnes
         listeColonnes = [
             ( _(u"Groupe/Date"), 200, wx.ALIGN_LEFT),
-            ( _(u"Combinaisons d'unités"), 280, wx.ALIGN_LEFT),
+            ( _(u"Combinaisons d'unitÃ©s"), 280, wx.ALIGN_LEFT),
             ]
         numColonne = 0
         for label, largeur, alignement in listeColonnes :
@@ -60,21 +60,21 @@ class CTRL(HTL.HyperTreeList):
         self.SetAGWWindowStyleFlag(wx.TR_HIDE_ROOT  | TR_COLUMN_LINES | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT ) # HTL.TR_NO_HEADER
         self.EnableSelectionVista(True)
         
-        # Init contrôle
+        # Init contrÃ´le
         self.ImportationInitiale() 
         self.MAJ() 
     
     def MAJ(self):
-        """ Met à jour (redessine) tout le contrôle """
+        """ Met Ã  jour (redessine) tout le contrÃ´le """
         self.DeleteAllItems()
         self.root = self.AddRoot(_(u"Racine"))
         self.Remplissage()
 
     def ImportationInitiale(self):
-        """ Importation initiale des données """
+        """ Importation initiale des donnÃ©es """
         DB = GestionDB.DB()
         
-        # Importation des unités de l'activité
+        # Importation des unitÃ©s de l'activitÃ©
         req = """SELECT IDunite, ordre, nom, abrege, type, heure_debut, heure_fin, date_debut, date_fin
         FROM unites
         WHERE IDactivite=%d
@@ -85,7 +85,7 @@ class CTRL(HTL.HyperTreeList):
         for IDunite, ordre, nom, abrege, type, heure_debut, heure_fin, date_debut, date_fin in listeUnites :
             self.dictUnites[IDunite] = {"ordre":ordre, "nom":nom, "abrege":abrege, "type":type, "heure_debut":heure_debut, "heure_fin":heure_fin, "date_debut":date_debut, "date_fin":date_fin}
 
-        # Importation des groupes de l'activité
+        # Importation des groupes de l'activitÃ©
         req = """SELECT IDgroupe, nom, ordre, abrege
         FROM groupes
         WHERE IDactivite=%d
@@ -107,7 +107,7 @@ class CTRL(HTL.HyperTreeList):
         for IDcombi_tarif, IDtarif, date, IDgroupe in self.listeCombinaisons :
             self.listeAnciennesCombi.append(IDcombi_tarif)
             
-        # Importation des unités des combinaisons
+        # Importation des unitÃ©s des combinaisons
         req = """SELECT IDcombi_tarif_unite, IDcombi_tarif, IDunite
         FROM combi_tarifs_unites
         WHERE IDtarif=%d;""" % self.IDtarif
@@ -124,7 +124,7 @@ class CTRL(HTL.HyperTreeList):
             else:
                 self.dictUnitesCombi[IDcombi_tarif] = [dictTemp,]
                 
-        # Création de la liste des données
+        # CrÃ©ation de la liste des donnÃ©es
         self.listeDonneesInitiale = []
         for IDcombi_tarif, IDtarif, date, IDgroupe in self.listeCombinaisons :
             if date != None : date = UTILS_Dates.DateEngEnDateDD(date)
@@ -136,7 +136,7 @@ class CTRL(HTL.HyperTreeList):
                 # Nouvelle version
                 self.listeDonneesInitiale.append({"date":date, "IDcombi_tarif":IDcombi_tarif, "IDgroupe":IDgroupe, "unites":listeUnites})
             else :
-                # Pour gérer ancienne version
+                # Pour gÃ©rer ancienne version
                 for IDgroupe, x in self.dictGroupes.items() :
                     self.listeDonneesInitiale.append({"date":date, "IDcombi_tarif":IDcombi_tarif, "IDgroupe":IDgroupe, "unites":listeUnites})
                 
@@ -176,7 +176,7 @@ class CTRL(HTL.HyperTreeList):
                 date = dictCombi["date"]
                 niveauDate = self.AppendItem(niveauGroupe, UTILS_Dates.DateComplete(date))
                 
-                # Combinaisons d'unités
+                # Combinaisons d'unitÃ©s
                 texteTemp = []
                 for dictUniteCombi in dictCombi["unites"] :
                     IDunite = dictUniteCombi["IDunite"]
@@ -198,7 +198,7 @@ class CTRL(HTL.HyperTreeList):
         self.Initialisation()
     
     def Modifier(self):
-        # Préparation du dictSelections
+        # PrÃ©paration du dictSelections
         dictSelections = {}
         dictTempCombi = {}
         dictTempUnites = {}
@@ -250,7 +250,7 @@ class CTRL(HTL.HyperTreeList):
         
                 self.listeDonnees.append({"date":date, "IDcombi_tarif":IDcombi_tarif, "IDgroupe":IDgroupe, "unites":listeTemp})
         
-        # MAJ Contrôle
+        # MAJ ContrÃ´le
         self.MAJ() 
 
     def ToutSupprimer(self):
@@ -275,24 +275,24 @@ class CTRL(HTL.HyperTreeList):
             else:
                 listeIDcombi.append(IDcombi_tarif)
             
-            # Sauvegarde des unités de combi
+            # Sauvegarde des unitÃ©s de combi
             for dictUnitesCombi in dictCombi["unites"] :
                 IDcombi_tarif_unite = dictUnitesCombi["IDcombi_tarif_unite"]
                 IDunite = dictUnitesCombi["IDunite"]
                 
-                # Nouvelles unités
+                # Nouvelles unitÃ©s
                 if IDcombi_tarif_unite == None :
                     listeDonnees = [ ("IDcombi_tarif", IDcombi_tarif ), ("IDtarif", self.IDtarif ), ("IDunite", IDunite ), ]
                     IDcombi_tarif_unite = DB.ReqInsert("combi_tarifs_unites", listeDonnees)
                 else:
                     listeIDunites.append(IDcombi_tarif_unite)
         
-        # Suppression des combi supprimées
+        # Suppression des combi supprimÃ©es
         for IDcombi_tarif in self.listeAnciennesCombi :
             if IDcombi_tarif not in listeIDcombi :
                 DB.ReqDEL("combi_tarifs", "IDcombi_tarif", IDcombi_tarif)
             
-        # Suppression des unités supprimées
+        # Suppression des unitÃ©s supprimÃ©es
         for IDcombi_tarif_unite in self.listeAnciennesUnites :
             if IDcombi_tarif_unite not in listeIDunites :
                 DB.ReqDEL("combi_tarifs_unites", "IDcombi_tarif_unite", IDcombi_tarif_unite)

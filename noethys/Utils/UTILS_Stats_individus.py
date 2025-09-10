@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -25,7 +25,7 @@ DICT_COMPARATIF_NOMBRE = {"dictParametres" : {}, "dictResultats" : {} }
 def GetComparatifNombre(DB, dictParametres) :
     dictResultats = {}
     
-    # Vérifie si les données n'existent pas déjà
+    # VÃ©rifie si les donnÃ©es n'existent pas dÃ©jÃ 
     global DICT_COMPARATIF_NOMBRE
     if DICT_COMPARATIF_NOMBRE["dictParametres"] == dictParametres :
         return DICT_COMPARATIF_NOMBRE["listeResultats"]
@@ -33,11 +33,11 @@ def GetComparatifNombre(DB, dictParametres) :
     if dictParametres["mode"] == "inscrits" :
         return dictResultats
     
-    # Recherche des paramètres
+    # Recherche des paramÃ¨tres
     date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
     conditionsActivites = MODELES.GetConditionActivites(dictParametres)
     
-    # Recherche des périodes de comparaison
+    # Recherche des pÃ©riodes de comparaison
     req = """SELECT MIN(date), MAX(date) 
     FROM consommations 
     WHERE consommations.etat IN ('reservation', 'present')
@@ -82,16 +82,16 @@ def GetComparatifNombre(DB, dictParametres) :
 DICT_GENRES = {"dictParametres" : {}, "dictResultats" : {} }
 
 def GetDictGenres(DB, dictParametres) :
-    # Vérifie si les données n'existent pas déjà
+    # VÃ©rifie si les donnÃ©es n'existent pas dÃ©jÃ 
     global DICT_GENRES
     if DICT_GENRES["dictParametres"] == dictParametres :
         return DICT_GENRES["dictResultats"]
 
-    # Recherche des paramètres
+    # Recherche des paramÃ¨tres
     date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
     conditionsActivites = MODELES.GetConditionActivites(dictParametres)
 
-    # Recherche des données par individus
+    # Recherche des donnÃ©es par individus
     if dictParametres["mode"] == "presents" :
         req = """SELECT individus.IDindividu, IDcivilite
         FROM individus
@@ -117,7 +117,7 @@ def GetDictGenres(DB, dictParametres) :
     from Data import DATA_Civilites
     dictCivilites = DATA_Civilites.GetDictCivilites()
     dictGenres = { 
-        "M" : {"quantite" : 0, "label1" : _(u"Garçons"), "label2" : _(u"garçons"), "couleur" : (134, 172, 253) },
+        "M" : {"quantite" : 0, "label1" : _(u"GarÃ§ons"), "label2" : _(u"garÃ§ons"), "couleur" : (134, 172, 253) },
         "F" : {"quantite" : 0, "label1" : _(u"Filles"), "label2" : _(u"filles"), "couleur" : (253, 172, 220) },
         "None" : {"quantite" : 0, "label1" : _(u"N.C."), "label2" : _(u"individus dont le genre est inconnu"), "couleur" : (170, 170, 170) },
         }
@@ -125,7 +125,7 @@ def GetDictGenres(DB, dictParametres) :
         genre = str(dictCivilites[IDcivilite]["sexe"])
         dictGenres[genre]["quantite"] += 1
 
-    # Mémorisation des résultats
+    # MÃ©morisation des rÃ©sultats
     DICT_GENRES["dictParametres"] = dictParametres
     DICT_GENRES["dictResultats"] = dictGenres
     return dictGenres
@@ -134,19 +134,19 @@ def GetDictGenres(DB, dictParametres) :
 DICT_AGES = {"dictParametres" : {}, "dictAges" : {}, "dictAnnees" : {} }
 
 def GetDictAges(DB, dictParametres, mode_tranches=False) :
-    # Vérifie si les données n'existent pas déjà
+    # VÃ©rifie si les donnÃ©es n'existent pas dÃ©jÃ 
     # global DICT_AGES
     # if DICT_AGES["dictParametres"] == dictParametres :
     #     return DICT_AGES["dictAges"], DICT_AGES["dictAnnees"]
 
-    # Recherche des paramètres
+    # Recherche des paramÃ¨tres
     date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
     conditionsActivites = MODELES.GetConditionActivites(dictParametres)
 
     from Data import DATA_Civilites
     dictCivilites = DATA_Civilites.GetDictCivilites()
     
-    # Recherche des données par individus
+    # Recherche des donnÃ©es par individus
     if dictParametres["mode"] == "presents" :
         req = """SELECT individus.IDindividu, IDcivilite, date_naiss
         FROM individus
@@ -202,7 +202,7 @@ def GetDictAges(DB, dictParametres, mode_tranches=False) :
         dictAgesGenres[tranche].setdefault(genre, 0)
         dictAgesGenres[tranche][genre] += 1
 
-    # Mémorisation des résultats
+    # MÃ©morisation des rÃ©sultats
     DICT_AGES["dictParametres"] = dictParametres
     DICT_AGES["dictAges"] = dictAges
     DICT_AGES["dictAnnees"] = dictAnnees
@@ -214,7 +214,7 @@ DICT_DISTANCES_VILLES = {"dictParametres" : {}, "dictDistances" : {} }
 def GetDistancesVilles(dictParametres, origine="", destinations=[]):
     global DICT_DISTANCES_VILLES
     
-    # Vérifie si les données n'existent pas déjà
+    # VÃ©rifie si les donnÃ©es n'existent pas dÃ©jÃ 
     if DICT_DISTANCES_VILLES["dictParametres"] == dictParametres :
         return DICT_DISTANCES_VILLES["dictDistances"]
     
@@ -222,7 +222,7 @@ def GetDistancesVilles(dictParametres, origine="", destinations=[]):
     from Utils import UTILS_Distances_villes
     dictDistances = UTILS_Distances_villes.GetDistances(origine, destinations) 
     
-    # Mémorisation des résultats
+    # MÃ©morisation des rÃ©sultats
     DICT_DISTANCES_VILLES["dictParametres"] = dictParametres
     DICT_DISTANCES_VILLES["dictDistances"] = dictDistances
     return dictDistances
@@ -231,19 +231,19 @@ def GetDistancesVilles(dictParametres, origine="", destinations=[]):
 DICT_VILLES = {"dictParametres" : {}, "dictResultats" : {} }
 
 def GetDictVilles(DB, dictParametres):
-    # Vérifie si les données n'existent pas déjà
+    # VÃ©rifie si les donnÃ©es n'existent pas dÃ©jÃ 
     global DICT_VILLES
     if DICT_VILLES["dictParametres"] == dictParametres :
         return DICT_VILLES["dictResultats"]
 
-    # Recherche des paramètres
+    # Recherche des paramÃ¨tres
     date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
     conditionsActivites = MODELES.GetConditionActivites(dictParametres)
 
     from Utils import UTILS_Titulaires
     dictTitulaires = UTILS_Titulaires.GetTitulaires() 
     
-    # Récupère les adresses de tous les individus de la base
+    # RÃ©cupÃ¨re les adresses de tous les individus de la base
     req = """SELECT IDindividu, nom, prenom, rue_resid, cp_resid, ville_resid FROM individus;"""
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
@@ -251,7 +251,7 @@ def GetDictVilles(DB, dictParametres):
     for IDindividu, nom, prenom, rue_resid, cp_resid, ville_resid in listeDonnees :
         dictInfos[IDindividu] = { "nom" : nom, "prenom" : prenom, "rue_resid" : rue_resid, "cp_resid" : cp_resid, "ville_resid" : ville_resid}
     
-    # Recherche les individus présents
+    # Recherche les individus prÃ©sents
     if dictParametres["mode"] == "presents" :
         req = """SELECT individus.IDindividu, adresse_auto
         FROM individus
@@ -288,14 +288,14 @@ def GetDictVilles(DB, dictParametres):
             cp_resid = dictInfos[IDindividu]["cp_resid"]
             ville_resid = dictInfos[IDindividu]["ville_resid"]
     
-        # Synthèse des infos
+        # SynthÃ¨se des infos
         if ((cp_resid, ville_resid) in dictVilles) == False :
             dictVilles[(cp_resid, ville_resid)] = {"nbreIndividus" : 0, "distance" : "", "distance_metres" : 0}
             if cp_resid != None and ville_resid != None :
                 destinations.append((cp_resid, ville_resid))
         dictVilles[(cp_resid, ville_resid)]["nbreIndividus"] += 1
     
-    # Récupère les distances entre les villes
+    # RÃ©cupÃ¨re les distances entre les villes
     dictDistances = {}
     try :
         req = """SELECT cp, ville FROM organisateur
@@ -314,7 +314,7 @@ def GetDictVilles(DB, dictParametres):
             dictVilles[key]["distance"] = dictDistances[key]["distance_texte"]
             dictVilles[key]["distance_metres"] = dictDistances[key]["distance_metres"]
 
-    # Mémorisation des résultats
+    # MÃ©morisation des rÃ©sultats
     DICT_VILLES["dictParametres"] = dictParametres
     DICT_VILLES["dictResultats"] = dictVilles
     return dictVilles
@@ -324,16 +324,16 @@ def GetDictVilles(DB, dictParametres):
 DICT_ACTI_PRO = {"dictParametres" : {}, "dictResultats" : [] }
 
 def GetListeActivitesPro(DB, dictParametres) :
-    # Vérifie si les données n'existent pas déjà
+    # VÃ©rifie si les donnÃ©es n'existent pas dÃ©jÃ 
     global DICT_ACTI_PRO
     if DICT_ACTI_PRO["dictParametres"] == dictParametres :
         return DICT_ACTI_PRO["dictResultats"]
 
-    # Recherche des paramètres
+    # Recherche des paramÃ¨tres
     date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
     conditionsActivites = MODELES.GetConditionActivites(dictParametres)
 
-    # Recherche des données par individus
+    # Recherche des donnÃ©es par individus
     if dictParametres["mode"] == "presents" :
         req = """SELECT individus.IDcategorie_travail, categories_travail.nom, COUNT(individus.IDindividu)
         FROM individus
@@ -361,7 +361,7 @@ def GetListeActivitesPro(DB, dictParametres) :
     dictCategories = {}
     for IDcategorie, nomCategorie, IDindividu in listeDonnees :
         if nomCategorie == None :
-            nomCategorie = _(u"Catégorie inconnue")
+            nomCategorie = _(u"CatÃ©gorie inconnue")
         if (IDcategorie in dictCategories) == False :
             dictCategories[IDcategorie] = {"nom" : nomCategorie, "nbre" : 0}
         dictCategories[IDcategorie]["nbre"] += 1
@@ -371,7 +371,7 @@ def GetListeActivitesPro(DB, dictParametres) :
         listeResultats.append((valeurs["nbre"], valeurs["nom"]))
     listeResultats.sort(reverse=True)
 
-    # Mémorisation des résultats
+    # MÃ©morisation des rÃ©sultats
     DICT_ACTI_PRO["dictParametres"] = dictParametres
     DICT_ACTI_PRO["dictResultats"] = listeResultats
     return listeResultats
@@ -380,12 +380,12 @@ def GetListeActivitesPro(DB, dictParametres) :
 DICT_ANCIENNETE = {"dictParametres" : {}, "dictResultats" : {}, "listeMoisPeriode" : [] }
 
 def GetAnciennete(DB, dictParametres):
-    # Vérifie si les données n'existent pas déjà
+    # VÃ©rifie si les donnÃ©es n'existent pas dÃ©jÃ 
     global DICT_ANCIENNETE
     if DICT_ANCIENNETE["dictParametres"] == dictParametres :
         return DICT_ANCIENNETE["dictResultats"], DICT_ANCIENNETE["listeMoisPeriode"]
 
-    # Recherche des paramètres
+    # Recherche des paramÃ¨tres
     date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
     conditionsActivites = MODELES.GetConditionActivites(dictParametres)
     
@@ -410,21 +410,21 @@ def GetAnciennete(DB, dictParametres):
         dateMin = MODELES.DateEngEnDateDD(dateMin)
         dateMax = MODELES.DateEngEnDateDD(dateMax)
         
-        # Vérifie si individu présent sur la période de référence
+        # VÃ©rifie si individu prÃ©sent sur la pÃ©riode de rÃ©fÃ©rence
         if dateMax >= date_debut :
             moisArrivee = (dateMin.year, dateMin.month)
             if (moisArrivee in dictResultats) == False :
                 dictResultats[moisArrivee] = 0
             dictResultats[moisArrivee] += 1
             
-    # Crée tous les mois de la période
+    # CrÃ©e tous les mois de la pÃ©riode
     listeMoisPeriode = []
     for annee in range(date_debut.year, date_fin.year+1) :
         for mois in range(1, 13):
             if (annee, mois) >= (date_debut.year, date_debut.month) and (annee, mois) <= (date_fin.year, date_fin.month) :
                 listeMoisPeriode.append((annee, mois))
 
-    # Mémorisation des résultats
+    # MÃ©morisation des rÃ©sultats
     DICT_ANCIENNETE["dictParametres"] = dictParametres
     DICT_ANCIENNETE["dictResultats"] = dictResultats
     DICT_ANCIENNETE["listeMoisPeriode"] = listeMoisPeriode
@@ -435,12 +435,12 @@ DICT_DESINSCRITS = {"dictParametres": {}, "dictResultats": {}, "listeMoisPeriode
 
 
 def GetDesinscrits(DB, dictParametres):
-    # Vérifie si les données n'existent pas déjà
+    # Vï¿½rifie si les donnï¿½es n'existent pas dï¿½jï¿½
     global DICT_DESINSCRITS
     if DICT_DESINSCRITS["dictParametres"] == dictParametres:
         return DICT_DESINSCRITS["dictResultats"], DICT_DESINSCRITS["listeMoisPeriode"]
 
-    # Recherche des paramètres
+    # Recherche des paramï¿½tres
     date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
     conditionsActivites = MODELES.GetConditionActivites(dictParametres)
 
@@ -467,14 +467,14 @@ def GetDesinscrits(DB, dictParametres):
             dictResultats[moisDepart] = 0
         dictResultats[moisDepart] += 1
 
-    # Crée tous les mois de la période
+    # Crï¿½e tous les mois de la pï¿½riode
     listeMoisPeriode = []
     for annee in range(date_debut.year, date_fin.year + 1):
         for mois in range(1, 13):
             if (annee, mois) >= (date_debut.year, date_debut.month) and (annee, mois) <= (date_fin.year, date_fin.month):
                 listeMoisPeriode.append((annee, mois))
 
-    # Mémorisation des résultats
+    # Mï¿½morisation des rï¿½sultats
     DICT_DESINSCRITS["dictParametres"] = dictParametres
     DICT_DESINSCRITS["dictResultats"] = dictResultats
     DICT_DESINSCRITS["listeMoisPeriode"] = listeMoisPeriode
@@ -485,16 +485,16 @@ def GetDesinscrits(DB, dictParametres):
 DICT_ECOLES = {"dictParametres" : {}, "listeResultats" : [] }
 
 def GetListeEcoles(DB, dictParametres) :
-    # Vérifie si les données n'existent pas déjà
+    # VÃ©rifie si les donnÃ©es n'existent pas dÃ©jÃ 
     global DICT_ECOLES
     if DICT_ECOLES["dictParametres"] == dictParametres :
         return DICT_ECOLES["listeResultats"]
 
-    # Recherche des paramètres
+    # Recherche des paramÃ¨tres
     date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
     conditionsActivites = MODELES.GetConditionActivites(dictParametres)
 
-    # Recherche des données par individus
+    # Recherche des donnÃ©es par individus
     if dictParametres["mode"] == "presents" :
         req = """SELECT scolarite.IDecole, ecoles.nom, COUNT(individus.IDindividu)
         FROM individus
@@ -527,7 +527,7 @@ def GetListeEcoles(DB, dictParametres) :
         listeResultats.append((valeurs["nbre"], valeurs["nom"]))
     listeResultats.sort(reverse=True)
 
-    # Mémorisation des résultats
+    # MÃ©morisation des rÃ©sultats
     DICT_ECOLES["dictParametres"] = dictParametres
     DICT_ECOLES["listeResultats"] = listeResultats
     return listeResultats
@@ -536,16 +536,16 @@ def GetListeEcoles(DB, dictParametres) :
 DICT_NIVEAUX_SCOLAIRES = {"dictParametres" : {}, "listeResultats" : [] }
 
 def GetListeNiveauxScolaires(DB, dictParametres) :
-    # Vérifie si les données n'existent pas déjà
+    # VÃ©rifie si les donnÃ©es n'existent pas dÃ©jÃ 
     global DICT_NIVEAUX_SCOLAIRES
     if DICT_NIVEAUX_SCOLAIRES["dictParametres"] == dictParametres :
         return DICT_NIVEAUX_SCOLAIRES["listeResultats"]
 
-    # Recherche des paramètres
+    # Recherche des paramÃ¨tres
     date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
     conditionsActivites = MODELES.GetConditionActivites(dictParametres)
 
-    # Recherche des données par individus
+    # Recherche des donnÃ©es par individus
     if dictParametres["mode"] == "presents" :
         req = """SELECT scolarite.IDniveau, niveaux_scolaires.ordre, niveaux_scolaires.abrege, COUNT(individus.IDindividu)
         FROM individus
@@ -578,7 +578,7 @@ def GetListeNiveauxScolaires(DB, dictParametres) :
         listeResultats.append((valeurs["ordre"], valeurs["nbre"], valeurs["nom"]))
     listeResultats.sort()
 
-    # Mémorisation des résultats
+    # MÃ©morisation des rÃ©sultats
     DICT_NIVEAUX_SCOLAIRES["dictParametres"] = dictParametres
     DICT_NIVEAUX_SCOLAIRES["listeResultats"] = listeResultats
     return listeResultats
@@ -586,7 +586,7 @@ def GetListeNiveauxScolaires(DB, dictParametres) :
 
 class Texte_nombre_individus(MODELES.Texte):
     def __init__(self):
-        """ Recherche du nombre d'individus présents """
+        """ Recherche du nombre d'individus prÃ©sents """
         MODELES.Texte.__init__(self)
         self.nom = _(u"Nombre d'individus")
         self.code = "texte_nombre_individus"
@@ -596,7 +596,7 @@ class Texte_nombre_individus(MODELES.Texte):
         date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
         conditionsActivites = MODELES.GetConditionActivites(dictParametres)
         
-        # Recherche du nombre d'individus présents
+        # Recherche du nombre d'individus prÃ©sents
         if dictParametres["mode"] == "presents" :
             req = """SELECT COUNT(IDindividu)
             FROM consommations 
@@ -616,7 +616,7 @@ class Texte_nombre_individus(MODELES.Texte):
         listeDonnees = DB.ResultatReq()
 
         if dictParametres["mode"] == "presents" :
-            mot = _(u"présent")
+            mot = _(u"prÃ©sent")
         else:
             mot = _(u"inscrit")
             
@@ -627,10 +627,10 @@ class Texte_nombre_individus(MODELES.Texte):
         
         
 class Tableau_nombre_individus(MODELES.Tableau):
-    """ Répartition du nombre d'individus par activité """
+    """ RÃ©partition du nombre d'individus par activitÃ© """
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = _(u"Répartition du nombre d'individus par activité")
+        self.nom = _(u"RÃ©partition du nombre d'individus par activitÃ©")
         self.code = "tableau_nombre_individus"
     def MAJ(self, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
@@ -638,11 +638,11 @@ class Tableau_nombre_individus(MODELES.Tableau):
         self.lignes = []
         self.totaux = []
         
-        # Recherche des paramètres
+        # Recherche des paramÃ¨tres
         date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
         conditionsActivites = MODELES.GetConditionActivites(dictParametres)
 
-        # Recherche du nombre d'individus présents
+        # Recherche du nombre d'individus prÃ©sents
         if dictParametres["mode"] == "presents" :
             req = """SELECT IDactivite, COUNT(IDindividu)
             FROM consommations 
@@ -682,9 +682,9 @@ class Tableau_nombre_individus(MODELES.Tableau):
                 dictActiTemp[IDactivite] = 0
             dictActiTemp[IDactivite] += 1
         
-        # Création du tableau
+        # CrÃ©ation du tableau
         self.largeur = "400"
-        self.colonnes = [ (_(u"Activité"), "250"), (_(u"Nombre d'individus"), "150") ]
+        self.colonnes = [ (_(u"ActivitÃ©"), "250"), (_(u"Nombre d'individus"), "150") ]
         self.lignes = []
         for IDactivite, listeIndividus in dictActiTemp.items() :
             nomActivite = dictParametres["dictActivites"][IDactivite]
@@ -698,7 +698,7 @@ class Graphe_nombre_individus(MODELES.Graphe):
         self.taille = (470, 360)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
-        # Création du graph
+        # CrÃ©ation du graph
         ax = figure.add_subplot(111)
         
         dictResultats = GetComparatifNombre(DB, dictParametres)
@@ -709,7 +709,7 @@ class Graphe_nombre_individus(MODELES.Graphe):
         listeValeurs = dictResultats["valeurs"]
         indexPeriodeReference = dictResultats["indexPeriodeReference"]
         
-        # Création du graph
+        # CrÃ©ation du graph
         ind = arange(len(listeLabels)) + self.decalage_x
         width = 0.5
         for x in range(len(listeLabels)) :
@@ -747,10 +747,10 @@ class Graphe_nombre_individus(MODELES.Graphe):
 
         
 class Tableau_repartition_genre(MODELES.Tableau):
-    """ Répartition des individus par âge """
+    """ RÃ©partition des individus par Ã¢ge """
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = _(u"Répartition par genre")
+        self.nom = _(u"RÃ©partition par genre")
         self.code = "tableau_repartition_genre"
     def MAJ(self, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
@@ -760,7 +760,7 @@ class Tableau_repartition_genre(MODELES.Tableau):
         
         dictGenres = GetDictGenres(DB, dictParametres)
                 
-        # Création du tableau
+        # CrÃ©ation du tableau
         self.largeur = "400"
         self.colonnes = [ (_(u"Genre"), "250"), (_(u"Nombre d'individus"), "150") ]
         self.lignes = []
@@ -775,12 +775,12 @@ class Tableau_repartition_genre(MODELES.Tableau):
 class Graphe_repartition_genre(MODELES.Graphe):
     def __init__(self):
         MODELES.Graphe.__init__(self)
-        self.nom = _(u"Répartition par genre")
+        self.nom = _(u"RÃ©partition par genre")
         self.code = "graphe_repartition_genre"
         self.taille = (350, 250)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
-        # Création du graph
+        # CrÃ©ation du graph
         ax = figure.add_subplot(111)
         
         dictGenres = GetDictGenres(DB, dictParametres)
@@ -795,7 +795,7 @@ class Graphe_repartition_genre(MODELES.Graphe):
                 listeCouleurs.append(MODELES.ConvertitCouleur2(dictTemp["couleur"]))
 
         cam = ax.pie(listeValeurs, labels=listeLabels, colors=listeCouleurs, autopct='%1.1f%%', shadow=False)
-        title = ax.set_title(_(u"Répartition par genre"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
+        title = ax.set_title(_(u"RÃ©partition par genre"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
         matplotlib.pyplot.setp(title, rotation=0, fontsize=9)
         ax.set_aspect(1)
         labels, labelsPourcent = cam[1], cam[2]
@@ -808,10 +808,10 @@ class Graphe_repartition_genre(MODELES.Graphe):
 
 
 class Tableau_repartition_ages(MODELES.Tableau):
-    """ Répartition des individus par âge """
+    """ RÃ©partition des individus par Ã¢ge """
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = _(u"Répartition des individus par âge")
+        self.nom = _(u"RÃ©partition des individus par Ã¢ge")
         self.code = "tableau_repartition_ages"
     def MAJ(self, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
@@ -821,7 +821,7 @@ class Tableau_repartition_ages(MODELES.Tableau):
         
         dictAges, dictAnnees = GetDictAges(DB, dictParametres)
         
-        # Création du tableau
+        # CrÃ©ation du tableau
         self.largeur = "400"
         self.colonnes = [ (_(u"Age"), "250"), (_(u"Nombre d'individus"), "150") ]
         self.lignes = []
@@ -843,12 +843,12 @@ class Tableau_repartition_ages(MODELES.Tableau):
 class Graphe_repartition_ages(MODELES.Graphe):
     def __init__(self):
         MODELES.Graphe.__init__(self)
-        self.nom = _(u"Répartition des individus par âge")
+        self.nom = _(u"RÃ©partition des individus par Ã¢ge")
         self.code = "graphe_repartition_ages"
         self.taille = (470, 280)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
-        # Création du graph
+        # CrÃ©ation du graph
         ax = figure.add_subplot(111)
         
         dictAges, dictAnnees = GetDictAges(DB, dictParametres)
@@ -867,7 +867,7 @@ class Graphe_repartition_ages(MODELES.Graphe):
             listeLabels.append(age)
             listeValeurs.append(nbreIndividus)
         
-        # Création du graph
+        # CrÃ©ation du graph
         ind = arange(len(listeLabels)) + self.decalage_x
         width = 0.5
         barres = ax.bar(ind, listeValeurs, width, color=MODELES.ConvertitCouleur2(MODELES.COULEUR_VERT_POMME))
@@ -887,7 +887,7 @@ class Graphe_repartition_ages(MODELES.Graphe):
         matplotlib.pyplot.setp(labels, rotation=0, fontsize=9) 
         
         # Titre
-        title = ax.set_title(_(u"Répartition par âge"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
+        title = ax.set_title(_(u"RÃ©partition par Ã¢ge"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
         matplotlib.pyplot.setp(title, rotation=0, fontsize=9)
         
         figure.subplots_adjust(left=None, bottom=0.12, right=None, wspace=None, hspace=None)
@@ -900,10 +900,10 @@ class Graphe_repartition_ages(MODELES.Graphe):
 
 
 class Tableau_repartition_annees_naiss(MODELES.Tableau):
-    """ Répartition des individus par âge """
+    """ RÃ©partition des individus par Ã¢ge """
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = _(u"Répartition des individus par année de naissance")
+        self.nom = _(u"RÃ©partition des individus par annÃ©e de naissance")
         self.code = "tableau_repartition_annees_naiss"
     def MAJ(self, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
@@ -913,9 +913,9 @@ class Tableau_repartition_annees_naiss(MODELES.Tableau):
         
         dictAges, dictAnnees = GetDictAges(DB, dictParametres)
         
-        # Création du tableau
+        # CrÃ©ation du tableau
         self.largeur = "400"
-        self.colonnes = [ (_(u"Année de naissance"), "250"), (_(u"Nombre d'individus"), "150") ]
+        self.colonnes = [ (_(u"AnnÃ©e de naissance"), "250"), (_(u"Nombre d'individus"), "150") ]
         self.lignes = []
         
         listeAnnees = list(dictAnnees.keys()) 
@@ -924,7 +924,7 @@ class Tableau_repartition_annees_naiss(MODELES.Tableau):
         for annee in listeAnnees :
             nbreIndividus = dictAnnees[annee]
             if annee == None : 
-                annee = _(u"Année de naissance inconnue")
+                annee = _(u"AnnÃ©e de naissance inconnue")
             else :
                 annee = str(annee)
             self.lignes.append((annee, nbreIndividus))
@@ -935,12 +935,12 @@ class Tableau_repartition_annees_naiss(MODELES.Tableau):
 class Graphe_repartition_annees_naiss(MODELES.Graphe):
     def __init__(self):
         MODELES.Graphe.__init__(self)
-        self.nom = _(u"Répartition des individus par année de naissance")
+        self.nom = _(u"RÃ©partition des individus par annÃ©e de naissance")
         self.code = "graphe_repartition_annees_naiss"
         self.taille = (470, 280)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
-        # Création du graph
+        # CrÃ©ation du graph
         ax = figure.add_subplot(111)
         
         dictAges, dictAnnees = GetDictAges(DB, dictParametres)
@@ -959,13 +959,13 @@ class Graphe_repartition_annees_naiss(MODELES.Graphe):
             listeLabels.append(annee)
             listeValeurs.append(nbreIndividus)
         
-        # Création du graph
+        # CrÃ©ation du graph
         ind = arange(len(listeLabels)) + self.decalage_x
         width = 0.5
         barres = ax.bar(ind, listeValeurs, width, color=MODELES.ConvertitCouleur2(MODELES.COULEUR_BLEU_CIEL))
         
         # Axe horizontal
-        ax.set_xlabel(_(u"Années"), fontsize=8)
+        ax.set_xlabel(_(u"AnnÃ©es"), fontsize=8)
         
         ind = arange(len(listeLabels)) 
         ax.set_xticks(ind + width) 
@@ -981,7 +981,7 @@ class Graphe_repartition_annees_naiss(MODELES.Graphe):
         matplotlib.pyplot.setp(labels, rotation=0, fontsize=9) 
         
         # Titre
-        title = ax.set_title(_(u"Répartition par année de naissance"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
+        title = ax.set_title(_(u"RÃ©partition par annÃ©e de naissance"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
         matplotlib.pyplot.setp(title, rotation=0, fontsize=9)
         
         figure.subplots_adjust(left=None, bottom=0.2, right=None, wspace=None, hspace=None)
@@ -993,11 +993,11 @@ class Graphe_repartition_annees_naiss(MODELES.Graphe):
 
 
 class Tableau_repartition_tranches_ages(MODELES.Tableau):
-    """ Répartition des individus par âge """
+    """ Rï¿½partition des individus par ï¿½ge """
 
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = _(u"Répartition des individus par tranches d'âge et par genre")
+        self.nom = _(u"Rï¿½partition des individus par tranches d'ï¿½ge et par genre")
         self.code = "tableau_repartition_tranches_ages"
 
     def MAJ(self, DB=None, dictParametres={}):
@@ -1008,9 +1008,9 @@ class Tableau_repartition_tranches_ages(MODELES.Tableau):
 
         dictAges, dictAnnees = GetDictAges(DB, dictParametres, mode_tranches=True)
 
-        # Création du tableau
+        # Crï¿½ation du tableau
         self.largeur = "400"
-        self.colonnes = [(_(u"Tranche d'âge"), "200"), (_(u"H"), "50"), (_(u"F"), "50"), (_(u"?"), "50"), (_(u"Total"), "50")]
+        self.colonnes = [(_(u"Tranche d'ï¿½ge"), "200"), (_(u"H"), "50"), (_(u"F"), "50"), (_(u"?"), "50"), (_(u"Total"), "50")]
         self.lignes = []
 
         listeTranches = list(dictAges.keys())
@@ -1025,10 +1025,10 @@ class Tableau_repartition_tranches_ages(MODELES.Tableau):
 
 
 class Tableau_repartition_villes(MODELES.Tableau):
-    """ Répartition des individus par villes de résidence """
+    """ RÃ©partition des individus par villes de rÃ©sidence """
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = _(u"Répartition des individus par ville de résidence")
+        self.nom = _(u"RÃ©partition des individus par ville de rÃ©sidence")
         self.code = "tableau_repartition_villes"
     def MAJ(self, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
@@ -1038,9 +1038,9 @@ class Tableau_repartition_villes(MODELES.Tableau):
         
         dictVilles = GetDictVilles(DB, dictParametres)
         
-        # Création du tableau
+        # CrÃ©ation du tableau
         self.largeur = "400"
-        self.colonnes = [ (_(u"Ville de résidence"), "210"), (_(u"Distance"), "70"), (_(u"Nombre d'individus"), "120") ]
+        self.colonnes = [ (_(u"Ville de rÃ©sidence"), "210"), (_(u"Distance"), "70"), (_(u"Nombre d'individus"), "120") ]
         self.lignes = []
         
         # Tri par nbre d'individus
@@ -1064,12 +1064,12 @@ class Tableau_repartition_villes(MODELES.Tableau):
 class Graphe_repartition_villes(MODELES.Graphe):
     def __init__(self):
         MODELES.Graphe.__init__(self)
-        self.nom = _(u"Répartition par ville de résidence")
+        self.nom = _(u"RÃ©partition par ville de rÃ©sidence")
         self.code = "graphe_repartition_villes"
         self.taille = (450, 280)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
-        # Création du graph
+        # CrÃ©ation du graph
         ax = figure.add_subplot(111)
         
         dictVilles = GetDictVilles(DB, dictParametres)
@@ -1114,7 +1114,7 @@ class Graphe_repartition_villes(MODELES.Graphe):
             index += 1
 
         cam = ax.pie(listeValeurs, labels=listeLabels, colors=listeCouleurs, autopct='%1.1f%%', shadow=False)
-        title = ax.set_title(_(u"Répartition par ville"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
+        title = ax.set_title(_(u"RÃ©partition par ville"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
         matplotlib.pyplot.setp(title, rotation=0, fontsize=9)
         ax.set_aspect(1)
         labels, labelsPourcent = cam[1], cam[2]
@@ -1130,12 +1130,12 @@ class Graphe_repartition_villes(MODELES.Graphe):
 ##class Graphe_distances_villes(Graphe):
 ##    def __init__(self):
 ##        Graphe.__init__(self)
-##        self.nom = _(u"Distances et répartition par ville")
+##        self.nom = _(u"Distances et rÃ©partition par ville")
 ##        self.code = "graphe_distances_villes"
 ##        self.taille = (450, 280)
 ##    def MAJ(self, DB=None, dictParametres={}):
 ##        self.dictParametres = dictParametres
-##        # Création du graph
+##        # CrÃ©ation du graph
 ##        self.figure = matplotlib.pyplot.figure()
 ##        ax = self.figure.add_subplot(111)
 ##        
@@ -1192,17 +1192,17 @@ class Graphe_repartition_villes(MODELES.Graphe):
 ##        matplotlib.pyplot.setp(ax.get_yticklabels(), rotation=0, fontsize=9) 
 ##        matplotlib.pyplot.setp(ax.get_xticklabels(), rotation=0, fontsize=0) 
 ##            
-##        # Mémorise l'image du graphe
+##        # MÃ©morise l'image du graphe
 ##        self.MemoriseImage() 
 
 
 
 
 class Tableau_activites_professionnelles(MODELES.Tableau):
-    """ Répartition des individus par activité professionnelle """
+    """ RÃ©partition des individus par activitÃ© professionnelle """
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = _(u"Répartition des individus par activité professionnelle")
+        self.nom = _(u"RÃ©partition des individus par activitÃ© professionnelle")
         self.code = "tableau_activites_professionnelles"
     def MAJ(self, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
@@ -1212,9 +1212,9 @@ class Tableau_activites_professionnelles(MODELES.Tableau):
         
         listeCategories = GetListeActivitesPro(DB, dictParametres)
         
-        # Création du tableau
+        # CrÃ©ation du tableau
         self.largeur = "400"
-        self.colonnes = [ (_(u"Activité professionnelle"), "250"), (_(u"Nombre d'individus"), "150") ]
+        self.colonnes = [ (_(u"ActivitÃ© professionnelle"), "250"), (_(u"Nombre d'individus"), "150") ]
         self.lignes = []
                 
         for nbreIndividus, nomCategorie in listeCategories :
@@ -1226,12 +1226,12 @@ class Tableau_activites_professionnelles(MODELES.Tableau):
 class Graphe_activites_professionnelles(MODELES.Graphe):
     def __init__(self):
         MODELES.Graphe.__init__(self)
-        self.nom = _(u"Répartition par activité professionnelle")
+        self.nom = _(u"RÃ©partition par activitÃ© professionnelle")
         self.code = "graphe_activites_professionnelles"
         self.taille = (450, 280)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
-        # Création du graph
+        # CrÃ©ation du graph
         ax = figure.add_subplot(111)
         
         listeCategories = GetListeActivitesPro(DB, dictParametres)
@@ -1251,7 +1251,7 @@ class Graphe_activites_professionnelles(MODELES.Graphe):
             index += 1
         
         cam = ax.pie(listeValeurs, labels=listeLabels, colors=listeCouleurs, autopct='%1.1f%%', shadow=False)
-        title = ax.set_title(_(u"Répartition par activité professionnelle"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
+        title = ax.set_title(_(u"RÃ©partition par activitÃ© professionnelle"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
         matplotlib.pyplot.setp(title, rotation=0, fontsize=9)
         ax.set_aspect(1)
         labels, labelsPourcent = cam[1], cam[2]
@@ -1264,10 +1264,10 @@ class Graphe_activites_professionnelles(MODELES.Graphe):
 
 
 class Tableau_nouveaux_individus(MODELES.Tableau):
-    """ Ancienneté """
+    """ AnciennetÃ© """
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = _(u"Nouveaux individus (selon le premier jour de présence)")
+        self.nom = _(u"Nouveaux individus (selon le premier jour de prÃ©sence)")
         self.code = "tableau_nouveaux_individus"
     def MAJ(self, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
@@ -1278,7 +1278,7 @@ class Tableau_nouveaux_individus(MODELES.Tableau):
         date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
         dictResultats, listeMoisPeriode = GetAnciennete(DB, dictParametres)
         
-        # Création du tableau
+        # CrÃ©ation du tableau
         self.largeur = "400"
         self.colonnes = [ (_(u"Mois"), "250"), (_(u"Nombre d'individus"), "150") ]
         self.lignes = []
@@ -1299,7 +1299,7 @@ class Graphe_nouveaux_individus(MODELES.Graphe):
         self.taille = (470, 280)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
-        # Création du graph
+        # CrÃ©ation du graph
         ax = figure.add_subplot(111)
         
         dictResultats, listeMoisPeriode = GetAnciennete(DB, dictParametres)
@@ -1316,7 +1316,7 @@ class Graphe_nouveaux_individus(MODELES.Graphe):
             listeLabels.append(label)
             listeValeurs.append(nbreIndividus)
         
-        # Création du graph
+        # CrÃ©ation du graph
         ind = arange(len(listeLabels)) + self.decalage_x
         width = 0.5
         barres = ax.bar(ind, listeValeurs, width, color=MODELES.ConvertitCouleur2(MODELES.COULEUR_VERT_POMME))
@@ -1336,7 +1336,7 @@ class Graphe_nouveaux_individus(MODELES.Graphe):
         matplotlib.pyplot.setp(labels, rotation=0, fontsize=9) 
         
         # Titre
-        title = ax.set_title(_(u"Nouveaux individus sur la période"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
+        title = ax.set_title(_(u"Nouveaux individus sur la pÃ©riode"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
         matplotlib.pyplot.setp(title, rotation=0, fontsize=9)
         
         figure.subplots_adjust(left=None, bottom=0.3, right=None, wspace=None, hspace=None)
@@ -1351,14 +1351,14 @@ class Graphe_nouveaux_individus(MODELES.Graphe):
 class Graphe_arrivee_individus(MODELES.Graphe):
     def __init__(self):
         MODELES.Graphe.__init__(self)
-        self.nom = _(u"Arrivée des individus présents")
+        self.nom = _(u"ArrivÃ©e des individus prÃ©sents")
         self.code = "graphe_arrivee_individus"
         self.taille = (470, 280)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
         date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
         
-        # Création du graph
+        # CrÃ©ation du graph
         ax = figure.add_subplot(111)
         
         dictResultats, listeMoisPeriode = GetAnciennete(DB, dictParametres)
@@ -1375,7 +1375,7 @@ class Graphe_arrivee_individus(MODELES.Graphe):
             listeX.append(date)
             listeY.append(nbreIndividus)
         
-        # Création du graph
+        # CrÃ©ation du graph
         ax.plot(listeX, listeY)
         
         # Affiche les grilles
@@ -1400,7 +1400,7 @@ class Graphe_arrivee_individus(MODELES.Graphe):
 ##            ax.plot(listeX, ligne, color='red', lw=1, label=_(u"Evolution moyenne"))
 
         # Titre
-        title = ax.set_title(_(u"Arrivée des individus présents"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
+        title = ax.set_title(_(u"ArrivÃ©e des individus prÃ©sents"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
         matplotlib.pyplot.setp(title, rotation=0, fontsize=9)
         
         figure.subplots_adjust(left=None, bottom=0.3, right=None, wspace=None, hspace=None)
@@ -1409,11 +1409,11 @@ class Graphe_arrivee_individus(MODELES.Graphe):
 
 
 class Tableau_anciens_individus(MODELES.Tableau):
-    """ Déinscrits aux activités """
+    """ Dï¿½inscrits aux activitï¿½s """
 
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = _(u"Individus désinscrits durant la période")
+        self.nom = _(u"Individus dï¿½sinscrits durant la pï¿½riode")
         self.code = "tableau_anciens_individus"
 
     def MAJ(self, DB=None, dictParametres={}):
@@ -1425,7 +1425,7 @@ class Tableau_anciens_individus(MODELES.Tableau):
         date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
         dictResultats, listeMoisPeriode = GetDesinscrits(DB, dictParametres)
 
-        # Création du tableau
+        # Crï¿½ation du tableau
         self.largeur = "400"
         self.colonnes = [(_(u"Mois"), "250"), (_(u"Nombre d'individus"), "150")]
         self.lignes = []
@@ -1438,10 +1438,10 @@ class Tableau_anciens_individus(MODELES.Tableau):
 
 
 class Tableau_repartition_ecoles(MODELES.Tableau):
-    """ Répartition des individus par activité professionnelle """
+    """ RÃ©partition des individus par activitÃ© professionnelle """
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = _(u"Répartition des individus par école <BR>(au premier jour de la période)")
+        self.nom = _(u"RÃ©partition des individus par Ã©cole <BR>(au premier jour de la pÃ©riode)")
         self.code = "tableau_repartition_ecoles"
     def MAJ(self, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
@@ -1451,7 +1451,7 @@ class Tableau_repartition_ecoles(MODELES.Tableau):
         
         listeEcoles = GetListeEcoles(DB, dictParametres)
         
-        # Création du tableau
+        # CrÃ©ation du tableau
         self.largeur = "400"
         self.colonnes = [ (_(u"Ecole"), "250"), (_(u"Nombre d'individus"), "150") ]
         self.lignes = []
@@ -1465,12 +1465,12 @@ class Tableau_repartition_ecoles(MODELES.Tableau):
 class Graphe_repartition_ecoles(MODELES.Graphe):
     def __init__(self):
         MODELES.Graphe.__init__(self)
-        self.nom = _(u"Répartition des individus par école <BR>(au premier jour de la période)")
+        self.nom = _(u"RÃ©partition des individus par Ã©cole <BR>(au premier jour de la pÃ©riode)")
         self.code = "graphe_repartition_ecoles"
         self.taille = (450, 280)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
-        # Création du graph
+        # CrÃ©ation du graph
         ax = figure.add_subplot(111)
         
         listeEcoles = GetListeEcoles(DB, dictParametres)
@@ -1490,7 +1490,7 @@ class Graphe_repartition_ecoles(MODELES.Graphe):
             index += 1
         
         cam = ax.pie(listeValeurs, labels=listeLabels, colors=listeCouleurs, autopct='%1.1f%%', shadow=False)
-        title = ax.set_title(_(u"Répartition des individus par école"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
+        title = ax.set_title(_(u"RÃ©partition des individus par Ã©cole"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
         matplotlib.pyplot.setp(title, rotation=0, fontsize=9)
         ax.set_aspect(1)
         labels, labelsPourcent = cam[1], cam[2]
@@ -1504,10 +1504,10 @@ class Graphe_repartition_ecoles(MODELES.Graphe):
 
 
 class Tableau_repartition_niveaux_scolaires(MODELES.Tableau):
-    """ Répartition des individus par niveau scolaire """
+    """ RÃ©partition des individus par niveau scolaire """
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = _(u"Répartition des individus par niveau scolaire <BR>(au premier jour de la période)")
+        self.nom = _(u"RÃ©partition des individus par niveau scolaire <BR>(au premier jour de la pÃ©riode)")
         self.code = "tableau_repartition_niveaux_scolaires"
     def MAJ(self, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
@@ -1517,7 +1517,7 @@ class Tableau_repartition_niveaux_scolaires(MODELES.Tableau):
         
         listeNiveaux = GetListeNiveauxScolaires(DB, dictParametres)
         
-        # Création du tableau
+        # CrÃ©ation du tableau
         self.largeur = "400"
         self.colonnes = [ (_(u"Niveau scolaire"), "250"), (_(u"Nombre d'individus"), "150") ]
         self.lignes = []
@@ -1531,12 +1531,12 @@ class Tableau_repartition_niveaux_scolaires(MODELES.Tableau):
 class Graphe_repartition_niveaux_scolaires(MODELES.Graphe):
     def __init__(self):
         MODELES.Graphe.__init__(self)
-        self.nom = _(u"Répartition des individus par niveau scolaire <BR>(au premier jour de la période)")
+        self.nom = _(u"RÃ©partition des individus par niveau scolaire <BR>(au premier jour de la pÃ©riode)")
         self.code = "graphe_repartition_niveaux_scolaires"
         self.taille = (450, 280)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
-        # Création du graph
+        # CrÃ©ation du graph
         ax = figure.add_subplot(111)
         
         listeNiveaux = GetListeNiveauxScolaires(DB, dictParametres)
@@ -1556,7 +1556,7 @@ class Graphe_repartition_niveaux_scolaires(MODELES.Graphe):
             index += 1
         
         cam = ax.pie(listeValeurs, labels=listeLabels, colors=listeCouleurs, autopct='%1.1f%%', shadow=False)
-        title = ax.set_title(_(u"Répartition des individus par niveau scolaire"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
+        title = ax.set_title(_(u"RÃ©partition des individus par niveau scolaire"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
         matplotlib.pyplot.setp(title, rotation=0, fontsize=9)
         ax.set_aspect(1)
         labels, labelsPourcent = cam[1], cam[2]

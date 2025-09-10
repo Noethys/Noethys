@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -24,9 +24,9 @@ class Dialog(wx.Dialog):
         self.IDdeduction = IDdeduction
         
         if self.IDdeduction == None :
-            self.SetTitle(_(u"Saisie d'une déduction"))
+            self.SetTitle(_(u"Saisie d'une dÃ©duction"))
         else:
-            self.SetTitle(_(u"Modification d'une déduction"))
+            self.SetTitle(_(u"Modification d'une dÃ©duction"))
         
         self.staticbox_staticbox = wx.StaticBox(self, -1, u"")
         self.label_label = wx.StaticText(self, -1, _(u"Label :"))
@@ -43,8 +43,8 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
 
     def __set_properties(self):
-        self.ctrl_label.SetToolTip(wx.ToolTip(_(u"Saisissez ici un label pour cette déduction")))
-        self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez ici le montant de la déduction")))
+        self.ctrl_label.SetToolTip(wx.ToolTip(_(u"Saisissez ici un label pour cette dÃ©duction")))
+        self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez ici le montant de la dÃ©duction")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((400, -1))
@@ -85,7 +85,7 @@ class Dialog(wx.Dialog):
         return self.ctrl_montant.GetMontant()
     
     def OnBoutonOk(self, event):
-        # Vérification des données
+        # VÃ©rification des donnÃ©es
         if self.GetLabel() == "" :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un label !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -100,7 +100,7 @@ class Dialog(wx.Dialog):
             self.ctrl_montant.SetFocus()
             return
         
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -123,7 +123,7 @@ class Dialog(wx.Dialog):
         self.tracks= tracks
         self.IDcompte = IDcompte
         
-        self.label_intro = wx.StaticText(self, -1, _(u"Double-cliquez sur un règlement pour l'affecter ou non au dépôt."), style=wx.ALIGN_CENTER)
+        self.label_intro = wx.StaticText(self, -1, _(u"Double-cliquez sur un rÃ¨glement pour l'affecter ou non au dÃ©pÃ´t."), style=wx.ALIGN_CENTER)
 
         self.label_compte = wx.StaticText(self, -1, _(u"Compte :"))
         self.ctrl_compte = CTRL_Compte(self)
@@ -135,8 +135,8 @@ class Dialog(wx.Dialog):
         self.ctrl_mode.SetMinSize((130, -1))
 
         self.label_tri = wx.StaticText(self, -1, _(u"Tri :"))
-        self.ctrl_tri = wx.Choice(self, -1, choices = (_(u"Ordre de saisie"), _(u"Date"), _(u"Mode de règlement"), _(u"Emetteur"), _(u"Numéro de pièce"), _(u"Famille"), _(u"Nom de payeur"), _(u"Montant"),
-                                                       _(u"Avis"), _(u"Compte"), _(u"Différé"), _(u"Attente"), _(u"Quittancier"), _(u"Observations")))
+        self.ctrl_tri = wx.Choice(self, -1, choices = (_(u"Ordre de saisie"), _(u"Date"), _(u"Mode de rÃ¨glement"), _(u"Emetteur"), _(u"NumÃ©ro de piÃ¨ce"), _(u"Famille"), _(u"Nom de payeur"), _(u"Montant"),
+                                                       _(u"Avis"), _(u"Compte"), _(u"DiffÃ©rÃ©"), _(u"Attente"), _(u"Quittancier"), _(u"Observations")))
         self.ctrl_tri.Select(0)
 
         self.label_ordre = wx.StaticText(self, -1, _(u"Ordre :"))
@@ -144,7 +144,7 @@ class Dialog(wx.Dialog):
         self.ctrl_ordre.Select(0) 
         
         # Reglements disponibles
-        self.staticbox_reglements_disponibles_staticbox = wx.StaticBox(self, -1, _(u"Règlements disponibles"))
+        self.staticbox_reglements_disponibles_staticbox = wx.StaticBox(self, -1, _(u"RÃ¨glements disponibles"))
         self.listviewAvecFooter1 = OL_Reglements_depots.ListviewAvecFooter(self, kwargs={"inclus" : False, "sortable" : True, "style": wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_HRULES|wx.LC_VRULES|wx.LB_MULTIPLE})
         self.ctrl_reglements_disponibles = self.listviewAvecFooter1.GetListview()
 
@@ -154,8 +154,8 @@ class Dialog(wx.Dialog):
         self.bouton_haut = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Fleche_haut_rouge.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_haut_tout = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Fleche_double_haut_rouge.png"), wx.BITMAP_TYPE_ANY))
 
-        # Reglements du dépôt
-        self.staticbox_reglements_depot_staticbox = wx.StaticBox(self, -1, _(u"Règlements du dépôt"))
+        # Reglements du dÃ©pÃ´t
+        self.staticbox_reglements_depot_staticbox = wx.StaticBox(self, -1, _(u"RÃ¨glements du dÃ©pÃ´t"))
         self.listviewAvecFooter2 = OL_Reglements_depots.ListviewAvecFooter(self, kwargs={"inclus" : True, "style": wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_HRULES|wx.LC_VRULES|wx.LB_MULTIPLE})
         self.ctrl_reglements_depot = self.listviewAvecFooter2.GetListview()
 
@@ -178,26 +178,26 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_CHOICE, self.OnChoixTri, self.ctrl_tri)
         self.Bind(wx.EVT_CHOICE, self.OnChoixOrdre, self.ctrl_ordre)
         
-        # Initialisation des contrôles
+        # Initialisation des contrÃ´les
         self.OnChoixTri(None)
         self.OnChoixOrdre(None)
         self.MAJListes(tracks=self.tracks) 
         
 
     def __set_properties(self):
-        self.SetTitle(_(u"Ajouter ou retirer des règlements"))
-        self.ctrl_compte.SetToolTip(wx.ToolTip(_(u"Sélectionnez un filtre de compte")))
-        self.ctrl_mode.SetToolTip(wx.ToolTip(_(u"Sélectionnez un filtre de mode de règlement")))
-        self.ctrl_tri.SetToolTip(wx.ToolTip(_(u"Sélectionnez le critère de tri")))
-        self.ctrl_ordre.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'ordre de tri")))
-        self.bouton_bas_tout.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter tous les règlements dans le dépôt")))
-        self.bouton_bas.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter le règlement disponible selectionné dans le dépôt")))
+        self.SetTitle(_(u"Ajouter ou retirer des rÃ¨glements"))
+        self.ctrl_compte.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un filtre de compte")))
+        self.ctrl_mode.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un filtre de mode de rÃ¨glement")))
+        self.ctrl_tri.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le critÃ¨re de tri")))
+        self.ctrl_ordre.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez l'ordre de tri")))
+        self.bouton_bas_tout.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter tous les rÃ¨glements dans le dÃ©pÃ´t")))
+        self.bouton_bas.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter le rÃ¨glement disponible selectionnÃ© dans le dÃ©pÃ´t")))
         self.bouton_bas_tout.SetMinSize((80, -1))
         self.bouton_bas.SetMinSize((150, -1))
         self.bouton_haut.SetMinSize((150, -1))
         self.bouton_haut_tout.SetMinSize((80, -1))
-        self.bouton_haut.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour retirer le règlement sélectionné du dépôt")))
-        self.bouton_haut_tout.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour retirer tous les règlements du dépôt")))
+        self.bouton_haut.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour retirer le rÃ¨glement sÃ©lectionnÃ© du dÃ©pÃ´t")))
+        self.bouton_haut_tout.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour retirer tous les rÃ¨glements du dÃ©pÃ´t")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -212,7 +212,7 @@ class Dialog(wx.Dialog):
         grid_sizer_intro.AddGrowableCol(0)
         grid_sizer_base.Add(grid_sizer_intro, 1, wx.ALL|wx.EXPAND, 10)
         
-        # Règlements disponibles
+        # RÃ¨glements disponibles
         staticbox_reglements_disponibles = wx.StaticBoxSizer(self.staticbox_reglements_disponibles_staticbox, wx.VERTICAL)
         grid_sizer_dispo = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
         
@@ -250,7 +250,7 @@ class Dialog(wx.Dialog):
         grid_sizer_commandes.AddGrowableCol(5)
         grid_sizer_base.Add(grid_sizer_commandes, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
-        # Règlements déposés
+        # RÃ¨glements dÃ©posÃ©s
         staticbox_reglements_depot = wx.StaticBoxSizer(self.staticbox_reglements_depot_staticbox, wx.VERTICAL)
         staticbox_reglements_depot.Add(self.listviewAvecFooter2, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(staticbox_reglements_depot, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
@@ -275,14 +275,14 @@ class Dialog(wx.Dialog):
     def MAJListes(self, tracks=None, selectionTrack=None, nextTrack=None):
         if tracks != None :
             self.tracks = tracks
-        # MAJ Liste règlements disponibles
+        # MAJ Liste rÃ¨glements disponibles
         IDcompte = self.ctrl_compte.GetID() 
         IDmode = self.ctrl_mode.GetID() 
         self.ctrl_reglements_disponibles.MAJ(self.tracks, selectionTrack=selectionTrack, nextTrack=nextTrack, IDcompte=IDcompte, IDmode=IDmode) 
-        self.staticbox_reglements_disponibles_staticbox.SetLabel(self.ctrl_reglements_disponibles.GetLabelListe(_(u"règlements disponibles")))
-        # MAJ Liste règlements du dépôt
+        self.staticbox_reglements_disponibles_staticbox.SetLabel(self.ctrl_reglements_disponibles.GetLabelListe(_(u"rÃ¨glements disponibles")))
+        # MAJ Liste rÃ¨glements du dÃ©pÃ´t
         self.ctrl_reglements_depot.MAJ(self.tracks, selectionTrack=selectionTrack, nextTrack=nextTrack) 
-        self.staticbox_reglements_depot_staticbox.SetLabel(self.ctrl_reglements_depot.GetLabelListe(_(u"règlements dans ce dépôt")))
+        self.staticbox_reglements_depot_staticbox.SetLabel(self.ctrl_reglements_depot.GetLabelListe(_(u"rÃ¨glements dans ce dÃ©pÃ´t")))
     
     def DeplacerTout(self, inclus=True):
         listeTracks = []
@@ -324,14 +324,14 @@ class Dialog(wx.Dialog):
         self.ctrl_reglements_depot.Deplacer()
 
     def OnBoutonBasTout(self, event): 
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment ajouter tous les règlements ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment ajouter tous les rÃ¨glements ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse ==  wx.ID_YES :
             self.DeplacerTout(inclus=True)
 
     def OnBoutonHautTout(self, event):
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment retirer tous les règlements ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment retirer tous les rÃ¨glements ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse ==  wx.ID_YES :
@@ -342,21 +342,21 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Gestiondesdpts")
 
     def OnBoutonOk(self, event): 
-        # Validation des règlements sélectionnés
+        # Validation des rÃ¨glements sÃ©lectionnÃ©s
         tracks_differes = []
         for track in self.tracks :
             if track.inclus == True :
-                # Création d'un label pour ce règlement en cas de message à afficher
-                label = _(u"Règlement ID%d du %s payé en %s par %s") % (track.IDreglement, DateEngFr(str(track.date)), track.nom_mode, track.nom_payeur)
+                # CrÃ©ation d'un label pour ce rÃ¨glement en cas de message Ã  afficher
+                label = _(u"RÃ¨glement ID%d du %s payÃ© en %s par %s") % (track.IDreglement, DateEngFr(str(track.date)), track.nom_mode, track.nom_payeur)
                 
-                # Vérifie si pas de règlement en attente
+                # VÃ©rifie si pas de rÃ¨glement en attente
                 if track.encaissement_attente == True :
-                    dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné le règlement suivant alors qu'il a été saisi avec l'option 'Encaissement en attente' :\n\n> %s\n\nIl vous est donc impossible de l'inclure dans ce dépôt !") % label, _(u"Règlement en attente"), wx.OK | wx.ICON_ERROR)
+                    dlg = wx.MessageDialog(self, _(u"Vous avez sÃ©lectionnÃ© le rÃ¨glement suivant alors qu'il a Ã©tÃ© saisi avec l'option 'Encaissement en attente' :\n\n> %s\n\nIl vous est donc impossible de l'inclure dans ce dÃ©pÃ´t !") % label, _(u"RÃ¨glement en attente"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
                     
-                # Vérifie si règlement différé
+                # VÃ©rifie si rÃ¨glement diffÃ©rÃ©
                 if track.date_differe != None :
                     if track.date_differe > datetime.date.today() :
                         tracks_differes.append(track)
@@ -365,9 +365,9 @@ class Dialog(wx.Dialog):
         if len(tracks_differes) > 0 :
             detail = []
             for track in tracks_differes:
-                detail.append(_(u"Règlement ID%d du %s payé en %s par %s") % (track.IDreglement, DateEngFr(str(track.date)), track.nom_mode, track.nom_payeur))
-            introduction = _(u"Vous avez sélectionné des règlements alors qu'ils comportent une date d'encaissement différé supérieure à la date du jour :")
-            conclusion = _(u"Souhaitez-vous tout de même les inclure dans ce dépôt ?")
+                detail.append(_(u"RÃ¨glement ID%d du %s payÃ© en %s par %s") % (track.IDreglement, DateEngFr(str(track.date)), track.nom_mode, track.nom_payeur))
+            introduction = _(u"Vous avez sÃ©lectionnÃ© des rÃ¨glements alors qu'ils comportent une date d'encaissement diffÃ©rÃ© supÃ©rieure Ã  la date du jour :")
+            conclusion = _(u"Souhaitez-vous tout de mÃªme les inclure dans ce dÃ©pÃ´t ?")
             dlg = DLG_Messagebox.Dialog(self, titre=_(u"Avertissement"), introduction=introduction, detail=u"\n".join(detail), conclusion=conclusion, icone=wx.ICON_EXCLAMATION, boutons=[_(u"Oui"), _(u"Non"), _(u"Annuler")])
             reponse = dlg.ShowModal()
             dlg.Destroy()

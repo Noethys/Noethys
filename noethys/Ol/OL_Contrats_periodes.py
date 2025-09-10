@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -20,7 +20,7 @@ import GestionDB
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 from Utils import UTILS_Utilisateurs
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"§")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"‚Ç¨")
 from Utils import UTILS_Dates
 
 
@@ -52,7 +52,7 @@ class Track(object):
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.IDactivite = kwds.pop("IDactivite", None)
         self.selectionID = None
         self.selectionTrack = None
@@ -104,7 +104,7 @@ class ListView(FastObjectListView):
             if numero == None :
                 return ""
             else :
-                return "n∞%d"% numero
+                return "n¬∞%d"% numero
             
         liste_Colonnes = [
             ColumnDefn(_(u"IDprestation"), "left", 0, "IDprestation", typeDonnee="entier"),
@@ -119,7 +119,7 @@ class ListView(FastObjectListView):
         
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(0)
-        self.SetEmptyListMsg(_(u"Aucune pÈriode"))
+        self.SetEmptyListMsg(_(u"Aucune p√©riode"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(2)
         
@@ -140,7 +140,7 @@ class ListView(FastObjectListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """        
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         if len(self.Selection()) == 0:
@@ -148,11 +148,11 @@ class ListView(FastObjectListView):
         else:
             noSelection = False
         
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Assistant
-        item = wx.MenuItem(menuPop, 100, _(u"GÈnÈrer automatiquement des pÈriodes"))
+        item = wx.MenuItem(menuPop, 100, _(u"G√©n√©rer automatiquement des p√©riodes"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Magique.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -185,16 +185,16 @@ class ListView(FastObjectListView):
                 
         menuPop.AppendSeparator()
 
-        # Item Supprimer les consommations de la pÈriode
-        item = wx.MenuItem(menuPop, 110, _(u"Supprimer les consommations de cette pÈriode"))
+        # Item Supprimer les consommations de la p√©riode
+        item = wx.MenuItem(menuPop, 110, _(u"Supprimer les consommations de cette p√©riode"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.SupprimerConsoPeriode, id=110)
         if noSelection == True : item.Enable(False)
 
-        # Item Supprimer les consommations de toutes les pÈriodes
-        item = wx.MenuItem(menuPop, 120, _(u"Supprimer les consommations de toutes les pÈriodes"))
+        # Item Supprimer les consommations de toutes les p√©riodes
+        item = wx.MenuItem(menuPop, 120, _(u"Supprimer les consommations de toutes les p√©riodes"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -209,8 +209,8 @@ class ListView(FastObjectListView):
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheTout, id=70)
 
-        # Item Tout dÈcocher
-        item = wx.MenuItem(menuPop, 80, _(u"Tout dÈcocher"))
+        # Item Tout d√©cocher
+        item = wx.MenuItem(menuPop, 80, _(u"Tout d√©cocher"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Decocher.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -219,7 +219,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -253,21 +253,21 @@ class ListView(FastObjectListView):
             
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des pÈriodes de contrats"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des p√©riodes de contrats"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des pÈriodes de contrats"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des p√©riodes de contrats"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Liste des pÈriodes de contrats"), autoriseSelections=False)
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des p√©riodes de contrats"), autoriseSelections=False)
         
     def ExportExcel(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Liste des pÈriodes de contrats"), autoriseSelections=False)
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des p√©riodes de contrats"), autoriseSelections=False)
 
     def Assistant(self, event):  
         dictValeurs = {
@@ -293,7 +293,7 @@ class ListView(FastObjectListView):
         
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune pÈriode ‡ modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune p√©riode √† modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -325,7 +325,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):  
         if len(self.Selection()) == 0 and len(self.GetTracksCoches()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune pÈriode ‡ supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune p√©riode √† supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -333,7 +333,7 @@ class ListView(FastObjectListView):
         if len(self.GetTracksCoches()) > 0 :
             # Suppression multiple
             listeSelections = self.GetTracksCoches()
-            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer les pÈriodes cochÈes ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer les p√©riodes coch√©es ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -342,7 +342,7 @@ class ListView(FastObjectListView):
         else :
             # Suppression unique
             listeSelections = self.Selection()        
-            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la pÈriode sÈlectionnÈe ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la p√©riode s√©lectionn√©e ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -353,14 +353,14 @@ class ListView(FastObjectListView):
         for track in listeSelections :
 
             if track.IDfacture != None :
-                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer la prestation '%s' car elle apparaÓt dÈj‡ sur la facture n∞%s !") % (track.label_prestation, track.numFacture) , _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer la prestation '%s' car elle appara√Æt d√©j√† sur la facture n¬∞%s !") % (track.label_prestation, track.numFacture) , _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
             
             listeSuppressionConso = []
             if track.nbreConso > 0 :
-                dlg = wx.MessageDialog(self, _(u"Souhaitez-vous Ègalement supprimer les %d consommations associÈes ‡ la pÈriode sÈlectionnÈe ?") % track.nbreConso, _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+                dlg = wx.MessageDialog(self, _(u"Souhaitez-vous √©galement supprimer les %d consommations associ√©es √† la p√©riode s√©lectionn√©e ?") % track.nbreConso, _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
                 reponse = dlg.ShowModal() 
                 dlg.Destroy()
                 if reponse == wx.ID_CANCEL :
@@ -368,7 +368,7 @@ class ListView(FastObjectListView):
                 if reponse == wx.ID_YES :
                     for dictConso in track.listeConso :
                         if dictConso["etat"] in ("present", "absenti", "absentj") :
-                            dlg = wx.MessageDialog(self, _(u"ProcÈdure de suppression annulÈe :\n\nVous ne pouvez pas supprimer la consommation du %s car elle est dÈj‡ pointÈe !") % UTILS_Dates.DateDDEnFr(dictConso["date"]), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                            dlg = wx.MessageDialog(self, _(u"Proc√©dure de suppression annul√©e :\n\nVous ne pouvez pas supprimer la consommation du %s car elle est d√©j√† point√©e !") % UTILS_Dates.DateDDEnFr(dictConso["date"]), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                             dlg.ShowModal()
                             dlg.Destroy()
                             return
@@ -390,17 +390,17 @@ class ListView(FastObjectListView):
     
     def SupprimerConsoPeriode(self, event):
         if len(self.Selection()) == 0 and len(self.GetTracksCoches()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune pÈriode dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune p√©riode dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
         if len(track.listeConso) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Il n'y a aucun consommation ‡ supprimer dans cette pÈriode !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucun consommation √† supprimer dans cette p√©riode !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer les %d consommations associÈes ‡ cette pÈriode ?") % len(track.listeConso), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer les %d consommations associ√©es √† cette p√©riode ?") % len(track.listeConso), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -417,7 +417,7 @@ class ListView(FastObjectListView):
             for dictConso in track.listeConso :
                 listeIDconso.append(dictConso["IDconso"])
             
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer les %d consommations associÈes ‡ toutes les pÈriodes ?") % len(listeIDconso), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer les %d consommations associ√©es √† toutes les p√©riodes ?") % len(listeIDconso), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -497,7 +497,7 @@ class BarreRecherche(wx.SearchCtrl):
 class ListviewAvecFooter(PanelAvecFooter):
     def __init__(self, parent, kwargs={}):
         dictColonnes = {
-            "date_fin" : {"mode" : "nombre", "singulier" : _(u"pÈriode"), "pluriel" : _(u"pÈriodes"), "alignement" : wx.ALIGN_CENTER},
+            "date_fin" : {"mode" : "nombre", "singulier" : _(u"p√©riode"), "pluriel" : _(u"p√©riodes"), "alignement" : wx.ALIGN_CENTER},
             "montant_prestation" : {"mode" : "total"},
             }
         PanelAvecFooter.__init__(self, parent, ListView, kwargs, dictColonnes)

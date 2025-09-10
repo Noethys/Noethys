@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -48,9 +48,9 @@ LISTE_THEMES = [("blue", u"Bleu"), ("black", u"Noir"), ("green", u"Vert"), ("pur
 LISTE_DELAIS_SYNCHRO = [(60, u"Toutes les heures"), (120, u"Toutes les 2 heures"), (180, u"Toutes les 3 heures"), (240, u"Toutes les 4 heures"), (300, u"Toutes les 5 heures"), (360, u"Toutes les 6 heures"), (420, u"Toutes les 7 heures")]
 LISTE_AFFICHAGE_HISTORIQUE = [(30, u"1 mois"), (60, u"2 mois"), (90, u"3 mois"), (120, u"4 mois"), (150, u"5 mois"), (180, u"6 mois")]
 LISTE_SELECTION_FACTURES = [(0, u"Toutes les factures"), (3, u"Datant de moins de 3 mois"), (6, u"Datant de moins de 6 mois"), (12, u"Datant de moins de 1 an"), (24, u"Datant de moins de 2 ans"), (36, u"Datant de moins de 3 ans"), (60, u"Datant de moins de 5 ans")]
-LISTE_SELECTION_REGLEMENTS = [(0, u"Tous les règlements"), (3, u"Datant de moins de 3 mois"), (6, u"Datant de moins de 6 mois"), (12, u"Datant de moins de 1 an"), (24, u"Datant de moins de 2 ans"), (36, u"Datant de moins de 3 ans"), (60, u"Datant de moins de 5 ans")]
+LISTE_SELECTION_REGLEMENTS = [(0, u"Tous les rÃ¨glements"), (3, u"Datant de moins de 3 mois"), (6, u"Datant de moins de 6 mois"), (12, u"Datant de moins de 1 an"), (24, u"Datant de moins de 2 ans"), (36, u"Datant de moins de 3 ans"), (60, u"Datant de moins de 5 ans")]
 LISTE_SELECTION_COTISATIONS = [(0, u"Toutes les cotisations"), (3, u"Datant de moins de 3 mois"), (6, u"Datant de moins de 6 mois"), (12, u"Datant de moins de 1 an"), (24, u"Datant de moins de 2 ans"), (36, u"Datant de moins de 3 ans"), (60, u"Datant de moins de 5 ans")]
-LISTE_SELECTION_RENSEIGNEMENTS = [("masquer", u"Ne pas afficher"), ("consultation", u"Consultation uniquement"), ("modification", u"Consultation et modification autorisées")]
+LISTE_SELECTION_RENSEIGNEMENTS = [("masquer", u"Ne pas afficher"), ("consultation", u"Consultation uniquement"), ("modification", u"Consultation et modification autorisÃ©es")]
 LISTE_SELECTION_LOCATIONS = [(0, u"Toutes les locations"), (3, u"Datant de moins de 3 mois"), (6, u"Datant de moins de 6 mois"), (12, u"Datant de moins de 1 an"), (24, u"Datant de moins de 2 ans"), (36, u"Datant de moins de 3 ans"), (60, u"Datant de moins de 5 ans")]
 LISTE_SAISIE_LOCATIONS = [(0, u"Jamais"), (2, u"2 mois avant"), (3, u"3 mois avant"), (4, u"4 mois avant"), (5, u"5 mois avant"),(6, u"6 mois avant"), (12, u"1 an avant"), (24, u"2 ans avant"), (36, u"3 ans avant"), (60, u"5 ans avant")]
 HEURES = [("%02d:00" % x, "%02d:00" % x) for x in range(0, 25)]
@@ -98,7 +98,7 @@ VALEURS_DEFAUT = {
     "recevoir_document_email" : True,
     "recevoir_document_courrier" : True,
     "recevoir_document_site" : True,
-    "recevoir_document_site_lieu" : _(u"à l'accueil de la structure"),
+    "recevoir_document_site_lieu" : _(u"Ã  l'accueil de la structure"),
     "mdp_forcer_modification": True,
     "mdp_autoriser_modification": True,
     "mdp_autoriser_reinitialisation": False,
@@ -138,12 +138,12 @@ VALEURS_DEFAUT = {
     "renseignements_enfant_coords": "modification",
     "renseignements_adulte_profession": "modification",
     "activites_afficher" : True,
-    "activites_intro" : _(u"Vous pouvez consulter ici la liste des inscriptions et demander des inscriptions à d'autres activités."),
+    "activites_intro" : _(u"Vous pouvez consulter ici la liste des inscriptions et demander des inscriptions Ã  d'autres activitÃ©s."),
     "activites_autoriser_inscription" : True,
     "activites_bloquer_complet" : True,
     "reservations_afficher" : True,
-    "reservations_intro" : _(u"Sélectionnez une activité puis cliquez sur une des périodes disponibles pour accéder au calendrier des réservations correspondant."),
-    "planning_intro" : _(u"Cliquez dans les cases pour ajouter ou supprimer des consommations avant de valider l'envoi des données."),
+    "reservations_intro" : _(u"SÃ©lectionnez une activitÃ© puis cliquez sur une des pÃ©riodes disponibles pour accÃ©der au calendrier des rÃ©servations correspondant."),
+    "planning_intro" : _(u"Cliquez dans les cases pour ajouter ou supprimer des consommations avant de valider l'envoi des donnÃ©es."),
     "factures_afficher" : True,
     "factures_intro" : _(u"Vous pouvez consulter ici la liste des factures et demander des duplicatas."),
     "factures_selection" : 0,
@@ -153,11 +153,11 @@ VALEURS_DEFAUT = {
     "factures_afficher_solde_detail" : True,
     "factures_afficher_solde_famille" : False,
     "reglements_afficher" : True,
-    "reglements_intro" : _(u"Vous pouvez consulter ici la liste des règlements et demander des reçus."),
+    "reglements_intro" : _(u"Vous pouvez consulter ici la liste des rÃ¨glements et demander des reÃ§us."),
     "reglements_selection" : 0,
     "reglements_demande_recu" : True,
     "pieces_afficher" : True,
-    "pieces_intro" : _(u"Vous pouvez consulter ici la liste des pièces à fournir."),
+    "pieces_intro" : _(u"Vous pouvez consulter ici la liste des piÃ¨ces Ã  fournir."),
     "pieces_autoriser_telechargement" : True,
     "pieces_autoriser_upload" : False,
     "cotisations_afficher" : True,
@@ -167,7 +167,7 @@ VALEURS_DEFAUT = {
     "locations_intro": _(u"Vous pouvez consulter ici la liste des locations et emprunts."),
     "locations_selection": 3,
     "locations_periode_saisie": 6,
-    "planning_locations_intro" : _(u"Saisissez des réservations avec la souris directement dans le calendrier avant de valider l'envoi des demandes."),
+    "planning_locations_intro" : _(u"Saisissez des rÃ©servations avec la souris directement dans le calendrier avant de valider l'envoi des demandes."),
     "locations_heure_min": "00:00",
     "locations_heure_max": "24:00",
     "locations_afficher_autres_loueurs": False,
@@ -239,7 +239,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
             ("paiement_ligne_tipi_saisie", "p('paiement_ligne_systeme') == 1"),
         ]
 
-        # Vérifie les conditions d'affichage des propriétés d'affichage
+        # VÃ©rifie les conditions d'affichage des propriÃ©tÃ©s d'affichage
         def p(nom=''):
             propriete = self.GetProperty(nom)
             valeur = propriete.GetValue()
@@ -272,7 +272,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
             self.RefreshGrid()
 
     def Remplissage(self):
-        # Catégorie
+        # CatÃ©gorie
         self.Append( wxpg.PropertyCategory(_(u"Activation")) )
 
         # Activation de la gestion du serveur Connecthys
@@ -285,7 +285,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Type de serveur
         nom = "serveur_type"
         propriete = wxpg.EnumProperty(label=_(u"Type de serveur"), labels=[_(u"Autonome"), _(u"CGI"), _(u"WSGI")], values=[0, 1, 2], name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Sélectionnez le type de serveur utilisé : Autonome, CGI ou WSGI"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez le type de serveur utilisÃ© : Autonome, CGI ou WSGI"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -301,7 +301,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetHelpString(_(u"Saisissez le nom du fichier CGI (Ex : connecthys.cgi)"))
         self.Append(propriete)
 
-        # Catégorie
+        # CatÃ©gorie
         self.Append( wxpg.PropertyCategory(_(u"Client de synchronisation")) )
 
         # Activation du client de synchronisation
@@ -311,35 +311,35 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Délai de synchronisation du client
+        # DÃ©lai de synchronisation du client
         nom = "client_synchro_portail_delai"
-        propriete = wxpg.EnumProperty(label=_(u"Délai de synchronisation"), labels=[y for x, y in LISTE_DELAIS_SYNCHRO], values=range(0, len(LISTE_DELAIS_SYNCHRO)), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Sélectionnez un délai pour la synchronisation"))
+        propriete = wxpg.EnumProperty(label=_(u"DÃ©lai de synchronisation"), labels=[y for x, y in LISTE_DELAIS_SYNCHRO], values=range(0, len(LISTE_DELAIS_SYNCHRO)), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"SÃ©lectionnez un dÃ©lai pour la synchronisation"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
-        # Synchroniser à l'ouverture de Noethys
+        # Synchroniser Ã  l'ouverture de Noethys
         nom = "client_synchro_portail_ouverture"
-        propriete = wxpg.BoolProperty(label=_(u"Synchroniser à l'ouverture"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Cochez cette case pour synchroniser automatiquement à l'ouverture de Noethys sur cet ordinateur"))
+        propriete = wxpg.BoolProperty(label=_(u"Synchroniser Ã  l'ouverture"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour synchroniser automatiquement Ã  l'ouverture de Noethys sur cet ordinateur"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Rechercher des mises à jour
+        # Rechercher des mises Ã  jour
         nom = "client_rechercher_updates"
-        propriete = wxpg.BoolProperty(label=_(u"Mises à jour automatiques"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Cochez cette case pour laisser Connecthys rechercher et appliquer ses propres mises à jour logicielles automatiquement"))
+        propriete = wxpg.BoolProperty(label=_(u"Mises Ã  jour automatiques"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour laisser Connecthys rechercher et appliquer ses propres mises Ã  jour logicielles automatiquement"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
 
-        # Catégorie
-        self.Append( wxpg.PropertyCategory(_(u"Hébergement du portail")) )
+        # CatÃ©gorie
+        self.Append( wxpg.PropertyCategory(_(u"HÃ©bergement du portail")) )
 
-        # Type d'hébergement
+        # Type d'hÃ©bergement
         nom = "hebergement_type"
-        propriete = wxpg.EnumProperty(label=_(u"Type d'hébergement"), labels=[_(u"Local"), _(u"FTP"), _(u"SSH/SFTP")], values=[0, 1, 2], name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Sélectionnez le type d'hébergement à utiliser :\nLocal (Connecthys est installé sur l'ordinateur)\nFTP (Connecthys est envoyé sur un répertoire via FTP)\nSSH/SFTP (Connecthys est envoyé sur un répertoire via SSH/SFTP)"))
+        propriete = wxpg.EnumProperty(label=_(u"Type d'hÃ©bergement"), labels=[_(u"Local"), _(u"FTP"), _(u"SSH/SFTP")], values=[0, 1, 2], name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"SÃ©lectionnez le type d'hÃ©bergement Ã  utiliser :\nLocal (Connecthys est installÃ© sur l'ordinateur)\nFTP (Connecthys est envoyÃ© sur un rÃ©pertoire via FTP)\nSSH/SFTP (Connecthys est envoyÃ© sur un rÃ©pertoire via SSH/SFTP)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -362,10 +362,10 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         self.Append(propriete)
         propriete.SetAttribute("Password", True)
 
-        # Répertoire FTP
+        # RÃ©pertoire FTP
         nom = "ftp_repertoire"
-        propriete = wxpg.StringProperty(label=_(u"Répertoire"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez le répertoire FTP (ex : www/connecthys)"))
+        propriete = wxpg.StringProperty(label=_(u"RÃ©pertoire"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez le rÃ©pertoire FTP (ex : www/connecthys)"))
         self.Append(propriete)
 
         # Serveur SSH
@@ -377,19 +377,19 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Port SSH
         nom = "ssh_port"
         propriete = wxpg.StringProperty(label=_(u"Port du serveur SSH"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez le numéro de port SSH (22 par défaut)"))
+        propriete.SetHelpString(_(u"Saisissez le numÃ©ro de port SSH (22 par dÃ©faut)"))
         self.Append(propriete)
 
         # SSH key file
         nom = "ssh_key_file"
-        propriete = wxpg.StringProperty(label=_(u"Fichier de clé"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"[Optionnel] Saisissez le chemin de la clé (ex : ~/.ssh/id_dsa).\nLe serveur SSH doit connaitre la partie publique de la clé."))
+        propriete = wxpg.StringProperty(label=_(u"Fichier de clÃ©"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"[Optionnel] Saisissez le chemin de la clÃ© (ex : ~/.ssh/id_dsa).\nLe serveur SSH doit connaitre la partie publique de la clÃ©."))
         self.Append(propriete)
 
         # Utilisateur SSH
         nom = "ssh_utilisateur"
         propriete = wxpg.StringProperty(label=_(u"Utilisateur"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez l'utilisateur SSH\nUtiliser root est très fortement déconseillé, risqué et dangereux"))
+        propriete.SetHelpString(_(u"Saisissez l'utilisateur SSH\nUtiliser root est trÃ¨s fortement dÃ©conseillÃ©, risquÃ© et dangereux"))
         self.Append(propriete)
 
         # Mot de passe SSH
@@ -399,41 +399,41 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         self.Append(propriete)
         propriete.SetAttribute("Password", True)
 
-        # Répertoire SSH
+        # RÃ©pertoire SSH
         nom = "ssh_repertoire"
-        propriete = wxpg.StringProperty(label=_(u"Répertoire"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez le répertoire SSH (ex : /tmp/connecthys)"))
+        propriete = wxpg.StringProperty(label=_(u"RÃ©pertoire"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez le rÃ©pertoire SSH (ex : /tmp/connecthys)"))
         self.Append(propriete)
 
         # Repertoire Hebergement Local
         nom = "hebergement_local_repertoire"
         standardPath = wx.StandardPaths.Get()
         defaut = os.path.join(standardPath.GetDocumentsDir(), "connecthys")
-        propriete = wxpg.StringProperty(label=_(u"Répertoire local"), name=nom, value=defaut)
-        propriete.SetHelpString(_(u"Saisissez le répertoire local (Ex : /home/bogucool/connecthys ou C:/Users/Ivan/Documents/Connecthys)"))
+        propriete = wxpg.StringProperty(label=_(u"RÃ©pertoire local"), name=nom, value=defaut)
+        propriete.SetHelpString(_(u"Saisissez le rÃ©pertoire local (Ex : /home/bogucool/connecthys ou C:/Users/Ivan/Documents/Connecthys)"))
         self.Append(propriete)
 
         # Url Connecthys
         nom = "url_connecthys"
-        propriete = wxpg.StringProperty(label=_(u"URL d'accès à Connecthys "), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez l'url d'accès à Connecthys (ex : http://127.0.0.1:5000 ou http://www.monsite.com/connecthys)"))
+        propriete = wxpg.StringProperty(label=_(u"URL d'accÃ¨s Ã  Connecthys "), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez l'url d'accÃ¨s Ã  Connecthys (ex : http://127.0.0.1:5000 ou http://www.monsite.com/connecthys)"))
         self.Append(propriete)
 
         # Accepter tous les certificat en cas d acces par https
         nom = "accept_all_cert"
         propriete = wxpg.BoolProperty(label=_(u"Autoriser tous les certificats"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Autoriser les certificats SSL auto-signés ou les certificats posant problème.\nA utiliser uniquement si vous accédez à Connecthys en https://\nSans effet sinon."))
+        propriete.SetHelpString(_(u"Autoriser les certificats SSL auto-signÃ©s ou les certificats posant problÃ¨me.\nA utiliser uniquement si vous accÃ©dez Ã  Connecthys en https://\nSans effet sinon."))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
 
-        # Catégorie
-        self.Append( wxpg.PropertyCategory(_(u"Base de données")) )
+        # CatÃ©gorie
+        self.Append( wxpg.PropertyCategory(_(u"Base de donnÃ©es")) )
 
-        # Type base de données
+        # Type base de donnÃ©es
         nom = "db_type"
-        propriete = wxpg.EnumProperty(label=_(u"Type de base"), labels=[_(u"Locale (Sqlite)"), _(u"Réseau (MySQL)")], values=[0, 1], name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Sélectionnez le type de base de données à utiliser (locale ou réseau). MySQL est fortement conseillé afin d'éviter les conflits d'écriture en cas d'accès simultanés d'internautes."))
+        propriete = wxpg.EnumProperty(label=_(u"Type de base"), labels=[_(u"Locale (Sqlite)"), _(u"RÃ©seau (MySQL)")], values=[0, 1], name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"SÃ©lectionnez le type de base de donnÃ©es Ã  utiliser (locale ou rÃ©seau). MySQL est fortement conseillÃ© afin d'Ã©viter les conflits d'Ã©criture en cas d'accÃ¨s simultanÃ©s d'internautes."))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -462,49 +462,49 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Nom de la base
         nom = "db_nom"
         propriete = wxpg.StringProperty(label=_(u"Nom de la base"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez le nom de la base de données à utiliser"))
+        propriete.SetHelpString(_(u"Saisissez le nom de la base de donnÃ©es Ã  utiliser"))
         propriete.SetAttribute("obligatoire", False)
         self.Append(propriete)
 
-        # Préfixe des tables
+        # PrÃ©fixe des tables
         nom = "prefixe_tables"
-        propriete = wxpg.StringProperty(label=_(u"Préfixe des tables"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"[Optionnel] Saisissez un préfixe pour les tables"))
+        propriete = wxpg.StringProperty(label=_(u"PrÃ©fixe des tables"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"[Optionnel] Saisissez un prÃ©fixe pour les tables"))
         propriete.SetAttribute("obligatoire", False)
         self.Append(propriete)
 
-        # Catégorie
+        # CatÃ©gorie
         self.Append( wxpg.PropertyCategory(_(u"Statistiques")) )
 
         # Utilisateur
         nom = "stats_utilisateur"
         propriete = wxpg.StringProperty(label=_(u"Utilisateur"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez le nom d'utilisateur pour accéder aux statistiques [Uniquement pour les abonnés à Connecthys Easy]"))
+        propriete.SetHelpString(_(u"Saisissez le nom d'utilisateur pour accÃ©der aux statistiques [Uniquement pour les abonnÃ©s Ã  Connecthys Easy]"))
         propriete.SetAttribute("obligatoire", False)
         self.Append(propriete)
 
         # Mot de passe
         nom = "stats_mdp"
         propriete = wxpg.StringProperty(label=_(u"Mot de passe"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez le mot de passe pour accéder aux statistiques [Uniquement pour les abonnés à Connecthys Easy]"))
+        propriete.SetHelpString(_(u"Saisissez le mot de passe pour accÃ©der aux statistiques [Uniquement pour les abonnÃ©s Ã  Connecthys Easy]"))
         propriete.SetAttribute("obligatoire", False)
         self.Append(propriete)
         propriete.SetAttribute("Password", True)
 
-        # Catégorie
-        self.Append( wxpg.PropertyCategory(_(u"Sécurité")) )
+        # CatÃ©gorie
+        self.Append( wxpg.PropertyCategory(_(u"SÃ©curitÃ©")) )
 
-        # Clé secrète
+        # ClÃ© secrÃ¨te
         nom = "secret_key"
-        propriete = wxpg.StringProperty(label=_(u"Clé de sécurité"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez une clé secrète (générée automatiquement par défaut)"))
+        propriete = wxpg.StringProperty(label=_(u"ClÃ© de sÃ©curitÃ©"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez une clÃ© secrÃ¨te (gÃ©nÃ©rÃ©e automatiquement par dÃ©faut)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Cryptage des transferts
         nom = "crypter_transferts"
-        propriete = wxpg.BoolProperty(label=_(u"Crypter les données lors des transferts"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Cochez cette case pour crypter les données lors des transferts"))
+        propriete = wxpg.BoolProperty(label=_(u"Crypter les donnÃ©es lors des transferts"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour crypter les donnÃ©es lors des transferts"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
@@ -515,18 +515,18 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Sécurité avancée
+        # SÃ©curitÃ© avancÃ©e
         nom = "talisman"
-        propriete = wxpg.BoolProperty(label=_(u"Sécurité avancée"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Cochez cette case pour activer les paramètres de sécurité avancés"))
+        propriete = wxpg.BoolProperty(label=_(u"SÃ©curitÃ© avancÃ©e"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour activer les paramÃ¨tres de sÃ©curitÃ© avancÃ©s"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
         # Captcha
         nom = "captcha"
-        # propriete = wxpg.EnumProperty(label=_(u"Captcha"), labels=[_(u"Aucun"), _(u"Captcha par défaut"), _(u"Google Recaptcha")], values=[0, 1, 2], name=nom, value=VALEURS_DEFAUT[nom])
-        propriete = wxpg.EnumProperty(label=_(u"Captcha"), labels=[_(u"Aucun"), _(u"Captcha par défaut")], values=[0, 1], name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Choisissez un captcha pour la page de connexion afin de réduire l'impact des attaques automatisées de robots"))
+        # propriete = wxpg.EnumProperty(label=_(u"Captcha"), labels=[_(u"Aucun"), _(u"Captcha par dÃ©faut"), _(u"Google Recaptcha")], values=[0, 1, 2], name=nom, value=VALEURS_DEFAUT[nom])
+        propriete = wxpg.EnumProperty(label=_(u"Captcha"), labels=[_(u"Aucun"), _(u"Captcha par dÃ©faut")], values=[0, 1], name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Choisissez un captcha pour la page de connexion afin de rÃ©duire l'impact des attaques automatisÃ©es de robots"))
         self.Append(propriete)
 
         # Gestion des mots de passe
@@ -535,25 +535,25 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Forcer modification mot de passe
         nom = "mdp_forcer_modification"
         propriete = wxpg.BoolProperty(label=_(u"Forcer la modification du mot de passe"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Cochez cette case pour obliger l'utilisateur à modifier son mot de passe lors de sa première utilisation du portail"))
+        propriete.SetHelpString(_(u"Cochez cette case pour obliger l'utilisateur Ã  modifier son mot de passe lors de sa premiÃ¨re utilisation du portail"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
         # Autoriser modification mot de passe
         nom = "mdp_autoriser_modification"
         propriete = wxpg.BoolProperty(label=_(u"Autoriser la modification du mot de passe par l'utilisateur"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Cochez cette case pour permettre à l'utilisateur de modifier lui-même son mot de passe quand il le souhaite"))
+        propriete.SetHelpString(_(u"Cochez cette case pour permettre Ã  l'utilisateur de modifier lui-mÃªme son mot de passe quand il le souhaite"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Autoriser mot de passe oublié
+        # Autoriser mot de passe oubliÃ©
         nom = "mdp_autoriser_reinitialisation"
-        propriete = wxpg.BoolProperty(label=_(u"Autoriser réinitialisation du mot de passe"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Cochez cette case pour autoriser l'utilisateur à réinitialiser lui-même son mot de passe en cas d'oubli"))
+        propriete = wxpg.BoolProperty(label=_(u"Autoriser rÃ©initialisation du mot de passe"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour autoriser l'utilisateur Ã  rÃ©initialiser lui-mÃªme son mot de passe en cas d'oubli"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Adresse d'expédition d'emails
+        # Adresse d'expÃ©dition d'emails
         nom = "email_type_adresse"
         labels = [(u"Aucune"), _(u"L'adresse suivante...")]
         valeurs = [0, 999]
@@ -565,8 +565,8 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
             labels.insert(len(labels)-1, adresse)
             valeurs.insert(len(valeurs)-1, IDadresse)
         DB.Close()
-        propriete = wxpg.EnumProperty(label=_(u"Adresse d'expédition d'emails"), labels=labels, values=valeurs, name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Sélectionnez une adresse d'expédition d'emails qui sera utilisée pour envoyer les emails de réinitialisation des mots de passe"))
+        propriete = wxpg.EnumProperty(label=_(u"Adresse d'expÃ©dition d'emails"), labels=labels, values=valeurs, name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"SÃ©lectionnez une adresse d'expÃ©dition d'emails qui sera utilisÃ©e pour envoyer les emails de rÃ©initialisation des mots de passe"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -580,14 +580,14 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Adresse email : adresse
         nom = "email_adresse"
         propriete = wxpg.StringProperty(label=_(u"Email : Adresse"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez l'adresse d'expédition"))
+        propriete.SetHelpString(_(u"Saisissez l'adresse d'expÃ©dition"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Adresse email : port
         nom = "email_port"
         propriete = wxpg.StringProperty(label=_(u"Email : Port"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez le numéro de port"))
+        propriete.SetHelpString(_(u"Saisissez le numÃ©ro de port"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -608,43 +608,43 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Adresse email : utilisateur
         nom = "email_utilisateur"
         propriete = wxpg.StringProperty(label=_(u"Email : Utilisateur"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez le nom d'utilisateur (Est souvent identique à l'adresse email)"))
+        propriete.SetHelpString(_(u"Saisissez le nom d'utilisateur (Est souvent identique Ã  l'adresse email)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Adresse email : Mot de passe
         nom = "email_password"
         propriete = wxpg.StringProperty(label=_(u"Email : Mot de passe"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez le mot de passe s'il s'agit d'une connexion authentifiée"))
+        propriete.SetHelpString(_(u"Saisissez le mot de passe s'il s'agit d'une connexion authentifiÃ©e"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         propriete.SetAttribute("Password", True)
 
-        # Catégorie
+        # CatÃ©gorie
         self.Append( wxpg.PropertyCategory(_(u"Affichage")) )
 
         # Image de fond du login
         nom = "image_identification"
         propriete = wxpg.ImageFileProperty(label=_(u"Image de fond de la page d'identification"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Sélectionnez une image pour la page d'identification"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez une image pour la page d'identification"))
         self.Append(propriete)
 
-        # Thème
+        # ThÃ¨me
         nom = "theme"
-        propriete = wxpg.EnumProperty(label=_(u"Thème"), labels=[y for x, y in LISTE_THEMES], values=range(0, len(LISTE_THEMES)), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Sélectionnez un thème pour l'affichage"))
+        propriete = wxpg.EnumProperty(label=_(u"ThÃ¨me"), labels=[y for x, y in LISTE_THEMES], values=range(0, len(LISTE_THEMES)), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"SÃ©lectionnez un thÃ¨me pour l'affichage"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Cadre logo organisateur
         nom = "cadre_logo"
-        propriete = wxpg.EnumProperty(label=_(u"Cadre du logo de l'organisateur"), labels=[_(u"Carré"), _(u"Rond")], values=[0, 1], name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Sélectionnez le type de cadre du logo de l'organisateur"))
+        propriete = wxpg.EnumProperty(label=_(u"Cadre du logo de l'organisateur"), labels=[_(u"CarrÃ©"), _(u"Rond")], values=[0, 1], name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"SÃ©lectionnez le type de cadre du logo de l'organisateur"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
 
-        # Catégorie
+        # CatÃ©gorie
         self.Append( wxpg.PropertyCategory(_(u"Recevoir un document")) )
 
         # Recevoir par Email
@@ -671,29 +671,29 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Lieu pour retraite sur site
         nom = "recevoir_document_site_lieu"
         propriete = wxpg.StringProperty(label=_(u"Lieu du retrait sur site"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez un nom de lieu pour le retrait du document (ex: à l'accueil de la structure)"))
+        propriete.SetHelpString(_(u"Saisissez un nom de lieu pour le retrait du document (ex: Ã  l'accueil de la structure)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
 
-        # Catégorie
+        # CatÃ©gorie
         self.Append( wxpg.PropertyCategory(_(u"Paiement en ligne")) )
 
         # Activer le paiement en ligne
         nom = "paiement_ligne_actif"
         propriete = wxpg.BoolProperty(label=_(u"Activer le paiement en ligne"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Cochez cette case pour activer la fonction de paiement en ligne\n(ATTENTION: en test / développement)"))
+        propriete.SetHelpString(_(u"Cochez cette case pour activer la fonction de paiement en ligne\n(ATTENTION: en test / dÃ©veloppement)"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
         # Choix du systeme de paiement en ligne
         nom = "paiement_ligne_systeme"
         # _(u"TIPI Formulaire (Non actif)"),
-        propriete = wxpg.EnumProperty(label=_(u"Système / Partenaire"), labels=[_(u"Aucun"), _(u"TIPI Régie"), _(u"Payzen"), _(u"Mode démo")], values=[0, 1, 3, 4], name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Choisissez le système / partenaire à utiliser pour le paiement en ligne"))
+        propriete = wxpg.EnumProperty(label=_(u"SystÃ¨me / Partenaire"), labels=[_(u"Aucun"), _(u"TIPI RÃ©gie"), _(u"Payzen"), _(u"Mode dÃ©mo")], values=[0, 1, 3, 4], name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Choisissez le systÃ¨me / partenaire Ã  utiliser pour le paiement en ligne"))
         self.Append(propriete)
 
-        # Choix du mode de règlement pour les paiements en ligne
+        # Choix du mode de rÃ¨glement pour les paiements en ligne
         DB = GestionDB.DB()
         req = """SELECT IDmode, label
         FROM modes_reglements
@@ -706,8 +706,8 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
             liste_reglements.append((IDmode, label))
 
         nom = "paiement_ligne_mode_reglement"
-        propriete = wxpg.EnumProperty(label=_(u"Mode de règlement"), labels=[y for x, y in liste_reglements], values=[x for x, y in liste_reglements], name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Choisissez le mode de règlement à associer aux paiements en ligne des factures"))
+        propriete = wxpg.EnumProperty(label=_(u"Mode de rÃ¨glement"), labels=[y for x, y in liste_reglements], values=[x for x, y in liste_reglements], name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Choisissez le mode de rÃ¨glement Ã  associer aux paiements en ligne des factures"))
         self.Append(propriete)
 
         # Autoriser le paiement en ligne de plusieurs factures sur la meme transaction
@@ -719,8 +719,8 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
         # Montant minimal pour le paiement en ligne
         nom = "paiement_ligne_montant_minimal"
-        propriete = wxpg.FloatProperty(label=_(u"Montant minimal autorisé"), name="paiement_ligne_montant_minimal", value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Indiquez le montant minimal autorisé pour le paiement en ligne"))
+        propriete = wxpg.FloatProperty(label=_(u"Montant minimal autorisÃ©"), name="paiement_ligne_montant_minimal", value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Indiquez le montant minimal autorisÃ© pour le paiement en ligne"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -733,7 +733,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # PAYZEN : ID de la boutique
         nom = "payzen_site_id"
         propriete = wxpg.StringProperty(label=_(u"Identifiant boutique"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez l'identifiant boutique attribué par Payzen"))
+        propriete.SetHelpString(_(u"Saisissez l'identifiant boutique attribuÃ© par Payzen"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -741,43 +741,43 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         nom = "payzen_mode"
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Mode de fonctionnement"), name=nom, liste_choix=[("TEST", _(u"Test")), ("PRODUCTION", _(u"Production"))], valeur=VALEURS_DEFAUT[nom])
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"Sélectionnez le mode de saisie des paiements. Attention, ne passez en mode production qu'après avoir effectué des essais en mode test."))
+        propriete.SetHelpString(_(u"SÃ©lectionnez le mode de saisie des paiements. Attention, ne passez en mode production qu'aprÃ¨s avoir effectuÃ© des essais en mode test."))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # PAYZEN : Certificat de test
         nom = "payzen_certificat_test"
         propriete = wxpg.StringProperty(label=_(u"Certificat de test"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez le certificat de test attribué par Payzen"))
+        propriete.SetHelpString(_(u"Saisissez le certificat de test attribuÃ© par Payzen"))
         self.Append(propriete)
 
         # PAYZEN : Certificat de production
         nom = "payzen_certificat_production"
         propriete = wxpg.StringProperty(label=_(u"Certificat de production"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez le certificat de production attribué par Payzen"))
+        propriete.SetHelpString(_(u"Saisissez le certificat de production attribuÃ© par Payzen"))
         self.Append(propriete)
 
-        # Paiement échelonné
+        # Paiement Ã©chelonnÃ©
         nom = "payzen_echelonnement"
         propriete = wxpg.BoolProperty(label=_(u"Proposer le paiement en 3 fois"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Cochez cette case pour activer le paiement en 3 fois. Cette option doit également être activée sur votre compte Payzen (Contacter service client Payzen)."))
+        propriete.SetHelpString(_(u"Cochez cette case pour activer le paiement en 3 fois. Cette option doit Ã©galement Ãªtre activÃ©e sur votre compte Payzen (Contacter service client Payzen)."))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Désactiver le paiement en ligne pour les familles abonnées au prélèvement automatique
+        # DÃ©sactiver le paiement en ligne pour les familles abonnÃ©es au prÃ©lÃ¨vement automatique
         nom = "paiement_off_si_prelevement"
-        propriete = wxpg.BoolProperty(label=_(u"Désactiver paiement en ligne si prélèvement auto."), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Cochez cette case pour désactiver le paiement en ligne pour les familles abonnées au prélèvement automatique"))
+        propriete = wxpg.BoolProperty(label=_(u"DÃ©sactiver paiement en ligne si prÃ©lÃ¨vement auto."), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour dÃ©sactiver le paiement en ligne pour les familles abonnÃ©es au prÃ©lÃ¨vement automatique"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Catégorie
+        # CatÃ©gorie
         self.Append( wxpg.PropertyCategory(_(u"Page 'Accueil'")) )
 
         # Titre du portail
         nom = "accueil_titre"
         propriete = wxpg.LongStringProperty(label=_(u"Titre du portail"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez le titre du portail (les balises HTML sont acceptées)"))
+        propriete.SetHelpString(_(u"Saisissez le titre du portail (les balises HTML sont acceptÃ©es)"))
         self.Append(propriete)
 
         # Texte de bienvenue
@@ -793,12 +793,12 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         self.Append(propriete)
 
         nom = "accueil_etat_dossier_afficher"
-        propriete = wxpg.BoolProperty(label=_(u"Afficher l'état du dossier"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Cochez cette case pour afficher l'état du dossier sur la page d'accueil"))
+        propriete = wxpg.BoolProperty(label=_(u"Afficher l'Ã©tat du dossier"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour afficher l'Ã©tat du dossier sur la page d'accueil"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Catégorie
+        # CatÃ©gorie
         self.Append( wxpg.PropertyCategory(_(u"Page 'Renseignements'")) )
 
         # Afficher
@@ -823,16 +823,16 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
         # Noms
         nom = "renseignements_adulte_nom"
-        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Nom et prénom des adultes"), name=nom, liste_choix=LISTE_SELECTION_RENSEIGNEMENTS, valeur=VALEURS_DEFAUT[nom])
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Nom et prÃ©nom des adultes"), name=nom, liste_choix=LISTE_SELECTION_RENSEIGNEMENTS, valeur=VALEURS_DEFAUT[nom])
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"Sélectionnez le mode d'affichage de ce champ (ne pas afficher ou modification ou suppression)"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez le mode d'affichage de ce champ (ne pas afficher ou modification ou suppression)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         nom = "renseignements_enfant_nom"
-        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Nom et prénom des enfants"), name=nom, liste_choix=LISTE_SELECTION_RENSEIGNEMENTS, valeur=VALEURS_DEFAUT[nom])
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Nom et prÃ©nom des enfants"), name=nom, liste_choix=LISTE_SELECTION_RENSEIGNEMENTS, valeur=VALEURS_DEFAUT[nom])
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"Sélectionnez le mode d'affichage de ce champ (ne pas afficher ou modification ou suppression)"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez le mode d'affichage de ce champ (ne pas afficher ou modification ou suppression)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -840,14 +840,14 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         nom = "renseignements_adulte_naissance"
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Date et lieu de naissance des adultes"), name=nom, liste_choix=LISTE_SELECTION_RENSEIGNEMENTS, valeur=VALEURS_DEFAUT[nom])
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"Sélectionnez le mode d'affichage de ce champ (ne pas afficher ou modification ou suppression)"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez le mode d'affichage de ce champ (ne pas afficher ou modification ou suppression)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         nom = "renseignements_enfant_naissance"
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Date et lieu de naissance des enfants"), name=nom, liste_choix=LISTE_SELECTION_RENSEIGNEMENTS, valeur=VALEURS_DEFAUT[nom])
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"Sélectionnez le mode d'affichage de ce champ (ne pas afficher ou modification ou suppression)"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez le mode d'affichage de ce champ (ne pas afficher ou modification ou suppression)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -855,22 +855,22 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         nom = "renseignements_adresse"
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Adresse des adultes et enfants"), name=nom, liste_choix=LISTE_SELECTION_RENSEIGNEMENTS, valeur=VALEURS_DEFAUT[nom])
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"Sélectionnez le mode d'affichage de ce champ (ne pas afficher ou modification ou suppression)"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez le mode d'affichage de ce champ (ne pas afficher ou modification ou suppression)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
-        # Coordonnées
+        # CoordonnÃ©es
         nom = "renseignements_adulte_coords"
-        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Téléphones et Email des adultes"), name=nom, liste_choix=LISTE_SELECTION_RENSEIGNEMENTS, valeur=VALEURS_DEFAUT[nom])
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"TÃ©lÃ©phones et Email des adultes"), name=nom, liste_choix=LISTE_SELECTION_RENSEIGNEMENTS, valeur=VALEURS_DEFAUT[nom])
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"Sélectionnez le mode d'affichage de ce champ (ne pas afficher ou modification ou suppression)"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez le mode d'affichage de ce champ (ne pas afficher ou modification ou suppression)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         nom = "renseignements_enfant_coords"
-        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Téléphones et Email des enfants"), name=nom, liste_choix=LISTE_SELECTION_RENSEIGNEMENTS, valeur=VALEURS_DEFAUT[nom])
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"TÃ©lÃ©phones et Email des enfants"), name=nom, liste_choix=LISTE_SELECTION_RENSEIGNEMENTS, valeur=VALEURS_DEFAUT[nom])
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"Sélectionnez le mode d'affichage de ce champ (ne pas afficher ou modification ou suppression)"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez le mode d'affichage de ce champ (ne pas afficher ou modification ou suppression)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -878,7 +878,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         nom = "renseignements_adulte_profession"
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Profession des adultes"), name=nom, liste_choix=LISTE_SELECTION_RENSEIGNEMENTS, valeur=VALEURS_DEFAUT[nom])
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"Sélectionnez le mode d'affichage de ce champ (ne pas afficher ou modification ou suppression)"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez le mode d'affichage de ce champ (ne pas afficher ou modification ou suppression)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -886,8 +886,8 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
 
 
-        # Catégorie
-        self.Append( wxpg.PropertyCategory(_(u"Page 'Activités'")) )
+        # CatÃ©gorie
+        self.Append( wxpg.PropertyCategory(_(u"Page 'ActivitÃ©s'")) )
 
         # Afficher
         nom = "activites_afficher"
@@ -896,29 +896,29 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Intro de la page activités
+        # Intro de la page activitÃ©s
         nom = "activites_intro"
         propriete = wxpg.LongStringProperty(label=_(u"Texte d'introduction"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Saisissez un texte d'introduction"))
         self.Append(propriete)
 
-        # Incription à une activité
+        # Incription Ã  une activitÃ©
         nom = "activites_autoriser_inscription"
-        propriete = wxpg.BoolProperty(label=_(u"Autoriser l'inscription à des activités"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Cochez cette case pour autoriser l'inscription à des activités"))
+        propriete = wxpg.BoolProperty(label=_(u"Autoriser l'inscription Ã  des activitÃ©s"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour autoriser l'inscription Ã  des activitÃ©s"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Bloquer l'incription à une activité si complet
+        # Bloquer l'incription Ã  une activitÃ© si complet
         nom = "activites_bloquer_complet"
-        propriete = wxpg.BoolProperty(label=_(u"Bloquer l'inscription si activité complète"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Cochez cette case pour bloquer l'inscription si l'activité est complète"))
+        propriete = wxpg.BoolProperty(label=_(u"Bloquer l'inscription si activitÃ© complÃ¨te"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour bloquer l'inscription si l'activitÃ© est complÃ¨te"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
 
-        # Catégorie
-        self.Append( wxpg.PropertyCategory(_(u"Page 'Réservations'")) )
+        # CatÃ©gorie
+        self.Append( wxpg.PropertyCategory(_(u"Page 'RÃ©servations'")) )
 
         # Afficher
         nom = "reservations_afficher"
@@ -927,7 +927,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Intro de la page réservations
+        # Intro de la page rÃ©servations
         nom = "reservations_intro"
         propriete = wxpg.LongStringProperty(label=_(u"Texte d'introduction"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Saisissez un texte d'introduction"))
@@ -939,7 +939,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetHelpString(_(u"Saisissez un texte d'introduction pour le calendrier"))
         self.Append(propriete)
 
-        # Catégorie
+        # CatÃ©gorie
         self.Append( wxpg.PropertyCategory(_(u"Page 'Factures'")) )
 
         # Afficher
@@ -955,10 +955,10 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetHelpString(_(u"Saisissez un texte d'introduction"))
         self.Append(propriete)
 
-        # Sélection des factures à afficher
+        # SÃ©lection des factures Ã  afficher
         nom = "factures_selection"
-        propriete = wxpg.EnumProperty(label=_(u"Sélection des factures à afficher"), labels=[y for x, y in LISTE_SELECTION_FACTURES], values=[x for x, y in LISTE_SELECTION_FACTURES], name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Sélectionnez un critère d'ancienneté pour les factures à afficher"))
+        propriete = wxpg.EnumProperty(label=_(u"SÃ©lection des factures Ã  afficher"), labels=[y for x, y in LISTE_SELECTION_FACTURES], values=[x for x, y in LISTE_SELECTION_FACTURES], name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"SÃ©lectionnez un critÃ¨re d'anciennetÃ© pour les factures Ã  afficher"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -969,24 +969,24 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Afficher la préfacturation
+        # Afficher la prÃ©facturation
         nom = "factures_prefacturation"
-        propriete = wxpg.BoolProperty(label=_(u"Afficher la préfacturation"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Cochez cette case pour afficher la préfacturation"))
+        propriete = wxpg.BoolProperty(label=_(u"Afficher la prÃ©facturation"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour afficher la prÃ©facturation"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
         # Afficher le solde total des factures
         nom = "factures_afficher_solde_total"
-        propriete = wxpg.BoolProperty(label=_(u"Afficher le solde total à régler"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Cochez cette case pour afficher le solde total à régler"))
+        propriete = wxpg.BoolProperty(label=_(u"Afficher le solde total Ã  rÃ©gler"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour afficher le solde total Ã  rÃ©gler"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
         # Afficher le solde pour chaque facture
         nom = "factures_afficher_solde_detail"
-        propriete = wxpg.BoolProperty(label=_(u"Afficher le solde à régler pour chaque facture"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Cochez cette case pour afficher le solde à régler pour chaque facture"))
+        propriete = wxpg.BoolProperty(label=_(u"Afficher le solde Ã  rÃ©gler pour chaque facture"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour afficher le solde Ã  rÃ©gler pour chaque facture"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
@@ -997,8 +997,8 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Catégorie
-        self.Append( wxpg.PropertyCategory(_(u"Page 'Règlements'")) )
+        # CatÃ©gorie
+        self.Append( wxpg.PropertyCategory(_(u"Page 'RÃ¨glements'")) )
 
         # Afficher
         nom = "reglements_afficher"
@@ -1007,29 +1007,29 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Intro de la page règlements
+        # Intro de la page rÃ¨glements
         nom = "reglements_intro"
         propriete = wxpg.LongStringProperty(label=_(u"Texte d'introduction"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Saisissez un texte d'introduction"))
         self.Append(propriete)
 
-        # Sélection des règlements à afficher
+        # SÃ©lection des rÃ¨glements Ã  afficher
         nom = "reglements_selection"
-        propriete = wxpg.EnumProperty(label=_(u"Sélection des règlements à afficher"), labels=[y for x, y in LISTE_SELECTION_REGLEMENTS], values=[x for x, y in LISTE_SELECTION_REGLEMENTS], name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Sélectionnez un critère d'ancienneté pour les règlements à afficher"))
+        propriete = wxpg.EnumProperty(label=_(u"SÃ©lection des rÃ¨glements Ã  afficher"), labels=[y for x, y in LISTE_SELECTION_REGLEMENTS], values=[x for x, y in LISTE_SELECTION_REGLEMENTS], name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"SÃ©lectionnez un critÃ¨re d'anciennetÃ© pour les rÃ¨glements Ã  afficher"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
-        # Demande d'un reçu
+        # Demande d'un reÃ§u
         nom = "reglements_demande_recu"
-        propriete = wxpg.BoolProperty(label=_(u"Autoriser la demande de reçus"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Cochez cette case pour autoriser la demande de reçus de règlements"))
+        propriete = wxpg.BoolProperty(label=_(u"Autoriser la demande de reÃ§us"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour autoriser la demande de reÃ§us de rÃ¨glements"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
 
-        # Catégorie
-        self.Append( wxpg.PropertyCategory(_(u"Page 'Pièces'")) )
+        # CatÃ©gorie
+        self.Append( wxpg.PropertyCategory(_(u"Page 'PiÃ¨ces'")) )
 
         # Afficher
         nom = "pieces_afficher"
@@ -1038,27 +1038,27 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Intro de la page pièces
+        # Intro de la page piÃ¨ces
         nom = "pieces_intro"
         propriete = wxpg.LongStringProperty(label=_(u"Texte d'introduction"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Saisissez un texte d'introduction"))
         self.Append(propriete)
 
-        # Téléchargements de pièces
+        # TÃ©lÃ©chargements de piÃ¨ces
         nom = "pieces_autoriser_telechargement"
-        propriete = wxpg.BoolProperty(label=_(u"Autoriser le téléchargement de pièces"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Cochez cette case pour autoriser le téléchargement de pièces"))
+        propriete = wxpg.BoolProperty(label=_(u"Autoriser le tÃ©lÃ©chargement de piÃ¨ces"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour autoriser le tÃ©lÃ©chargement de piÃ¨ces"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Envoi de pièces
+        # Envoi de piÃ¨ces
         nom = "pieces_autoriser_upload"
-        propriete = wxpg.BoolProperty(label=_(u"Autoriser l'envoi de pièces"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Cochez cette case pour autoriser les familles à envoyer des pièces par le portail"))
+        propriete = wxpg.BoolProperty(label=_(u"Autoriser l'envoi de piÃ¨ces"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour autoriser les familles Ã  envoyer des piÃ¨ces par le portail"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Catégorie
+        # CatÃ©gorie
         self.Append( wxpg.PropertyCategory(_(u"Page 'Cotisations'")) )
 
         # Afficher
@@ -1074,14 +1074,14 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetHelpString(_(u"Saisissez un texte d'introduction"))
         self.Append(propriete)
 
-        # Sélection des cotisations à afficher
+        # SÃ©lection des cotisations Ã  afficher
         nom = "cotisations_selection"
-        propriete = wxpg.EnumProperty(label=_(u"Sélection des cotisations à afficher"), labels=[y for x, y in LISTE_SELECTION_COTISATIONS], values=[x for x, y in LISTE_SELECTION_COTISATIONS], name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Sélectionnez un critère d'ancienneté pour les cotisations à afficher"))
+        propriete = wxpg.EnumProperty(label=_(u"SÃ©lection des cotisations Ã  afficher"), labels=[y for x, y in LISTE_SELECTION_COTISATIONS], values=[x for x, y in LISTE_SELECTION_COTISATIONS], name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"SÃ©lectionnez un critÃ¨re d'anciennetÃ© pour les cotisations Ã  afficher"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
-        # Catégorie
+        # CatÃ©gorie
         self.Append( wxpg.PropertyCategory(_(u"Page 'Locations'")) )
 
         # Afficher
@@ -1097,17 +1097,17 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetHelpString(_(u"Saisissez un texte d'introduction"))
         self.Append(propriete)
 
-        # Sélection des locations à afficher
+        # SÃ©lection des locations Ã  afficher
         nom = "locations_selection"
-        propriete = wxpg.EnumProperty(label=_(u"Sélection des locations à afficher"), labels=[y for x, y in LISTE_SELECTION_LOCATIONS], values=[x for x, y in LISTE_SELECTION_LOCATIONS], name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Sélectionnez un critère d'ancienneté pour les locations à afficher"))
+        propriete = wxpg.EnumProperty(label=_(u"SÃ©lection des locations Ã  afficher"), labels=[y for x, y in LISTE_SELECTION_LOCATIONS], values=[x for x, y in LISTE_SELECTION_LOCATIONS], name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"SÃ©lectionnez un critÃ¨re d'anciennetÃ© pour les locations Ã  afficher"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
-        # Ouverture des réservations
+        # Ouverture des rÃ©servations
         nom = "locations_periode_saisie"
         propriete = wxpg.EnumProperty(label=_(u"Ouverture de la saisie des locations"), labels=[y for x, y in LISTE_SAISIE_LOCATIONS], values=[x for x, y in LISTE_SAISIE_LOCATIONS], name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Sélectionnez une période d'ouverture des réservations des locations"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez une pÃ©riode d'ouverture des rÃ©servations des locations"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -1117,17 +1117,17 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetHelpString(_(u"Saisissez un texte d'introduction pour le calendrier des locations"))
         self.Append(propriete)
 
-        # Heure affichée min
+        # Heure affichÃ©e min
         nom = "locations_heure_min"
-        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Heure affichée minimale"), name=nom, liste_choix=HEURES, valeur=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Sélectionnez l'heure minimale affichée dans le planning des locations"))
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Heure affichÃ©e minimale"), name=nom, liste_choix=HEURES, valeur=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"SÃ©lectionnez l'heure minimale affichÃ©e dans le planning des locations"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
-        # Heure affichée max
+        # Heure affichÃ©e max
         nom = "locations_heure_max"
-        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Heure affichée maximale"), name=nom, liste_choix=HEURES, valeur=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Sélectionnez l'heure maximale affichée dans le planning des locations"))
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Heure affichÃ©e maximale"), name=nom, liste_choix=HEURES, valeur=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"SÃ©lectionnez l'heure maximale affichÃ©e dans le planning des locations"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -1138,7 +1138,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Catégorie
+        # CatÃ©gorie
         self.Append( wxpg.PropertyCategory(_(u"Page 'Historique'")) )
 
         # Afficher
@@ -1154,14 +1154,14 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetHelpString(_(u"Saisissez un texte d'introduction"))
         self.Append(propriete)
 
-        # Délai d'affichage de l'historique
+        # DÃ©lai d'affichage de l'historique
         nom = "historique_delai"
         propriete = wxpg.EnumProperty(label=_(u"Temps d'affichage de l'historique"), labels=[y for x, y in LISTE_AFFICHAGE_HISTORIQUE], values=range(0, len(LISTE_AFFICHAGE_HISTORIQUE)), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Sélectionnez un délai pour l'affichage de l'historique : Au-delà  l'historique sera caché."))
+        propriete.SetHelpString(_(u"SÃ©lectionnez un dÃ©lai pour l'affichage de l'historique : Au-delÃ Â  l'historique sera cachÃ©."))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
-        # Catégorie
+        # CatÃ©gorie
         self.Append( wxpg.PropertyCategory(_(u"Page 'Contact'")) )
 
         # Afficher
@@ -1185,8 +1185,8 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # self.Append(propriete)
 
 
-        # Catégorie
-        self.Append( wxpg.PropertyCategory(_(u"Page 'Mentions légales'")) )
+        # CatÃ©gorie
+        self.Append( wxpg.PropertyCategory(_(u"Page 'Mentions lÃ©gales'")) )
 
         # Afficher
         nom = "mentions_afficher"
@@ -1196,7 +1196,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         self.Append(propriete)
 
 
-        # Catégorie
+        # CatÃ©gorie
         self.Append( wxpg.PropertyCategory(_(u"Page 'Aide'")) )
 
         # Afficher
@@ -1210,19 +1210,19 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
 
     def Validation(self):
-        """ Validation des données saisies """
+        """ Validation des donnÃ©es saisies """
         for nom, valeur in self.GetPropertyValues().items() :
             propriete = self.GetPropertyByName(nom)
             if self.GetPropertyAttribute(propriete, "obligatoire") == True :
                 if valeur == "" or valeur == None :
-                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner le paramètre '%s' !") % self.GetPropertyLabel(nom), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner le paramÃ¨tre '%s' !") % self.GetPropertyLabel(nom), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
 
         if self.GetPropertyByName("mdp_autoriser_reinitialisation").GetValue() == True :
             if self.GetPropertyByName("email_type_adresse").GetValue() == 0 :
-                dlg = wx.MessageDialog(self, _(u"Vous avez coché l'activation de la fonction de réinitialisation des mots de passe. Vous devez donc obligatoirement sélectionner ou saisir une adresse d'expédition d'email !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous avez cochÃ© l'activation de la fonction de rÃ©initialisation des mots de passe. Vous devez donc obligatoirement sÃ©lectionner ou saisir une adresse d'expÃ©dition d'email !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -1230,14 +1230,14 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         return True
 
     def Importation(self):
-        """ Importation des valeurs dans le contrôle """
-        # Récupération des noms et valeurs par défaut du contrôle
+        """ Importation des valeurs dans le contrÃ´le """
+        # RÃ©cupÃ©ration des noms et valeurs par dÃ©faut du contrÃ´le
         dictValeurs = copy.deepcopy(self.GetPropertyValues())
 
-        # Recherche les paramètres mémorisés dans la base de données
+        # Recherche les paramÃ¨tres mÃ©morisÃ©s dans la base de donnÃ©es
         dictParametres = UTILS_Parametres.ParametresCategorie(mode="get", categorie="portail", dictParametres=dictValeurs)
 
-        # Recherche des config mémorisés sur cet ordi
+        # Recherche des config mÃ©morisÃ©s sur cet ordi
         dictParametres["client_synchro_portail_activation"] = UTILS_Config.GetParametre("client_synchro_portail_activation", False)
         dictParametres["client_synchro_portail_delai"] = UTILS_Config.GetParametre("client_synchro_portail_delai", 2)
         dictParametres["client_synchro_portail_ouverture"] = UTILS_Config.GetParametre("client_synchro_portail_ouverture", True)
@@ -1245,7 +1245,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         #dictParametres["hebergement_type"] = UTILS_Config.GetParametre("hebergement_type", 0)
         #dictParametres["serveur_type"] = UTILS_Config.GetParametre("serveur_type", 0)
 
-        # Envoie les paramètres dans le contrôle
+        # Envoie les paramÃ¨tres dans le contrÃ´le
         for nom, valeur in dictParametres.items() :
             propriete = self.GetPropertyByName(nom)
             type_propriete = type(VALEURS_DEFAUT[nom])
@@ -1257,12 +1257,12 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         self.Switch()
 
     def Sauvegarde(self):
-        """ Mémorisation des valeurs du contrôle """
-        # Mémorisation des paramètres dans la base de données
+        """ MÃ©morisation des valeurs du contrÃ´le """
+        # MÃ©morisation des paramÃ¨tres dans la base de donnÃ©es
         dictValeurs = copy.deepcopy(self.GetPropertyValues())
         UTILS_Parametres.ParametresCategorie(mode="set", categorie="portail", dictParametres=dictValeurs)
 
-        # Mémorisation de la config sur cet ordi
+        # MÃ©morisation de la config sur cet ordi
         for key in ("client_synchro_portail_activation", "client_synchro_portail_delai", "client_synchro_portail_ouverture", "client_rechercher_updates") :#, "hebergement_type", "serveur_type") :
             UTILS_Config.SetParametre(key, self.GetPropertyByName(key).GetValue())
 
@@ -1278,7 +1278,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         wildcard = u"Fichier de configuration (*.cfg)|*.cfg|Tous les fichiers (*.*)|*.*"
         standardPath = wx.StandardPaths.Get()
         rep = standardPath.GetDocumentsDir()
-        dlg = wx.FileDialog(None, message=_(u"Veuillez sélectionner le fichier de configuration à restaurer"), defaultDir=rep, defaultFile="", wildcard=wildcard, style=wx.FD_OPEN)
+        dlg = wx.FileDialog(None, message=_(u"Veuillez sÃ©lectionner le fichier de configuration Ã  restaurer"), defaultDir=rep, defaultFile="", wildcard=wildcard, style=wx.FD_OPEN)
         if dlg.ShowModal() == wx.ID_OK:
             cheminFichier = dlg.GetPath()
             dlg.Destroy()
@@ -1314,19 +1314,19 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # MAJ affichage grille
         self.Switch()
 
-        dlg = wx.MessageDialog(None, _(u"Importation de la configuration effectuée."), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(None, _(u"Importation de la configuration effectuÃ©e."), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 
 
     def Exportation_config(self, event=None):
-        # Demande à l'utilisateur le nom de fichier et le répertoire de destination
+        # Demande Ã  l'utilisateur le nom de fichier et le rÃ©pertoire de destination
         nomFichier = "Config_connecthys.cfg"
         wildcard = u"Fichier de configuration (*.cfg)|*.cfg|Tous les fichiers (*.*)|*.*"
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
         dlg = wx.FileDialog(
-            None, message = _(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"), defaultDir=cheminDefaut,
+            None, message = _(u"Veuillez sÃ©lectionner le rÃ©pertoire de destination et le nom du fichier"), defaultDir=cheminDefaut,
             defaultFile = nomFichier,
             wildcard = wildcard,
             style = wx.FD_SAVE
@@ -1339,16 +1339,16 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
             dlg.Destroy()
             return
 
-        # Le fichier de destination existe déjà :
+        # Le fichier de destination existe dÃ©jÃ  :
         if os.path.isfile(cheminFichier) == True :
-            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe dÃ©jÃ . \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
             if dlg.ShowModal() == wx.ID_NO :
                 dlg.Destroy()
                 return False
             else:
                 dlg.Destroy()
 
-        # Création du fichier
+        # CrÃ©ation du fichier
         fichier = codecs.open(cheminFichier, encoding='utf-8', mode='w')
         dictValeurs = copy.deepcopy(self.GetPropertyValues())
         for cle, valeur in dictValeurs.items() :
@@ -1400,13 +1400,13 @@ class Page_Conditions(wx.Panel):
         self.ctrl_infos.SetMinSize((-1, 50))
         self.ctrl_infos.SetBorders(4)
         self.ctrl_infos.SetPage(u"""
-        <FONT SIZE=2><IMG SRC="%s"><B>Astuce</B> : Vous pouvez utiliser les mots-clés suivants pour intégrer les données de l'organisateur dans le texte : {ORGANISATEUR_NOM}, 
+        <FONT SIZE=2><IMG SRC="%s"><B>Astuce</B> : Vous pouvez utiliser les mots-clÃ©s suivants pour intÃ©grer les donnÃ©es de l'organisateur dans le texte : {ORGANISATEUR_NOM}, 
         {ORGANISATEUR_RUE}, {ORGANISATEUR_CP}, {ORGANISATEUR_VILLE}, {ORGANISATEUR_TEL}, {ORGANISATEUR_FAX}, {ORGANISATEUR_EMAIL}.</FONT>
         """ % Chemins.GetStaticPath(u"Images/16x16/Astuce.png"))
         self.ctrl_infos.SetBackgroundColour(wx.SystemSettings.GetColour(30))
 
         self.Bind(wx.EVT_BUTTON, self.OnModifier, self.bouton_modifier)
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour éditer le texte")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour Ã©diter le texte")))
 
         # Layout
         sizer_base = wx.BoxSizer(wx.VERTICAL)
@@ -1483,10 +1483,10 @@ class Page_Pages(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl_pages.Descendre, self.bouton_descendre)
 
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une page ou un bloc")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'élément sélectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'élément sélectionné dans la liste")))
-        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter l'élément sélectionné dans la liste")))
-        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre l'élément sélectionné dans la liste")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'Ã©lÃ©ment sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'Ã©lÃ©ment sÃ©lectionnÃ© dans la liste")))
+        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter l'Ã©lÃ©ment sÃ©lectionnÃ© dans la liste")))
+        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre l'Ã©lÃ©ment sÃ©lectionnÃ© dans la liste")))
 
         # Layout
         sizer_base = wx.BoxSizer(wx.VERTICAL)
@@ -1521,9 +1521,9 @@ class CTRL_Notebook(wx.Notebook):
         self.dictPages = {}
 
         self.listePages = [
-            {"code": "parametres", "ctrl": Page_Parametres(self), "label": _(u"Paramètres généraux"), "image": "Mecanisme.png"},
+            {"code": "parametres", "ctrl": Page_Parametres(self), "label": _(u"ParamÃ¨tres gÃ©nÃ©raux"), "image": "Mecanisme.png"},
             {"code": "conditions", "ctrl": Page_Conditions(self), "label": _(u"Conditions d'utilisation"), "image": "Questionnaire.png"},
-            {"code": "pages", "ctrl": Page_Pages(self), "label": _(u"Pages personnalisées"), "image": "Copier.png"},
+            {"code": "pages", "ctrl": Page_Pages(self), "label": _(u"Pages personnalisÃ©es"), "image": "Copier.png"},
         ]
 
         # ImageList pour le NoteBook
@@ -1533,7 +1533,7 @@ class CTRL_Notebook(wx.Notebook):
             self.dictImages[dictPage["code"]] = il.Add(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s" % dictPage["image"]), wx.BITMAP_TYPE_PNG))
         self.AssignImageList(il)
 
-        # Création des pages
+        # CrÃ©ation des pages
         self.dictPages = {}
         index = 0
         for dictPage in self.listePages:
@@ -1561,7 +1561,7 @@ class CTRL_Notebook(wx.Notebook):
             index += 1
 
     # def OnPageChanged(self, event):
-    #     """ Quand une page du notebook est sélectionnée """
+    #     """ Quand une page du notebook est sÃ©lectionnÃ©e """
     #     if event.GetOldSelection() == -1: return
     #     indexPage = event.GetSelection()
     #     page = self.GetPage(indexPage)
@@ -1592,13 +1592,13 @@ class Dialog(wx.Dialog):
         self.parent = parent
 
         # Bandeau
-        intro = _(u"Connecthys est le portail internet de Noethys. Vous devez au préalable disposer d'un hébergement internet compatible. Utilisez les fonctionnalités ci-dessous pour installer et synchroniser le portail avec votre fichier de données Noethys.")
+        intro = _(u"Connecthys est le portail internet de Noethys. Vous devez au prÃ©alable disposer d'un hÃ©bergement internet compatible. Utilisez les fonctionnalitÃ©s ci-dessous pour installer et synchroniser le portail avec votre fichier de donnÃ©es Noethys.")
         titre = _(u"Connecthys")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Connecthys.png")
 
-        # Paramètres
-        self.box_parametres = wx.StaticBox(self, -1, _(u"Paramètres"))
+        # ParamÃ¨tres
+        self.box_parametres = wx.StaticBox(self, -1, _(u"ParamÃ¨tres"))
         self.ctrl_notebook = CTRL_Notebook(self)
 
         # Log
@@ -1616,7 +1616,7 @@ class Dialog(wx.Dialog):
 
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_easy = CTRL_Bouton_image.CTRL(self, texte=_(u"Souscrire à Connecthys Easy"), cheminImage="Images/32x32/Connecthys.png")
+        self.bouton_easy = CTRL_Bouton_image.CTRL(self, texte=_(u"Souscrire Ã  Connecthys Easy"), cheminImage="Images/32x32/Connecthys.png")
         self.bouton_site = CTRL_Bouton_image.CTRL(self, texte=_(u"www.connecthys.com"), cheminImage="Images/32x32/Connecthys.png")
         self.bouton_outils = CTRL_Bouton_image.CTRL(self, texte=_(u"Outils"), cheminImage="Images/32x32/Configuration.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
@@ -1637,9 +1637,9 @@ class Dialog(wx.Dialog):
         wx.CallAfter(self.Afficher_avertissement)
 
     def __set_properties(self):
-        self.bouton_easy.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour souscrire à l'offre Connecthys Easy")))
-        self.bouton_site.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder au site internet www.connecthys.com")))
-        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux outils")))
+        self.bouton_easy.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour souscrire Ã  l'offre Connecthys Easy")))
+        self.bouton_site.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der au site internet www.connecthys.com")))
+        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der aux outils")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((850, 700))
 
@@ -1647,7 +1647,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
 
-        # Paramètres
+        # ParamÃ¨tres
         box_parametres = wx.StaticBoxSizer(self.box_parametres, wx.VERTICAL)
         box_parametres.Add(self.ctrl_notebook, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(box_parametres, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
@@ -1717,7 +1717,7 @@ class Dialog(wx.Dialog):
         try :
             texte += u"[%s] %s" % (horodatage, message)
         except :
-            texte += u"[%s] %s" % (horodatage, str(message).decode('iso-8859-1'))
+            texte += u"[%s] %s" % (horodatage, str(message).decode('UTF-8'))
         self.log.AppendText(texte)
 
     def SetGauge(self, valeur=0):
@@ -1743,7 +1743,7 @@ class Dialog(wx.Dialog):
         webbrowser.open("https://www.connecthys.com")
 
     def OnBoutonOutils(self, event):
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         dict_parametres = self.ctrl_notebook.GetCtrlParametres().GetValeurs()
 
         menu = UTILS_Adaptations.Menu()
@@ -1765,30 +1765,30 @@ class Dialog(wx.Dialog):
         menu.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Installer, id=id)
 
-        # Mettre à jour
+        # Mettre Ã  jour
         id = wx.Window.NewControlId()
-        item = wx.MenuItem(menu, id, _(u"Mettre à jour"))
+        item = wx.MenuItem(menu, id, _(u"Mettre Ã  jour"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Actualiser2.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Update, id=id)
 
         # Upgrade DB
         id = wx.Window.NewControlId()
-        item = wx.MenuItem(menu, id, _(u"Forcer l'upgrade de la base de données"))
+        item = wx.MenuItem(menu, id, _(u"Forcer l'upgrade de la base de donnÃ©es"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Database.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.DemandeUpgradeDB, id=id)
 
         # Repair DB
         id = wx.Window.NewControlId()
-        item = wx.MenuItem(menu, id, _(u"Réparer la base de données"))
+        item = wx.MenuItem(menu, id, _(u"RÃ©parer la base de donnÃ©es"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Database.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.DemandeRepairDB, id=id)
 
         # Clear DB
         id = wx.Window.NewControlId()
-        item = wx.MenuItem(menu, id, _(u"Vider la base de données"))
+        item = wx.MenuItem(menu, id, _(u"Vider la base de donnÃ©es"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Database.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.DemandeClearDB, id=id)
@@ -1829,9 +1829,9 @@ class Dialog(wx.Dialog):
 
         if dict_parametres["serveur_type"] == 0 and self.server_ctrl != None :
 
-            # Démarrer
+            # DÃ©marrer
             id = wx.Window.NewControlId()
-            item = wx.MenuItem(menu, id, _(u"Démarrer le serveur"))
+            item = wx.MenuItem(menu, id, _(u"DÃ©marrer le serveur"))
             item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Play.png"), wx.BITMAP_TYPE_PNG))
             menu.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.server_ctrl.Demarrer_serveur, id=id)
@@ -1844,9 +1844,9 @@ class Dialog(wx.Dialog):
             else :
                 item.Enable(False)
 
-            # Arrêter
+            # ArrÃªter
             id = wx.Window.NewControlId()
-            item = wx.MenuItem(menu, id, _(u"Arrêter le serveur"))
+            item = wx.MenuItem(menu, id, _(u"ArrÃªter le serveur"))
             item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Stop.png"), wx.BITMAP_TYPE_PNG))
             menu.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.server_ctrl.Arreter_serveur, id=id)
@@ -1863,21 +1863,21 @@ class Dialog(wx.Dialog):
 
         # Synchroniser
         id = wx.Window.NewControlId()
-        item = wx.MenuItem(menu, id, _(u"Synchroniser les données"))
+        item = wx.MenuItem(menu, id, _(u"Synchroniser les donnÃ©es"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Actualiser2.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Synchroniser, id=id)
 
-        # Synchronisation complète
+        # Synchronisation complÃ¨te
         id = wx.Window.NewControlId()
-        item = wx.MenuItem(menu, id, _(u"Forcer la synchronisation complète"))
+        item = wx.MenuItem(menu, id, _(u"Forcer la synchronisation complÃ¨te"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Actualiser2.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Synchroniser_full, id=id)
 
         menu.AppendSeparator()
 
-        # Traiter les données
+        # Traiter les donnÃ©es
         id = wx.Window.NewControlId()
         item = wx.MenuItem(menu, id, _(u"Traiter les demandes"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Loupe.png"), wx.BITMAP_TYPE_PNG))
@@ -1904,7 +1904,7 @@ class Dialog(wx.Dialog):
         menu.Destroy()
 
     def Installer(self, event):
-        # Récupération des paramètres de l'installation
+        # RÃ©cupÃ©ration des paramÃ¨tres de l'installation
         if self.ctrl_notebook.Validation() == False :
             return False
         dict_parametres = self.ctrl_notebook.GetCtrlParametres().GetValeurs()
@@ -1931,7 +1931,7 @@ class Dialog(wx.Dialog):
                 return False
 
             if dict_parametres["ftp_repertoire"] == "" :
-                dlg = wx.MessageDialog(self, _(u"Vous devez saisir le répertoire FTP !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez saisir le rÃ©pertoire FTP !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -1945,7 +1945,7 @@ class Dialog(wx.Dialog):
                 return False
 
             if dict_parametres["ssh_port"] == "" :
-                dlg = wx.MessageDialog(self, _(u"Vous devez saisir le numéro de port du serveur SSH !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez saisir le numÃ©ro de port du serveur SSH !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -1957,13 +1957,13 @@ class Dialog(wx.Dialog):
                 return False
 
             if dict_parametres["ssh_mdp"] == "" and dict_parametres["ssh_key_file"] == "" :
-                dlg = wx.MessageDialog(self, _(u"Vous devez saisir le mot de passe de l utilisateur SSH ou utiliser une connection par clé !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez saisir le mot de passe de l utilisateur SSH ou utiliser une connection par clÃ© !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
 
             if dict_parametres["ssh_repertoire"] == "" :
-                dlg = wx.MessageDialog(self, _(u"Vous devez saisir le répertoire SSH !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez saisir le rÃ©pertoire SSH !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -1971,7 +1971,7 @@ class Dialog(wx.Dialog):
         elif dict_parametres["hebergement_type"] == 0 :
 
             if dict_parametres["hebergement_local_repertoire"] == "" :
-                dlg = wx.MessageDialog(self, _(u"Vous devez saisir le répertoire local !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez saisir le rÃ©pertoire local !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -1988,12 +1988,12 @@ class Dialog(wx.Dialog):
             raise
 
         if dict_parametres["url_connecthys"] == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir l'url d'accès à Connecthys !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir l'url d'accÃ¨s Ã  Connecthys !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
-        # Procédure d'installation
+        # ProcÃ©dure d'installation
         from Utils import UTILS_Portail_installation
         install = UTILS_Portail_installation.Installer(self, dict_parametres, server_ctrl)
         resultat = install.Installer()
@@ -2016,11 +2016,11 @@ class Dialog(wx.Dialog):
         if self.ctrl_notebook.Validation() == False :
             return False
         dict_parametres = self.ctrl_notebook.GetCtrlParametres().GetValeurs()
-        self.EcritLog(_(u"Téléchargement du log..."))
+        self.EcritLog(_(u"TÃ©lÃ©chargement du log..."))
         synchro = Synchro(self, dict_parametres)
         contenu_fichier = synchro.ConnectEtTelechargeFichier("debug.log")
         if contenu_fichier == False :
-            self.EcritLog(_(u"Le log n'a pas pu être téléchargé."))
+            self.EcritLog(_(u"Le log n'a pas pu Ãªtre tÃ©lÃ©chargÃ©."))
             return False
 
         from Dlg import DLG_Editeur_texte
@@ -2032,51 +2032,51 @@ class Dialog(wx.Dialog):
         if self.ctrl_notebook.Validation() == False:
             return False
         dict_parametres = self.ctrl_notebook.GetCtrlParametres().GetValeurs()
-        self.EcritLog(_(u"Demande d'upgrade de la base de données..."))
+        self.EcritLog(_(u"Demande d'upgrade de la base de donnÃ©es..."))
         synchro = Synchro(self, dict_parametres)
         if synchro.Upgrade_application() == True :
-            self.EcritLog(_(u"Upgrade effectué."))
+            self.EcritLog(_(u"Upgrade effectuÃ©."))
 
     def DemandeRepairDB(self, event):
         if self.ctrl_notebook.Validation() == False:
             return False
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment exécuter cette opération ?\n\nAttention, cette opération peut être risquée ! "), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment exÃ©cuter cette opÃ©ration ?\n\nAttention, cette opÃ©ration peut Ãªtre risquÃ©e ! "), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES :
             return
 
         dict_parametres = self.ctrl_notebook.GetCtrlParametres().GetValeurs()
-        self.EcritLog(_(u"Demande de réparation de la base de données..."))
+        self.EcritLog(_(u"Demande de rÃ©paration de la base de donnÃ©es..."))
         synchro = Synchro(self, dict_parametres)
         if synchro.Repair_application() == True :
-            self.EcritLog(_(u"Réparation effectuée."))
+            self.EcritLog(_(u"RÃ©paration effectuÃ©e."))
 
     def DemandeClearDB(self, event):
         if self.ctrl_notebook.Validation() == False:
             return False
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment vider la base de données du portail ?\n\nLes données seront effacées des tables !"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment vider la base de donnÃ©es du portail ?\n\nLes donnÃ©es seront effacÃ©es des tables !"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES :
             return
-        dlg = wx.MessageDialog(self, _(u"Vous êtes vraiment sûr de vouloir vider la base de données du portail ?\n\nAttention, cette opération est irréversible !"), _(u"Dernier avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(self, _(u"Vous Ãªtes vraiment sÃ»r de vouloir vider la base de donnÃ©es du portail ?\n\nAttention, cette opÃ©ration est irrÃ©versible !"), _(u"Dernier avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES :
             return
 
         dict_parametres = self.ctrl_notebook.GetCtrlParametres().GetValeurs()
-        self.EcritLog(_(u"Demande d'effacement de la base de données..."))
+        self.EcritLog(_(u"Demande d'effacement de la base de donnÃ©es..."))
         synchro = Synchro(self, dict_parametres)
         if synchro.Clear_application() == True :
-            self.EcritLog(_(u"Effacement effectué."))
+            self.EcritLog(_(u"Effacement effectuÃ©."))
 
     def OuvrirNavigateur(self, event):
         dict_parametres = self.ctrl_notebook.GetCtrlParametres().GetValeurs()
         url = dict_parametres["url_connecthys"]
         if url == "" :
-            dlg = wx.MessageDialog(None, _(u"Vous devez renseigner l'URL d'accès à Connecthys !"), _(u"Accès impossible"), wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(None, _(u"Vous devez renseigner l'URL d'accÃ¨s Ã  Connecthys !"), _(u"AccÃ¨s impossible"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -2092,44 +2092,44 @@ class Dialog(wx.Dialog):
         dict_parametres = self.ctrl_notebook.GetCtrlParametres().GetValeurs()
         url = dict_parametres["url_connecthys"]
         if url == "" :
-            dlg = wx.MessageDialog(None, _(u"Vous devez renseigner l'URL d'accès à Connecthys !"), _(u"Accès impossible"), wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(None, _(u"Vous devez renseigner l'URL d'accÃ¨s Ã  Connecthys !"), _(u"AccÃ¨s impossible"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         stats_utilisateur = dict_parametres["stats_utilisateur"]
         if stats_utilisateur == "" :
-            dlg = wx.MessageDialog(None, _(u"Vous devez renseigner le nom d'utilisateur de la rubrique Statistiques !\n\nAttention, cette fonctionnalité n'est disponible que pour les abonnés Connecthys Easy."), _(u"Accès impossible"), wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(None, _(u"Vous devez renseigner le nom d'utilisateur de la rubrique Statistiques !\n\nAttention, cette fonctionnalitÃ© n'est disponible que pour les abonnÃ©s Connecthys Easy."), _(u"AccÃ¨s impossible"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         stats_mdp = dict_parametres["stats_mdp"]
         if stats_mdp == "" :
-            dlg = wx.MessageDialog(None, _(u"Vous devez renseigner le mot de passe de la rubrique Statistiques !\n\nAttention, cette fonctionnalité n'est disponible que pour les abonnés Connecthys Easy."), _(u"Accès impossible"), wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(None, _(u"Vous devez renseigner le mot de passe de la rubrique Statistiques !\n\nAttention, cette fonctionnalitÃ© n'est disponible que pour les abonnÃ©s Connecthys Easy."), _(u"AccÃ¨s impossible"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         url += "/stats/index.html"
 
-        # Mémorisation du mot de passe stats dans le presse-papiers
+        # MÃ©morisation du mot de passe stats dans le presse-papiers
         clipdata = wx.TextDataObject()
         clipdata.SetText(stats_mdp)
         wx.TheClipboard.Open()
         wx.TheClipboard.SetData(clipdata)
         wx.TheClipboard.Close()
 
-        # Affiche une fenêtre avec les codes
+        # Affiche une fenÃªtre avec les codes
         texte = u"""
         <CENTER><IMG SRC="%s">
         <FONT SIZE=3>
         <BR>
-        <B>Accès aux statistiques Connecthys Easy</B>
+        <B>AccÃ¨s aux statistiques Connecthys Easy</B>
         <BR><BR>
-        Noethys va ouvrir votre navigateur internet pour vous permettre d'accéder aux statistiques Connecthys Easy.
+        Noethys va ouvrir votre navigateur internet pour vous permettre d'accÃ©der aux statistiques Connecthys Easy.
         <BR><BR>
-        Les codes d'accès suivants vont vous être demandés :
+        Les codes d'accÃ¨s suivants vont vous Ãªtre demandÃ©s :
         <BR><BR>
         <B>
         <UL>
@@ -2138,7 +2138,7 @@ class Dialog(wx.Dialog):
         </UL>
         </B>
         <BR><BR>
-        Remarque : Le mot de passe a été copié dans le presse-papiers. Vous pouvez donc utiliser <B>CTRL+V</B> pour le coller dans le champ de saisie.
+        Remarque : Le mot de passe a Ã©tÃ© copiÃ© dans le presse-papiers. Vous pouvez donc utiliser <B>CTRL+V</B> pour le coller dans le champ de saisie.
         </FONT>
         </CENTER>
         """ % (Chemins.GetStaticPath("Images/32x32/Connecthys.png"), stats_utilisateur, stats_mdp)
@@ -2178,12 +2178,12 @@ class Dialog(wx.Dialog):
 <CENTER><IMG SRC="%s">
 <BR><BR>
 <FONT SIZE=3>
-Connecthys est le portail internet de Noethys. Il permet par exemple à vos usagers de
-consulter l'état de leur dossier ou de demander des réservations à des activités.
-Il facilite également la gestion administrative par les utilisateurs grâce à son
-traitement automatisé des demandes.
+Connecthys est le portail internet de Noethys. Il permet par exemple Ã  vos usagers de
+consulter l'Ã©tat de leur dossier ou de demander des rÃ©servations Ã  des activitÃ©s.
+Il facilite Ã©galement la gestion administrative par les utilisateurs grÃ¢ce Ã  son
+traitement automatisÃ© des demandes.
 <BR><BR>
-Si vous souhaitez en savoir davantage, allez dans le menu Outils ou visitez le site dédié
+Si vous souhaitez en savoir davantage, allez dans le menu Outils ou visitez le site dÃ©diÃ©
 <FONT SIZE=5><A HREF="http://www.connecthys.com">www.connecthys.com</A></FONT>.
 </FONT>
 </CENTER>

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -31,7 +31,7 @@ DICT_CIVILITES = Civilites.GetDictCivilites()
 
 
 def GetTypeChamp(codeChamp=""):
-    """ Renvoie le type de donnée d'un champ """
+    """ Renvoie le type de donnÃ©e d'un champ """
     codeChamp = codeChamp.replace("{", "").replace("}", "")
     dictTypes = {
         "INDIVIDU_AGE_INT" : "entier",
@@ -48,44 +48,44 @@ def GetNomsChampsPossibles(mode="individu+famille"):
     # Individu
     listeChampsIndividu = [
             (_(u"ID de l'individu"), u"253", "{IDINDIVIDU}"), 
-            (_(u"Civilité courte de l'individu"), _(u"M."), "{INDIVIDU_CIVILITE_COURT}"), 
-            (_(u"Civilité longue de l'individu"), _(u"Monsieur"), "{INDIVIDU_CIVILITE_LONG}"), 
+            (_(u"CivilitÃ© courte de l'individu"), _(u"M."), "{INDIVIDU_CIVILITE_COURT}"), 
+            (_(u"CivilitÃ© longue de l'individu"), _(u"Monsieur"), "{INDIVIDU_CIVILITE_LONG}"), 
             (_(u"Sexe de l'individu"), u"H", "{INDIVIDU_SEXE}"), 
             (_(u"Nom complet de l'individu"), _(u"DUPOND Philippe"), "{INDIVIDU_NOM_COMPLET}"), 
             (_(u"Nom de famille de l'individu"), _(u"DUPOND"), "{INDIVIDU_NOM}"), 
-            (_(u"Prénom de l'individu"), _(u"Philippe"), "{INDIVIDU_PRENOM}"), 
-            (_(u"Numéro de sécu de l'individu"), u"2 39 336...", "{INDIVIDU_NUM_SECU}"), 
+            (_(u"PrÃ©nom de l'individu"), _(u"Philippe"), "{INDIVIDU_PRENOM}"), 
+            (_(u"NumÃ©ro de sÃ©cu de l'individu"), u"2 39 336...", "{INDIVIDU_NUM_SECU}"), 
             (_(u"Date de naissance de l'individu"), u"23/01/2010", "{INDIVIDU_DATE_NAISS}"), 
             (_(u"Age de l'individu"), _(u"9 ans"), "{INDIVIDU_AGE}"), 
             (_(u"Code postal de la ville de naissance de l'individu"), u"29200", "{INDIVIDU_CP_NAISS}"), 
             (_(u"Ville de naissance de l'individu"), _(u"BREST"), "{INDIVIDU_VILLE_NAISS}"), 
-            (_(u"Année de décès de l'individu"), u"2012", "{INDIVIDU_ANNEE_DECES}"),
+            (_(u"AnnÃ©e de dÃ©cÃ¨s de l'individu"), u"2012", "{INDIVIDU_ANNEE_DECES}"),
             (_(u"Rue de l'adresse de l'individu"), _(u"10 rue des oiseaux"), "{INDIVIDU_RUE}"),
-            (_(u"N° de voie de l'adresse de l'individu"), _(u"10"), "{INDIVIDU_NUMERO_VOIE}"),
+            (_(u"NÂ° de voie de l'adresse de l'individu"), _(u"10"), "{INDIVIDU_NUMERO_VOIE}"),
             (_(u"Type de voie de l'adresse de l'individu"), _(u"rue"), "{INDIVIDU_TYPE_VOIE}"),
             (_(u"Nom de voie de l'adresse de l'individu"), _(u"oiseaux"), "{INDIVIDU_NOM_VOIE}"),
             (_(u"Code postal de l'adresse de l'individu"), u"29870", "{INDIVIDU_CP}"),
             (_(u"Ville de l'adresse de l'individu"), _(u"LANNILIS"), "{INDIVIDU_VILLE}"), 
             (_(u"Secteur de l'adresse de l'individu"), _(u"Quartier sud"), "{INDIVIDU_SECTEUR}"), 
-            (_(u"Catégorie socio-professionnelle de l'individu"), _(u"Ouvrier"), "{INDIVIDU_CATEGORIE_TRAVAIL}"), 
+            (_(u"CatÃ©gorie socio-professionnelle de l'individu"), _(u"Ouvrier"), "{INDIVIDU_CATEGORIE_TRAVAIL}"), 
             (_(u"Profession de l'individu"), _(u"Peintre"), "{INDIVIDU_PROFESSION}"), 
             (_(u"Employeur de l'individu"), _(u"Pinceaux et Cie"), "{INDIVIDU_EMPLOYEUR}"),
-            (_(u"Numéro de téléphone pro de l'individu"), u"01.02.03.04.05", "{INDIVIDU_TEL_PRO}"), 
-            (_(u"Numéro de fax pro de l'individu"), u"01.02.03.04.05", "{INDIVIDU_FAX_PRO}"), 
+            (_(u"NumÃ©ro de tÃ©lÃ©phone pro de l'individu"), u"01.02.03.04.05", "{INDIVIDU_TEL_PRO}"), 
+            (_(u"NumÃ©ro de fax pro de l'individu"), u"01.02.03.04.05", "{INDIVIDU_FAX_PRO}"), 
             (_(u"Mail pro de l'individu"), u"monadresse@pro.fr", "{INDIVIDU_MAIL_PRO}"), 
-            (_(u"Numéro de téléphone domicile de l'individu"), u"01.02.03.04.05", "{INDIVIDU_TEL_DOMICILE}"),
-            (_(u"Numéro de téléphone portable de l'individu"), u"06.02.03.04.05", "{INDIVIDU_TEL_MOBILE}"), 
-            (_(u"Numéro de fax domicile de l'individu"), u"01.02.03.04.05", "{INDIVIDU_FAX}"), 
+            (_(u"NumÃ©ro de tÃ©lÃ©phone domicile de l'individu"), u"01.02.03.04.05", "{INDIVIDU_TEL_DOMICILE}"),
+            (_(u"NumÃ©ro de tÃ©lÃ©phone portable de l'individu"), u"06.02.03.04.05", "{INDIVIDU_TEL_MOBILE}"), 
+            (_(u"NumÃ©ro de fax domicile de l'individu"), u"01.02.03.04.05", "{INDIVIDU_FAX}"), 
             (_(u"Adresse Email de l'individu"), u"monadresse@perso.fr", "{INDIVIDU_MAIL}"), 
-            (_(u"Nom de famille du médecin traitant"), _(u"BERGOT"), "{MEDECIN_NOM}"), 
-            (_(u"Prénom du médecin traitant"), _(u"Albert"), "{MEDECIN_PRENOM}"), 
-            (_(u"Rue de l'adresse du médecin"), _(u"3 rue des allergies"), "{MEDECIN_RUE}"), 
-            (_(u"Code postal de l'adresse du médecin traitant"), u"29870", "{MEDECIN_CP}"), 
-            (_(u"Ville de l'adresse du médecin traitant"), _(u"LANNILIS"), "{MEDECIN_VILLE}"), 
-            (_(u"Numéro de téléphone du cabinet du médecin"), u"01.02.03.04.05", "{MEDECIN_TEL_CABINET}"), 
-            (_(u"Numéro de portable du médecin"), u"06.02.03.04.05", "{MEDECIN_TEL_MOBILE}"), 
-            (_(u"Mémo de l'individu"), _(u"informations diverses..."), "{INDIVIDU_MEMO}"), 
-            (_(u"Date de création de la fiche individuelle"), u"15/07/2014", "{INDIVIDU_DATE_CREATION}"), 
+            (_(u"Nom de famille du mÃ©decin traitant"), _(u"BERGOT"), "{MEDECIN_NOM}"), 
+            (_(u"PrÃ©nom du mÃ©decin traitant"), _(u"Albert"), "{MEDECIN_PRENOM}"), 
+            (_(u"Rue de l'adresse du mÃ©decin"), _(u"3 rue des allergies"), "{MEDECIN_RUE}"), 
+            (_(u"Code postal de l'adresse du mÃ©decin traitant"), u"29870", "{MEDECIN_CP}"), 
+            (_(u"Ville de l'adresse du mÃ©decin traitant"), _(u"LANNILIS"), "{MEDECIN_VILLE}"), 
+            (_(u"NumÃ©ro de tÃ©lÃ©phone du cabinet du mÃ©decin"), u"01.02.03.04.05", "{MEDECIN_TEL_CABINET}"), 
+            (_(u"NumÃ©ro de portable du mÃ©decin"), u"06.02.03.04.05", "{MEDECIN_TEL_MOBILE}"), 
+            (_(u"MÃ©mo de l'individu"), _(u"informations diverses..."), "{INDIVIDU_MEMO}"), 
+            (_(u"Date de crÃ©ation de la fiche individuelle"), u"15/07/2014", "{INDIVIDU_DATE_CREATION}"), 
             ]
     
     if "individu" in mode :
@@ -93,38 +93,38 @@ def GetNomsChampsPossibles(mode="individu+famille"):
     
     # Inscriptions
     listeChampsInscription = [
-            (_(u"Activité de l'inscription n°x"), _(u"Accueil de Loisirs"), "{INSCRIPTION_x_ACTIVITE}"),
-            (_(u"Groupe de l'inscription n°x"), _(u"3-6 ans"), "{INSCRIPTION_x_GROUPE}"),
-            (_(u"Catégorie de tarif de l'inscription n°x"), _(u"Hors commune"), "{INSCRIPTION_x_CATEGORIE_TARIF}"),
-            (_(u"Famille rattachée à l'inscription n°x"), _(u"DUPOND Philippe et Marie"), "{INSCRIPTION_x_NOM_TITULAIRES}"),
-            (_(u"Parti de l'inscription n°x"), _(u"Oui"), "{INSCRIPTION_x_PARTI}"),
-            (_(u"Date de l'inscription n°x"), u"15/07/2014", "{INSCRIPTION_x_DATE_INSCRIPTION}"),
+            (_(u"ActivitÃ© de l'inscription nÂ°x"), _(u"Accueil de Loisirs"), "{INSCRIPTION_x_ACTIVITE}"),
+            (_(u"Groupe de l'inscription nÂ°x"), _(u"3-6 ans"), "{INSCRIPTION_x_GROUPE}"),
+            (_(u"CatÃ©gorie de tarif de l'inscription nÂ°x"), _(u"Hors commune"), "{INSCRIPTION_x_CATEGORIE_TARIF}"),
+            (_(u"Famille rattachÃ©e Ã  l'inscription nÂ°x"), _(u"DUPOND Philippe et Marie"), "{INSCRIPTION_x_NOM_TITULAIRES}"),
+            (_(u"Parti de l'inscription nÂ°x"), _(u"Oui"), "{INSCRIPTION_x_PARTI}"),
+            (_(u"Date de l'inscription nÂ°x"), u"15/07/2014", "{INSCRIPTION_x_DATE_INSCRIPTION}"),
             ]
 
     if "individu" in mode :
         listeChamps.extend(listeChampsInscription)
 
-    # Infos médicales
+    # Infos mÃ©dicales
     listeChampsInfosMedicales = [
-            (_(u"Intitulé de l'information médicale n°x"), _(u"Allergie aux acariens"), "{MEDICAL_x_INTITULE}"),
-            (_(u"Description de l'information médicale n°x"), _(u"Fait des boutons"), "{MEDICAL_x_DESCRIPTION}"),
-            (_(u"Traitement médical de l'information médicale n°x"), _(u"Amoxicilline"), "{MEDICAL_x_TRAITEMENT_MEDICAL}"),
-            (_(u"Description du traitement de l'information médicale n°x"), _(u"Prendre tous les midis"), "{MEDICAL_x_DESCRIPTION_TRAITEMENT}"),
-            (_(u"Date de début de traitement de l'information médicale n°x"), u"01/07/2014", "{MEDICAL_x_DATE_DEBUT_TRAITEMENT}"),
-            (_(u"Date de fin de traitement de l'information médicale n°x"), u"31/07/2014", "{MEDICAL_x_DATE_FIN_TRAITEMENT}"),
+            (_(u"IntitulÃ© de l'information mÃ©dicale nÂ°x"), _(u"Allergie aux acariens"), "{MEDICAL_x_INTITULE}"),
+            (_(u"Description de l'information mÃ©dicale nÂ°x"), _(u"Fait des boutons"), "{MEDICAL_x_DESCRIPTION}"),
+            (_(u"Traitement mÃ©dical de l'information mÃ©dicale nÂ°x"), _(u"Amoxicilline"), "{MEDICAL_x_TRAITEMENT_MEDICAL}"),
+            (_(u"Description du traitement de l'information mÃ©dicale nÂ°x"), _(u"Prendre tous les midis"), "{MEDICAL_x_DESCRIPTION_TRAITEMENT}"),
+            (_(u"Date de dÃ©but de traitement de l'information mÃ©dicale nÂ°x"), u"01/07/2014", "{MEDICAL_x_DATE_DEBUT_TRAITEMENT}"),
+            (_(u"Date de fin de traitement de l'information mÃ©dicale nÂ°x"), u"31/07/2014", "{MEDICAL_x_DATE_FIN_TRAITEMENT}"),
             ]
 
     if "individu" in mode :
         listeChamps.extend(listeChampsInfosMedicales)
 
-    # Infos scolarité
+    # Infos scolaritÃ©
     listeChampsScolarite = [
-            (_(u"Date de début de l'étape de scolarité"), u"01/09/2014", "{SCOLARITE_DATE_DEBUT}"),
-            (_(u"Date de fin de l'étape de scolarité"), u"30/06/2015", "{SCOLARITE_DATE_FIN}"),
-            (_(u"Nom de l'école"), _(u"Ecole Jules Ferry"), "{SCOLARITE_NOM_ECOLE}"),
+            (_(u"Date de dÃ©but de l'Ã©tape de scolaritÃ©"), u"01/09/2014", "{SCOLARITE_DATE_DEBUT}"),
+            (_(u"Date de fin de l'Ã©tape de scolaritÃ©"), u"30/06/2015", "{SCOLARITE_DATE_FIN}"),
+            (_(u"Nom de l'Ã©cole"), _(u"Ecole Jules Ferry"), "{SCOLARITE_NOM_ECOLE}"),
             (_(u"Nom de la classe"), _(u"CP/CE1 de Mme Machin"), "{SCOLARITE_NOM_CLASSE}"),
-            (_(u"Nom du niveau scolaire"), _(u"Cours élémentaire 1"), "{SCOLARITE_NOM_NIVEAU}"),
-            (_(u"Nom abrégé du niveau scolaire"), _(u"CE1"), "{SCOLARITE_ABREGE_NIVEAU}"),
+            (_(u"Nom du niveau scolaire"), _(u"Cours Ã©lÃ©mentaire 1"), "{SCOLARITE_NOM_NIVEAU}"),
+            (_(u"Nom abrÃ©gÃ© du niveau scolaire"), _(u"CE1"), "{SCOLARITE_ABREGE_NIVEAU}"),
             ]
 
     if "individu" in mode :
@@ -132,11 +132,11 @@ def GetNomsChampsPossibles(mode="individu+famille"):
 
     # Infos cotisations
     listeChampsCotisations = [
-            (_(u"Date de début de la cotisation actuelle"), u"01/09/2018", "{COTISATION_DATE_DEBUT}"),
+            (_(u"Date de dÃ©but de la cotisation actuelle"), u"01/09/2018", "{COTISATION_DATE_DEBUT}"),
             (_(u"Date de fin de la cotisation actuelle"), u"30/06/2019", "{COTISATION_DATE_FIN}"),
-            (_(u"Nom du type de la cotisation actuelle"), _(u"Adhésion annuelle"), "{COTISATION_TYPE}"),
-            (_(u"Nom de l'unité de cotisation actuelle"), _(u"2018-19"), "{COTISATION_UNITE}"),
-            (_(u"Numéro de la cotisation actuelle"), _(u"12345678"), "{COTISATION_NUMERO}"),
+            (_(u"Nom du type de la cotisation actuelle"), _(u"AdhÃ©sion annuelle"), "{COTISATION_TYPE}"),
+            (_(u"Nom de l'unitÃ© de cotisation actuelle"), _(u"2018-19"), "{COTISATION_UNITE}"),
+            (_(u"NumÃ©ro de la cotisation actuelle"), _(u"12345678"), "{COTISATION_NUMERO}"),
             ]
 
     if "individu" in mode :
@@ -146,21 +146,21 @@ def GetNomsChampsPossibles(mode="individu+famille"):
     listeChampsFamille = [
             (_(u"Noms des titulaires de la famille"), _(u"DUPOND Philippe et Marie"), "{FAMILLE_NOM}"),
             (_(u"Rue de l'adresse de la famille"), _(u"10 rue des oiseaux"), "{FAMILLE_RUE}"),
-            (_(u"N° de voie de l'adresse de la famille"), _(u"10"), "{FAMILLE_NUMERO_VOIE}"),
+            (_(u"NÂ° de voie de l'adresse de la famille"), _(u"10"), "{FAMILLE_NUMERO_VOIE}"),
             (_(u"Type de voie de l'adresse de la famille"), _(u"rue"), "{FAMILLE_TYPE_VOIE}"),
             (_(u"Nom de voie de l'adresse de la famille"), _(u"oiseaux"), "{FAMILLE_NOM_VOIE}"),
             (_(u"Code postal de l'adresse de la famille"), u"29870", "{FAMILLE_CP}"),
             (_(u"Ville de l'adresse de la famille"), _(u"LANNILIS"), "{FAMILLE_VILLE}"),
             (_(u"Secteur de l'adresse de la famille"), _(u"Quartier sud"), "{FAMILLE_SECTEUR}"),
             (_(u"Nom de la caisse d'allocations"), _(u"CAF"), "{FAMILLE_NOM_CAISSE}"),
-            (_(u"Nom du régime social"), _(u"Régime général"), "{FAMILLE_NOM_REGIME}"),
-            (_(u"Numéro allocataire"), _(u"1234567X"), "{FAMILLE_NUM_ALLOCATAIRE}"),
+            (_(u"Nom du rÃ©gime social"), _(u"RÃ©gime gÃ©nÃ©ral"), "{FAMILLE_NOM_REGIME}"),
+            (_(u"NumÃ©ro allocataire"), _(u"1234567X"), "{FAMILLE_NUM_ALLOCATAIRE}"),
             (_(u"Nom de l'allocataire titulaire"), _(u"DUPOND Philippe"), "{FAMILLE_NOM_ALLOCATAIRE}"),
-            (_(u"Mémo de la famille"), _(u"Informations diverses..."), "{FAMILLE_MEMO}"),
-            (_(u"Date de création de la fiche familiale"), u"15/07/2014", "{FAMILLE_DATE_CREATION}"),
+            (_(u"MÃ©mo de la famille"), _(u"Informations diverses..."), "{FAMILLE_MEMO}"),
+            (_(u"Date de crÃ©ation de la fiche familiale"), u"15/07/2014", "{FAMILLE_DATE_CREATION}"),
             (_(u"Quotient familial actuel de la famille"), u"340", "{FAMILLE_QF_ACTUEL}"),
             (_(u"Liste des cotisations manquantes"), _(u"Cotisation familiale"), "{COTISATIONS_MANQUANTES}"),
-            (_(u"Liste des pièces manquantes"), _(u"Certificat médical"), "{PIECES_MANQUANTES}"),
+            (_(u"Liste des piÃ¨ces manquantes"), _(u"Certificat mÃ©dical"), "{PIECES_MANQUANTES}"),
             ]
             
     if "famille" in mode :
@@ -168,11 +168,11 @@ def GetNomsChampsPossibles(mode="individu+famille"):
 
     # Messages
     listeChampsMessages = [
-            (_(u"Date de saisie du message n°x"), u"18/07/2014", "{MESSAGE_x_DATE_SAISIE}"),
-            (_(u"Date de parution du message n°x"), u"18/07/2014", "{MESSAGE_x_DATE_PARUTION}"),
-            (_(u"Texte du message n°x"), _(u"Envoyer une facture à la famille"), "{MESSAGE_x_TEXTE}"),
-            (_(u"Nom de l'individu ou de la famille rattachée au message n°x"), _(u"DUPOND Philippe et Marie"), "{MESSAGE_x_NOM}"),
-            (_(u"Catégorie du message n°x"), _(u"Courrier"), "{MESSAGE_x_CATEGORIE}"),
+            (_(u"Date de saisie du message nÂ°x"), u"18/07/2014", "{MESSAGE_x_DATE_SAISIE}"),
+            (_(u"Date de parution du message nÂ°x"), u"18/07/2014", "{MESSAGE_x_DATE_PARUTION}"),
+            (_(u"Texte du message nÂ°x"), _(u"Envoyer une facture Ã  la famille"), "{MESSAGE_x_TEXTE}"),
+            (_(u"Nom de l'individu ou de la famille rattachÃ©e au message nÂ°x"), _(u"DUPOND Philippe et Marie"), "{MESSAGE_x_NOM}"),
+            (_(u"CatÃ©gorie du message nÂ°x"), _(u"Courrier"), "{MESSAGE_x_CATEGORIE}"),
             ]
 
     if "individu" in mode or "famille" in mode :
@@ -180,14 +180,14 @@ def GetNomsChampsPossibles(mode="individu+famille"):
 
     # Rattachements
     listeRattachements = [
-            ("REPRESENTANT_RATTACHE_x", _(u"représentant rattaché n°x")),
-            ("ENFANT_RATTACHE_x", _(u"enfant rattaché n°x")),
-            ("CONTACT_RATTACHE_x", _(u"contact rattaché n°x")),
+            ("REPRESENTANT_RATTACHE_x", _(u"reprÃ©sentant rattachÃ© nÂ°x")),
+            ("ENFANT_RATTACHE_x", _(u"enfant rattachÃ© nÂ°x")),
+            ("CONTACT_RATTACHE_x", _(u"contact rattachÃ© nÂ°x")),
             ]
     listeChampsRattachements = [
-            (_(u"Nombre de représentants rattachés à la famille"), u"2", "{NBRE_REPRESENTANTS_RATTACHES}"),
-            (_(u"Nombre d'enfants rattachés à la famille"), u"1", "{NBRE_ENFANTS_RATTACHES}"),
-            (_(u"Nombre de contacts rattachés à la famille"), u"3", "{NBRE_CONTACTS_RATTACHES}"),
+            (_(u"Nombre de reprÃ©sentants rattachÃ©s Ã  la famille"), u"2", "{NBRE_REPRESENTANTS_RATTACHES}"),
+            (_(u"Nombre d'enfants rattachÃ©s Ã  la famille"), u"1", "{NBRE_ENFANTS_RATTACHES}"),
+            (_(u"Nombre de contacts rattachÃ©s Ã  la famille"), u"3", "{NBRE_CONTACTS_RATTACHES}"),
             ]
     for champRattachement, labelRattachement in listeRattachements :
         for label, exemple, champ in listeChampsIndividu :
@@ -203,11 +203,11 @@ def GetNomsChampsPossibles(mode="individu+famille"):
     
     # Liens
     listeLiensPossibles = [
-            ("PERE", _(u"le père")),
-            ("MERE", _(u"la mère")),
+            ("PERE", _(u"le pÃ¨re")),
+            ("MERE", _(u"la mÃ¨re")),
             ("CONJOINT", _(u"le ou la conjointe")),
-            ("ENFANT", _(u"l'enfant n°x")),
-            ("AUTRE_LIEN", _(u"l'autre lien n°x")),
+            ("ENFANT", _(u"l'enfant nÂ°x")),
+            ("AUTRE_LIEN", _(u"l'autre lien nÂ°x")),
             ]
     listeLiens = [
             (_(u"Nombre d'enfants de l'individu"), u"2", "{NBRE_ENFANTS}"),
@@ -219,7 +219,7 @@ def GetNomsChampsPossibles(mode="individu+famille"):
                 label = label.replace(_(u"l'individu"), labelLien)
                 champ = champ.replace(_(u"INDIVIDU"), champLien)
                 listeLiens.append((label, exemple, champ))
-        listeLiens.append((_(u"Autorisation pour %s") % labelLien, _(u"Responsable légal"), "{%s_AUTORISATION}" % champLien))
+        listeLiens.append((_(u"Autorisation pour %s") % labelLien, _(u"Responsable lÃ©gal"), "{%s_AUTORISATION}" % champLien))
         listeLiens.append((_(u"Nom du lien pour %s") % labelLien, _(u"Enfant"), "{%s_NOM_LIEN}" % champLien))
     
     if "individu" in mode :
@@ -274,17 +274,17 @@ class Informations() :
         self.Run() 
         
     def Run(self):
-        """ Procédure de recherche et de calcul des résultats """
+        """ ProcÃ©dure de recherche et de calcul des rÃ©sultats """
         # Init DB
         self.DB = GestionDB.DB()
         
-        # Lecture des données de base
+        # Lecture des donnÃ©es de base
         self.dictIndividus = self.GetDictIndividus() 
         self.dictFamilles = self.GetDictFamilles() 
         self.dictLiens = self.GetLiens() 
         self.dictRattachements = self.GetRattachements() 
 
-        # Lecture des autres types de données
+        # Lecture des autres types de donnÃ©es
         if self.qf : self.RechercheQF() 
         if self.inscriptions : self.RechercheInscriptions() 
         if self.messages : self.RechercheMessages()
@@ -323,10 +323,10 @@ class Informations() :
                 ("MEDECIN_NOM" , "medecins.nom"), ("MEDECIN_PRENOM" , "medecins.prenom"), ("MEDECIN_RUE" , "medecins.rue_resid"), ("MEDECIN_CP" , "medecins.cp_resid"), 
                 ("MEDECIN_VILLE" , "medecins.ville_resid"), ("MEDECIN_TEL_CABINET" , "medecins.tel_cabinet"), ("MEDECIN_TEL_MOBILE" , "medecins.tel_mobile"), 
                 ("INDIVIDU_MEMO" , "individus.memo"), ("INDIVIDU_DATE_CREATION" , "individus.date_creation"), 
-                ] # ("INDIVIDU_TEL_PORTABLE" , "individus.tel_mobile") a été ajouté pour le bug Nomadhys sur les téléphones portables
+                ] # ("INDIVIDU_TEL_PORTABLE" , "individus.tel_mobile") a Ã©tÃ© ajoutÃ© pour le bug Nomadhys sur les tÃ©lÃ©phones portables
 
     def GetDictIndividus(self):
-        """ Récupère toutes les infos de base sur les individus """
+        """ RÃ©cupÃ¨re toutes les infos de base sur les individus """
         listeNomsCodes, listeNomsChamps = self.GetNomsChampsReq(self.GetListeChampsIndividus())
         req = """SELECT %s
         FROM individus
@@ -367,7 +367,7 @@ class Informations() :
         dictIndividus = {}
         for IDindividu, dictIndividu in dictTemp.items() :
             
-            # Civilité
+            # CivilitÃ©
             IDcivilite = dictIndividu["individu_IDcivilite"]
             if (IDcivilite in DICT_CIVILITES) == False : 
                 IDcivilite = 1
@@ -413,13 +413,13 @@ class Informations() :
             dictIndividu["SCOLARITE_NOM_NIVEAU"] = ""
             dictIndividu["SCOLARITE_ABREGE_NIVEAU"] = ""
 
-            # Mémorisation
+            # MÃ©morisation
             dictIndividus[IDindividu] = dictIndividu
         
         return dictIndividus
     
     def GetRattachements(self):
-        """ Récupération des rattachements """
+        """ RÃ©cupÃ©ration des rattachements """
         req = """SELECT IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire
         FROM rattachements
         ORDER BY IDcategorie, titulaire;"""
@@ -436,7 +436,7 @@ class Informations() :
             dictRattachementsIndividus[IDindividu].append(valeurs)
         dictRattachements = {"familles" : dictRattachementsFamilles, "individus" : dictRattachementsIndividus}
         
-        # Insertion des liens rattachés dans le dictFamilles
+        # Insertion des liens rattachÃ©s dans le dictFamilles
         for IDfamille, listeRattachements in dictRattachementsFamilles.items() :
             if IDfamille in self.dictFamilles :
                 for dictValeurs in listeRattachements :
@@ -459,13 +459,13 @@ class Informations() :
                         index = self.dictFamilles[IDfamille][dictCibles[IDcategorie]["key"]]
                         codeCible = dictCibles[IDcategorie]["code"] + "_%d" % index
 
-                        # Récupération des infos sur l'individu pour transfert vers dictFamilles
+                        # RÃ©cupÃ©ration des infos sur l'individu pour transfert vers dictFamilles
                         for code, valeur in self.dictIndividus[IDindividu].items() :
                             if code.startswith("INDIVIDU") :
                                 self.dictFamilles[IDfamille][code.replace("INDIVIDU", codeCible)] = valeur
                         self.dictFamilles[IDfamille][codeCible + "_TITULAIRE"] = titulaireStr
 
-                        # Récupération du lien de l'individu rattaché dans les liens
+                        # RÃ©cupÃ©ration du lien de l'individu rattachÃ© dans les liens
                         listeLiens = []
                         nom_sujet = self.dictIndividus[IDindividu]["INDIVIDU_PRENOM"]
                         for dictLien in self.dictFamilles[IDfamille]["liens"] :
@@ -484,7 +484,7 @@ class Informations() :
         return dictRattachements
 
     def GetLiens(self):
-        """ Récupération des liens """
+        """ RÃ©cupÃ©ration des liens """
         req = """SELECT IDlien, IDfamille, IDindividu_sujet, IDtype_lien, IDindividu_objet, IDautorisation
         FROM liens
         ORDER BY IDtype_lien;"""
@@ -493,7 +493,7 @@ class Informations() :
         for IDlien, IDfamille, IDindividu_sujet, IDtype_lien, IDindividu_objet, IDautorisation in listeDonnees :
             if IDfamille in self.dictFamilles and IDindividu_objet in self.dictIndividus and IDindividu_sujet in self.dictIndividus :
                 
-                # Recherche les détails du lien
+                # Recherche les dÃ©tails du lien
                 if IDtype_lien != None :
                     sexe = self.dictIndividus[IDindividu_sujet]["INDIVIDU_SEXE"]
                     if sexe in ("M", "F") and IDtype_lien in DICT_TYPES_LIENS:
@@ -511,11 +511,11 @@ class Informations() :
                     else :
                         autorisation = ""
                     
-                    # Mémorisation de la liste 
+                    # MÃ©morisation de la liste 
                     self.dictIndividus[IDindividu_objet]["liens"].append({"IDindividu" : IDindividu_sujet, "lien" : nomLien, "type" : typeLien, "texte" : texteLien, "autorisation" : autorisation})
                     self.dictFamilles[IDfamille]["liens"].append({"IDindividu_sujet" : IDindividu_sujet, "IDindividu_objet" : IDindividu_objet, "lien" : nomLien, "type" : typeLien, "texte" : texteLien, "autorisation" : autorisation})
                     
-                    # Mémorisation des informations sur le père et la mère de l'individu uniquement au format texte
+                    # MÃ©morisation des informations sur le pÃ¨re et la mÃ¨re de l'individu uniquement au format texte
                     if IDtype_lien == 1 :
                         if sexe == "M" : 
                             codeCible = "PERE"
@@ -523,14 +523,14 @@ class Informations() :
                             codeCible = "MERE"
                         for code, valeur in self.dictIndividus[IDindividu_sujet].items() :
                             if code.startswith("INDIVIDU") :
-                                # Mémorisation dans dictIndividus
+                                # MÃ©morisation dans dictIndividus
                                 self.dictIndividus[IDindividu_objet][code.replace("INDIVIDU", codeCible)] = valeur
-                                # Mémorisation dans dictFamilles
+                                # MÃ©morisation dans dictFamilles
                                 self.dictFamilles[IDfamille][code.replace("INDIVIDU", codeCible)] = valeur
                         self.dictIndividus[IDindividu_objet][codeCible + "_AUTORISATION"] = autorisation
                         self.dictIndividus[IDindividu_objet][codeCible + "_NOM_LIEN"] = nomLien
 
-                    # Mémorisation des informations sur le conjoint de l'individu uniquement au format texte
+                    # MÃ©morisation des informations sur le conjoint de l'individu uniquement au format texte
                     elif IDtype_lien in (10, 11) :
                         for code, valeur in self.dictIndividus[IDindividu_sujet].items() :
                             if code.startswith("INDIVIDU") :
@@ -538,28 +538,28 @@ class Informations() :
                         self.dictIndividus[IDindividu_objet]["CONJOINT_AUTORISATION"] = autorisation
                         self.dictIndividus[IDindividu_objet]["CONJOINT_NOM_LIEN"] = nomLien
 
-                    # Mémorisation des informations sur les enfants de l'individu uniquement au format texte
+                    # MÃ©morisation des informations sur les enfants de l'individu uniquement au format texte
                     elif IDtype_lien == 2 :
                         self.dictIndividus[IDindividu_objet]["NBRE_ENFANTS"] += 1
                         codeCible = "ENFANT_%d" % self.dictIndividus[IDindividu_objet]["NBRE_ENFANTS"]
                         for code, valeur in self.dictIndividus[IDindividu_sujet].items() :
                             if code.startswith("INDIVIDU") :
-                                # Mémorisation dans dictIndividus
+                                # MÃ©morisation dans dictIndividus
                                 self.dictIndividus[IDindividu_objet][code.replace("INDIVIDU", codeCible)] = valeur
-                                # Mémorisation dans dictFamilles
+                                # MÃ©morisation dans dictFamilles
                                 self.dictFamilles[IDfamille][code.replace("INDIVIDU", codeCible)] = valeur
                         self.dictIndividus[IDindividu_objet][codeCible + "_AUTORISATION"] = autorisation
                         self.dictIndividus[IDindividu_objet][codeCible + "_NOM_LIEN"] = nomLien
 
-                    # Mémorisation des informations sur les autres types de liens uniquement au format texte
+                    # MÃ©morisation des informations sur les autres types de liens uniquement au format texte
                     else :
                         self.dictIndividus[IDindividu_objet]["NBRE_AUTRES_LIENS"] += 1
                         codeCible = "AUTRE_LIEN_%d" % self.dictIndividus[IDindividu_objet]["NBRE_AUTRES_LIENS"]
                         for code, valeur in self.dictIndividus[IDindividu_sujet].items() :
                             if code.startswith("INDIVIDU") :
-                                # Mémorisation dans dictIndividus
+                                # MÃ©morisation dans dictIndividus
                                 self.dictIndividus[IDindividu_objet][code.replace("INDIVIDU", codeCible)] = valeur
-                                # Mémorisation dans dictFamilles
+                                # MÃ©morisation dans dictFamilles
                                 self.dictFamilles[IDfamille][code.replace("INDIVIDU", codeCible)] = valeur
                         self.dictIndividus[IDindividu_objet][codeCible + "_AUTORISATION"] = autorisation
                         self.dictIndividus[IDindividu_objet][codeCible + "_NOM_LIEN"] = nomLien
@@ -567,7 +567,7 @@ class Informations() :
         return dictLiens
 
     def GetDictFamilles(self):
-        """ Récupération des infos de base sur les familles """
+        """ RÃ©cupÃ©ration des infos de base sur les familles """
         req = """SELECT IDfamille, date_creation, IDcompte_payeur, 
         caisses.nom, regimes.nom, num_allocataire, allocataire, memo
         FROM familles
@@ -589,7 +589,7 @@ class Informations() :
             else :
                 nomsTitulaires = "?"
                 dictAdresse = {"rue":"", "cp":"", "ville":"", "IDsecteur":None, "nomSecteur":""}
-            # Mémorisation
+            # MÃ©morisation
             dictFamilles[IDfamille] = {
                 "FAMILLE_DATE_CREATION" : date_creation, "IDcompte_payeur" : IDcompte_payeur, "FAMILLE_NOM_CAISSE" : caisse_nom, "FAMILLE_NOM_REGIME" : regime_nom, 
                 "FAMILLE_NUM_ALLOCATAIRE" : num_allocataire, "IDallocataire" : IDallocataire, "FAMILLE_NOM_ALLOCATAIRE" : allocataire_nom, "FAMILLE_MEMO" : memo, 
@@ -622,18 +622,18 @@ class Informations() :
             date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
             
             if IDfamille in self.dictFamilles :
-                # Mémorisation du QF actuel au format texte
+                # MÃ©morisation du QF actuel au format texte
                 if date_debut <= self.date_reference and date_fin >= self.date_reference :
                     self.dictFamilles[IDfamille]["FAMILLE_QF_ACTUEL"] = str(quotient)
                     self.dictFamilles[IDfamille]["FAMILLE_QF_ACTUEL_INT"] = quotient
-                # Mémorisation sous forme de liste
+                # MÃ©morisation sous forme de liste
                 if ("qf" in self.dictFamilles[IDfamille]) == False :
                     self.dictFamilles[IDfamille]["qf"] = []
                 self.dictFamilles[IDfamille]["qf"].append({"IDquotient" : IDquotient, "date_debut" : UTILS_Dates.DateDDEnFr(date_debut), "date_fin" : UTILS_Dates.DateDDEnFr(date_fin), "quotient" : quotient, "observations" : observations})
         
         
     def RechercheInscriptions(self):
-        """ Récupération des inscriptions à des activités """
+        """ RÃ©cupÃ©ration des inscriptions Ã  des activitÃ©s """
         req = """SELECT IDinscription, IDindividu, IDfamille, activites.nom, groupes.nom, categories_tarifs.nom,
         IDcompte_payeur, date_inscription, parti
         FROM inscriptions
@@ -656,12 +656,12 @@ class Informations() :
                 
             if IDindividu in self.dictIndividus :
                 
-                # Mémorise le nombre d'inscriptions
+                # MÃ©morise le nombre d'inscriptions
                 if ("inscriptions" in self.dictIndividus[IDindividu]) == False :
                     self.dictIndividus[IDindividu]["inscriptions"] = {"nombre" : 0, "liste" : []}
                 self.dictIndividus[IDindividu]["inscriptions"]["nombre"] += 1
                 
-                # Mémorise l'inscription au format texte
+                # MÃ©morise l'inscription au format texte
                 index = self.dictIndividus[IDindividu]["inscriptions"]["nombre"]
                 code = "INSCRIPTION_%d_" % index
                 self.dictIndividus[IDindividu][code + "ACTIVITE"] = activite
@@ -671,11 +671,11 @@ class Informations() :
                 self.dictIndividus[IDindividu][code + "PARTI"] = parti
                 self.dictIndividus[IDindividu][code + "DATE_INSCRIPTION"] = date_inscription
                 
-                # Mémorise l'inscription au format liste
+                # MÃ©morise l'inscription au format liste
                 self.dictIndividus[IDindividu]["inscriptions"]["liste"].append({"index" : index, "activite" : activite, "groupe" : groupe, "categorie_tarif" : categorie_tarif, "nomTitulaires" : nomTitulaires, "parti" : parti, "date_inscription" : date_inscription})
         
     def RechercheInfosMedicales(self):
-        """ Récupération des informations médicales des individus """
+        """ RÃ©cupÃ©ration des informations mÃ©dicales des individus """
         req = """SELECT IDprobleme, IDindividu, IDtype, intitule, description, traitement_medical, description_traitement, date_debut_traitement, date_fin_traitement
         FROM problemes_sante
         ORDER BY IDprobleme;""" 
@@ -686,12 +686,12 @@ class Informations() :
             
             if IDindividu in self.dictIndividus :
                 
-                # Mémorise le nombre d'informations médicales
+                # MÃ©morise le nombre d'informations mÃ©dicales
                 if ("medical" in self.dictIndividus[IDindividu]) == False :
                     self.dictIndividus[IDindividu]["medical"] = {"nombre" : 0, "liste" : []}
                 self.dictIndividus[IDindividu]["medical"]["nombre"] += 1
                 
-                # Mémorise l'information médicale au format texte
+                # MÃ©morise l'information mÃ©dicale au format texte
                 index = self.dictIndividus[IDindividu]["medical"]["nombre"]
                 code = "MEDICAL_%d_" % index
                 self.dictIndividus[IDindividu][code + "INTITULE"] = intitule
@@ -701,7 +701,7 @@ class Informations() :
                 self.dictIndividus[IDindividu][code + "DATE_DEBUT_TRAITEMENT"] = date_debut_traitement
                 self.dictIndividus[IDindividu][code + "DATE_FIN_TRAITEMENT"] = date_fin_traitement
                 
-                # Mémorise l'information médicale au format liste
+                # MÃ©morise l'information mÃ©dicale au format liste
                 self.dictIndividus[IDindividu]["medical"]["liste"].append({
                     "IDtype":IDtype, "intitule":intitule, "description":description, "traitement_medical":traitement_medical, 
                     "description_traitement":description_traitement, "date_debut_traitement":date_debut_traitement, 
@@ -729,7 +729,7 @@ class Informations() :
                             dictCible[ID]["messages"] = {"nombre" : 0, "liste" : []}
                         dictCible[ID]["messages"]["nombre"] += 1
                     
-                        # Mémorise l'information médicale au format texte
+                        # MÃ©morise l'information mÃ©dicale au format texte
                         index = dictCible[ID]["messages"]["nombre"]
                         code = "MESSAGE_%d_" % index
                         dictCible[ID][code + "DATE_SAISIE"] = date_saisie
@@ -738,7 +738,7 @@ class Informations() :
                         dictCible[ID][code + "NOM"] = nom
                         dictCible[ID][code + "CATEGORIE"] = categorie_nom
                         
-                        # Mémorise l'information médicale au format liste
+                        # MÃ©morise l'information mÃ©dicale au format liste
                         dictCible[ID]["messages"]["liste"].append({
                             "IDmessage":IDmessage, "type":typeTemp, "IDcategorie":IDcategorie, "date_saisie":date_saisie, 
                             "IDutilisateur":IDutilisateur, "date_parution":date_parution, "priorite":priorite, 
@@ -746,21 +746,21 @@ class Informations() :
                             })
     
     def RechercheCotisationsManquantes(self):
-        """ Récupération de la liste des cotisations manquantes """
+        """ RÃ©cupÃ©ration de la liste des cotisations manquantes """
         dictCotisations = UTILS_Cotisations_manquantes.GetListeCotisationsManquantes(dateReference=self.date_reference)
         for IDfamille, dictValeurs in dictCotisations.items() :
             if IDfamille in self.dictFamilles :
                 self.dictFamilles[IDfamille]["COTISATIONS_MANQUANTES"] = dictValeurs["cotisations"]
 
     def RecherchePiecesManquantes(self):
-        """ Recherche des pièces manquantes """
+        """ Recherche des piÃ¨ces manquantes """
         dictPieces = UTILS_Pieces_manquantes.GetListePiecesManquantes(dateReference=self.date_reference)
         for IDfamille, dictValeurs in dictPieces.items() :
             if IDfamille in self.dictFamilles :
                 self.dictFamilles[IDfamille]["PIECES_MANQUANTES"] = dictValeurs["pieces"]
     
     def RechercheQuestionnaires(self):
-        """ Récupération des questionnaires familiaux et individuels """
+        """ RÃ©cupÃ©ration des questionnaires familiaux et individuels """
         for public, dictPublic in [("famille", self.dictFamilles), ("individu", self.dictIndividus)] :
             q = UTILS_Questionnaires.ChampsEtReponses(type=public) 
             for ID in list(dictPublic.keys()) :
@@ -769,14 +769,14 @@ class Informations() :
                         dictPublic[ID]["questionnaires"] = []
                     listeDonnees = q.GetDonnees(ID, formatStr=False) 
                     for donnee in listeDonnees :
-                        # Mémorisation de la liste
+                        # MÃ©morisation de la liste
                         dictPublic[ID]["questionnaires"].append(donnee)
-                        # Mémorisation au format texte
+                        # MÃ©morisation au format texte
                         code = donnee["champ"].replace("{", "").replace("}", "")
                         dictPublic[ID][code] = donnee["reponse"]
 
     def RechercheScolarite(self):
-        """ Recherche les étapes de scolarité des individus """
+        """ Recherche les Ã©tapes de scolaritÃ© des individus """
         req = """SELECT scolarite.IDscolarite, IDindividu, scolarite.date_debut, scolarite.date_fin, ecoles.nom, classes.nom, niveaux_scolaires.nom, niveaux_scolaires.abrege
         FROM scolarite
         LEFT JOIN ecoles ON ecoles.IDecole = scolarite.IDecole
@@ -803,7 +803,7 @@ class Informations() :
                     self.dictIndividus[IDindividu]["scolarite"] = {"nombre": 0, "liste": []}
                 self.dictIndividus[IDindividu]["scolarite"]["nombre"] += 1
 
-                # Mémorise l'étape de scolarité au format liste
+                # MÃ©morise l'Ã©tape de scolaritÃ© au format liste
                 self.dictIndividus[IDindividu]["scolarite"]["liste"].append(
                     {"date_debut": UTILS_Dates.DateEngFr(date_debut), "date_fin": UTILS_Dates.DateEngFr(date_fin),
                      "ecole_nom": ecole_nom, "classe_nom": classe_nom, "niveau_nom": niveau_nom, "niveau_abrege":niveau_abrege})
@@ -833,7 +833,7 @@ class Informations() :
                     self.dictIndividus[IDindividu]["cotisations"] = {"nombre": 0, "liste": []}
                 self.dictIndividus[IDindividu]["cotisations"]["nombre"] += 1
 
-                # Mémorise l'étape de scolarité au format liste
+                # MÃ©morise l'Ã©tape de scolaritÃ© au format liste
                 self.dictIndividus[IDindividu]["cotisations"]["liste"].append(
                     {"date_debut": UTILS_Dates.DateEngFr(date_debut), "date_fin": UTILS_Dates.DateEngFr(date_fin),
                      "nom_type": nom_type, "nom_unite": nom_unite, "numero": numero})
@@ -841,7 +841,7 @@ class Informations() :
     # ---------------------------------------------------------------------------------------------------------------------------------
 
     def GetNomsChampsPresents(self, mode="individu+famille", listeID=None):
-        """ Renvoie les noms des champs disponibles après calcul des données. """
+        """ Renvoie les noms des champs disponibles aprÃ¨s calcul des donnÃ©es. """
         """ mode='individu' ou 'famille' ou 'individu+famille' """
         """ listeID = [liste IDindividu ou IDfamille] ou None pour tous """
         listeNomsChamps = []
@@ -889,7 +889,7 @@ class Informations() :
                 return dictTemp
     
     def SetAsAttributs(self, parent=None, mode="individu", ID=None):
-        """ Attribue les valeurs en tant que attribut à un module. Sert pour les tracks des objectlistview """
+        """ Attribue les valeurs en tant que attribut Ã  un module. Sert pour les tracks des objectlistview """
         dictDonnees = self.GetDictValeurs(mode=mode, ID=ID, formatChamp=False)
         for code, valeur in dictDonnees.items():
             setattr(parent, code, valeur)
@@ -905,14 +905,14 @@ class Informations() :
         # Suppression de la table si elle existe
         DB.ExecuterReq("DROP TABLE IF EXISTS %s" % nomTable)
         
-        # Création de la table de données
+        # CrÃ©ation de la table de donnÃ©es
         req = "CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY AUTOINCREMENT, " % nomTable
         for nom in listeNomsChamps :
             req += "%s %s, " % (nom, "VARCHAR(500)")
         req = req[:-2] + ")"
         DB.ExecuterReq(req)
         
-        # Insertion des données
+        # Insertion des donnÃ©es
         dictValeurs = self.GetDictValeurs(mode=mode, formatChamp=False)
         listeDonnees = []
         for ID, dictTemp in dictValeurs.items() :
@@ -963,9 +963,9 @@ class Informations() :
         dictTables = {
 
             "individus":[               ("IDindividu", "INTEGER PRIMARY KEY AUTOINCREMENT", _(u"ID de la personne")),
-                                            ("IDcivilite", "INTEGER", _(u"Civilité de la personne")),
+                                            ("IDcivilite", "INTEGER", _(u"CivilitÃ© de la personne")),
                                             ("nom", "VARCHAR(100)", _(u"Nom de famille de la personne")),
-                                            ("prenom", "VARCHAR(100)", _(u"Prénom de la personne")),
+                                            ("prenom", "VARCHAR(100)", _(u"PrÃ©nom de la personne")),
                                             ("photo", "BLOB", _(u"Photo de la personne")),
                                             ],
 
@@ -988,7 +988,7 @@ class Informations() :
             dbdest.cursor.executemany(req, listeDonnees)
 
 
-        # Insertion des données du dictIndividus
+        # Insertion des donnÃ©es du dictIndividus
         dictValeurs = self.GetDictValeurs(mode="individu", formatChamp=False)
         listeDonnees = []
         for ID, dictTemp in dictValeurs.items() :
@@ -998,7 +998,7 @@ class Informations() :
         
         Enregistre(nomTable="informations", listeChamps=["IDindividu", "champ", "valeur"], listeDonnees=listeDonnees)
         
-        # Insertion des données individus
+        # Insertion des donnÃ©es individus
         db = GestionDB.DB(suffixe="PHOTOS")
         req = """SELECT IDindividu, photo FROM photos;"""
         db.ExecuterReq(req)
@@ -1033,7 +1033,7 @@ class Informations() :
     
     def Tests(self):
         """ Pour les tests """
-        # Récupération des noms des champs
+        # RÃ©cupÃ©ration des noms des champs
         #print len(self.GetNomsChampsPresents(mode="individu", listeID=None))
         print(len(GetNomsChampsPossibles(mode="individu")))
         #for x in self.GetNomsChampsPresents(mode="individu", listeID=None) :

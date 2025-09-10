@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -75,7 +75,7 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE)
         self.parent = parent   
         
-##        self.label_intro = wx.StaticText(self, -1, _(u"Remarque : Les prélèvements manuels ne peuvent pas être réglés automatiquement."))
+##        self.label_intro = wx.StaticText(self, -1, _(u"Remarque : Les prÃ©lÃ¨vements manuels ne peuvent pas Ãªtre rÃ©glÃ©s automatiquement."))
 ##        self.label_intro.SetFont(wx.Font(7, wx.DEFAULT, wx.NORMAL, wx.NORMAL, 0, ""))
 ##        self.label_intro.SetForegroundColour((100, 100, 100)) 
         
@@ -84,9 +84,9 @@ class Dialog(wx.Dialog):
         self.label_famille = wx.StaticText(self, -1, _(u"Titulaires :"))
         self.ctrl_famille = CTRL_Famille(self)
         
-        # Paramètres
-        self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
-        self.label_libelle = wx.StaticText(self, -1, _(u"Libellé :"))
+        # ParamÃ¨tres
+        self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, _(u"ParamÃ¨tres"))
+        self.label_libelle = wx.StaticText(self, -1, _(u"LibellÃ© :"))
         self.ctrl_libelle = wx.TextCtrl(self, -1, u"")
         self.label_montant = wx.StaticText(self, -1, _(u"Montant :"))
         self.ctrl_montant = CTRL_Saisie_euros.CTRL(self)
@@ -102,16 +102,16 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.ctrl_famille.SetIDfamille(IDfamille)
         self.ctrl_libelle.SetValue(libelle)
         self.ctrl_montant.SetMontant(montant)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Saisie d'un prélèvement manuel"))
-        self.ctrl_famille.SetToolTip(wx.ToolTip(_(u"Sélectionnez la famille")))
-        self.ctrl_libelle.SetToolTip(wx.ToolTip(_(u"Saisissez ici le libellé du prélèvement")))
-        self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez ici le montant du prélèvement")))
+        self.SetTitle(_(u"Saisie d'un prÃ©lÃ¨vement manuel"))
+        self.ctrl_famille.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez la famille")))
+        self.ctrl_libelle.SetToolTip(wx.ToolTip(_(u"Saisissez ici le libellÃ© du prÃ©lÃ¨vement")))
+        self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez ici le montant du prÃ©lÃ¨vement")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
@@ -171,19 +171,19 @@ class Dialog(wx.Dialog):
     
     def OnBoutonOk(self, event): 
         if self.GetIDfamille() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une famille dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une famille dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_famille.SetFocus()
             return
         if self.GetLibelle() == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un libellé pour ce prélèvement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un libellÃ© pour ce prÃ©lÃ¨vement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_libelle.SetFocus()
             return
         if self.GetMontant() == None or self.GetMontant() == 0.0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un montant pour ce prélèvement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un montant pour ce prÃ©lÃ¨vement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_montant.SetFocus()

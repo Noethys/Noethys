@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -27,7 +27,7 @@ class Dialog(wx.Dialog):
         self.parent = parent
 
         # Bandeau
-        intro = _(u"Vous pouvez ici consulter les locations sous forme de tableau. Pour ajouter une location, vous pouvez double-cliquer sur une ligne ou conserver la touche CTRL du clavier enfoncée tout en cliquant sur le bouton gauche de la souris afin de dessiner la barre directement dans le tableau. Pour modifier une location affichée, double-cliquez sur la barre représentant celle-ci. Il est également possible d'accéder à un menu contextuel avec le bouton droit de la souris.")
+        intro = _(u"Vous pouvez ici consulter les locations sous forme de tableau. Pour ajouter une location, vous pouvez double-cliquer sur une ligne ou conserver la touche CTRL du clavier enfoncÃ©e tout en cliquant sur le bouton gauche de la souris afin de dessiner la barre directement dans le tableau. Pour modifier une location affichÃ©e, double-cliquez sur la barre reprÃ©sentant celle-ci. Il est Ã©galement possible d'accÃ©der Ã  un menu contextuel avec le bouton droit de la souris.")
         titre = _(u"Tableau des locations")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Calendrier_horizontal.png")
@@ -40,7 +40,7 @@ class Dialog(wx.Dialog):
         # Commandes
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_imprimer = CTRL_Bouton_image.CTRL(self, texte=_(u"Imprimer"), cheminImage="Images/32x32/Imprimante.png")
-        self.bouton_apercu = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
+        self.bouton_apercu = CTRL_Bouton_image.CTRL(self, texte=_(u"AperÃ§u"), cheminImage="Images/32x32/Apercu.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
@@ -59,8 +59,8 @@ class Dialog(wx.Dialog):
         
     def __set_properties(self):
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer le tableau affiché")))
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression du tableau")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer le tableau affichÃ©")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperÃ§u avant impression du tableau")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((1100, 700))
 

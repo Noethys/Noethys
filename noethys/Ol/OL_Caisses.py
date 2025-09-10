@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -33,7 +33,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -54,7 +54,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT IDcaisse, caisses.nom, caisses.IDregime, regimes.nom
@@ -87,7 +87,7 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(_(u"ID"), "left", 0, "IDcaisse", typeDonnee="entier"),
             ColumnDefn(_(u"Nom"), 'left', 230, "nom", typeDonnee="texte"),
-            ColumnDefn(_(u"RÈgime social associÈ"), "left", 140, "nom_regime", typeDonnee="texte"),
+            ColumnDefn(_(u"R√©gime social associ√©"), "left", 140, "nom_regime", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)
@@ -105,7 +105,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -122,7 +122,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDcaisse
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -153,7 +153,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -198,7 +198,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_caisses", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune caisse dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune caisse dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -222,13 +222,13 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_caisses", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune caisse dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune caisse dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDcaisse = self.Selection()[0].IDcaisse
         
-        # VÈrifie que la caisse n'est pas dÈj‡ attribuÈe ‡ une famille
+        # V√©rifie que la caisse n'est pas d√©j√† attribu√©e √† une famille
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDfamille)
         FROM familles 
@@ -238,12 +238,12 @@ class ListView(FastObjectListView):
         nbreFamilles = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreFamilles > 0 :
-            dlg = wx.MessageDialog(self, _(u"Cette caisse a dÈj‡ ÈtÈ attribuÈe ‡ %d famille(s).\n\nVous ne pouvez donc pas la supprimer !") % nbreFamilles, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cette caisse a d√©j√† √©t√© attribu√©e √† %d famille(s).\n\nVous ne pouvez donc pas la supprimer !") % nbreFamilles, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # VÈrifie que la caisse n'est pas dÈj‡ attribuÈe ‡ une famille
+        # V√©rifie que la caisse n'est pas d√©j√† attribu√©e √† une famille
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDfamille)
         FROM familles 
@@ -253,12 +253,12 @@ class ListView(FastObjectListView):
         nbreFamilles = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreFamilles > 0 :
-            dlg = wx.MessageDialog(self, _(u"Cette caisse a dÈj‡ ÈtÈ attribuÈe ‡ %d famille(s).\n\nVous ne pouvez donc pas la supprimer !") % nbreFamilles, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cette caisse a d√©j√† √©t√© attribu√©e √† %d famille(s).\n\nVous ne pouvez donc pas la supprimer !") % nbreFamilles, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
-        # VÈrifie que la caisse n'est pas dÈj‡ attribuÈe ‡ une aide
+        # V√©rifie que la caisse n'est pas d√©j√† attribu√©e √† une aide
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDaide)
         FROM aides 
@@ -268,7 +268,7 @@ class ListView(FastObjectListView):
         nbreAides = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreAides > 0 :
-            dlg = wx.MessageDialog(self, _(u"Cette caisse a dÈj‡ ÈtÈ attribuÈe ‡ %d aide(s).\n\nVous ne pouvez donc pas la supprimer !") % nbreAides, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cette caisse a d√©j√† √©t√© attribu√©e √† %d aide(s).\n\nVous ne pouvez donc pas la supprimer !") % nbreAides, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -339,7 +339,7 @@ class Saisie(wx.Dialog):
         if nom != None :
             self.ctrl_nom.SetValue(nom)
             
-        self.label_regime = wx.StaticText(self, -1, _(u"RÈgime social associÈ :"))
+        self.label_regime = wx.StaticText(self, -1, _(u"R√©gime social associ√© :"))
         self.ctrl_regime = CTRL_Regime(self)
         if IDregime !=None :
             self.ctrl_regime.SetID(IDregime)

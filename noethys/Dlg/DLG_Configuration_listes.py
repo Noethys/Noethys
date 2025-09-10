@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -44,24 +44,24 @@ def SauvegardeConfiguration(nomListe=None, listeColonnes=[]):
     UTILS_Parametres.Parametres(mode="set", categorie="configuration_liste_colonnes", nom=nomListe, valeur=texte)
     
 def RestaurationConfiguration(nomListe=None, listeColonnesDefaut=[]):
-    # Mémorise les colonnes par défaut
+    # MÃ©morise les colonnes par dÃ©faut
     dictColonnes = {}
     for col in listeColonnesDefaut :
         dictColonnes[col.valueGetter] = col
     
-    # Lecture du paramètres stocké
+    # Lecture du paramÃ¨tres stockÃ©
     texteDefaut = ConvertListeEnTexte(listeColonnesDefaut)
     texte = UTILS_Parametres.Parametres(mode="get", categorie="configuration_liste_colonnes", nom=nomListe, valeur=texteDefaut)
 
     listeColonnesFinale = []
     listeNomsTemp = []
     for code in texte.split("##"):
-        # Pour gérer les anciennes configurations de liste
+        # Pour gÃ©rer les anciennes configurations de liste
         visible = True
         if ";" in code :
             code, visible = code.split(";")
             visible = bool(visible)
-        # Mémorisation des colonnes sélectionnées
+        # MÃ©morisation des colonnes sÃ©lectionnÃ©es
         if visible == True :
             listeNomsTemp.append(code)
             if code in dictColonnes :
@@ -69,7 +69,7 @@ def RestaurationConfiguration(nomListe=None, listeColonnesDefaut=[]):
                 col.visible = True
                 listeColonnesFinale.append(col)
 
-    # Vérifie que toutes les colonnes de la liste initiale ont été traitées
+    # VÃ©rifie que toutes les colonnes de la liste initiale ont Ã©tÃ© traitÃ©es
     for code, col in dictColonnes.items() :
         if code not in listeNomsTemp :
             col.visible = False
@@ -221,7 +221,7 @@ class CTRL_Selection(CTRL_Elements):
                     index = idx
                 idx += 1
         self.SetColonnes(liste_colonnes)
-        self.parent.label_selection.SetLabel(_(u"%d colonnes sélectionnées") % len(liste_colonnes))
+        self.parent.label_selection.SetLabel(_(u"%d colonnes sÃ©lectionnÃ©es") % len(liste_colonnes))
         if index != None :
             if index > len(liste_colonnes)-1 :
                 index = len(liste_colonnes)-1
@@ -235,7 +235,7 @@ class CTRL_Selection(CTRL_Elements):
     def Deplacer(self, sens=-1):
         code = self.GetCode()
         if code == None:
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner une colonne à déplacer dans la liste de droite !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner une colonne Ã  dÃ©placer dans la liste de droite !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -260,13 +260,13 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
 
-        # Mémorisation des colonnes
+        # MÃ©morisation des colonnes
         self.colonnes_dispo = colonnes_dispo
         self.colonnes_defaut = colonnes_defaut
         self.colonnes_selection = colonnes_selection
         self.dict_colonnes = self.GetDictColonnes()
 
-        intro = _(u"Vous pouvez configurer ici les colonnes de la liste. Double-cliquez sur les titres de colonnes disponibles pour les inclure dans votre sélection ou utilisez les flèches droite et gauche. Les flèches haut et bas permettent de modifier l'ordre des colonnes sélectionnées.")
+        intro = _(u"Vous pouvez configurer ici les colonnes de la liste. Double-cliquez sur les titres de colonnes disponibles pour les inclure dans votre sÃ©lection ou utilisez les flÃ¨ches droite et gauche. Les flÃ¨ches haut et bas permettent de modifier l'ordre des colonnes sÃ©lectionnÃ©es.")
         titre = _(u"Configuration de la liste")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Configuration2.png")
@@ -285,7 +285,7 @@ class Dialog(wx.Dialog):
         self.bouton_gauche = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Reculer.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_gauche_double = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_double_gauche.png"), wx.BITMAP_TYPE_ANY))
 
-        self.label_selection = wx.StaticText(self, wx.ID_ANY, _(u"Colonnes sélectionnées"))
+        self.label_selection = wx.StaticText(self, wx.ID_ANY, _(u"Colonnes sÃ©lectionnÃ©es"))
         self.ctrl_selection = CTRL_Selection(self)
         self.ctrl_selection.SetMinSize((250, 50))
 
@@ -310,20 +310,20 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonReinit, self.bouton_reinitialiser)
 
-        # Init contrôle
+        # Init contrÃ´le
         self.ctrl_dispo.MAJ()
         self.ctrl_selection.MAJ()
 
     def __set_properties(self):
         self.label_dispo.SetFont(wx.Font(8, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))
         self.label_selection.SetFont(wx.Font(8, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))
-        self.bouton_droite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner la colonne (Vous pouvez également double-cliquer dessus)")))
-        self.bouton_gauche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour retirer la colonne sélectionnée (Vous pouvez également double-cliquer dessus)")))
-        self.bouton_droite_double.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner toutes les colonnes")))
-        self.bouton_gauche_double.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour désélectionner toutes les colonnes")))
-        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour déplacer cette colonne")))
-        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour déplacer cette colonne")))
-        self.bouton_reinitialiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici restaurer les valeurs par défaut")))
+        self.bouton_droite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner la colonne (Vous pouvez Ã©galement double-cliquer dessus)")))
+        self.bouton_gauche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour retirer la colonne sÃ©lectionnÃ©e (Vous pouvez Ã©galement double-cliquer dessus)")))
+        self.bouton_droite_double.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner toutes les colonnes")))
+        self.bouton_gauche_double.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dÃ©sÃ©lectionner toutes les colonnes")))
+        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dÃ©placer cette colonne")))
+        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dÃ©placer cette colonne")))
+        self.bouton_reinitialiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici restaurer les valeurs par dÃ©faut")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
@@ -348,7 +348,7 @@ class Dialog(wx.Dialog):
         grid_sizer_dispo.AddGrowableCol(0)
         grid_sizer_elements.Add(grid_sizer_dispo, 1, wx.EXPAND, 0)
 
-        # Boutons déplacer
+        # Boutons dÃ©placer
         grid_sizer_boutons_deplacer = wx.FlexGridSizer(5, 1, 5, 5)
         grid_sizer_boutons_deplacer.Add(self.bouton_droite, 0, 0, 0)
         grid_sizer_boutons_deplacer.Add(self.bouton_gauche, 0, 0, 0)
@@ -423,7 +423,7 @@ class Dialog(wx.Dialog):
     def OnBoutonDroite(self, event):
         code = self.ctrl_dispo.GetCode()
         if code == None:
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner une colonne dans la liste de gauche !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner une colonne dans la liste de gauche !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -432,7 +432,7 @@ class Dialog(wx.Dialog):
     def OnBoutonGauche(self, event):
         code = self.ctrl_selection.GetCode()
         if code == None:
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner une colonne dans la liste de droite !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner une colonne dans la liste de droite !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -445,7 +445,7 @@ class Dialog(wx.Dialog):
         self.EnvoyerVersGauche(None)
 
     def OnBoutonReinit(self, event=None):
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment réinitialiser la liste des colonnes ?"), _(u"Réinitialisation"), wx.YES_NO | wx.YES_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment rÃ©initialiser la liste des colonnes ?"), _(u"RÃ©initialisation"), wx.YES_NO | wx.YES_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse == wx.ID_YES:

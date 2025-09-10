@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -56,7 +56,7 @@ class Dialog(wx.Dialog):
             messageSizer.Add(t, 0, wx.BOTTOM, 10)
             t.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.BOLD))
         
-        # Détail
+        # DÃ©tail
         if detail :
             t = wx.TextCtrl(self, style=wx.TE_MULTILINE|wx.TE_READONLY|wx.TE_RICH|wx.TE_DONTWRAP)
             t.SetValue(detail)

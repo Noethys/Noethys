@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -50,8 +50,8 @@ class Page_Locations(wx.Panel):
 
         # Properties
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une location")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la location sélectionnée dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la location sélectionnée dans la liste")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la location sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la location sÃ©lectionnÃ©e dans la liste")))
 
         # Bind
         self.Bind(wx.EVT_BUTTON, self.ctrl_locations.Ajouter, self.bouton_ajouter)
@@ -90,18 +90,18 @@ class Timeline(TL.TimelinePerso):
         TL.TimelinePerso.__init__(self)
 
     def _load_data(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         self.preferred_period = None
         self.categories = []
         self.events = []
 
-        # Période préférée
+        # PÃ©riode prÃ©fÃ©rÃ©e
         dateDuJour = datetime.datetime.today()
         dateDebut = dateDuJour - datetime.timedelta(6)
         dateFin = dateDuJour + datetime.timedelta(1)
         self.preferred_period = TL.TimePeriod(dateDebut, dateFin)
 
-        # Récupération des events LOCATIONS
+        # RÃ©cupÃ©ration des events LOCATIONS
         DB = GestionDB.DB()
         req = """SELECT IDlocation, IDfamille, date_debut, date_fin, quantite
         FROM locations
@@ -131,14 +131,14 @@ class Timeline(TL.TimelinePerso):
             else :
                 nomTitulaires = _(u"Famille inconnue")
 
-            texte = u"%s - Quantité : %d" % (nomTitulaires, quantite)
+            texte = u"%s - QuantitÃ© : %d" % (nomTitulaires, quantite)
             date_debut_str = datetime.datetime.strftime(date_debut, "%d/%m/%Y-%Hh%M")
             if date_fin.year == 2999:
-                date_fin_str = _(u"Illimité")
+                date_fin_str = _(u"IllimitÃ©")
             else:
                 date_fin_str = datetime.datetime.strftime(date_fin, "%d/%m/%Y-%Hh%M")
 
-            description = _(u"Loueur : %s\nQuantité : %d\nDébut : %s\nFin : %s") % (nomTitulaires, quantite, date_debut_str, date_fin_str)
+            description = _(u"Loueur : %s\nQuantitÃ© : %d\nDÃ©but : %s\nFin : %s") % (nomTitulaires, quantite, date_debut_str, date_fin_str)
             icon = None
 
             evt = TL.Event(date_debut, date_fin, texte, categorie)
@@ -147,11 +147,11 @@ class Timeline(TL.TimelinePerso):
             self.events.append(evt)
 
 
-        # Récupération des events STOCK DISPONIBLE
+        # RÃ©cupÃ©ration des events STOCK DISPONIBLE
         dictPeriodes = UTILS_Locations.GetStockDisponible(IDproduit=self.IDproduit, date_debut=None, date_fin=None)
 
         categorie_disponible = TL.Category(_(u"Stock disponible"), (233, 255, 156), True)
-        categorie_loue = TL.Category(_(u"Quantité louée"), (204, 227, 250), True)
+        categorie_loue = TL.Category(_(u"QuantitÃ© louÃ©e"), (204, 227, 250), True)
         for periode, valeurs in dictPeriodes.items():
             date_debut = periode[0]
 
@@ -211,7 +211,7 @@ class CTRL_Onglets(wx.Notebook):
             self.dictImages[dictPage["code"]] = il.Add(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s" % dictPage["image"]), wx.BITMAP_TYPE_PNG))
         self.AssignImageList(il)
 
-        # Création des pages
+        # CrÃ©ation des pages
         self.dictPages = {}
         index = 0
         for dictPage in self.listePages:
@@ -233,7 +233,7 @@ class CTRL_Onglets(wx.Notebook):
             index += 1
 
     def OnPageChanged(self, event):
-        """ Quand une page du notebook est sélectionnée """
+        """ Quand une page du notebook est sÃ©lectionnÃ©e """
         if event.GetOldSelection() == -1: return
         indexPage = event.GetSelection()
         page = self.GetPage(indexPage)
@@ -277,8 +277,8 @@ class Dialog(wx.Dialog):
         self.logo = None
         self.SetTitle(_(u"Fiche produit"))
 
-        # Généralités
-        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"Caractéristiques"))
+        # GÃ©nÃ©ralitÃ©s
+        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"CaractÃ©ristiques"))
         self.ctrl_produit = MyHtml(self)
 
         # Logo
@@ -309,7 +309,7 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.ctrl_logo.SetToolTip(wx.ToolTip(_(u"Image du produit")))
-        self.bouton_visualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour visualiser l'image actuelle en taille réelle")))
+        self.bouton_visualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour visualiser l'image actuelle en taille rÃ©elle")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer la fiche produit")))
 
@@ -318,7 +318,7 @@ class Dialog(wx.Dialog):
 
         grid_sizer_haut = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
 
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         staticbox_generalites = wx.StaticBoxSizer(self.staticbox_generalites_staticbox, wx.VERTICAL)
         staticbox_generalites.Add(self.ctrl_produit, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_haut.Add(staticbox_generalites, 1, wx.EXPAND, 10)
@@ -366,7 +366,7 @@ class Dialog(wx.Dialog):
         return self.IDproduit
 
     def Importation(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         DB = GestionDB.DB()
         req = """SELECT produits.nom, produits.observations, produits.image, produits.IDcategorie, produits.quantite,
         produits_categories.nom
@@ -393,11 +393,11 @@ class Dialog(wx.Dialog):
         for dictQuestion in questionnaires.GetDonnees(ID=self.IDproduit):
             liste_questions_temp.append(u"%s : %s" % (dictQuestion["label"], dictQuestion["reponse"]))
 
-        # Caractéristiques
+        # CaractÃ©ristiques
         texte = _(u"""
         <FONT SIZE=5><B>%s</B><BR></FONT>
         <BR>
-        Catégorie : %s <BR>
+        CatÃ©gorie : %s <BR>
         Stock initial : %d <BR>
         %s
         %s

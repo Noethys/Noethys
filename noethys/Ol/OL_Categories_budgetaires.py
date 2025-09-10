@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -18,7 +18,7 @@ import GestionDB
 from Dlg import DLG_Saisie_categorie_budget
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 from Utils import UTILS_Interface
@@ -39,7 +39,7 @@ class Track(object):
         if self.IDcategorie in self.dictCategories :
             self.label_categorie = self.dictCategories[self.IDcategorie]
         else :
-            self.label_categorie = _(u"Catégorie inconnue")
+            self.label_categorie = _(u"CatÃ©gorie inconnue")
             
 
 def Importation(IDbudget=None, typeCategorie="debit"):
@@ -65,7 +65,7 @@ def Importation(IDbudget=None, typeCategorie="debit"):
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.typeCategorie = kwds.pop("typeCategorie", None)
         self.selectionID = None
         self.selectionTrack = None
@@ -90,7 +90,7 @@ class ListView(FastObjectListView):
     def InitModel(self):
         DB = GestionDB.DB()
         
-        # Importation des catégories
+        # Importation des catÃ©gories
         req = """SELECT IDcategorie, nom
         FROM compta_categories ;"""
         DB.ExecuterReq(req)
@@ -123,15 +123,15 @@ class ListView(FastObjectListView):
 
         liste_Colonnes = [
             ColumnDefn(u"", "left", 0, "IDcategorie_budget", typeDonnee="entier"),
-            ColumnDefn(_(u"Catégorie"), "left", 250, "label_categorie", typeDonnee="texte"),
+            ColumnDefn(_(u"CatÃ©gorie"), "left", 250, "label_categorie", typeDonnee="texte"),
             ColumnDefn(_(u"Plafond"), "left", 120, "valeur", typeDonnee="texte", stringConverter=FormateValeur, isSpaceFilling=True),
             ]
 
         self.SetColumns(liste_Colonnes)
         if self.typeCategorie == "debit" :
-            self.SetEmptyListMsg(_(u"Aucune catégorie de débit"))
+            self.SetEmptyListMsg(_(u"Aucune catÃ©gorie de dÃ©bit"))
         else :
-            self.SetEmptyListMsg(_(u"Aucune catégorie de crédit"))
+            self.SetEmptyListMsg(_(u"Aucune catÃ©gorie de crÃ©dit"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -145,7 +145,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -163,7 +163,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDcategorie_budget
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -194,7 +194,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -212,12 +212,12 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des catégories budgétaires"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des catÃ©gories budgÃ©taires"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des catégories budgétaires"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des catÃ©gories budgÃ©taires"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def Ajouter(self, event=None):
@@ -232,7 +232,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event=None):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune catégorie budgétaire à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune catÃ©gorie budgÃ©taire Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -249,14 +249,14 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event=None):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune catégorie budgétaire à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune catÃ©gorie budgÃ©taire Ã  supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
         
         # Suppression
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette catégorie budgétaire ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette catÃ©gorie budgÃ©taire ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             self.listeTracks.remove(track)
             self.MAJ()

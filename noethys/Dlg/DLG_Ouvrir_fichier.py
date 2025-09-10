@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -54,20 +54,20 @@ class MyDialog(wx.Dialog):
 
         # Bandeau
         titre = _(u"Ouvrir un fichier")
-        intro = _(u"SÈlectionnez le mode Local pour afficher les fichiers disponibles sur cet ordinateur. Pour afficher les fichiers rÈseau, sÈlectionnez le mode RÈseau, saisissez les codes d'accËs MySQL puis cliquez sur le bouton Valider. Double-cliquez sur le nom d'un fichier dans la liste pour l'ouvrir.")
+        intro = _(u"S√©lectionnez le mode Local pour afficher les fichiers disponibles sur cet ordinateur. Pour afficher les fichiers r√©seau, s√©lectionnez le mode R√©seau, saisissez les codes d'acc√®s MySQL puis cliquez sur le bouton Valider. Double-cliquez sur le nom d'un fichier dans la liste pour l'ouvrir.")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Fichier_ouvrir.png")
         self.SetTitle(titre)
 
         # Mode
         self.box_mode_staticbox = wx.StaticBox(self, -1, _(u"Mode"))
         self.radio_local = wx.RadioButton(self, -1, _(u"Local"), style=wx.RB_GROUP)
-        self.radio_reseau = wx.RadioButton(self, -1, _(u"RÈseau"))
+        self.radio_reseau = wx.RadioButton(self, -1, _(u"R√©seau"))
         
-        # Codes d'accËs
-        self.box_codes_staticbox = wx.StaticBox(self, -1, _(u"Codes d'accËs rÈseau"))
+        # Codes d'acc√®s
+        self.box_codes_staticbox = wx.StaticBox(self, -1, _(u"Codes d'acc√®s r√©seau"))
         self.label_port = wx.StaticText(self, -1, _(u"Port :"))
         self.ctrl_port = wx.TextCtrl(self, -1, u"3306", style=wx.TE_CENTRE)
-        self.label_hote = wx.StaticText(self, -1, _(u"HÙte :"))
+        self.label_hote = wx.StaticText(self, -1, _(u"H√¥te :"))
         self.ctrl_hote = wx.TextCtrl(self, -1, u"")
         self.label_utilisateur = wx.StaticText(self, -1, _(u"Utilisateur :"))
         self.ctrl_utilisateur = wx.TextCtrl(self, -1, u"")
@@ -85,7 +85,7 @@ class MyDialog(wx.Dialog):
         self.bouton_modifier_fichier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer_fichier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
         self.ctrl_image = wx.StaticBitmap(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Updater.png"), wx.BITMAP_TYPE_ANY))
-        self.hyper_telecharger = Hyperlien(self, label=_(u"TÈlÈcharger d'autres fichiers exemples"), infobulle=_(u"Cliquez ici pour tÈlÈcharger d'autres fichiers exemples sur internet"), URL="telecharger")
+        self.hyper_telecharger = Hyperlien(self, label=_(u"T√©l√©charger d'autres fichiers exemples"), infobulle=_(u"Cliquez ici pour t√©l√©charger d'autres fichiers exemples sur internet"), URL="telecharger")
 
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
@@ -107,27 +107,27 @@ class MyDialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnBoutonOk, self.ctrl_fichiers)
         
-        # Init contrÙles
+        # Init contr√¥les
         self.OnChoixMode(None) 
         
 
     def __set_properties(self):
         self.radio_local.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher les fichiers disponibles en mode local")))
-        self.radio_reseau.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher les fichiers disponibles en mode rÈseau")))
+        self.radio_reseau.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher les fichiers disponibles en mode r√©seau")))
         self.ctrl_port.SetMinSize((40, -1))
-        self.ctrl_port.SetToolTip(wx.ToolTip(_(u"Le numÈro de port est 3306 par dÈfaut")))
+        self.ctrl_port.SetToolTip(wx.ToolTip(_(u"Le num√©ro de port est 3306 par d√©faut")))
         self.ctrl_hote.SetMinSize((90,-1))
-        self.ctrl_hote.SetToolTip(wx.ToolTip(_(u"Indiquez ici le nom du serveur hÙte")))
+        self.ctrl_hote.SetToolTip(wx.ToolTip(_(u"Indiquez ici le nom du serveur h√¥te")))
         self.ctrl_utilisateur.SetMinSize((90,-1))
         self.ctrl_utilisateur.SetToolTip(wx.ToolTip(_(u"Indiquez ici le nom de l'utilisateur")))
-        self.ctrl_motdepasse.SetToolTip(wx.ToolTip(_(u"Indiquez ici le mot de passe nÈcessaire ‡ la connexion ‡ MySQL")))
-        self.bouton_valider_codes.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider les codes rÈseau et afficher la liste des fichiers disponibles")))
-        self.bouton_importer_codes.SetToolTip(wx.ToolTip(_(u"Importer une configuration de fichier rÈseau")))
-        self.bouton_exporter_codes.SetToolTip(wx.ToolTip(_(u"Exporter une configuration de fichier rÈseau")))
-        self.bouton_modifier_fichier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le nom du fichier sÈlectionnÈ dans la liste")))
-        self.bouton_supprimer_fichier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le fichier sÈlectionnÈ dans la liste")))
+        self.ctrl_motdepasse.SetToolTip(wx.ToolTip(_(u"Indiquez ici le mot de passe n√©cessaire √† la connexion √† MySQL")))
+        self.bouton_valider_codes.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider les codes r√©seau et afficher la liste des fichiers disponibles")))
+        self.bouton_importer_codes.SetToolTip(wx.ToolTip(_(u"Importer une configuration de fichier r√©seau")))
+        self.bouton_exporter_codes.SetToolTip(wx.ToolTip(_(u"Exporter une configuration de fichier r√©seau")))
+        self.bouton_modifier_fichier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le nom du fichier s√©lectionn√© dans la liste")))
+        self.bouton_supprimer_fichier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le fichier s√©lectionn√© dans la liste")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir le fichier sÈlectionnÈ dans la liste")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir le fichier s√©lectionn√© dans la liste")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
@@ -202,18 +202,18 @@ class MyDialog(wx.Dialog):
         self.MAJliste()
     
     def MAJliste(self):
-        """ Met ‡ jour la liste des fichiers """
+        """ Met √† jour la liste des fichiers """
         modeLocal = self.radio_local.GetValue()
         if modeLocal == True :
             # Mode local
             self.ctrl_fichiers.SetMode(mode="local")
         else :
-            # Mode rÈseau
+            # Mode r√©seau
             dictCodes = self.GetCodesReseau() 
             self.ctrl_fichiers.SetMode(mode="reseau", codesReseau=dictCodes)
     
     def GetCodesReseau(self):
-        """ RÈcupÈration des codes rÈseau saisis """
+        """ R√©cup√©ration des codes r√©seau saisis """
         try :
             port = int(self.ctrl_port.GetValue())
         except Exception as err:
@@ -224,10 +224,10 @@ class MyDialog(wx.Dialog):
         return {"port":port, "hote":hote, "utilisateur":utilisateur, "motdepasse":motdepasse}
     
     def OnBoutonImporterCodes(self, event):
-        wildcard = _(u"ParamÈtrage fichier rÈseau Noethys (*.nnc)|*.nnc|Tous les fichiers (*.*)|*.*")
+        wildcard = _(u"Param√©trage fichier r√©seau Noethys (*.nnc)|*.nnc|Tous les fichiers (*.*)|*.*")
         sp = wx.StandardPaths.Get()
         dlg = wx.FileDialog(
-            self, message=_(u"Choisissez un fichier ‡ importer"),
+            self, message=_(u"Choisissez un fichier √† importer"),
             defaultDir=sp.GetDocumentsDir(),
             defaultFile="",
             wildcard=wildcard,
@@ -250,10 +250,10 @@ class MyDialog(wx.Dialog):
         return
 
     def OnBoutonExporterCodes(self, event):
-        wildcard = _(u"ParamÈtrage fichier rÈseau Noethys (*.nnc)|*.nnc|Tous les fichiers (*.*)|*.*")
+        wildcard = _(u"Param√©trage fichier r√©seau Noethys (*.nnc)|*.nnc|Tous les fichiers (*.*)|*.*")
         sp = wx.StandardPaths.Get()
         dlg = wx.FileDialog(
-            self, message=_(u"Choisissez un fichier ‡ importer"),
+            self, message=_(u"Choisissez un fichier √† importer"),
             defaultDir=sp.GetDocumentsDir(),
             defaultFile="",
             wildcard=wildcard,
@@ -280,14 +280,14 @@ class MyDialog(wx.Dialog):
         dictCodes = self.GetCodesReseau()
         
         if dictCodes["port"] == "" :
-            dlg = wx.MessageDialog(self, _(u"Le numÈro de port n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Le num√©ro de port n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_port.SetFocus()
             return
         
         if dictCodes["hote"] == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir un nom pour le serveur hÙte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir un nom pour le serveur h√¥te !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_hote.SetFocus()
@@ -320,13 +320,13 @@ class MyDialog(wx.Dialog):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("fichier_fichier", "modifier") == False : return
         index = self.ctrl_fichiers.GetFirstSelected()
         if index == -1 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sÈlectionner un fichier ‡ modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez s√©lectionner un fichier √† modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return 
         titre = self.ctrl_fichiers.GetItemPyData(index)["titre"]
         if self.fichierOuvert == titre :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas modifier un fichier dÈj‡ ouvert !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas modifier un fichier d√©j√† ouvert !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return 
@@ -337,13 +337,13 @@ class MyDialog(wx.Dialog):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("fichier_fichier", "supprimer") == False : return
         index = self.ctrl_fichiers.GetFirstSelected()
         if index == -1 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sÈlectionner un fichier ‡ supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez s√©lectionner un fichier √† supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return 
         titre = self.ctrl_fichiers.GetItemPyData(index)["titre"]
         if self.fichierOuvert == titre :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer un fichier dÈj‡ ouvert !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer un fichier d√©j√† ouvert !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return 
@@ -365,7 +365,7 @@ class MyDialog(wx.Dialog):
         # Version LOCAL
         if modeLocal == True :
             nomFichier = dictItem["titre"]
-            #nomFichier = nomFichier.decode("iso-8859-15")
+            #nomFichier = nomFichier.decode("utf8")
     
         # Version RESEAU
         if modeLocal == False :
@@ -384,14 +384,14 @@ class MyDialog(wx.Dialog):
     def OnBoutonOk(self, event): 
         index = self.ctrl_fichiers.GetFirstSelected()
         if index == -1 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sÈlectionner un fichier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez s√©lectionner un fichier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return 
 
         titre = self.ctrl_fichiers.GetItemPyData(index)["titre"]
         if self.fichierOuvert == titre :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas ouvrir un fichier dÈj‡ ouvert !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas ouvrir un fichier d√©j√† ouvert !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return 

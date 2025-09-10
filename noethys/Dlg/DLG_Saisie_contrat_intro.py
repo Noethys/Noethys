@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -19,7 +19,7 @@ import GestionDB
 from six.moves import cPickle
 from Utils import UTILS_Dates
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 
@@ -157,8 +157,8 @@ class Dialog(wx.Dialog):
         self.radio_type_classique = wx.RadioButton(self, wx.ID_ANY, _(u"Contrat classique"), style=wx.RB_GROUP)
         self.radio_type_psu = wx.RadioButton(self, wx.ID_ANY, _(u"Contrat P.S.U."))
 
-        # Activité
-        self.box_activite_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Sélection de l'activité"))
+        # ActivitÃ©
+        self.box_activite_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"SÃ©lection de l'activitÃ©"))
         self.ctrl_inscriptions = OL_Inscriptions.ListView(self, IDindividu=IDindividu, dictFamillesRattachees=dictFamillesRattachees, activeDoubleclick=False, id=-1, name="OL_inscriptions", style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
         self.ctrl_inscriptions.SetMinSize((20, 20)) 
         self.ctrl_inscriptions.MAJ() 
@@ -166,7 +166,7 @@ class Dialog(wx.Dialog):
         # Options
         self.box_options_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Options"))
         self.radio_option_vierge = wx.RadioButton(self, wx.ID_ANY, _(u"Contrat vierge"), style=wx.RB_GROUP)
-        self.radio_option_modele = wx.RadioButton(self, wx.ID_ANY, _(u"Utiliser le modèle de contrat :"))
+        self.radio_option_modele = wx.RadioButton(self, wx.ID_ANY, _(u"Utiliser le modÃ¨le de contrat :"))
         self.ctrl_modele = CTRL_Modeles(self)
         self.bouton_modeles = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
         self.radio_option_contrat = wx.RadioButton(self, wx.ID_ANY, _(u"Copier le contrat :"))
@@ -198,15 +198,15 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'un nouveau contrat"))
-        self.radio_type_classique.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner le type de contrat classique")))
-        self.radio_type_psu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner le type de contrat de type P.S.U.")))
-        self.ctrl_inscriptions.SetToolTip(wx.ToolTip(_(u"Sélectionnez une activité pour laquelle créer le contrat")))
-        self.radio_option_vierge.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un contrat vierge")))
-        self.radio_option_modele.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un contrat basé sur un modèle de contrat")))
-        self.ctrl_modele.SetToolTip(wx.ToolTip(_(u"Sélectionnez un modèle de contrat dans la liste")))
-        self.bouton_modeles.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des contrats")))
-        self.radio_option_contrat.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un contrat basé sur un autre contrat")))
-        self.ctrl_contrat.SetToolTip(wx.ToolTip(_(u"Sélectionnez le contrat à copier")))
+        self.radio_type_classique.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner le type de contrat classique")))
+        self.radio_type_psu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner le type de contrat de type P.S.U.")))
+        self.ctrl_inscriptions.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une activitÃ© pour laquelle crÃ©er le contrat")))
+        self.radio_option_vierge.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er un contrat vierge")))
+        self.radio_option_modele.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er un contrat basÃ© sur un modÃ¨le de contrat")))
+        self.ctrl_modele.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un modÃ¨le de contrat dans la liste")))
+        self.bouton_modeles.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la gestion des contrats")))
+        self.radio_option_contrat.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er un contrat basÃ© sur un autre contrat")))
+        self.ctrl_contrat.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le contrat Ã  copier")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -223,7 +223,7 @@ class Dialog(wx.Dialog):
         box_type.Add(grid_sizer_type, 1, wx.ALL | wx.EXPAND, 10)
         grid_sizer_base.Add(box_type, 1, wx.LEFT | wx.RIGHT | wx.TOP | wx.EXPAND, 10)
 
-        # Activité
+        # ActivitÃ©
         box_activite = wx.StaticBoxSizer(self.box_activite_staticbox, wx.VERTICAL)
         box_activite.Add(self.ctrl_inscriptions, 1, wx.ALL | wx.EXPAND, 10)
         grid_sizer_base.Add(box_activite, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10)
@@ -297,26 +297,26 @@ class Dialog(wx.Dialog):
         
     def OnBoutonOk(self, event): 
         if len(self.ctrl_inscriptions.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une activité dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une activitÃ© dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track_inscription = self.ctrl_inscriptions.Selection()[0]
 
         if self.radio_option_modele.GetValue() == True and self.ctrl_modele.GetID() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un modèle dans la liste proposée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un modÃ¨le dans la liste proposÃ©e !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         if self.radio_option_contrat.GetValue() == True and self.ctrl_contrat.GetID() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un contrat dans la liste proposée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un contrat dans la liste proposÃ©e !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         if self.radio_type_psu.GetValue() == True and track_inscription.psu_activation != 1 :
-            dlg = wx.MessageDialog(self, _(u"L'activité que vous avez sélectionné n'est pas compatible P.S.U. !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"L'activitÃ© que vous avez sÃ©lectionnÃ© n'est pas compatible P.S.U. !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

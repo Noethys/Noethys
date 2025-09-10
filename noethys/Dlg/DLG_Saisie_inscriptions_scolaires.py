@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -55,7 +55,7 @@ class CTRL_Ecole(wx.Choice):
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) > 0 :
-            listeItems = [_(u"-- Toutes les écoles --")]
+            listeItems = [_(u"-- Toutes les Ã©coles --")]
             self.dictEcoles = {0 : None}
             index = 1
             for IDecole, nom, rue, cp, ville in listeDonnees :
@@ -161,7 +161,7 @@ class CTRL_Classe(wx.Choice):
         
         listeClasses.sort()
         
-        # Création des items de liste
+        # CrÃ©ation des items de liste
         if len(listeClasses) > 0 :
             listeItems = [_(u"-- Toutes les classes --")]
             self.dictClasses = {0 : None}
@@ -193,7 +193,7 @@ class CTRL_Classe(wx.Choice):
                 return self.dictClasses[index]["IDclasse"]
     
     def GetNiveauxClasse(self):
-        """ Retourne les niveaux disponibles dans la classe sélectionnée """
+        """ Retourne les niveaux disponibles dans la classe sÃ©lectionnÃ©e """
         index = self.GetSelection()
         if index == -1 :
             return None
@@ -290,9 +290,9 @@ class Dialog(wx.Dialog):
         self.IDclasse = IDclasse
         self.dictNiveaux = self.ImportationNiveaux() 
         
-        # Paramètres d'inscription
-        self.box_param_staticbox = wx.StaticBox(self, -1, _(u"Paramètres de l'inscription"))
-        self.label_periode = wx.StaticText(self, -1, _(u"Période :"))
+        # ParamÃ¨tres d'inscription
+        self.box_param_staticbox = wx.StaticBox(self, -1, _(u"ParamÃ¨tres de l'inscription"))
+        self.label_periode = wx.StaticText(self, -1, _(u"PÃ©riode :"))
         self.label_du = wx.StaticText(self, -1, u"du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self, activeCallback=False)
         self.label_au = wx.StaticText(self, -1, _(u"au"))
@@ -301,9 +301,9 @@ class Dialog(wx.Dialog):
         self.ctrl_niveau = CTRL_Niveau(self)
 
         # Individus
-        self.box_individus_staticbox = wx.StaticBox(self, -1, _(u"Sélection des individus"))
+        self.box_individus_staticbox = wx.StaticBox(self, -1, _(u"SÃ©lection des individus"))
         
-        self.label_filtre_periode = wx.StaticText(self, -1, _(u"Période :"))
+        self.label_filtre_periode = wx.StaticText(self, -1, _(u"PÃ©riode :"))
         self.label_filtre_du = wx.StaticText(self, -1, u"du")
         self.ctrl_filtre_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_filtre_au = wx.StaticText(self, -1, _(u"au"))
@@ -337,15 +337,15 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Inscrire des individus"))
-        self.ctrl_niveau.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici le niveau scolaire")))
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de début de scolarisation")))
+        self.ctrl_niveau.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici le niveau scolaire")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de dÃ©but de scolarisation")))
         self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de scolarisation")))
-        self.ctrl_filtre_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici un filtre de période")))
-        self.ctrl_filtre_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici un filtre de période")))
-        self.ctrl_filtre_ecole.SetToolTip(wx.ToolTip(_(u"Vous pouvez sélectionner ici un filtre sur les écoles")))
-        self.ctrl_filtre_classe.SetToolTip(wx.ToolTip(_(u"Vous pouvez sélectionner ici un filtre sur les classes")))
-        self.ctrl_filtre_niveau.SetToolTip(wx.ToolTip(_(u"Vous pouvez sélectionner ici un filtre sur les niveaux scolaires")))
-        self.ctrl_individus.SetToolTip(wx.ToolTip(_(u"Cochez les individus à inscrire")))
+        self.ctrl_filtre_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici un filtre de pÃ©riode")))
+        self.ctrl_filtre_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici un filtre de pÃ©riode")))
+        self.ctrl_filtre_ecole.SetToolTip(wx.ToolTip(_(u"Vous pouvez sÃ©lectionner ici un filtre sur les Ã©coles")))
+        self.ctrl_filtre_classe.SetToolTip(wx.ToolTip(_(u"Vous pouvez sÃ©lectionner ici un filtre sur les classes")))
+        self.ctrl_filtre_niveau.SetToolTip(wx.ToolTip(_(u"Vous pouvez sÃ©lectionner ici un filtre sur les niveaux scolaires")))
+        self.ctrl_individus.SetToolTip(wx.ToolTip(_(u"Cochez les individus Ã  inscrire")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -354,7 +354,7 @@ class Dialog(wx.Dialog):
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         
-        # Paramètres
+        # ParamÃ¨tres
         box_param = wx.StaticBoxSizer(self.box_param_staticbox, wx.VERTICAL)
         grid_sizer_param = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
 
@@ -496,30 +496,30 @@ class Dialog(wx.Dialog):
         IDniveau = self.ctrl_niveau.GetNiveau() 
         listeIndividus = self.ctrl_individus.GetCoches() 
         
-        # Vérification de la saisie
+        # VÃ©rification de la saisie
         if date_debut == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début de période !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de dÃ©but de pÃ©riode !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus() 
             return
 
         if date_fin == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin de période !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin de pÃ©riode !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus() 
             return
 
         if IDniveau == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un niveau scolaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un niveau scolaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_niveau.SetFocus() 
             return
 
         if len(listeIndividus) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun individu !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun individu !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -531,12 +531,12 @@ class Dialog(wx.Dialog):
             return
         dlg.Destroy()
         
-        # Fenêtre d'attente
-        dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant la procédure d'inscription..."), None)
+        # FenÃªtre d'attente
+        dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant la procÃ©dure d'inscription..."), None)
         if 'phoenix' not in wx.PlatformInfo:
             wx.Yield()
 
-        # Récupère infos pour historique
+        # RÃ©cupÃ¨re infos pour historique
         DB = GestionDB.DB()
         req = """SELECT ecoles.nom, classes.nom, classes.date_debut, classes.date_fin
         FROM classes 
@@ -560,7 +560,7 @@ class Dialog(wx.Dialog):
         DB = GestionDB.DB()
         for IDindividu in listeIndividus :
             
-            # Vérifie que l'individu n'est pas déjà inscrit dans une classe sur cette période
+            # VÃ©rifie que l'individu n'est pas dÃ©jÃ  inscrit dans une classe sur cette pÃ©riode
             donneesScolarite = self.parent.GetScolariteIndividu(IDindividu)
             valide = True
             for track in donneesScolarite :
@@ -570,7 +570,7 @@ class Dialog(wx.Dialog):
                     nomEcole_temp = track.nomEcole
                     nomClasse_temp = track.nomClasse
                     nomIndividu_temp = u"%s %s" % (track.prenom, track.nom)
-                    listeProblemes.append(_(u"- %s (déjà dans la classe de %s du %s au %s)\n") % (nomIndividu_temp, nomClasse_temp, date_debut_temp, date_fin_temp))
+                    listeProblemes.append(_(u"- %s (dÃ©jÃ  dans la classe de %s du %s au %s)\n") % (nomIndividu_temp, nomClasse_temp, date_debut_temp, date_fin_temp))
                     valide = False
                     break
             
@@ -588,7 +588,7 @@ class Dialog(wx.Dialog):
                     ]
                 IDscolarite = DB.ReqInsert("scolarite", listeDonnees)
                 
-                # Mémorisation dans l'historique
+                # MÃ©morisation dans l'historique
                 UTILS_Historique.InsertActions([{
                     "IDindividu" : IDindividu,
                     "IDfamille" : None,
@@ -602,9 +602,9 @@ class Dialog(wx.Dialog):
         
         # Informations
         if len(listeProblemes) > 0 :
-            message = _(u"%d inscriptions ont été enregistrées sauf pour les individus suivants :\n\n%s") % (nbreValides, "".join(listeProblemes))
+            message = _(u"%d inscriptions ont Ã©tÃ© enregistrÃ©es sauf pour les individus suivants :\n\n%s") % (nbreValides, "".join(listeProblemes))
         else:
-            message = _(u"%d inscriptions ont été enregistrées avec succès.") % nbreValides
+            message = _(u"%d inscriptions ont Ã©tÃ© enregistrÃ©es avec succÃ¨s.") % nbreValides
         dlg = wx.MessageDialog(self, message, _(u"Information"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()

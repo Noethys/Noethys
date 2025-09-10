@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -53,10 +53,10 @@ class Track(object):
                 listeTemp.append(label)
         if len(self.jours_scolaires) > 0 : listeTemp.append(ConvertJoursStr(self.jours_scolaires) + " (scol)")
         if len(self.jours_vacances) > 0 : listeTemp.append(ConvertJoursStr(self.jours_vacances) + " (vac)")
-        if self.feries == True : listeTemp.append(_(u"Fériés inclus"))
+        if self.feries == True : listeTemp.append(_(u"FÃ©riÃ©s inclus"))
         self.criteres_txt = ", ".join(listeTemp)
         
-        # Texte unités
+        # Texte unitÃ©s
         listeTemp = []
         for dictUnite in self.unites :
             if dictUnite["IDunite"] in self.parent.dictUnites :
@@ -74,7 +74,7 @@ class Track(object):
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.IDactivite = kwds.pop("IDactivite", None)
         self.IDmodele = kwds.pop("IDmodele", None)
         self.IDunite = kwds.pop("IDunite", None)
@@ -85,7 +85,7 @@ class ListView(FastObjectListView):
         self.popupIndex = -1
         self.listeDonnees = []
 
-        # Init autres données
+        # Init autres donnÃ©es
         self.listeVacances = self.GetListeVacances()
         self.listeFeries = self.GetListeFeries()
 
@@ -101,7 +101,7 @@ class ListView(FastObjectListView):
         self.Importation_unites() 
         
     def Importation_unites(self):
-        # Récupération des unités
+        # RÃ©cupÃ©ration des unitÃ©s
         DB = GestionDB.DB()
         req = """SELECT IDunite, nom, abrege, type, heure_debut, heure_fin
         FROM unites
@@ -145,16 +145,16 @@ class ListView(FastObjectListView):
             if numero == None :
                 return ""
             else :
-                return "n°%d"% numero
+                return "nÂ°%d"% numero
             
         liste_Colonnes = [
             ColumnDefn(u"", "left", 0, "", typeDonnee="entier"),
-            ColumnDefn(_(u"Unités"), 'left', 150, "unites_txt", typeDonnee="texte"),
+            ColumnDefn(_(u"UnitÃ©s"), 'left', 150, "unites_txt", typeDonnee="texte"),
             ColumnDefn(_(u"Conditions"), 'left', 200, "criteres_txt", typeDonnee="texte", isSpaceFilling=True),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucun paramètre de planning"))
+        self.SetEmptyListMsg(_(u"Aucun paramÃ¨tre de planning"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(0)
         
@@ -175,7 +175,7 @@ class ListView(FastObjectListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """        
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         if len(self.Selection()) == 0:
@@ -183,7 +183,7 @@ class ListView(FastObjectListView):
         else:
             noSelection = False
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -212,7 +212,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -246,21 +246,21 @@ class ListView(FastObjectListView):
             
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des périodes de contrats"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des pÃ©riodes de contrats"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des périodes de contrats"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des pÃ©riodes de contrats"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Liste des périodes de contrats"), autoriseSelections=False)
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des pÃ©riodes de contrats"), autoriseSelections=False)
         
     def ExportExcel(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Liste des périodes de contrats"), autoriseSelections=False)
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des pÃ©riodes de contrats"), autoriseSelections=False)
 
     def Ajouter(self, event):  
         dlg = DLG_Saisie_contrat_conso_detail.Dialog(self, IDactivite=self.IDactivite, IDunite=self.IDunite)
@@ -272,7 +272,7 @@ class ListView(FastObjectListView):
         
     def Modifier(self, event):  
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun élément de planning à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun Ã©lÃ©ment de planning Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -286,13 +286,13 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):  
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun élément de planning à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun Ã©lÃ©ment de planning Ã  supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         track = self.Selection()[0]     
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer l'élément de planning sélectionné ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer l'Ã©lÃ©ment de planning sÃ©lectionnÃ© ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -355,7 +355,7 @@ class ListView(FastObjectListView):
         return False
 
     def GetConso(self, date_debut=None, date_fin=None):
-        """ Récupération des conso générées par le planning saisi """
+        """ RÃ©cupÃ©ration des conso gÃ©nÃ©rÃ©es par le planning saisi """
         donneesPlanning = self.GetDonnees()
 
         listeConso = []
@@ -369,7 +369,7 @@ class ListView(FastObjectListView):
             dateTemp = date
             while date < (date_fin + datetime.timedelta(days=1)) :
 
-                # Vérifie période et jour
+                # VÃ©rifie pÃ©riode et jour
                 valide = False
                 if self.EstEnVacances(date) :
                     if date.weekday() in dictPlanning["jours_vacances"] :
@@ -378,16 +378,16 @@ class ListView(FastObjectListView):
                     if date.weekday() in dictPlanning["jours_scolaires"] :
                         valide = True
 
-                # Vérifie si férié
+                # VÃ©rifie si fÃ©riÃ©
                 if dictPlanning["feries"] == False and self.EstFerie(date) == True :
                     valide = False
 
-                # Calcul le numéro de semaine
+                # Calcul le numÃ©ro de semaine
                 if len(listeDates) > 0 :
                     if date.weekday() < dateTemp.weekday() :
                         numSemaine += 1
 
-                # Fréquence semaines
+                # FrÃ©quence semaines
                 if semaines in (2, 3, 4) :
                     if numSemaine % semaines != 0 :
                         valide = False
@@ -400,14 +400,14 @@ class ListView(FastObjectListView):
                     if numSemaineAnnee % 2 != 0 and semaines == 5 :
                         valide = False
 
-                # Ajout de la date à la liste
+                # Ajout de la date Ã  la liste
                 if valide == True :
                     listeDates.append(date)
 
                 dateTemp = date
                 date += datetime.timedelta(days=1)
 
-            # Mémorisation des consommations
+            # MÃ©morisation des consommations
             for date in listeDates :
 
                 for dictUnite in dictPlanning["unites"] :

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -22,15 +22,15 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         if nouveau == True :
-            intro = _(u"Vous pouvez saisir ici une consommation de type quantité. Tapez la quantité dans le champ de saisie ou utilisez les flèches.")
-            titre = _(u"Saisie d'une quantité")
+            intro = _(u"Vous pouvez saisir ici une consommation de type quantitÃ©. Tapez la quantitÃ© dans le champ de saisie ou utilisez les flÃ¨ches.")
+            titre = _(u"Saisie d'une quantitÃ©")
         else:
-            intro = _(u"Vous pouvez modifier ici une consommation de type quantité. Tapez la quantité dans le champ de saisie ou utilisez les flèches.")
-            titre = _(u"Modification d'une quantité")
+            intro = _(u"Vous pouvez modifier ici une consommation de type quantitÃ©. Tapez la quantitÃ© dans le champ de saisie ou utilisez les flÃ¨ches.")
+            titre = _(u"Modification d'une quantitÃ©")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Ctrl_nombre.png")
         
-        self.label_quantite = wx.StaticText(self, -1, _(u"Quantité : "))
+        self.label_quantite = wx.StaticText(self, -1, _(u"QuantitÃ© : "))
         self.label_quantite.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
         
         self.ctrl_quantite = wx.SpinCtrl(self, -1, u"1", min=1, max=1000, style=wx.TE_PROCESS_ENTER)
@@ -87,7 +87,7 @@ class Dialog(wx.Dialog):
         self.EndModal(3)
 
     def OnBoutonOk(self, event):
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
     
     def SetQuantite(self, quantite=1):

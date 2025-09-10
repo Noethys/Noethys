@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -31,9 +31,9 @@ def DateEngFr(textDate):
     return text
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complËte : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date compl√®te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"fÈvrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"ao˚t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÈcembre"))
+    listeMois = (_(u"janvier"), _(u"f√©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"ao√ªt"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"d√©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -57,7 +57,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -78,7 +78,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeID = None
         db = GestionDB.DB()
         req = """
@@ -109,7 +109,7 @@ class ListView(FastObjectListView):
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
         
-        # PrÈparation de la listeImages
+        # Pr√©paration de la listeImages
         imgDefaut = self.AddNamedImages("defaut", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok.png"), wx.BITMAP_TYPE_PNG))
         
         def GetImageDefaut(track):
@@ -137,7 +137,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -154,7 +154,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDtype_cotisation
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -184,8 +184,8 @@ class ListView(FastObjectListView):
 
         menuPop.AppendSeparator()
 
-        # Item Par dÈfaut
-        item = wx.MenuItem(menuPop, 60, _(u"DÈfinir comme type de cotisation par dÈfaut"))
+        # Item Par d√©faut
+        item = wx.MenuItem(menuPop, 60, _(u"D√©finir comme type de cotisation par d√©faut"))
         if noSelection == False :
             if self.Selection()[0].defaut == 1 :
                 bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok.png"), wx.BITMAP_TYPE_PNG)
@@ -197,7 +197,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -238,7 +238,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_types_cotisations", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun type de cotisation ‡ modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun type de cotisation √† modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -251,13 +251,13 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_types_cotisations", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun type de cotisation ‡ supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun type de cotisation √† supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDtype_cotisation = self.Selection()[0].IDtype_cotisation
         
-        # VÈrifie que ce type de cotisation n'est pas dÈj‡ attribuÈe ‡ une cotisation
+        # V√©rifie que ce type de cotisation n'est pas d√©j√† attribu√©e √† une cotisation
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDcotisation)
         FROM cotisations 
@@ -267,12 +267,12 @@ class ListView(FastObjectListView):
         nbreCotisations = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreCotisations > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce type de cotisation a dÈj‡ ÈtÈ attribuÈ ‡ %d cotisations(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreCotisations, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce type de cotisation a d√©j√† √©t√© attribu√© √† %d cotisations(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreCotisations, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # VÈrifie que ce type de cotisation n'est pas dÈj‡ attribuÈe ‡ une activitÈ (comme piËce obligatoire)
+        # V√©rifie que ce type de cotisation n'est pas d√©j√† attribu√©e √† une activit√© (comme pi√®ce obligatoire)
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDactivite)
         FROM cotisations_activites 
@@ -282,7 +282,7 @@ class ListView(FastObjectListView):
         nbreActivites = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreActivites > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce type de cotisation a dÈj‡ ÈtÈ attribuÈ ‡ %d activitÈ(s) en tant que piËce ‡ fournir.\n\nVous ne pouvez donc pas le supprimer !") % nbreActivites, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce type de cotisation a d√©j√† √©t√© attribu√© √† %d activit√©(s) en tant que pi√®ce √† fournir.\n\nVous ne pouvez donc pas le supprimer !") % nbreActivites, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -292,7 +292,7 @@ class ListView(FastObjectListView):
             DB = GestionDB.DB()
             DB.ReqDEL("types_cotisations", "IDtype_cotisation", IDtype_cotisation)
             DB.ReqDEL("unites_cotisations", "IDtype_cotisation", IDtype_cotisation)
-            # Attribue le DÈfaut ‡ un autre type de cotisation
+            # Attribue le D√©faut √† un autre type de cotisation
             if self.Selection()[0].defaut == 1 :
                 req = """SELECT IDtype_cotisation, defaut
                 FROM types_cotisations
@@ -309,7 +309,7 @@ class ListView(FastObjectListView):
     def SetDefaut(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_types_cotisations", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun type de cotisation dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun type de cotisation dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

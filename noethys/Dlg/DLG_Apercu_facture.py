@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -23,22 +23,22 @@ from Ctrl import CTRL_Factures_options
 
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent, provisoire=False, titre=_(u"Aperçu d'une facture"), intro=_(u"Vous pouvez ici créer un aperçu PDF de la facture sélectionnée.")):
+    def __init__(self, parent, provisoire=False, titre=_(u"AperÃ§u d'une facture"), intro=_(u"Vous pouvez ici crÃ©er un aperÃ§u PDF de la facture sÃ©lectionnÃ©e.")):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         # Bandeau
         if provisoire == True :
-            intro += _(u" <FONT COLOR = '#FF0000'>Attention, il ne s'agit que d'une facture provisoire avant génération !</FONT>")
+            intro += _(u" <FONT COLOR = '#FF0000'>Attention, il ne s'agit que d'une facture provisoire avant gÃ©nÃ©ration !</FONT>")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Apercu.png")
         
-        # Paramètres
+        # ParamÃ¨tres
         self.ctrl_parametres = CTRL_Factures_options.CTRL(self, affichage="vertical")
                 
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"AperÃ§u"), cheminImage="Images/32x32/Apercu.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
@@ -58,7 +58,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
         
-        # Paramètres
+        # ParamÃ¨tres
         grid_sizer_base.Add(self.ctrl_parametres, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
         # Boutons
@@ -84,7 +84,7 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
 
     def GetParametres(self):
-        """ Retourne les paramètres sélectionnés """
+        """ Retourne les paramÃ¨tres sÃ©lectionnÃ©s """
         dictOptions = self.ctrl_parametres.GetOptions()
         if dictOptions == False :
             return False

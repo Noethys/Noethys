@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -20,7 +20,7 @@ from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 from Dlg import DLG_Noedoc
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 from Utils import UTILS_Dates
 from reportlab.platypus.doctemplate import PageTemplate, BaseDocTemplate, NextPageTemplate
 from reportlab.platypus import Paragraph, Spacer, Table, TableStyle, PageBreak
@@ -52,7 +52,7 @@ def DateEngFr(textDate):
     return text
 
 def PeriodeComplete(mois, annee):
-    listeMois = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
+    listeMois = (_(u"Janvier"), _(u"FÃ©vrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"AoÃ»t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"DÃ©cembre"))
     periodeComplete = u"%s %d" % (listeMois[mois-1], annee)
     return periodeComplete
 
@@ -74,7 +74,7 @@ def ConvertCouleurPDFpourWX(couleurpdf=(0, 0, 0)):
     return (couleurpdf[0]*255.0, couleurpdf[1]*255.0, couleurpdf[2]*255.0)
 
 def Template(canvas, doc):
-    """ Première page """
+    """ PremiÃ¨re page """
     doc.modeleDoc.DessineFond(canvas) 
     doc.modeleDoc.DessineFormes(canvas) 
 
@@ -85,7 +85,7 @@ class MyPageTemplate(PageTemplate):
         self.pageWidth = pageSize[0]
         self.pageHeight = pageSize[1]
         
-        # Récupère les coordonnées du cadre principal
+        # RÃ©cupÃ¨re les coordonnÃ©es du cadre principal
         cadre_principal = doc.modeleDoc.FindObjet("cadre_principal")
         x, y, l, h = doc.modeleDoc.GetCoordsObjet(cadre_principal)
         global CADRE_CONTENU
@@ -98,7 +98,7 @@ class MyPageTemplate(PageTemplate):
         IDcompte_payeur = doc._nameSpace["IDcompte_payeur"]
         dictValeur = DICT_VALEURS[IDcompte_payeur]
         
-        # Dessin du coupon-réponse vertical
+        # Dessin du coupon-rÃ©ponse vertical
         coupon_vertical = doc.modeleDoc.FindObjet("coupon_vertical")
         if "afficher_coupon_reponse" in DICT_OPTIONS and DICT_OPTIONS["afficher_coupon_reponse"] == True and coupon_vertical != None :
             x, y, largeur, hauteur = doc.modeleDoc.GetCoordsObjet(coupon_vertical)
@@ -113,7 +113,7 @@ class MyPageTemplate(PageTemplate):
             # Textes
             canvas.rotate(90)
             canvas.setFont("Helvetica", 8)
-            canvas.drawString(y+2*mm, -x-4*mm, _(u"Merci de joindre ce coupon à votre règlement"))
+            canvas.drawString(y+2*mm, -x-4*mm, _(u"Merci de joindre ce coupon Ã  votre rÃ¨glement"))
             canvas.setFont("Helvetica", 7)
             solde = dictValeur["total"] - dictValeur["ventilation"]
             if DICT_OPTIONS["integrer_impayes"] == True :
@@ -128,7 +128,7 @@ class MyPageTemplate(PageTemplate):
                 barcode.drawOn(canvas, y+36*mm, -x-13*mm)
             canvas.restoreState()
 
-        # Dessin du coupon-réponse horizontal
+        # Dessin du coupon-rÃ©ponse horizontal
         coupon_horizontal = doc.modeleDoc.FindObjet("coupon_horizontal")
         if "afficher_coupon_reponse" in DICT_OPTIONS and DICT_OPTIONS["afficher_coupon_reponse"] == True and coupon_horizontal != None :
             x, y, largeur, hauteur = doc.modeleDoc.GetCoordsObjet(coupon_horizontal)
@@ -140,7 +140,7 @@ class MyPageTemplate(PageTemplate):
             canvas.rect(x, y, largeur, hauteur, fill=0)
             # Textes
             canvas.setFont("Helvetica", 8)
-            canvas.drawString(x+2*mm, y+hauteur-4*mm, _(u"Merci de joindre ce coupon à votre règlement"))
+            canvas.drawString(x+2*mm, y+hauteur-4*mm, _(u"Merci de joindre ce coupon Ã  votre rÃ¨glement"))
             canvas.setFont("Helvetica", 7)
             solde = dictValeur["total"] - dictValeur["ventilation"]
             if DICT_OPTIONS["integrer_impayes"] == True :
@@ -172,7 +172,7 @@ class MyPageTemplate(PageTemplate):
 
         
 def Template_PagesSuivantes(canvas, doc):
-    """ Première page """
+    """ PremiÃ¨re page """
     canvas.saveState()
 
     canvas.setFont('Times-Roman', 12)
@@ -220,15 +220,15 @@ class Impression():
             nomDoc = nomFichier
         doc = BaseDocTemplate(nomDoc, pagesize=TAILLE_PAGE, showBoundary=False)
         
-        # Mémorise le ID du modèle
+        # MÃ©morise le ID du modÃ¨le
         modeleDoc = DLG_Noedoc.ModeleDoc(IDmodele=IDmodele)
         doc.modeleDoc = modeleDoc
 
-        # Vérifie qu'un cadre principal existe bien dans le document
+        # VÃ©rifie qu'un cadre principal existe bien dans le document
         if doc.modeleDoc.FindObjet("cadre_principal") == None :
             raise Exception("Votre modele de document doit obligatoirement comporter un cadre principal. Retournez dans l'editeur de document et utilisez pour votre modele la commande 'Inserer un objet special > Inserer le cadre principal'.")
         
-        # Importe le template de la première page
+        # Importe le template de la premiÃ¨re page
         doc.addPageTemplates(MyPageTemplate(pageSize=TAILLE_PAGE, doc=doc))
         
         story = []
@@ -240,7 +240,7 @@ class Impression():
         styleTexte.borderPadding = 9
         styleTexte.leading = 12
         
-##        # Définit le template des pages suivantes
+##        # DÃ©finit le template des pages suivantes
 ##        story.append(NextPageTemplate("suivante"))
         
         
@@ -262,7 +262,7 @@ class Impression():
                 if dictOptions["afficher_titre"] == True :
                     if titre == None :
                         if mode == "facture" : titre = _(u"Facture")
-                        if mode == "attestation" : titre = _(u"Attestation de présence")
+                        if mode == "attestation" : titre = _(u"Attestation de prÃ©sence")
                         if mode == "devis": titre = _(u"Devis")
                         if "texte_titre" in dictValeur : 
                             titre = dictValeur["texte_titre"]
@@ -272,7 +272,7 @@ class Impression():
                     texteDateDebut = DateEngFr(str(dictValeur["date_debut"]))
                     texteDateFin = DateEngFr(str(dictValeur["date_fin"]))
                     if dictOptions["afficher_periode"] == True :
-                        dataTableau.append((_(u"Période du %s au %s") % (texteDateDebut, texteDateFin),))
+                        dataTableau.append((_(u"PÃ©riode du %s au %s") % (texteDateDebut, texteDateFin),))
                     styles = [
                             ('VALIGN', (0,0), (-1,-1), 'MIDDLE'), 
                             ('FONT',(0,0),(0,0), "Helvetica-Bold", dictOptions["taille_texte_titre"]), 
@@ -319,7 +319,7 @@ class Impression():
                 montantVentilation = FloatToDecimal(0.0)
                 nbre_total_prestations_anterieures = 0
 
-                # Recherche si TVA utilisée
+                # Recherche si TVA utilisÃ©e
                 activeTVA = False
                 for IDindividu, dictIndividus in dictValeur["individus"].items() :
                     for IDactivite, dictActivites in dictIndividus["activites"].items() :
@@ -391,7 +391,7 @@ class Impression():
                         tableau.setStyle(TableStyle(listeStyles))
                         story.append(tableau)
                         
-                        # Insertion du nom de l'activité
+                        # Insertion du nom de l'activitÃ©
                         listeIDactivite = []
                         for IDactivite, dictActivites in dictIndividus["activites"].items() :
                             listeIDactivite.append((dictActivites["texte"], IDactivite, dictActivites))
@@ -450,7 +450,7 @@ class Impression():
                                         if detail in (1, 3): labelkey = label
                                         if detail in (2, 4): labelkey = label + " P.U. " + "%.2f %s" % (montant, SYMBOLE)
 
-                                        # Si c'est une prestation antérieure
+                                        # Si c'est une prestation antÃ©rieure
                                         if date < str(dictValeur["date_debut"]) :
                                             nbre_prestations_anterieures += 1
                                             nbre_total_prestations_anterieures += 1
@@ -476,12 +476,12 @@ class Impression():
                                             nbreDates = len(listeDatesUnite)
                                             dictRegroupement[labelkey]["dates_forfait"] = _(u"<BR/><font size=5>Du %s au %s soit %d jours</font>") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)), nbreDates)
 
-                                # Insertion des prestations regroupées
+                                # Insertion des prestations regroupÃ©es
                                 listeLabels = list(dictRegroupement.keys()) 
                                 listeLabels.sort()
 
                                 dataTableau = [(
-                                    Paragraph(_(u"<para align='center'>Quantité</para>"), paraLabelsColonnes), 
+                                    Paragraph(_(u"<para align='center'>QuantitÃ©</para>"), paraLabelsColonnes), 
                                     Paragraph(_(u"<para align='center'>Prestation</para>"), paraLabelsColonnes),
                                     Paragraph(_(u"<para align='center'>Base</para>"), paraLabelsColonnes),
                                     Paragraph(_(u"<para align='center'>Montant</para>"), paraLabelsColonnes), 
@@ -551,7 +551,7 @@ class Impression():
                                     dateFr = dictDates["texte"]
                                     prestations = dictDates["unites"]
                                     
-                                    # Insertion des unités de présence
+                                    # Insertion des unitÃ©s de prÃ©sence
                                     listeIntitules = []
                                     listeMontantsHT = []
                                     listeTVA = []
@@ -585,7 +585,7 @@ class Impression():
                                                 commentaire = dictOptions["dictCommentaires"][key]
                                                 label = "%s <i><font color='#939393'>%s</font></i>" % (label, commentaire)
 
-                                        # Si c'est une prestation antérieure
+                                        # Si c'est une prestation antÃ©rieure
                                         if date < str(dictValeur["date_debut"]):
                                             nbre_prestations_anterieures += 1
                                             nbre_total_prestations_anterieures += 1
@@ -622,7 +622,7 @@ class Impression():
                                         # Affiche total
                                         listeMontantsTTC.append(Paragraph(u"<para align='center'>%.02f %s</para>" % (montant, SYMBOLE), paraStyle)) 
                                     
-                                        # Déductions
+                                        # DÃ©ductions
                                         if len(deductions) > 0 :
                                             for dictDeduction in deductions :
                                                 listeIntitules.append(Paragraph(u"<para align='left'><font size=5 color='#939393'>- %.02f %s : %s</font></para>" % (dictDeduction["montant"], SYMBOLE, dictDeduction["label"]), paraStyle))
@@ -671,13 +671,13 @@ class Impression():
                             tableau.setStyle(TableStyle(listeStyles))
                             story.append(tableau)
 
-                        # Préparation du texet des prestations antérieures
+                        # PrÃ©paration du texet des prestations antÃ©rieures
                         if nbre_prestations_anterieures == 0 :
                             texte_prestations_anterieures = ""
                         elif nbre_prestations_anterieures == 1 :
-                            texte_prestations_anterieures = _(u"* 1 prestation antérieure reportée")
+                            texte_prestations_anterieures = _(u"* 1 prestation antÃ©rieure reportÃ©e")
                         else :
-                            texte_prestations_anterieures = _(u"* %d prestations antérieures reportées") % nbre_prestations_anterieures
+                            texte_prestations_anterieures = _(u"* %d prestations antÃ©rieures reportÃ©es") % nbre_prestations_anterieures
 
                         # Insertion des totaux
                         dataTableau = []
@@ -697,7 +697,7 @@ class Impression():
                                 ('BACKGROUND', (-1, -1), (-1, -1), couleurFond), 
                                 ('TOPPADDING', (0, 0), (-1, -1), 1), 
                                 ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
-                                ('SPAN', (0, -1), (1, -1)), # Fusion de la dernière ligne pour le texte_prestations_anterieures
+                                ('SPAN', (0, -1), (1, -1)), # Fusion de la derniÃ¨re ligne pour le texte_prestations_anterieures
                                 ('FONT', (0, -1), (0, -1), "Helvetica", dictOptions["taille_texte_prestations_anterieures"]),
                             ]
 
@@ -705,13 +705,13 @@ class Impression():
                             listeStyles.append(('BACKGROUND', (-3, -1), (-3, -1), couleurFond))
                             listeStyles.append(('GRID', (-3, -1), (-3, -1), 0.25, colors.black))
                             
-                        # Création du tableau
+                        # CrÃ©ation du tableau
                         tableau = Table(dataTableau, largeursColonnes)
                         tableau.setStyle(TableStyle(listeStyles))
                         story.append(tableau)
                         story.append(Spacer(0, 10))
                 
-                # Intégration des messages, des reports et des qf
+                # IntÃ©gration des messages, des reports et des qf
                 listeMessages = []
                 paraStyle = ParagraphStyle(name="message",
                                           fontName="Helvetica",
@@ -721,14 +721,14 @@ class Impression():
                                           spaceAfter=2,
                                         )
                 
-                # Date d'échéance
+                # Date d'Ã©chÃ©ance
 ##                if dictOptions["echeance"] != None :
 ##                    listeMessages.append(Paragraph(dictOptions["echeance"], paraStyle))
 
-                # Texte Prestations antérieures
+                # Texte Prestations antÃ©rieures
                 texte_prestations_anterieures = dictOptions["texte_prestations_anterieures"]
                 if nbre_total_prestations_anterieures > 0 and len(texte_prestations_anterieures) > 0 :
-                    texte = _(u"<b>%d prestations antérieures : </b>%s") % (nbre_total_prestations_anterieures, texte_prestations_anterieures)
+                    texte = _(u"<b>%d prestations antÃ©rieures : </b>%s") % (nbre_total_prestations_anterieures, texte_prestations_anterieures)
                     listeMessages.append(Paragraph(texte, paraStyle))
 
                 # QF aux dates de facture
@@ -739,7 +739,7 @@ class Impression():
                     if len(listeDates) > 0 :
                         for dates in listeDates :
                             qf = dictQfdates[dates]
-                            texteQf = _(u"<b>Votre quotient familial : </b>Votre QF est de %s sur la période %s.") % (qf, dates)
+                            texteQf = _(u"<b>Votre quotient familial : </b>Votre QF est de %s sur la pÃ©riode %s.") % (qf, dates)
                             listeMessages.append(Paragraph(texteQf, paraStyle))
 
                 # Reports
@@ -749,9 +749,9 @@ class Impression():
                     listePeriodes.sort() 
                     if len(listePeriodes) > 0 :
                         if dictOptions["integrer_impayes"] == True :
-                            texteReport = _(u"<b>Détail des impayés : </b>")
+                            texteReport = _(u"<b>DÃ©tail des impayÃ©s : </b>")
                         else :
-                            texteReport = _(u"<b>Impayés : </b>Merci de bien vouloir nous retourner également le règlement des prestations impayées suivantes : ")
+                            texteReport = _(u"<b>ImpayÃ©s : </b>Merci de bien vouloir nous retourner Ã©galement le rÃ¨glement des prestations impayÃ©es suivantes : ")
                         for periode in listePeriodes :
                             annee, mois = periode
                             nomPeriode = PeriodeComplete(mois, annee)
@@ -760,7 +760,7 @@ class Impression():
                         texteReport = texteReport[:-2] + u"."
                         listeMessages.append(Paragraph(texteReport, paraStyle))
                 
-                # Règlements
+                # RÃ¨glements
                 if mode == "facture" and dictOptions["afficher_reglements"] == True :
                     dictReglements = dictValeur["reglements"]
                     if len(dictReglements) > 0 :
@@ -771,14 +771,14 @@ class Impression():
                             else :
                                 emetteur = ""
                             if dictTemp["numero"] not in ("", None) :
-                                numero = u" n°%s " % dictTemp["numero"]
+                                numero = u" nÂ°%s " % dictTemp["numero"]
                             else :
                                 numero = ""
                                 
                             montantReglement = u"%.02f %s" % (dictTemp["montant"], SYMBOLE)
                             montantVentilation = u"%.02f %s" % (dictTemp["ventilation"], SYMBOLE)
                             if dictTemp["ventilation"] != dictTemp["montant"] :
-                                texteMontant = u"%s utilisés sur %s" % (montantVentilation, montantReglement)
+                                texteMontant = u"%s utilisÃ©s sur %s" % (montantVentilation, montantReglement)
                             else :
                                 texteMontant = montantReglement
                                 
@@ -786,11 +786,11 @@ class Impression():
                             listeTextesReglements.append(texte)
                         
                         if dictValeur["solde"] > FloatToDecimal(0.0) :
-                            intro = u"Période partiellement réglée avec"
+                            intro = u"PÃ©riode partiellement rÃ©glÃ©e avec"
                         else :
-                            intro = u"Période réglée en intégralité avec"
+                            intro = u"PÃ©riode rÃ©glÃ©e en intÃ©gralitÃ© avec"
                             
-                        texteReglements = _(u"<b>Règlement : </b> %s %s.") % (intro, " + ".join(listeTextesReglements))
+                        texteReglements = _(u"<b>RÃ¨glement : </b> %s %s.") % (intro, " + ".join(listeTextesReglements))
                         listeMessages.append(Paragraph(texteReglements, paraStyle))
                                 
                 # Messages
@@ -817,25 +817,25 @@ class Impression():
                 if mode == "devis":
                     dataTableau.append((listeMessages, _(u"Total :"), u"%.02f %s" % (dictValeur["total"], SYMBOLE)))
                 else:
-                    dataTableau.append((listeMessages, _(u"Total période :"), u"%.02f %s" % (dictValeur["total"], SYMBOLE)))
-                    dataTableau.append(("", _(u"Montant déjà réglé :"), u"%.02f %s" % (dictValeur["ventilation"], SYMBOLE)))
+                    dataTableau.append((listeMessages, _(u"Total pÃ©riode :"), u"%.02f %s" % (dictValeur["total"], SYMBOLE)))
+                    dataTableau.append(("", _(u"Montant dÃ©jÃ  rÃ©glÃ© :"), u"%.02f %s" % (dictValeur["ventilation"], SYMBOLE)))
                 
                     if mode == "facture" and dictOptions["integrer_impayes"] == True and dictValeur["total_reports"] > 0.0 :
-                        dataTableau.append(("", _(u"Report impayés :"), u"%.02f %s" % (dictValeur["total_reports"], SYMBOLE) ))
-                        dataTableau.append(("", _(u"Reste à régler :"), u"%.02f %s" % (dictValeur["solde"] + dictValeur["total_reports"], SYMBOLE) ))
+                        dataTableau.append(("", _(u"Report impayÃ©s :"), u"%.02f %s" % (dictValeur["total_reports"], SYMBOLE) ))
+                        dataTableau.append(("", _(u"Reste Ã  rÃ©gler :"), u"%.02f %s" % (dictValeur["solde"] + dictValeur["total_reports"], SYMBOLE) ))
                         rowHeights=[10, 10, 10, None]
                     else :
-                        dataTableau.append(("", _(u"Reste à régler :"), u"%.02f %s" % (dictValeur["solde"], SYMBOLE) ))
+                        dataTableau.append(("", _(u"Reste Ã  rÃ©gler :"), u"%.02f %s" % (dictValeur["solde"], SYMBOLE) ))
                         rowHeights=[18, 18, None]
                     
                 style = [
                         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'), 
 
-                        # Lignes Période, avoir, impayés
+                        # Lignes PÃ©riode, avoir, impayÃ©s
                         ('FONT', (1, 0), (1, -2), "Helvetica", 8),#dictOptions["taille_texte_labels_totaux"]), 
                         ('FONT', (2, 0), (2, -2), "Helvetica-Bold", 8),#dictOptions["taille_texte_montants_totaux"]), 
                         
-                        # Ligne Reste à régler
+                        # Ligne Reste Ã  rÃ©gler
                         ('FONT', (1, -1), (1, -1), "Helvetica-Bold", dictOptions["taille_texte_labels_totaux"]), 
                         ('FONT', (2, -1), (2, -1), "Helvetica-Bold", dictOptions["taille_texte_montants_totaux"]), 
                         
@@ -923,7 +923,7 @@ class Impression():
 ##        except Exception, err :
 ##            print "Erreur dans ouverture PDF :", err
 ##            if "Permission denied" in err :
-##                dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas créer le PDF.\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan..."), _(u"Erreur d'édition"), wx.OK | wx.ICON_ERROR)
+##                dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas crÃ©er le PDF.\n\nVeuillez vÃ©rifier qu'un autre PDF n'est pas dÃ©jÃ  ouvert en arriÃ¨re-plan..."), _(u"Erreur d'Ã©dition"), wx.OK | wx.ICON_ERROR)
 ##                dlg.ShowModal()
 ##                dlg.Destroy()
 ##                return

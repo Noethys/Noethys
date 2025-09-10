@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -49,16 +49,16 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         
         if self.IDemetteur == None :
-            self.SetTitle(_(u"Création d'un émetteur"))
+            self.SetTitle(_(u"CrÃ©ation d'un Ã©metteur"))
         else:
             self.Importation()
-            self.SetTitle(_(u"Modification d'un émetteur"))
+            self.SetTitle(_(u"Modification d'un Ã©metteur"))
         
         
         
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici un nom pour cet émetteur")))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici un nom pour cet Ã©metteur")))
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour importer une image")))
         self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'image active")))
 
@@ -102,7 +102,7 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Emetteursderglements")
 
     def OnBoutonOk(self, event): 
-        # Récupération et vérification des données saisies
+        # RÃ©cupÃ©ration et vÃ©rification des donnÃ©es saisies
         nom = self.ctrl_nom.GetValue()
         if nom == None :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
@@ -128,14 +128,14 @@ class Dialog(wx.Dialog):
         self.ctrl_image.IDkey = self.IDemetteur
         self.ctrl_image.Sauvegarder() 
         
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
     
     def GetIDemetteur(self):
         return self.IDemetteur
 
     def Importation(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         DB = GestionDB.DB()
         req = """SELECT nom, IDmode
         FROM emetteurs 

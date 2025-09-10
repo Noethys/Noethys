@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -55,14 +55,14 @@ class Dialog(wx.Dialog):
 
         self.staticbox_texte_staticbox = wx.StaticBox(self, -1, _(u"Saisie de texte"))
         self.staticbox_champs_staticbox = wx.StaticBox(self, -1, _(u"Champs disponibles"))
-        self.label_intro = wx.StaticText(self, -1, _(u"Vous pouvez écrire votre texte et insérer des champs en double-cliquant sur un item de la liste."), style=wx.ALIGN_CENTER)
+        self.label_intro = wx.StaticText(self, -1, _(u"Vous pouvez Ã©crire votre texte et insÃ©rer des champs en double-cliquant sur un item de la liste."), style=wx.ALIGN_CENTER)
         self.ctrl_champs = OL_Documents_champs.ListView(self, listeChamps=listeChamps, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_recherche = OL_Documents_champs.BarreRecherche(self, self.ctrl_champs)
         self.ctrl_champs.SetMinSize((-1, 300))
         self.ctrl_champs.MAJ() 
         self.staticbox_champs_staticbox.SetLabel(_(u"%d champs disponibles") % self.ctrl_champs.GetNbreChamps())
         self.ctrl_texte = wx.TextCtrl(self, -1, self.texte, style=wx.TE_MULTILINE)
-        self.hyper_formule = Hyperlien(self, label=_(u"Insérer une formule conditionnelle"), infobulle=_(u"Cliquez ici pour insérer une formule conditionnelle"), URL="")
+        self.hyper_formule = Hyperlien(self, label=_(u"InsÃ©rer une formule conditionnelle"), infobulle=_(u"Cliquez ici pour insÃ©rer une formule conditionnelle"), URL="")
         
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
@@ -118,7 +118,7 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
 
     def OnBouton_ok(self, event):
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
     
     def GetTexte(self):
@@ -136,7 +136,7 @@ if __name__ == u"__main__":
     #wx.InitAllImageHandlers()
     listeChamps = [
         (_(u"Nom de l'individu"), _(u"DUPOND"), u"{NOM_INDIVIDU}"),
-        (_(u"Prénom de l'individu"), _(u"Gérard"), u"{PRENOM_INDIVIDU}"),
+        (_(u"PrÃ©nom de l'individu"), _(u"GÃ©rard"), u"{PRENOM_INDIVIDU}"),
         ]
     dialog_1 = Dialog(None, texte=_(u"coucou !"), listeChamps=listeChamps)
     app.SetTopWindow(dialog_1)

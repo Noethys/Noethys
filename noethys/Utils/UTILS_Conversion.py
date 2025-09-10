@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -13,10 +13,10 @@ import Chemins
 from Utils.UTILS_Traduction import _
 """
 Traduction d'un nombre en texte.
-Réalisation : Michel Claveau    http://mclaveau.com
+RÃ©alisation : Michel Claveau    http://mclaveau.com
 SVP, n'enlevez pas mon adresse/URL ; merci d'avance
-Usage : voir les exemples, à la fin du script.
-Note : traduction franco-française, avec unités variables, orthographe géré, unités et centièmes.
+Usage : voir les exemples, Ã  la fin du script.
+Note : traduction franco-franÃ§aise, avec unitÃ©s variables, orthographe gÃ©rÃ©, unitÃ©s et centiÃ¨mes.
 """
 
 def tradd(num):
@@ -96,7 +96,7 @@ def trad(nb, unite="euro", decim="centime"):
     z3=(nb-z1)*100
     z2=int(round(z3,0))
     if z1==0:
-        ch=_(u"zéro")
+        ch=_(u"zÃ©ro")
     else:
         ch=tradn(abs(z1))
     if z1>1 or z1<-1:
@@ -130,7 +130,7 @@ if __name__=='__main__':
     print(2.2,trad(2.2))
     print(12.30,trad(12.30,'heure','minute'))
     print(12.30,trad(12.30,'heure',''))
-    print(1.8,trad(1.8,u'mètre',''))
+    print(1.8,trad(1.8,u'mÃ¨tre',''))
     print(2.5,trad(2.5,'litre',''))
     print(3.5,trad(3.5,decim=''))
     print(300,trad(300))

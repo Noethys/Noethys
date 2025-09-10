@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -27,8 +27,8 @@ class Panel(wx.Panel):
         self.parent = parent
         self.IDactivite = IDactivite
 
-        # Catégories de tarifs
-        self.staticbox_categories_staticbox = wx.StaticBox(self, -1, _(u"Catégories de tarifs"))
+        # CatÃ©gories de tarifs
+        self.staticbox_categories_staticbox = wx.StaticBox(self, -1, _(u"CatÃ©gories de tarifs"))
         self.ctrl_categories = OL_Categories_tarifs.ListView(self, id=-1, IDactivite=IDactivite, name="OL_categories", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_categories.MAJ() 
 
@@ -60,18 +60,18 @@ class Panel(wx.Panel):
         
     def __set_properties(self):
         self.ctrl_tarification.SetToolTip(wx.ToolTip(_(u"Calendrier des tarifs et du nombre de places")))
-        self.bouton_ajouter_categorie.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une catégorie de tarif")))
-        self.bouton_modifier_categorie.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la catégorie sélectionnés")))
-        self.bouton_supprimer_categorie.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la catégorie sélectionnée")))
+        self.bouton_ajouter_categorie.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une catÃ©gorie de tarif")))
+        self.bouton_modifier_categorie.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la catÃ©gorie sÃ©lectionnÃ©s")))
+        self.bouton_supprimer_categorie.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la catÃ©gorie sÃ©lectionnÃ©e")))
         self.bouton_ajouter_tarif.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un nom de prestation ou un tarif")))
-        self.bouton_modifier_tarif.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'item sélectionné")))
-        self.bouton_supprimer_tarif.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'item sélectionné")))
-        self.bouton_dupliquer_tarif.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dupliquer l'item sélectionné")))
+        self.bouton_modifier_tarif.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'item sÃ©lectionnÃ©")))
+        self.bouton_supprimer_tarif.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'item sÃ©lectionnÃ©")))
+        self.bouton_dupliquer_tarif.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dupliquer l'item sÃ©lectionnÃ©")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         
-        # Catégories de tarifs
+        # CatÃ©gories de tarifs
         staticbox_categories = wx.StaticBoxSizer(self.staticbox_categories_staticbox, wx.VERTICAL)
         grid_sizer_categories = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_boutons_categories = wx.FlexGridSizer(rows=5, cols=1, vgap=5, hgap=5)
@@ -128,14 +128,14 @@ class Panel(wx.Panel):
         self.ctrl_tarification.Dupliquer(None)
     
     def MAJtarifs(self):
-        """ Met à jour le ctrl tarifs """
+        """ Met Ã  jour le ctrl tarifs """
         self.ctrl_tarification.MAJ() 
 
     def Validation(self):
-        # Vérifie qu'au moins une catégorie de tarif a été saisie
+        # VÃ©rifie qu'au moins une catÃ©gorie de tarif a Ã©tÃ© saisie
         liste_categories_tarifs = self.ctrl_categories.GetTracks()
         if len(liste_categories_tarifs) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucune catégorie de tarif. Aucun individu ne pourra donc être inscrit à cette activité.\n\nSouhaitez-vous quand même continuer ?"), _(u"Avertissement"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucune catÃ©gorie de tarif. Aucun individu ne pourra donc Ãªtre inscrit Ã  cette activitÃ©.\n\nSouhaitez-vous quand mÃªme continuer ?"), _(u"Avertissement"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
             resultat = dlg.ShowModal()
             dlg.Destroy()
             if resultat != wx.ID_YES:

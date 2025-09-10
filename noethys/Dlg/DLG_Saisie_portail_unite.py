@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -101,17 +101,17 @@ class Dialog(wx.Dialog):
         self.ordre = ordre
 
         # Nom
-        self.staticbox_nom_staticbox = wx.StaticBox(self, -1, _(u"Nom de l'unité de réservation"))
+        self.staticbox_nom_staticbox = wx.StaticBox(self, -1, _(u"Nom de l'unitÃ© de rÃ©servation"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
 
-        # Caractéristiques
-        self.staticbox_caract_staticbox = wx.StaticBox(self, -1, _(u"Caractéristiques"))
+        # CaractÃ©ristiques
+        self.staticbox_caract_staticbox = wx.StaticBox(self, -1, _(u"CaractÃ©ristiques"))
 
-        self.label_unites_principales = wx.StaticText(self, -1, _(u"Unités de conso\nprincipales :"))
+        self.label_unites_principales = wx.StaticText(self, -1, _(u"UnitÃ©s de conso\nprincipales :"))
         self.ctrl_unites_principales = Liste_unites_conso(self, IDactivite=self.IDactivite)
         self.ctrl_unites_principales.MAJ()
 
-        self.label_unites_secondaires = wx.StaticText(self, -1, _(u"Unités de conso\nsecondaires :"))
+        self.label_unites_secondaires = wx.StaticText(self, -1, _(u"UnitÃ©s de conso\nsecondaires :"))
         self.ctrl_unites_secondaires = Liste_unites_conso(self, IDactivite=self.IDactivite)
         self.ctrl_unites_secondaires.MAJ()
 
@@ -132,11 +132,11 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         if self.IDunite == None :
-            self.SetTitle(_(u"Saisie d'une unité de réservation"))
+            self.SetTitle(_(u"Saisie d'une unitÃ© de rÃ©servation"))
         else :
-            self.SetTitle(_(u"Modification d'une unité de réservation"))
+            self.SetTitle(_(u"Modification d'une unitÃ© de rÃ©servation"))
         self.SetSize((650, -1))
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom de l'unité de réservation")))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom de l'unitÃ© de rÃ©servation")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -150,7 +150,7 @@ class Dialog(wx.Dialog):
         staticbox_nom.Add(self.ctrl_nom, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(staticbox_nom, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
 
-        # Caractéristiques
+        # CaractÃ©ristiques
         staticbox_caract = wx.StaticBoxSizer(self.staticbox_caract_staticbox, wx.VERTICAL)
         grid_sizer_caract = wx.FlexGridSizer(rows=7, cols=2, vgap=15, hgap=5)
 
@@ -192,21 +192,21 @@ class Dialog(wx.Dialog):
         # Nom
         nom = self.ctrl_nom.GetValue() 
         if nom == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour cette unité de réservation !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour cette unitÃ© de rÃ©servation !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
-        # Unités de conso principales
+        # UnitÃ©s de conso principales
         listeCochesUnitesPrincipales = self.ctrl_unites_principales.GetIDcoches()
         texteCochesUnitesPrincipales = self.ctrl_unites_principales.GetCochesStr()
         if len(listeCochesUnitesPrincipales) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins une unité de consommation principale !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins une unitÃ© de consommation principale !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
-        # Unités de conso secondaires
+        # UnitÃ©s de conso secondaires
         listeCochesUnitesSecondaires = self.ctrl_unites_secondaires.GetIDcoches()
         texteCochesUnitesSecondaires = self.ctrl_unites_secondaires.GetCochesStr()
 
@@ -218,7 +218,7 @@ class Dialog(wx.Dialog):
 
         if len(listeUniteConflit) :
             listeNoms = self.ctrl_unites_principales.GetNomsUnites(listeUniteConflit)
-            dlg = wx.MessageDialog(self, _(u"Les unités secondaires ne peuvent pas être identiques aux unités secondaires. Veuillez décocher les unités secondaires suivantes :\n\n > %s") % u", ".join(listeNoms), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Les unitÃ©s secondaires ne peuvent pas Ãªtre identiques aux unitÃ©s secondaires. Veuillez dÃ©cocher les unitÃ©s secondaires suivantes :\n\n > %s") % u", ".join(listeNoms), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -239,7 +239,7 @@ class Dialog(wx.Dialog):
             DB.ReqMAJ("portail_unites", listeDonnees, "IDunite", self.IDunite)
         DB.Close()
 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
 

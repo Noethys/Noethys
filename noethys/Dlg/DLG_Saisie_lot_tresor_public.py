@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-20 Ivan LUCAS
@@ -35,7 +35,7 @@ import wx.lib.agw.hyperlink as Hyperlink
 from Utils import UTILS_Facturation
 from Utils import UTILS_Parametres
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 if 'phoenix' in wx.PlatformInfo:
     from wx.adv import CommandLinkButton
@@ -43,10 +43,10 @@ else :
     from wx import CommandLinkButton
 
 FORMATS = [
-    {"code": "pes", "label": _(u"PES v2 ORMC Recette"), "description": _(u"Export vers le logiciel Hélios du Trésor Public diffusé par la DGFIP.")},
-    {"code": "magnus", "label": _(u"Magnus Berger-Levrault"), "description": _(u"Export vers le logiciel Magnus de la société Berger-Levrault.")},
-    {"code": "jvs", "label": _(u"Millesime Online JVS"), "description": _(u"Export vers le logiciel Millesime Online de la société JVS-MAIRISTEM.")},
-    {"code": "corail", "label": _(u"Corail Cosoluce"), "description": _(u"Export vers le logiciel Corail de la société Cosoluce.")},
+    {"code": "pes", "label": _(u"PES v2 ORMC Recette"), "description": _(u"Export vers le logiciel HÃ©lios du TrÃ©sor Public diffusÃ© par la DGFIP.")},
+    {"code": "magnus", "label": _(u"Magnus Berger-Levrault"), "description": _(u"Export vers le logiciel Magnus de la sociÃ©tÃ© Berger-Levrault.")},
+    {"code": "jvs", "label": _(u"Millesime Online JVS"), "description": _(u"Export vers le logiciel Millesime Online de la sociÃ©tÃ© JVS-MAIRISTEM.")},
+    {"code": "corail", "label": _(u"Corail Cosoluce"), "description": _(u"Export vers le logiciel Corail de la sociÃ©tÃ© Cosoluce.")},
 ]
 
 def GetFormatByCode(code=""):
@@ -56,14 +56,14 @@ def GetFormatByCode(code=""):
     return FORMATS[0]
 
 def Supprime_accent(texte):
-    liste = [ (u"é", u"e"), (u"è", u"e"), (u"ê", u"e"), (u"ë", u"e"), (u"à", u"a"), (u"û", u"u"), (u"ô", u"o"), (u"ç", u"c"), (u"î", u"i"), (u"ï", u"i"),]
+    liste = [ (u"Ã©", u"e"), (u"Ã¨", u"e"), (u"Ãª", u"e"), (u"Ã«", u"e"), (u"Ã ", u"a"), (u"Ã»", u"u"), (u"Ã´", u"o"), (u"Ã§", u"c"), (u"Ã®", u"i"), (u"Ã¯", u"i"),]
     for a, b in liste :
         texte = texte.replace(a, b)
         texte = texte.replace(a.upper(), b.upper())
     return texte
 
 def GetMoisStr(numMois, majuscules=False, sansAccents=False) :
-    listeMois = (u"_", _(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (u"_", _(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     nom = listeMois[numMois]
     if sansAccents == True : 
         nom = Supprime_accent(nom)
@@ -87,7 +87,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
         pass
 
     def Importation(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         pass
 
     def MAJ_comptes(self):
@@ -234,8 +234,8 @@ class DLG_Choix_format(wx.Dialog):
         self.format = None
 
         # Bandeau
-        titre = _(u"Sélection du format")
-        intro = _(u"Cliquez sur le format d'export souhaité.")
+        titre = _(u"SÃ©lection du format")
+        intro = _(u"Cliquez sur le format d'export souhaitÃ©.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Helios.png")
 
@@ -299,8 +299,8 @@ class Dialog(wx.Dialog):
         self.IDlot = IDlot
         self.format = format
 
-        # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, -1, _(u"Caractéristiques"))
+        # GÃ©nÃ©ralitÃ©s
+        self.box_generalites_staticbox = wx.StaticBox(self, -1, _(u"CaractÃ©ristiques"))
 
         self.label_format = wx.StaticText(self, -1, _(u"Format :"))
         self.ctrl_format = wx.TextCtrl(self, -1, GetFormatByCode(self.format)["label"])
@@ -314,12 +314,12 @@ class Dialog(wx.Dialog):
         self.label_verrouillage = wx.StaticText(self, -1, _(u"Verrouillage :"))
         self.ctrl_verrouillage = wx.CheckBox(self, -1, u"")
         
-        # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
+        # ParamÃ¨tres
+        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"ParamÃ¨tres"))
         self.ctrl_parametres = ctrl_parametres(self, IDlot=self.IDlot)
 
-        # Pièces
-        self.box_pieces_staticbox = wx.StaticBox(self, -1, _(u"Pièces"))
+        # PiÃ¨ces
+        self.box_pieces_staticbox = wx.StaticBox(self, -1, _(u"PiÃ¨ces"))
         
         self.ctrl_pieces = OL_PES_pieces.ListView(self, id=-1, IDlot=self.IDlot, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_pieces.SetMinSize((50, 50)) 
@@ -331,27 +331,27 @@ class Dialog(wx.Dialog):
         self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_ANY))
         
         
-        self.label_actions = wx.StaticText(self, -1, _(u"Actions sur prélèvements cochés :"))
+        self.label_actions = wx.StaticText(self, -1, _(u"Actions sur prÃ©lÃ¨vements cochÃ©s :"))
 
-        self.hyper_etat_attente = Hyperlien(self, label=_(u"Attente"), infobulle=_(u"Cliquez ici pour mettre en attente les prélèvements cochés"), URL="etat_attente")
+        self.hyper_etat_attente = Hyperlien(self, label=_(u"Attente"), infobulle=_(u"Cliquez ici pour mettre en attente les prÃ©lÃ¨vements cochÃ©s"), URL="etat_attente")
         self.label_separation_1 = wx.StaticText(self, -1, u"|")
-        self.hyper_etat_valide = Hyperlien(self, label=_(u"Valide"), infobulle=_(u"Cliquez ici pour valider les prélèvements cochés"), URL="etat_valide")
+        self.hyper_etat_valide = Hyperlien(self, label=_(u"Valide"), infobulle=_(u"Cliquez ici pour valider les prÃ©lÃ¨vements cochÃ©s"), URL="etat_valide")
         self.label_separation_2 = wx.StaticText(self, -1, u"|")
-        self.hyper_etat_refus = Hyperlien(self, label=_(u"Refus"), infobulle=_(u"Cliquez ici pour refuser les prélèvements cochés"), URL="etat_refus")
+        self.hyper_etat_refus = Hyperlien(self, label=_(u"Refus"), infobulle=_(u"Cliquez ici pour refuser les prÃ©lÃ¨vements cochÃ©s"), URL="etat_refus")
 
-        self.hyper_reglements_tout = Hyperlien(self, label=_(u"Régler"), infobulle=_(u"Cliquez ici pour régler les prélèvements cochés"), URL="reglements_tout")
+        self.hyper_reglements_tout = Hyperlien(self, label=_(u"RÃ©gler"), infobulle=_(u"Cliquez ici pour rÃ©gler les prÃ©lÃ¨vements cochÃ©s"), URL="reglements_tout")
         self.label_separation_3 = wx.StaticText(self, -1, u"|")
-        self.hyper_reglements_rien = Hyperlien(self, label=_(u"Ne pas régler"), infobulle=_(u"Cliquez ici pour ne pas régler les prélèvements cochés"), URL="reglements_rien")
+        self.hyper_reglements_rien = Hyperlien(self, label=_(u"Ne pas rÃ©gler"), infobulle=_(u"Cliquez ici pour ne pas rÃ©gler les prÃ©lÃ¨vements cochÃ©s"), URL="reglements_rien")
 
-        self.hyper_selection_tout = Hyperlien(self, label=_(u"Tout cocher"), infobulle=_(u"Cliquez ici pour tout cocher la sélection"), URL="selection_tout")
+        self.hyper_selection_tout = Hyperlien(self, label=_(u"Tout cocher"), infobulle=_(u"Cliquez ici pour tout cocher la sÃ©lection"), URL="selection_tout")
         self.label_separation_4 = wx.StaticText(self, -1, u"|")
-        self.hyper_selection_rien = Hyperlien(self, label=_(u"Tout décocher"), infobulle=_(u"Cliquez ici pour tout décocher la sélection"), URL="selection_rien")
+        self.hyper_selection_rien = Hyperlien(self, label=_(u"Tout dÃ©cocher"), infobulle=_(u"Cliquez ici pour tout dÃ©cocher la sÃ©lection"), URL="selection_rien")
 
         self.ctrl_totaux = CTRL_Infos(self, hauteur=40, couleurFond="#F0FBED" , style=wx.html.HW_NO_SELECTION | wx.html.HW_SCROLLBAR_NEVER | wx.SUNKEN_BORDER)
 
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_fichier = CTRL_Bouton_image.CTRL(self, texte=_(u"Générer le fichier d'export %s") % GetFormatByCode(self.format)["label"], cheminImage="Images/32x32/Disk.png")
+        self.bouton_fichier = CTRL_Bouton_image.CTRL(self, texte=_(u"GÃ©nÃ©rer le fichier d'export %s") % GetFormatByCode(self.format)["label"], cheminImage="Images/32x32/Disk.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
@@ -368,7 +368,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.Importation() 
         
         self.tracks = OL_PES_pieces.GetTracks(self.IDlot)
@@ -377,17 +377,17 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'un lot %s") % GetFormatByCode(self.format)["label"])
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour ce lot (Ex : 'Janvier 2013', etc...). Nom interne à Noethys.")))
-        self.ctrl_verrouillage.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour verrouiller le lot lorsque vous considérez qu'il est finalisé")))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour ce lot (Ex : 'Janvier 2013', etc...). Nom interne Ã  Noethys.")))
+        self.ctrl_verrouillage.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour verrouiller le lot lorsque vous considÃ©rez qu'il est finalisÃ©")))
         self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez ici des observations sur ce lot")))
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une pièce")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la pièce sélectionnée dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour retirer la pièce sélectionnée dans la liste")))
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste des pièces")))
-        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste des pièces de ce lot")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une piÃ¨ce")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la piÃ¨ce sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour retirer la piÃ¨ce sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperÃ§u avant impression de la liste des piÃ¨ces")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste des piÃ¨ces de ce lot")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_fichier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour générer un fichier au format %s") % GetFormatByCode(self.format)["label"]))
-        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider les données")))
+        self.bouton_fichier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour gÃ©nÃ©rer un fichier au format %s") % GetFormatByCode(self.format)["label"]))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider les donnÃ©es")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((900, 780))
 
@@ -396,7 +396,7 @@ class Dialog(wx.Dialog):
                 
         grid_sizer_haut = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
         
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         box_generalites = wx.StaticBoxSizer(self.box_generalites_staticbox, wx.VERTICAL)
         
         grid_sizer_generalites = wx.FlexGridSizer(rows=4, cols=2, vgap=10, hgap=10)
@@ -414,7 +414,7 @@ class Dialog(wx.Dialog):
         grid_sizer_generalites.AddGrowableRow(2)
         grid_sizer_haut.Add(box_generalites, 1, wx.EXPAND, 0)
         
-        # Paramètres
+        # ParamÃ¨tres
         box_parametres = wx.StaticBoxSizer(self.box_parametres_staticbox, wx.VERTICAL)
         box_parametres.Add(self.ctrl_parametres, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_haut.Add(box_parametres, 1, wx.EXPAND, 0)
@@ -422,7 +422,7 @@ class Dialog(wx.Dialog):
         grid_sizer_haut.AddGrowableCol(1)
         grid_sizer_base.Add(grid_sizer_haut, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
         
-        # Pièces
+        # PiÃ¨ces
         box_pieces = wx.StaticBoxSizer(self.box_pieces_staticbox, wx.VERTICAL)
         grid_sizer_pieces = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=5)
         grid_sizer_pieces.Add(self.ctrl_pieces, 1, wx.EXPAND, 0)
@@ -519,15 +519,15 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
 
     def GetLabelParametres(self):
-        """ Renvoie les paramètres pour impression """
+        """ Renvoie les paramÃ¨tres pour impression """
         nom = self.ctrl_nom.GetValue()
         texte = _(u"Lot : '%s'") % nom
         return texte
     
     def Importation(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         if self.IDlot == None :
-            # Données du dernier lot
+            # DonnÃ©es du dernier lot
             DB = GestionDB.DB()
             req = """SELECT reglement_auto, IDcompte, IDmode, exercice, mois, objet_dette, date_emission, date_prelevement, date_envoi, id_bordereau, id_poste, id_collectivite, code_collectivite, code_budget, code_prodloc, code_etab, prelevement_libelle, objet_piece, format, options
             FROM pes_lots
@@ -557,7 +557,7 @@ class Dialog(wx.Dialog):
                 return
             nom, verrouillage, observations, reglement_auto, IDcompte, IDmode, exercice, mois, objet_dette, date_emission, date_prelevement, date_envoi, id_bordereau, id_poste, id_collectivite, code_collectivite, code_budget, code_prodloc, code_etab, prelevement_libelle, objet_piece, format, options = listeDonnees[0]
 
-        # Attribution des données aux contrôles
+        # Attribution des donnÃ©es aux contrÃ´les
         self.ctrl_nom.SetValue(nom)
         self.ctrl_verrouillage.SetValue(verrouillage)
         self.ctrl_observations.SetValue(observations)
@@ -601,8 +601,8 @@ class Dialog(wx.Dialog):
                 pass
 
     def ValidationDonnees(self):
-        """ Vérifie que les données saisies sont exactes """
-        # Généralités
+        """ VÃ©rifie que les donnÃ©es saisies sont exactes """
+        # GÃ©nÃ©ralitÃ©s
         nom = self.ctrl_nom.GetValue()
         if nom == "" :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom de lot (Ex : 'Janvier 2013'...) !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
@@ -613,13 +613,13 @@ class Dialog(wx.Dialog):
  
         for caract in nom :
             if caract in ("_",) :
-                dlg = wx.MessageDialog(self, _(u"Le caractère '%s' n'est pas autorisé dans le nom du lot !") % caract, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Le caractÃ¨re '%s' n'est pas autorisÃ© dans le nom du lot !") % caract, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_nom.SetFocus() 
                 return False
        
-        # Vérifie que le nom n'est pas déjà attribué
+        # VÃ©rifie que le nom n'est pas dÃ©jÃ  attribuÃ©
         if self.IDlot == None :
             IDlotTemp = 0
         else :
@@ -632,7 +632,7 @@ class Dialog(wx.Dialog):
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce nom de lot a déjà été attribué à un autre lot.\n\nChaque lot doit avoir un nom unique. Changez le nom."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce nom de lot a dÃ©jÃ  Ã©tÃ© attribuÃ© Ã  un autre lot.\n\nChaque lot doit avoir un nom unique. Changez le nom."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus() 
@@ -645,7 +645,7 @@ class Dialog(wx.Dialog):
         else :
             verrouillage = 0
 
-        # Récupération des données du CTRL Paramètres
+        # RÃ©cupÃ©ration des donnÃ©es du CTRL ParamÃ¨tres
         exercice = self.ctrl_parametres.GetPropertyValue("exercice")
         mois = self.ctrl_parametres.GetPropertyValue("mois")
         objet_dette = self.ctrl_parametres.GetPropertyValue("objet_dette")
@@ -663,31 +663,31 @@ class Dialog(wx.Dialog):
         IDcompte = self.ctrl_parametres.GetPropertyValue("IDcompte")
         IDmode = self.ctrl_parametres.GetPropertyValue("IDmode")
         
-        # Vérification du compte à créditer
+        # VÃ©rification du compte Ã  crÃ©diter
         if reglement_auto == 1 :
             if IDcompte == None :
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un compte à créditer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un compte Ã  crÃ©diter !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
             if IDmode == None :
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un mode de règlement pour le règlement automatique !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un mode de rÃ¨glement pour le rÃ¨glement automatique !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
 
-        # Vérification des paramètres du bordereau
+        # VÃ©rification des paramÃ¨tres du bordereau
         listeVerifications = [
-            (exercice, "exercice", _(u"l'année de l'exercice")),
+            (exercice, "exercice", _(u"l'annÃ©e de l'exercice")),
             (mois, "mois", _(u"le mois")),
             (objet_dette, "objet_dette", _(u"l'objet de la dette")),
-            (date_emission, "date_emission", _(u"la date d'émission")),
-            (date_prelevement, "date_prelevement", _(u"la date souhaitée du prélèvement")),
+            (date_emission, "date_emission", _(u"la date d'Ã©mission")),
+            (date_prelevement, "date_prelevement", _(u"la date souhaitÃ©e du prÃ©lÃ¨vement")),
             (date_envoi, "date_envoi", _(u"la date d'envoi")),
             (id_bordereau, "id_bordereau", _(u"l'ID bordereau")),
             (id_poste, "id_poste", _(u"l'ID poste")),
-            (id_collectivite, "id_collectivite", _(u"l'ID collectivité")),
-            (code_collectivite, "code_collectivite", _(u"le Code Collectivité")),
+            (id_collectivite, "id_collectivite", _(u"l'ID collectivitÃ©")),
+            (code_collectivite, "code_collectivite", _(u"le Code CollectivitÃ©")),
             (code_budget, "code_budget", _(u"le Code Bugdet")),
             (code_prodloc, "code_prodloc", _(u"le code Produit Local")),
             (code_etab, "code_etab", _(u"le code Etablissement")),
@@ -695,7 +695,7 @@ class Dialog(wx.Dialog):
             
         for donnee, code, label in listeVerifications :
             if donnee == None or donnee == "" :
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir %s dans les paramètres du lot !") % label, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir %s dans les paramÃ¨tres du lot !") % label, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -704,7 +704,7 @@ class Dialog(wx.Dialog):
                 try :
                     test = int(donnee) 
                 except :
-                    dlg = wx.MessageDialog(self, _(u"Vous devez saisir une valeur numérique valide pour le paramètre de bordereau 'ID Bordereau' !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Vous devez saisir une valeur numÃ©rique valide pour le paramÃ¨tre de bordereau 'ID Bordereau' !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
@@ -713,34 +713,34 @@ class Dialog(wx.Dialog):
                 try :
                     test = int(donnee) 
                 except :
-                    dlg = wx.MessageDialog(self, _(u"Vous devez saisir une valeur numérique valide pour le paramètre de bordereau 'ID Collectivité' !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Vous devez saisir une valeur numÃ©rique valide pour le paramÃ¨tre de bordereau 'ID CollectivitÃ©' !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
 
 
 
-        # Vérification des pièces
+        # VÃ©rification des piÃ¨ces
         listeErreurs = []
         listeTemp1 = []
         for track in self.ctrl_pieces.GetObjects() :
 
             if track.analysePiece == False :
-                listeErreurs.append(_(u"- Facture n°%s : %s") % (track.IDfacture, track.analysePieceTexte))
+                listeErreurs.append(_(u"- Facture nÂ°%s : %s") % (track.IDfacture, track.analysePieceTexte))
                 
-            # Vérifie qu'un OOFF ou un FRST n'est pas attribué 2 fois à un seul mandat
+            # VÃ©rifie qu'un OOFF ou un FRST n'est pas attribuÃ© 2 fois Ã  un seul mandat
             if track.prelevement == 1 :
                 if track.prelevement_sequence in ("OOFF", "FRST") :
                     key = (track.prelevement_IDmandat, track.prelevement_sequence)
                     if key in listeTemp1 :
                         if track.prelevement_sequence == "OOFF" : 
-                            listeErreurs.append(_(u"- Facture n°%s : Le mandat n°%s de type ponctuel a déjà été utilisé une fois !") % (track.IDfacture, track.prelevement_IDmandat))
+                            listeErreurs.append(_(u"- Facture nÂ°%s : Le mandat nÂ°%s de type ponctuel a dÃ©jÃ  Ã©tÃ© utilisÃ© une fois !") % (track.IDfacture, track.prelevement_IDmandat))
                         if track.prelevement_sequence == "FRST" : 
-                            listeErreurs.append(_(u"- Facture n°%s : Mandat n°%s déjà initialisé. La séquence doit être définie sur 'RCUR' !") % (track.IDfacture, track.prelevement_IDmandat))
+                            listeErreurs.append(_(u"- Facture nÂ°%s : Mandat nÂ°%s dÃ©jÃ  initialisÃ©. La sÃ©quence doit Ãªtre dÃ©finie sur 'RCUR' !") % (track.IDfacture, track.prelevement_IDmandat))
                     listeTemp1.append(key)
             
         if len(listeErreurs) > 0 :
-            message1 = _(u"Le bordereau ne peut être validé en raison des erreurs suivantes :")
+            message1 = _(u"Le bordereau ne peut Ãªtre validÃ© en raison des erreurs suivantes :")
             message2 = "\n".join(listeErreurs)
             dlg = dialogs.MultiMessageDialog(self, message1, caption=_(u"Erreur"), msg2=message2, style = wx.ICON_EXCLAMATION |wx.OK, icon=None, btnLabels={wx.ID_OK : _(u"Ok")})
             reponse = dlg.ShowModal() 
@@ -750,22 +750,22 @@ class Dialog(wx.Dialog):
         return True
     
     def Memorisation_parametres(self):
-        """ Est surchargée """
+        """ Est surchargÃ©e """
         pass
 
     def OnBoutonOk(self, event): 
-        # Validation des données
+        # Validation des donnÃ©es
         if self.ValidationDonnees() == False :
             return
         
         if self.ctrl_verrouillage.GetValue() == False :
-            dlg = wx.MessageDialog(self, _(u"Pour clôturer le traitement d'un lot, vous devez valider ou refuser les pièces puis verrouiller le lot.\n\nSouhaitez-vous le faire maintenant ?"), _(u"Information"), wx.YES_NO|wx.CANCEL|wx.NO_DEFAULT|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Pour clÃ´turer le traitement d'un lot, vous devez valider ou refuser les piÃ¨ces puis verrouiller le lot.\n\nSouhaitez-vous le faire maintenant ?"), _(u"Information"), wx.YES_NO|wx.CANCEL|wx.NO_DEFAULT|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_NO :
                 return
             
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         nom = self.ctrl_nom.GetValue()
         observations = self.ctrl_observations.GetValue()
         if self.ctrl_verrouillage.GetValue() == True :
@@ -853,10 +853,10 @@ class Dialog(wx.Dialog):
             DB.ReqMAJ("pes_lots", listeDonnees, "IDlot", self.IDlot)
         DB.Close() 
         
-        # Sauvegarde des prélèvements du lot
+        # Sauvegarde des prÃ©lÃ¨vements du lot
         self.ctrl_pieces.Sauvegarde(IDlot=self.IDlot, datePrelevement=date_prelevement, IDcompte=IDcompte, IDmode=IDmode) 
 
-        # Mémorisation des préférences
+        # MÃ©morisation des prÃ©fÃ©rences
         self.Memorisation_parametres()
 
         # Fermeture
@@ -877,10 +877,10 @@ class Dialog(wx.Dialog):
         tracksFactures = ctrl_factures.GetTracksCoches()
         self.ctrl_pieces.AjoutFactures(tracksFactures)
         
-        # Coche tous les prélèvements
+        # Coche tous les prÃ©lÃ¨vements
         self.ctrl_pieces.CocheTout()
 
-        # Ferme ctrl_factures (utilise CallAfter pour éviter bug)
+        # Ferme ctrl_factures (utilise CallAfter pour Ã©viter bug)
         wx.CallAfter(self.FermeAssistant, ctrl_factures)
 
     def FermeAssistant(self, ctrl_factures=None):
@@ -888,7 +888,7 @@ class Dialog(wx.Dialog):
         del ctrl_factures
 
     def OnBoutonFichier(self, event):
-        """ Génération d'un fichier normalisé """
+        """ GÃ©nÃ©ration d'un fichier normalisÃ© """
         pass
 
 

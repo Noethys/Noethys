@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -86,7 +86,7 @@ class Dialog(wx.Dialog):
         return self.ctrl_editeur.GetHTML_base64()
 
     def OnBoutonOk(self, event):
-        # Récupération du texte
+        # RÃ©cupÃ©ration du texte
         texteStr = self.ctrl_editeur.GetValue()
         texteXML = self.ctrl_editeur.GetXML()
         texteHTML = self.ctrl_editeur.GetHTML_base64()
@@ -110,7 +110,7 @@ class Dialog(wx.Dialog):
             DB.ReqMAJ("portail_elements", listeDonnees, "IDelement", self.IDelement)
         DB.Close()
 
-        # Fermeture fenêtre
+        # Fermeture fenÃªtre
         self.EndModal(wx.ID_OK)
     
     def GetIDelement(self):

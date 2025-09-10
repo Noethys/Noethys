@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -267,7 +267,7 @@ class CTRL_Modes(wx.CheckListBox):
 
     def MAJ(self):
         listeDonnees = [
-            ("reservation", _(u"Réservation")),
+            ("reservation", _(u"RÃ©servation")),
             ("attente", _(u"Attente")),
             ("refus", _(u"Refus")),
         ]
@@ -330,9 +330,9 @@ class CTRL_Etats(wx.CheckListBox):
     def MAJ(self):
         listeDonnees = [
             ("reservation", _(u"Pointage en attente")),
-            ("present", _(u"Présent")),
-            ("absentj", _(u"Absence justifiée")),
-            ("absenti", _(u"Absence injustifiée")),            
+            ("present", _(u"PrÃ©sent")),
+            ("absentj", _(u"Absence justifiÃ©e")),
+            ("absenti", _(u"Absence injustifiÃ©e")),            
         ]
         listeValeurs = []
         for code, nom in listeDonnees :
@@ -394,10 +394,10 @@ class CTRL(wx.Panel):
         self.selectionIndividus = selectionIndividus
         self.selectionActivite = selectionActivite
         
-        # Période
-        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"Période"))
+        # PÃ©riode
+        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"PÃ©riode"))
         self.radio_periode_1 = wx.RadioButton(self, -1, u"")
-        self.label_periode = wx.StaticText(self, -1, _(u"La période affichée dans la grille"))
+        self.label_periode = wx.StaticText(self, -1, _(u"La pÃ©riode affichÃ©e dans la grille"))
         self.radio_periode_2 = wx.RadioButton(self, -1, u"")
         self.radio_periode_2.Enable(False) # <<<<<<<<<<<<<<<< PROVISOIRE
         self.ctrl_periode = CTRL_Grille_periode.CTRL(self)
@@ -407,16 +407,16 @@ class CTRL(wx.Panel):
         self.staticbox_individus_staticbox = wx.StaticBox(self, -1, _(u"Individus"))
         self.ctrl_individus = CTRL_Individus(self, self.IDfamille, self.selectionIndividus)
         
-        # Activité
-        self.staticbox_activite_staticbox = wx.StaticBox(self, -1, _(u"Activité"))
+        # ActivitÃ©
+        self.staticbox_activite_staticbox = wx.StaticBox(self, -1, _(u"ActivitÃ©"))
         self.ctrl_activite = CTRL_Activite(self, self.selectionIndividus, self.selectionActivite)
         
         # Groupes
         self.staticbox_groupes_staticbox = wx.StaticBox(self, -1, _(u"Groupes"))
         self.ctrl_groupes = CTRL_Groupes(self, self.selectionActivite)
         
-        # Unités
-        self.staticbox_unites_staticbox = wx.StaticBox(self, -1, _(u"Unités"))
+        # UnitÃ©s
+        self.staticbox_unites_staticbox = wx.StaticBox(self, -1, _(u"UnitÃ©s"))
         self.ctrl_unites = CTRL_Unites(self, self.selectionActivite)
         
         # Modes
@@ -438,19 +438,19 @@ class CTRL(wx.Panel):
         
         self.Bind(wx.EVT_CHECKLISTBOX, self.OnCocheIndividus, self.ctrl_individus)
         
-        # Init Contrôles
+        # Init ContrÃ´les
         self.radio_periode_1.SetValue(True)
         self.OnRadioPeriode(None)
 
     def __set_properties(self):
-        self.radio_periode_1.SetToolTip(wx.ToolTip(_(u"Cochez ici pour sélectionner la période affichée dans la grille des consommations")))
-        self.radio_periode_2.SetToolTip(wx.ToolTip(_(u"Cochez ici pour sélectionner une autre période")))
-        self.ctrl_individus.SetToolTip(wx.ToolTip(_(u"Cochez les individus souhaités")))
-        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"Selectionnez l'activité souhaitée")))
-        self.ctrl_groupes.SetToolTip(wx.ToolTip(_(u"Cochez les groupes souhaités")))
-        self.ctrl_unites.SetToolTip(wx.ToolTip(_(u"Cochez les unités de consommations souhaitées")))
-        self.ctrl_modes.SetToolTip(wx.ToolTip(_(u"Cochez les modes souhaités")))
-        self.ctrl_etats.SetToolTip(wx.ToolTip(_(u"Cochez les etats souhaités")))
+        self.radio_periode_1.SetToolTip(wx.ToolTip(_(u"Cochez ici pour sÃ©lectionner la pÃ©riode affichÃ©e dans la grille des consommations")))
+        self.radio_periode_2.SetToolTip(wx.ToolTip(_(u"Cochez ici pour sÃ©lectionner une autre pÃ©riode")))
+        self.ctrl_individus.SetToolTip(wx.ToolTip(_(u"Cochez les individus souhaitÃ©s")))
+        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"Selectionnez l'activitÃ© souhaitÃ©e")))
+        self.ctrl_groupes.SetToolTip(wx.ToolTip(_(u"Cochez les groupes souhaitÃ©s")))
+        self.ctrl_unites.SetToolTip(wx.ToolTip(_(u"Cochez les unitÃ©s de consommations souhaitÃ©es")))
+        self.ctrl_modes.SetToolTip(wx.ToolTip(_(u"Cochez les modes souhaitÃ©s")))
+        self.ctrl_etats.SetToolTip(wx.ToolTip(_(u"Cochez les etats souhaitÃ©s")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
@@ -564,7 +564,7 @@ class CTRL(wx.Panel):
         # MAJ Groupes
         self.ctrl_groupes.selectionActivite = IDactivite
         self.ctrl_groupes.MAJ() 
-        # MAJ Unités
+        # MAJ UnitÃ©s
         self.ctrl_unites.selectionActivite = IDactivite
         self.ctrl_unites.MAJ() 
         # MAJ Panel Modifications
@@ -572,7 +572,7 @@ class CTRL(wx.Panel):
             self.parent.SetActivite(IDactivite)
     
     def GetPeriodes(self):
-        # Recup Période
+        # Recup PÃ©riode
         if self.radio_periode_1.GetValue() == True :
             return self.listeDates
         else:
@@ -591,7 +591,7 @@ class CTRL(wx.Panel):
         return self.ctrl_groupes.GetIDcoches()
         
     def GetUnites(self):
-        # Recup Unités
+        # Recup UnitÃ©s
         return self.ctrl_unites.GetIDcoches()
         
     def GetModes(self):

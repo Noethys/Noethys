@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -59,7 +59,7 @@ class Customize():
 
 
     def InitFichier(self):
-        """ Création d'un nouveau fichier ou vérification du fichier existant """
+        """ CrÃ©ation d'un nouveau fichier ou vÃ©rification du fichier existant """
         # Lit le fichier s'il existe
         if os.path.isfile(self.nomFichier) :
             self.cfg.read(self.nomFichier)
@@ -86,7 +86,7 @@ class Customize():
 
     def GetValeur(self, section="", cle="", defaut="", type_valeur=str, ajouter_si_manquant=True):
         if self.cfg.has_section(section) and self.cfg.has_option(section, cle) :
-            # Si la clé existe
+            # Si la clÃ© existe
             if type_valeur == int :
                 return self.cfg.getint(section, cle)
             elif type_valeur == float :
@@ -96,7 +96,7 @@ class Customize():
             else :
                 return self.cfg.get(section, cle)
         else:
-            # Si la clé n'existe pas
+            # Si la clÃ© n'existe pas
             if ajouter_si_manquant == True :
                 self.cfg.set(section, cle, defaut)
                 self.Enregistrement()

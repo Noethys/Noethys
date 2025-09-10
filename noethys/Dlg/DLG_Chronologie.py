@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -54,7 +54,7 @@ class Track(object):
             self.nomComplet_individu = u"%s %s" % (self.nom_individu, self.prenom_individu)
         else:
             self.nomComplet_individu = u""
-        # Catégorie
+        # CatÃ©gorie
         self.IDcategorie = donnees[6]
         self.nomCategorie = UTILS_Historique.CATEGORIES[self.IDcategorie]
         # Texte de l'action
@@ -66,7 +66,7 @@ class Track(object):
             
 
 def GetTracks(IDfamille=None, IDindividu=None):
-    """ Récupération des données """
+    """ RÃ©cupÃ©ration des donnÃ©es """
     if IDfamille != None : conditions = "WHERE historique.IDfamille=%d" % IDfamille
     elif IDindividu != None : conditions = "WHERE historique.IDindividu=%d" % IDindividu
     else : return [] 
@@ -99,18 +99,18 @@ class Timeline(TL.TimelinePerso):
         TL.TimelinePerso.__init__(self)
         
     def _load_data(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         self.preferred_period = None
         self.categories = []
         self.events = []
         
-        # Période préférée
+        # PÃ©riode prÃ©fÃ©rÃ©e
         dateDuJour = datetime.datetime.today()
         dateDebut = dateDuJour - datetime.timedelta(6)
         dateFin = dateDuJour + datetime.timedelta(1)
         self.preferred_period = TL.TimePeriod(dateDebut, dateFin)
         
-        # Récupération des catégories de l'historique
+        # RÃ©cupÃ©ration des catÃ©gories de l'historique
         from Utils.UTILS_Historique import CATEGORIES as dictCategories
         from Utils.UTILS_Historique import DICT_COULEURS as dictCouleurs
         dictCategorieTemp = {}
@@ -124,7 +124,7 @@ class Timeline(TL.TimelinePerso):
             self.categories.append(categorie)
             dictCategorieTemp[IDcategorie] = categorie
         
-        # Récupération des events de l'HISTORIQUE
+        # RÃ©cupÃ©ration des events de l'HISTORIQUE
         listeHistorique = GetTracks(self.IDfamille, self.IDindividu)
         for track in listeHistorique :
             date = TL.DateEngEnDateDD(track.date)
@@ -142,7 +142,7 @@ class Timeline(TL.TimelinePerso):
             self.events.append(evt)
 
         
-        # Récupération des events des CONSOMMATIONS
+        # RÃ©cupÃ©ration des events des CONSOMMATIONS
         if self.IDfamille != None : conditions = "WHERE IDfamille=%d" % self.IDfamille
         elif self.IDindividu != None : conditions = "WHERE consommations.IDindividu=%d" % self.IDindividu
         else: conditions = ""
@@ -170,7 +170,7 @@ class Timeline(TL.TimelinePerso):
             dateFin = datetime.datetime(date.year, date.month, date.day, heure_fin.hour, heure_fin.minute, heure_fin.second)
             texte = prenom
             categorie = None
-            description = _(u"Activité : %s\nGroupe : %s") % (nomActivite, nomGroupe)
+            description = _(u"ActivitÃ© : %s\nGroupe : %s") % (nomActivite, nomGroupe)
             icon = None
             
             evt = TL.Event(dateDebut, dateFin, texte, categorie)
@@ -189,7 +189,7 @@ class Dialog(wx.Dialog):
         self.IDindividu = IDindividu
         
         # Bandeau
-        intro = _(u"Vous pouvez ici consulter l'historique des évènements et des consommations sous forme chronologique. Vous pouvez déplacer le graphique vers la droite ou vers la gauche en le faisant glisser avec la souris ou en utilisant sa molette, et basculer entre un affichage annuel, mensuel, hebdomadaire ou quotidien. Les évènements de l'historique apparaissent au-dessus de la ligne et les consommations individuelles au-dessous.")
+        intro = _(u"Vous pouvez ici consulter l'historique des Ã©vÃ¨nements et des consommations sous forme chronologique. Vous pouvez dÃ©placer le graphique vers la droite ou vers la gauche en le faisant glisser avec la souris ou en utilisant sa molette, et basculer entre un affichage annuel, mensuel, hebdomadaire ou quotidien. Les Ã©vÃ¨nements de l'historique apparaissent au-dessus de la ligne et les consommations individuelles au-dessous.")
         titre = _(u"Chronologie")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Timeline.png")
         

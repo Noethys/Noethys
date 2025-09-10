@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -96,7 +96,7 @@ class CTRL_Choix_methode(wx.Choice):
         self.MAJ()
 
     def MAJ(self):
-        self.listeLabels = [_(u"Les prestations de la période"), _(u"Les prestations de la période réglées"), _(u"Les prestations réglées sur la période")]
+        self.listeLabels = [_(u"Les prestations de la pï¿½riode"), _(u"Les prestations de la pï¿½riode rï¿½glï¿½es"), _(u"Les prestations rï¿½glï¿½es sur la pï¿½riode")]
         self.SetItems(self.listeLabels)
         self.Select(0)
 
@@ -114,32 +114,32 @@ class Parametres(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, name="panel_parametres", style=wx.TAB_TRAVERSAL)
         self.parent = parent
         
-        # Période
-        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"Période de référence"))
+        # PÃ©riode
+        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"PÃ©riode de rÃ©fÃ©rence"))
         self.label_date_debut = wx.StaticText(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_date_fin = wx.StaticText(self, -1, _(u"Au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
 
-        # Méthode
-        self.staticbox_methode_staticbox = wx.StaticBox(self, -1, _(u"Méthode de calcul"))
+        # Mï¿½thode
+        self.staticbox_methode_staticbox = wx.StaticBox(self, -1, _(u"MÃ©thode de calcul"))
         self.ctrl_methode = CTRL_Choix_methode(self)
 
-        # Séparation
-        self.staticbox_dateNaiss_staticbox = wx.StaticBox(self, -1, _(u"Limite d'âge"))
+        # Sï¿½paration
+        self.staticbox_dateNaiss_staticbox = wx.StaticBox(self, -1, _(u"Limite d'Ã¢ge"))
         self.check_dateNaiss = wx.CheckBox(self, -1, _(u"Date de naissance min. :"))
         self.ctrl_dateNaiss = CTRL_Saisie_date.Date(self)
         
-        # Activités
-        self.staticbox_activites_staticbox = wx.StaticBox(self, -1, _(u"Activités"))
+        # ActivitÃ©s
+        self.staticbox_activites_staticbox = wx.StaticBox(self, -1, _(u"ActivitÃ©s"))
         self.ctrl_activites = CTRL_Selection_activites.CTRL(self)
 
-        # Modes de règlements
-        self.staticbox_modes_staticbox = wx.StaticBox(self, -1, _(u"Modes de règlement"))
+        # Modes de rÃ¨glements
+        self.staticbox_modes_staticbox = wx.StaticBox(self, -1, _(u"Modes de rÃ¨glement"))
         self.ctrl_modes = CTRL_Modes_reglements(self)
 
         # Actualiser
-        self.bouton_actualiser = CTRL_Bouton_image.CTRL(self, texte=_(u"Rafraîchir la liste"), cheminImage="Images/32x32/Actualiser.png")
+        self.bouton_actualiser = CTRL_Bouton_image.CTRL(self, texte=_(u"RafraÃ®chir la liste"), cheminImage="Images/32x32/Actualiser.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -147,19 +147,19 @@ class Parametres(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonActualiser, self.bouton_actualiser)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckAge, self.check_dateNaiss)
         
-        # Init Contrôles
+        # Init ContrÃ´les
         self.OnCheckAge(None)
 
     def __set_properties(self):
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début de période")))
-        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de période")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de dÃ©but de pÃ©riode")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de pÃ©riode")))
         self.ctrl_dateNaiss.SetToolTip(wx.ToolTip(_(u"Saisissez une date de naissance maximale")))
         self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser la liste")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=6, cols=1, vgap=10, hgap=10)
         
-        # Date de référence
+        # Date de rÃ©fÃ©rence
         staticbox_periode = wx.StaticBoxSizer(self.staticbox_periode_staticbox, wx.VERTICAL)
         grid_sizer_periode = wx.FlexGridSizer(rows=2, cols=4, vgap=5, hgap=5)
         grid_sizer_periode.Add(self.label_date_debut, 0, wx.ALIGN_CENTER_VERTICAL, 0)
@@ -169,7 +169,7 @@ class Parametres(wx.Panel):
         staticbox_periode.Add(grid_sizer_periode, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(staticbox_periode, 1, wx.RIGHT|wx.EXPAND, 5)
 
-        # Méthode
+        # Mï¿½thode
         staticbox_methode = wx.StaticBoxSizer(self.staticbox_methode_staticbox, wx.VERTICAL)
         staticbox_methode.Add(self.ctrl_methode, 0, wx.EXPAND|wx.ALL, 5)
         grid_sizer_base.Add(staticbox_methode, 1, wx.RIGHT|wx.EXPAND, 5)
@@ -182,12 +182,12 @@ class Parametres(wx.Panel):
         staticbox_dateNaiss.Add(grid_sizer_dateNaiss, 0, wx.EXPAND|wx.ALL, 5)
         grid_sizer_base.Add(staticbox_dateNaiss, 1, wx.RIGHT|wx.EXPAND, 5)
                 
-        # Activités
+        # ActivitÃ©s
         staticbox_activites = wx.StaticBoxSizer(self.staticbox_activites_staticbox, wx.VERTICAL)
         staticbox_activites.Add(self.ctrl_activites, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(staticbox_activites, 1, wx.RIGHT|wx.EXPAND, 5)
 
-        # Modess de règlements
+        # Modess de rÃ¨glements
         staticbox_modes = wx.StaticBoxSizer(self.staticbox_modes_staticbox, wx.VERTICAL)
         staticbox_modes.Add(self.ctrl_modes, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(staticbox_modes, 1, wx.RIGHT|wx.EXPAND, 5)
@@ -206,23 +206,23 @@ class Parametres(wx.Panel):
             self.ctrl_dateNaiss.SetFocus()
 
     def OnBoutonActualiser(self, event): 
-        # Validation de la période
+        # Validation de la pÃ©riode
         date_debut = self.ctrl_date_debut.GetDate() 
         if self.ctrl_date_debut.FonctionValiderDate() == False or date_debut == None :
-            dlg = wx.MessageDialog(self, _(u"La date de début de période semble incorrecte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de dÃ©but de pÃ©riode semble incorrecte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         date_fin = self.ctrl_date_fin.GetDate() 
         if self.ctrl_date_fin.FonctionValiderDate() == False or date_fin == None :
-            dlg = wx.MessageDialog(self, _(u"La date de fin de période semble incorrecte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de fin de pÃ©riode semble incorrecte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         if date_fin < date_debut :
-            dlg = wx.MessageDialog(self, _(u"La date de début de période est supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de dÃ©but de pÃ©riode est supÃ©rieure Ã  la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -240,32 +240,32 @@ class Parametres(wx.Panel):
             else :
                 dateNaiss = self.ctrl_dateNaiss.GetDate()
         
-        # Validation des activités
+        # Validation des activitÃ©s
         listeActivites = self.GetActivites()
         if len(listeActivites) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner au moins une activité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner au moins une activitÃ© !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
-        # Validation des modes de règlement
+        # Validation des modes de rÃ¨glement
         listeModes = self.GetModes()
         if len(listeModes) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner au moins un mode de règlement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner au moins un mode de rÃ¨glement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
-        # Vérification droits utilisateurs
+        # VÃ©rification droits utilisateurs
         for IDactivite in listeActivites :
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("facturation_attestations", "creer", IDactivite=IDactivite, afficheMessage=False) == False : 
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas l'autorisation de générer des attestations pour l'ensemble des activités sélectionnées !"), _(u"Action non autorisée"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas l'autorisation de gÃ©nÃ©rer des attestations pour l'ensemble des activitÃ©s sÃ©lectionnÃ©es !"), _(u"Action non autorisÃ©e"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
         
         # MAJ de la liste des prestations
-        dlgAttente = wx.BusyInfo(_(u"Recherche des données..."), None)
+        dlgAttente = wx.BusyInfo(_(u"Recherche des donnÃ©es..."), None)
         if 'phoenix' not in wx.PlatformInfo:
             wx.Yield()
         try :
@@ -306,30 +306,30 @@ class Panel(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
                 
-        # Panel Paramètres
+        # Panel ParamÃ¨tres
         self.ctrl_parametres = Parametres(self)
         
         # CTRL Prestations
         self.staticbox_prestations_staticbox = wx.StaticBox(self, -1, _(u"Prestations"))
-        self.label_commentaires = wx.StaticText(self, -1, _(u"Double-cliquez dans la colonne 'Ajustement' pour créer un ajustement sur chaque prestation (Ex : '+3.5' ou '-2.5')."))
+        self.label_commentaires = wx.StaticText(self, -1, _(u"Double-cliquez dans la colonne 'Ajustement' pour crÃ©er un ajustement sur chaque prestation (Ex : '+3.5' ou '-2.5')."))
         self.ctrl_prestations = OL_Attestations_fiscales_prestations.ListView(self, id=-1, name="OL_attestations_prestations", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
 
         self.__do_layout()
         
-        # Données par défaut
+        # DonnÃ©es par dÃ©faut
         anneeActuelle = datetime.date.today().year
         self.ctrl_parametres.ctrl_date_debut.SetDate(datetime.date(anneeActuelle-1, 1, 1))
         self.ctrl_parametres.ctrl_date_fin.SetDate(datetime.date(anneeActuelle-1, 12, 31))
         self.ctrl_parametres.ctrl_dateNaiss.SetDate(datetime.date(anneeActuelle-7, 1, 1))
         
-        # Init contrôles
+        # Init contrÃ´les
         self.ctrl_parametres.MAJprestations()
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)        
         grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         
-        # Panel des paramètres
+        # Panel des paramÃ¨tres
         grid_sizer_contenu.Add(self.ctrl_parametres, 1, wx.EXPAND, 0)
         
         # Ctrl des prestations
@@ -363,7 +363,7 @@ class Panel(wx.Panel):
                 try :
                     ajustement = float(track.ajustement)
                 except :
-                    dlg = wx.MessageDialog(self, _(u"L'ajustement que vous avez paramétré pour la prestation '%s' semble erroné !\n\nVous pouvez uniquement saisir des valeurs du type '-2.5' ou '+5'.") % track.label, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"L'ajustement que vous avez paramÃ©trÃ© pour la prestation '%s' semble erronÃ© !\n\nVous pouvez uniquement saisir des valeurs du type '-2.5' ou '+5'.") % track.label, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
@@ -407,7 +407,7 @@ class MyFrame(wx.Frame):
         
     def OnBoutonTest(self, event):
         """ Bouton Test """
-        # Test d'affichage des résultats
+        # Test d'affichage des rÃ©sultats
         listePrestations = self.ctrl.GetPrestations()
         from Ol import OL_Attestations_fiscales_selection
         frm = OL_Attestations_fiscales_selection.MyFrame(self, listePrestations)

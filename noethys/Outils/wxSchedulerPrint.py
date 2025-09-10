@@ -21,7 +21,7 @@ class wxSchedulerPrint( wxSchedulerCore ):
 			self.pageNumber = page
 			self.DrawBuffer()
 
-		self._dc.DrawBitmap(self._bitmap, self.reglages["marge_gauche"], self.reglages["marge_haut"], False)
+		self._dc.DrawBitmap(self._bitmap, int(self.reglages["marge_gauche"]), int(self.reglages["marge_haut"]), False)
 		
 	def GetSize( self ):
 		"""

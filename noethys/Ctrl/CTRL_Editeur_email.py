@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -25,25 +25,25 @@ from Utils import UTILS_Identification
 
 CATEGORIES = [
     ("saisie_libre", _(u"Saisie libre")),
-    ("releve_prestations", _(u"Relevé des prestations")),
-    ("reglement", _(u"Règlement")),
-    ("recu_reglement", _(u"Reçu de règlement")),
-    ("recu_don_oeuvres", _(u"Reçu de don aux oeuvres")),
+    ("releve_prestations", _(u"RelevÃ© des prestations")),
+    ("reglement", _(u"RÃ¨glement")),
+    ("recu_reglement", _(u"ReÃ§u de rÃ¨glement")),
+    ("recu_don_oeuvres", _(u"ReÃ§u de don aux oeuvres")),
     ("facture", _(u"Facture")),
     ("rappel", _(u"Rappel")),
-    ("attestation_presence", _(u"Attestation de présence")),
+    ("attestation_presence", _(u"Attestation de prÃ©sence")),
     ("attestation_fiscale", _(u"Attestation fiscale")), 
-    ("reservations", _(u"Liste des réservations")), 
+    ("reservations", _(u"Liste des rÃ©servations")), 
     ("cotisation", _(u"Cotisation")),
-    ("rappel_pieces_manquantes", _(u"Rappel pièces manquantes")),
-    ("portail", _(u"Rappel des données du compte internet")),
+    ("rappel_pieces_manquantes", _(u"Rappel piÃ¨ces manquantes")),
+    ("portail", _(u"Rappel des donnÃ©es du compte internet")),
     ("portail_demande_inscription", _(u"Portail - Demande d'une inscription")),
-    ("portail_demande_reservation", _(u"Portail - Demande d'une réservation")),
+    ("portail_demande_reservation", _(u"Portail - Demande d'une rÃ©servation")),
     ("portail_demande_renseignement", _(u"Portail - Demande de modification d'un renseignement")),
     ("portail_demande_facture", _(u"Portail - Demande d'une facture")),
-    ("portail_demande_recu_reglement", _(u"Portail - Demande d'un reçu de règlement")),
+    ("portail_demande_recu_reglement", _(u"Portail - Demande d'un reÃ§u de rÃ¨glement")),
     ("portail_demande_location", _(u"Portail - Demande d'une location")),
-    ("portail_demande_piece", _(u"Portail - Demande de saisie d'une pièce")),
+    ("portail_demande_piece", _(u"Portail - Demande de saisie d'une piÃ¨ce")),
     ("location", _(u"Location")),
     ("location_demande", _(u"Demande de location")),
     ("commande_repas", _(u"Commande de repas")),
@@ -55,7 +55,7 @@ CATEGORIES = [
 MOTSCLES_STANDARDS = [
                 ( "{UTILISATEUR_NOM_COMPLET}", _(u"Nom complet de l'utilisateur") ),
                 ( "{UTILISATEUR_NOM}", _(u"Nom de famille de l'utilisateur") ),
-                ( "{UTILISATEUR_PRENOM}", _(u"Prénom de l'utilisateur") ),
+                ( "{UTILISATEUR_PRENOM}", _(u"PrÃ©nom de l'utilisateur") ),
                 ( "{DATE_COURTE}", _(u"Date du jour courte") ),
                 ( "{DATE_LONGUE}", _(u"Date du jour longue") ),
                 ]
@@ -66,76 +66,76 @@ MOTSCLES = {
                 ],
     
     "releve_prestations" : [
-                ( "{DATE_EDITION_RELEVE}", _(u"Date de l'édition du relevé") ),
-                ( "{RESTE_DU}", _(u"Reste dû indiqué par le relevé") ),
+                ( "{DATE_EDITION_RELEVE}", _(u"Date de l'Ã©dition du relevÃ©") ),
+                ( "{RESTE_DU}", _(u"Reste dÃ» indiquÃ© par le relevÃ©") ),
                 ],
 
     "reglement" : [
-                ( "{ID_REGLEMENT}", _(u"ID du règlement") ),
-                ( "{DATE_REGLEMENT}", _(u"Date du règlement") ),
-                ( "{MODE_REGLEMENT}", _(u"Mode de règlement") ),
-                ( "{NOM_EMETTEUR}", _(u"Nom de l'émetteur") ),
-                ( "{NUM_PIECE}", _(u"Numéro de la pièce") ),
-                ( "{MONTANT_REGLEMENT}", _(u"Montant du règlement") ),
+                ( "{ID_REGLEMENT}", _(u"ID du rÃ¨glement") ),
+                ( "{DATE_REGLEMENT}", _(u"Date du rÃ¨glement") ),
+                ( "{MODE_REGLEMENT}", _(u"Mode de rÃ¨glement") ),
+                ( "{NOM_EMETTEUR}", _(u"Nom de l'Ã©metteur") ),
+                ( "{NUM_PIECE}", _(u"NumÃ©ro de la piÃ¨ce") ),
+                ( "{MONTANT_REGLEMENT}", _(u"Montant du rÃ¨glement") ),
                 ( "{NOM_PAYEUR}", _(u"Nom du payeur") ),
-                ( "{NUM_QUITTANCIER}", _(u"Numéro de quittancier") ),
-                ( "{DATE_SAISIE}", _(u"Date de saisie du règlement") ),
-                ( "{DATE_DIFFERE}", _(u"Date d'encaissement différé") ),
+                ( "{NUM_QUITTANCIER}", _(u"NumÃ©ro de quittancier") ),
+                ( "{DATE_SAISIE}", _(u"Date de saisie du rÃ¨glement") ),
+                ( "{DATE_DIFFERE}", _(u"Date d'encaissement diffÃ©rÃ©") ),
                 ],
 
     "recu_reglement" : [
-                ( "{DATE_EDITION_RECU}", _(u"Date d'édition du reçu") ),
-                ( "{NUMERO_RECU}", _(u"Numéro du reçu") ),
-                ( "{ID_REGLEMENT}", _(u"ID du règlement") ),
-                ( "{DATE_REGLEMENT}", _(u"Date du règlement") ),
-                ( "{MODE_REGLEMENT}", _(u"Mode de règlement") ),
-                ( "{NOM_EMETTEUR}", _(u"Nom de l'émetteur") ),
-                ( "{NUM_PIECE}", _(u"Numéro de la pièce") ),
-                ( "{MONTANT_REGLEMENT}", _(u"Montant du règlement") ),
+                ( "{DATE_EDITION_RECU}", _(u"Date d'Ã©dition du reÃ§u") ),
+                ( "{NUMERO_RECU}", _(u"NumÃ©ro du reÃ§u") ),
+                ( "{ID_REGLEMENT}", _(u"ID du rÃ¨glement") ),
+                ( "{DATE_REGLEMENT}", _(u"Date du rÃ¨glement") ),
+                ( "{MODE_REGLEMENT}", _(u"Mode de rÃ¨glement") ),
+                ( "{NOM_EMETTEUR}", _(u"Nom de l'Ã©metteur") ),
+                ( "{NUM_PIECE}", _(u"NumÃ©ro de la piÃ¨ce") ),
+                ( "{MONTANT_REGLEMENT}", _(u"Montant du rÃ¨glement") ),
                 ( "{NOM_PAYEUR}", _(u"Nom du payeur") ),
-                ( "{NUM_QUITTANCIER}", _(u"Numéro de quittancier") ),
-                ( "{DATE_SAISIE}", _(u"Date de saisie du règlement") ),
-                ("{DATE_DIFFERE}", _(u"Date d'encaissement différé")),
+                ( "{NUM_QUITTANCIER}", _(u"NumÃ©ro de quittancier") ),
+                ( "{DATE_SAISIE}", _(u"Date de saisie du rÃ¨glement") ),
+                ("{DATE_DIFFERE}", _(u"Date d'encaissement diffÃ©rÃ©")),
                 ],
 
     "recu_don_oeuvres" : [
-                ( "{DATE_EDITION}", _(u"Date d'édition du reçu") ),
-                ( "{NUMERO_RECU}", _(u"Numéro du reçu") ),
+                ( "{DATE_EDITION}", _(u"Date d'Ã©dition du reÃ§u") ),
+                ( "{NUMERO_RECU}", _(u"NumÃ©ro du reÃ§u") ),
                 ( "{NOM_DONATEUR}", _(u"Nom du donateur") ),
                 ( "{ADRESSE_DONATEUR}", _(u"Adresse du donateur") ),
-                ( "{DATE_REGLEMENT}", _(u"Date du règlement") ),
-                ( "{MODE_REGLEMENT}", _(u"Mode du règlement") ),
+                ( "{DATE_REGLEMENT}", _(u"Date du rÃ¨glement") ),
+                ( "{MODE_REGLEMENT}", _(u"Mode du rÃ¨glement") ),
                 ( "{MONTANT_CHIFFRES}", _(u"Montant en chiffres") ),
                 ( "{MONTANT_LETTRES}", _(u"Montant en lettres") ),
                 ],
 
     "facture" : [
-                ( "{DATE_EDITION_FACTURE}", _(u"Date d'édition de la facture") ),
-                ( "{NUMERO_FACTURE}", _(u"Numéro de facture") ),
-                ( "{DATE_DEBUT}", _(u"Date de début de la période de facturation") ),
-                ( "{DATE_FIN}", _(u"Date de fin de la période de facturation") ),
-                ( "{DATE_ECHEANCE}", _(u"Date d'échance du règlement") ),
+                ( "{DATE_EDITION_FACTURE}", _(u"Date d'Ã©dition de la facture") ),
+                ( "{NUMERO_FACTURE}", _(u"NumÃ©ro de facture") ),
+                ( "{DATE_DEBUT}", _(u"Date de dÃ©but de la pÃ©riode de facturation") ),
+                ( "{DATE_FIN}", _(u"Date de fin de la pÃ©riode de facturation") ),
+                ( "{DATE_ECHEANCE}", _(u"Date d'Ã©chance du rÃ¨glement") ),
                 ( "{SOLDE}", _(u"Solde de la facture") ),
                 ( "{SOLDE_AVEC_REPORTS}", _(u"Solde de la facture (reports inclus)") ),
                 ( "{SOLDE_COMPTE}", _(u"Solde du compte famille") ),
                 ],
 
     "rappel" : [
-                ( "{DATE_EDITION_RAPPEL}", _(u"Date d'édition de la lettre de rappel") ),
-                ( "{NUMERO_RAPPEL}", _(u"Numéro de le lattre de rappel") ),
-                ( "{DATE_MIN}", _(u"Date de début des impayés") ),
-                ( "{DATE_MAX}", _(u"Date de fin des impayés") ),
-                ( "{DATE_REFERENCE}", _(u"Date de référence") ),
+                ( "{DATE_EDITION_RAPPEL}", _(u"Date d'Ã©dition de la lettre de rappel") ),
+                ( "{NUMERO_RAPPEL}", _(u"NumÃ©ro de le lattre de rappel") ),
+                ( "{DATE_MIN}", _(u"Date de dÃ©but des impayÃ©s") ),
+                ( "{DATE_MAX}", _(u"Date de fin des impayÃ©s") ),
+                ( "{DATE_REFERENCE}", _(u"Date de rÃ©fÃ©rence") ),
                 ( "{SOLDE_CHIFFRES}", _(u"Solde du rappel en chiffres") ),
                 ( "{SOLDE_LETTRES}", _(u"Solde du rappel en lettres") ),
                 ],
 
     "attestation_presence" : [
-                ( "{DATE_EDITION_ATTESTATION}", _(u"Date d'édition de l'attestation") ),
-                ( "{NUMERO_ATTESTATION}", _(u"Numéro de l'attestation") ),
-                ( "{DATE_DEBUT}", _(u"Date de début de la période") ),
-                ( "{DATE_FIN}", _(u"Date de fin de la période") ),
-                ( "{INDIVIDUS_CONCERNES}", _(u"Liste des individus concernés") ),
+                ( "{DATE_EDITION_ATTESTATION}", _(u"Date d'Ã©dition de l'attestation") ),
+                ( "{NUMERO_ATTESTATION}", _(u"NumÃ©ro de l'attestation") ),
+                ( "{DATE_DEBUT}", _(u"Date de dÃ©but de la pÃ©riode") ),
+                ( "{DATE_FIN}", _(u"Date de fin de la pÃ©riode") ),
+                ( "{INDIVIDUS_CONCERNES}", _(u"Liste des individus concernÃ©s") ),
                 ( "{SOLDE}", _(u"Solde de l'attestation") ),
                 ],
 
@@ -144,41 +144,41 @@ MOTSCLES = {
                 ],
 
     "mandat_sepa" : [
-                ( "{REFERENCE_UNIQUE_MANDAT}", _(u"RUM (Référence Unique du Mandat)") ),
+                ( "{REFERENCE_UNIQUE_MANDAT}", _(u"RUM (RÃ©fÃ©rence Unique du Mandat)") ),
                 ( "{DATE_SIGNATURE}", _(u"Date de signature du mandat") ),
                 ],
 
     "cotisation" : [
-                ( "{NUMERO_CARTE}", _(u"Numéro de la carte") ),
-                ( "{DATE_DEBUT}", _(u"Date de début de validité de la cotisation") ),
-                ( "{DATE_FIN}", _(u"Date de fin de validité de la cotisation") ),
+                ( "{NUMERO_CARTE}", _(u"NumÃ©ro de la carte") ),
+                ( "{DATE_DEBUT}", _(u"Date de dÃ©but de validitÃ© de la cotisation") ),
+                ( "{DATE_FIN}", _(u"Date de fin de validitÃ© de la cotisation") ),
                 ( "{NOM_TYPE_COTISATION}", _(u"Nom du type de cotisation") ),
-                ( "{NOM_UNITE_COTISATION}", _(u"Nom de l'unité de cotisation") ),
-                ( "{NOM_COTISATION}", _(u"Nom de la cotisation (type + unité)") ),
-                ( "{DATE_CREATION_CARTE}", _(u"Date de création de la carte") ),
-                ( "{MONTANT_FACTURE}", _(u"Montant facturé") ),
-                ( "{MONTANT_REGLE}", _(u"Montant réglé") ),
+                ( "{NOM_UNITE_COTISATION}", _(u"Nom de l'unitÃ© de cotisation") ),
+                ( "{NOM_COTISATION}", _(u"Nom de la cotisation (type + unitÃ©)") ),
+                ( "{DATE_CREATION_CARTE}", _(u"Date de crÃ©ation de la carte") ),
+                ( "{MONTANT_FACTURE}", _(u"Montant facturÃ©") ),
+                ( "{MONTANT_REGLE}", _(u"Montant rÃ©glÃ©") ),
                 ( "{SOLDE_ACTUEL}", _(u"Solde actuel") ),
-                ( "{ACTIVITES}", _(u"Activités associées") ),
+                ( "{ACTIVITES}", _(u"ActivitÃ©s associÃ©es") ),
                 ( "{NOTES}", _(u"Notes") ),
                 ],
 
     "attestation_fiscale" : [
-                ("{DATE_EDITION_COURT}", _(u"Date d'édition court")),
-                ("{DATE_EDITION_LONG}", _(u"Date d'édition long")),
-                ("{DATE_DEBUT}", _(u"Date de début de la période")),
-                ("{DATE_FIN}", _(u"Date de fin de la période")),
-                ("{MONTANT_FACTURE}", _(u"Montant total facturé")),
-                ("{MONTANT_REGLE}", _(u"Montant réglé")),
-                ("{MONTANT_IMPAYE}", _(u"Montant impayé")),
-                ("{MONTANT_FACTURE_LETTRES}", _(u"Montant total facturé en lettres")),
-                ("{MONTANT_REGLE_LETTRES}", _(u"Montant réglé en lettres")),
-                ("{MONTANT_IMPAYE_LETTRES}", _(u"Montant impayé en lettres")),
+                ("{DATE_EDITION_COURT}", _(u"Date d'Ã©dition court")),
+                ("{DATE_EDITION_LONG}", _(u"Date d'Ã©dition long")),
+                ("{DATE_DEBUT}", _(u"Date de dÃ©but de la pÃ©riode")),
+                ("{DATE_FIN}", _(u"Date de fin de la pÃ©riode")),
+                ("{MONTANT_FACTURE}", _(u"Montant total facturÃ©")),
+                ("{MONTANT_REGLE}", _(u"Montant rÃ©glÃ©")),
+                ("{MONTANT_IMPAYE}", _(u"Montant impayÃ©")),
+                ("{MONTANT_FACTURE_LETTRES}", _(u"Montant total facturÃ© en lettres")),
+                ("{MONTANT_REGLE_LETTRES}", _(u"Montant rÃ©glÃ© en lettres")),
+                ("{MONTANT_IMPAYE_LETTRES}", _(u"Montant impayÃ© en lettres")),
                 ],
 
     "rappel_pieces_manquantes" : [
                 ("{NOM_FAMILLE}", _(u"Nom de la famille")),
-                ("{LISTE_PIECES_MANQUANTES}", _(u"Liste des pièces manquantes")),
+                ("{LISTE_PIECES_MANQUANTES}", _(u"Liste des piÃ¨ces manquantes")),
                 ],
 
     "portail" : [
@@ -192,7 +192,7 @@ MOTSCLES = {
                 ( "{DEMANDE_DESCRIPTION}", _(u"Description de la demande") ),
                 ( "{DEMANDE_COMMENTAIRE}", _(u"Commentaire de la demande") ),
                 ( "{DEMANDE_TRAITEMENT_DATE}", _(u"Date de traitement") ),
-                ( "{DEMANDE_REPONSE}", _(u"Réponse à la demande") ),
+                ( "{DEMANDE_REPONSE}", _(u"RÃ©ponse Ã  la demande") ),
                 ],
 
     "portail_demande_renseignement": [
@@ -200,7 +200,7 @@ MOTSCLES = {
         ("{DEMANDE_DESCRIPTION}", _(u"Description de la demande")),
         ("{DEMANDE_COMMENTAIRE}", _(u"Commentaire de la demande")),
         ("{DEMANDE_TRAITEMENT_DATE}", _(u"Date de traitement")),
-        ("{DEMANDE_REPONSE}", _(u"Réponse à la demande")),
+        ("{DEMANDE_REPONSE}", _(u"RÃ©ponse Ã  la demande")),
     ],
 
     "portail_demande_location": [
@@ -208,7 +208,7 @@ MOTSCLES = {
         ("{DEMANDE_DESCRIPTION}", _(u"Description de la demande")),
         ("{DEMANDE_COMMENTAIRE}", _(u"Commentaire de la demande")),
         ("{DEMANDE_TRAITEMENT_DATE}", _(u"Date de traitement")),
-        ("{DEMANDE_REPONSE}", _(u"Réponse à la demande")),
+        ("{DEMANDE_REPONSE}", _(u"RÃ©ponse Ã  la demande")),
     ],
 
     "portail_demande_piece": [
@@ -216,7 +216,7 @@ MOTSCLES = {
         ("{DEMANDE_DESCRIPTION}", _(u"Description de la demande")),
         ("{DEMANDE_COMMENTAIRE}", _(u"Commentaire de la demande")),
         ("{DEMANDE_TRAITEMENT_DATE}", _(u"Date de traitement")),
-        ("{DEMANDE_REPONSE}", _(u"Réponse à la demande")),
+        ("{DEMANDE_REPONSE}", _(u"RÃ©ponse Ã  la demande")),
     ],
 
     "portail_demande_reservation" : [
@@ -224,13 +224,13 @@ MOTSCLES = {
                 ( "{DEMANDE_DESCRIPTION}", _(u"Description de la demande") ),
                 ( "{DEMANDE_COMMENTAIRE}", _(u"Commentaire de la demande") ),
                 ( "{DEMANDE_TRAITEMENT_DATE}", _(u"Date de traitement") ),
-                ( "{DEMANDE_REPONSE}", _(u"Réponse à la demande") ),
-                ( "{PERIODE_NOM}", _(u"Nom de la période") ),
-                ( "{PERIODE_DATE_DEBUT}", _(u"Date de début de la période") ),
-                ( "{PERIODE_DATE_FIN}", _(u"Date de fin de la période") ),
-                ( "{TOTAL}", _(u"Total des prestations de la période") ),
-                ( "{REGLE}", _(u"Total déjà réglé pour la période") ),
-                ( "{SOLDE}", _(u"Solde de la période") ),
+                ( "{DEMANDE_REPONSE}", _(u"RÃ©ponse Ã  la demande") ),
+                ( "{PERIODE_NOM}", _(u"Nom de la pÃ©riode") ),
+                ( "{PERIODE_DATE_DEBUT}", _(u"Date de dÃ©but de la pÃ©riode") ),
+                ( "{PERIODE_DATE_FIN}", _(u"Date de fin de la pÃ©riode") ),
+                ( "{TOTAL}", _(u"Total des prestations de la pÃ©riode") ),
+                ( "{REGLE}", _(u"Total dÃ©jÃ  rÃ©glÃ© pour la pÃ©riode") ),
+                ( "{SOLDE}", _(u"Solde de la pÃ©riode") ),
                 ( "{SOLDE_FAMILLE}", _(u"Solde de la fiche famille") ),
                 ],
 
@@ -239,7 +239,7 @@ MOTSCLES = {
                 ( "{DEMANDE_DESCRIPTION}", _(u"Description de la demande") ),
                 ( "{DEMANDE_COMMENTAIRE}", _(u"Commentaire de la demande") ),
                 ( "{DEMANDE_TRAITEMENT_DATE}", _(u"Date de traitement") ),
-                ( "{DEMANDE_REPONSE}", _(u"Réponse à la demande") ),
+                ( "{DEMANDE_REPONSE}", _(u"RÃ©ponse Ã  la demande") ),
                 ],
 
     "portail_demande_recu_reglement" : [
@@ -247,18 +247,18 @@ MOTSCLES = {
                 ( "{DEMANDE_DESCRIPTION}", _(u"Description de la demande") ),
                 ( "{DEMANDE_COMMENTAIRE}", _(u"Commentaire de la demande") ),
                 ( "{DEMANDE_TRAITEMENT_DATE}", _(u"Date de traitement") ),
-                ( "{DEMANDE_REPONSE}", _(u"Réponse à la demande") ),
+                ( "{DEMANDE_REPONSE}", _(u"RÃ©ponse Ã  la demande") ),
                 ],
 
     "location": [
                 ("{IDLOCATION}", _(u"ID de la location")),
                 ("{IDPRODUIT}", _(u"ID du produit")),
-                ("{DATE_DEBUT}", _(u"Date de début")),
+                ("{DATE_DEBUT}", _(u"Date de dÃ©but")),
                 ("{DATE_FIN}", _(u"Date de fin")),
-                ("{HEURE_DEBUT}", _(u"Heure de début")),
+                ("{HEURE_DEBUT}", _(u"Heure de dÃ©but")),
                 ("{HEURE_FIN}", _(u"Heure de fin")),
                 ("{NOM_PRODUIT}", _(u"Nom du produit")),
-                ("{NOM_CATEGORIE}", _(u"Nom de la catégorie")),
+                ("{NOM_CATEGORIE}", _(u"Nom de la catÃ©gorie")),
                 ("{NOTES}", _(u"Observations")),
                 ],
 
@@ -266,37 +266,37 @@ MOTSCLES = {
                 ("{IDDEMANDE}", _(u"ID de la demande")),
                 ("{DATE}", _(u"Date de la demande")),
                 ("{HEURE}", _(u"Heure de la demande")),
-                ("{CATEGORIES}", _(u"Catégories demandées")),
-                ("{PRODUITS}", _(u"Produits demandés")),
+                ("{CATEGORIES}", _(u"CatÃ©gories demandÃ©es")),
+                ("{PRODUITS}", _(u"Produits demandÃ©s")),
                 ("{NOTES}", _(u"Observations")),
                 ],
 
     "commande_repas": [
                 ("{NOM_COMMANDE}", _(u"Nom de la commande")),
-                ("{DATE_DEBUT}", _(u"Date de début de la période")),
-                ("{DATE_FIN}", _(u"Date de fin de la période")),
+                ("{DATE_DEBUT}", _(u"Date de dÃ©but de la pÃ©riode")),
+                ("{DATE_FIN}", _(u"Date de fin de la pÃ©riode")),
                 ],
 
     "inscription": [
                 ("{IDINSCRIPTION}", _(u"ID de l'inscription")),
                 ("{DATE_INSCRIPTION}", _(u"Date de l'inscription")),
                 ("{EST_PARTI}", _(u"L'individu est parti")),
-                ("{ACTIVITE_NOM_LONG}", _(u"Nom de l'activité long")),
-                ("{ACTIVITE_NOM_COURT}", _(u"Nom de l'activité abrégé")),
+                ("{ACTIVITE_NOM_LONG}", _(u"Nom de l'activitÃ© long")),
+                ("{ACTIVITE_NOM_COURT}", _(u"Nom de l'activitÃ© abrÃ©gÃ©")),
                 ("{GROUPE_NOM_LONG}", _(u"Nom du groupe long")),
-                ("{GROUPE_NOM_COURT}", _(u"Nom du groupe abrégé")),
-                ("{NOM_CATEGORIE_TARIF}", _(u"Nom de la catégorie de tarif")),
+                ("{GROUPE_NOM_COURT}", _(u"Nom du groupe abrÃ©gÃ©")),
+                ("{NOM_CATEGORIE_TARIF}", _(u"Nom de la catÃ©gorie de tarif")),
                 ("{INDIVIDU_NOM}", _(u"Nom de famille de l'individu")),
-                ("{INDIVIDU_PRENOM}", _(u"Prénom de l'individu")),
+                ("{INDIVIDU_PRENOM}", _(u"PrÃ©nom de l'individu")),
                 ("{INDIVIDU_DATE_NAISS}", _(u"Date de naissance de l'individu")),
                 ],
 
     "devis": [
-        ("{DATE_EDITION_DEVIS}", _(u"Date d'édition du devis")),
-        ("{NUMERO_DEVIS}", _(u"Numéro du devis")),
-        ("{DATE_DEBUT}", _(u"Date de début de la période")),
-        ("{DATE_FIN}", _(u"Date de fin de la période")),
-        ("{INDIVIDUS_CONCERNES}", _(u"Liste des individus concernés")),
+        ("{DATE_EDITION_DEVIS}", _(u"Date d'Ã©dition du devis")),
+        ("{NUMERO_DEVIS}", _(u"NumÃ©ro du devis")),
+        ("{DATE_DEBUT}", _(u"Date de dÃ©but de la pÃ©riode")),
+        ("{DATE_FIN}", _(u"Date de fin de la pÃ©riode")),
+        ("{INDIVIDUS_CONCERNES}", _(u"Liste des individus concernÃ©s")),
         ("{SOLDE}", _(u"Solde du devis")),
         ],
 
@@ -381,7 +381,7 @@ class Hyperlien_inserer_modele(Hyperlien):
         self.editeur = editeur
 
     def OnLeftLink(self, event):
-        # Récupération des modèles
+        # RÃ©cupÃ©ration des modÃ¨les
         DB = GestionDB.DB()
         req = """SELECT IDmodele, categorie, nom, description, objet, texte_xml, IDadresse, defaut
         FROM modeles_emails
@@ -390,7 +390,7 @@ class Hyperlien_inserer_modele(Hyperlien):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
         id = 10000
         for IDmodele, categorie, nom, description, objet, texte_xml, IDadresse, defaut in self.listeMotscles :
@@ -419,9 +419,9 @@ def DateEngFr(textDate):
     return text
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -438,7 +438,7 @@ class CTRL_Expediteur(wx.Choice):
         selectionActuelle = self.GetID() 
         self.listeAdresses = []
         self.dictAdresses = {}
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         DB = GestionDB.DB()        
         req = """SELECT IDadresse, adresse, nom_adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS, utilisateur, moteur, parametres
         FROM adresses_mail ORDER BY adresse; """
@@ -486,13 +486,13 @@ class Panel_Expediteur(wx.Panel):
     def __init__(self, parent, size=(-1, -1)):
         wx.Panel.__init__(self, parent, id=-1, size=size, style=wx.TAB_TRAVERSAL)
         
-        # Contrôles
+        # ContrÃ´les
         self.ctrl_exp = CTRL_Expediteur(self)
         self.bouton_exp = self.bouton_exp = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
         
-        # Propriétés
-        self.ctrl_exp.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'adresse d'expéditeur")))
-        self.bouton_exp.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des adresses d'expédition")))
+        # PropriÃ©tÃ©s
+        self.ctrl_exp.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez l'adresse d'expÃ©diteur")))
+        self.bouton_exp.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la gestion des adresses d'expÃ©dition")))
         
         # Layout
         grid_sizer = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
@@ -564,23 +564,23 @@ class BarreOutils1(wx.ToolBar):
         ID_GOMME = wx.Window.NewControlId()
 
         AddTool(self, ID_SAUVEGARDER, "Images/Teamword/sauvegarder.png", label=_(u"Sauvegarder le texte"), handler=self.parent.OnFileSave)
-        AddTool(self, ID_OUVRIR, "Images/Teamword/ouvrir.png", label=_(u"Ouvrir un texte sauvegardé"), handler=self.parent.OnFileOpen)
+        AddTool(self, ID_OUVRIR, "Images/Teamword/ouvrir.png", label=_(u"Ouvrir un texte sauvegardÃ©"), handler=self.parent.OnFileOpen)
         self.AddSeparator()
         AddTool(self, ID_IMPRIMER, "Images/Teamword/imprimer.png", label=_(u"Imprimer ce texte"), handler=self.parent.OnPrint)
-        AddTool(self, ID_APERCU, "Images/Teamword/Apercu.png", label=_(u"Aperçu avant impression de ce texte"), handler=self.parent.OnPreview)
+        AddTool(self, ID_APERCU, "Images/Teamword/Apercu.png", label=_(u"AperÃ§u avant impression de ce texte"), handler=self.parent.OnPreview)
         self.AddSeparator()
-        AddTool(self, ID_ALIGNER_GAUCHE, "Images/Teamword/aligner_gauche.png", kind=wx.ITEM_CHECK, label=_(u"Aligner à gauche"), handler=self.parent.OnAlignLeft, updateUI=self.parent.OnUpdateAlignLeft)
+        AddTool(self, ID_ALIGNER_GAUCHE, "Images/Teamword/aligner_gauche.png", kind=wx.ITEM_CHECK, label=_(u"Aligner Ã  gauche"), handler=self.parent.OnAlignLeft, updateUI=self.parent.OnUpdateAlignLeft)
         AddTool(self, ID_ALIGNER_CENTRE, "Images/Teamword/aligner_centre.png", kind=wx.ITEM_CHECK, label=_(u"Centrer"), handler=self.parent.OnAlignCenter, updateUI=self.parent.OnUpdateAlignCenter)
-        AddTool(self, ID_ALIGNER_DROIT, "Images/Teamword/aligner_droit.png", kind=wx.ITEM_CHECK, label=_(u"Aligner à droite"), handler=self.parent.OnAlignRight, updateUI=self.parent.OnUpdateAlignRight)
+        AddTool(self, ID_ALIGNER_DROIT, "Images/Teamword/aligner_droit.png", kind=wx.ITEM_CHECK, label=_(u"Aligner Ã  droite"), handler=self.parent.OnAlignRight, updateUI=self.parent.OnUpdateAlignRight)
         self.AddSeparator()
         AddTool(self, ID_GRAS, "Images/Teamword/gras.png", kind=wx.ITEM_CHECK, label=_(u"Gras"), handler=self.parent.OnBold, updateUI=self.parent.OnUpdateBold)
         AddTool(self, ID_ITALIQUE, "Images/Teamword/italique.png", kind=wx.ITEM_CHECK, label=_(u"Italique"), handler=self.parent.OnItalic, updateUI=self.parent.OnUpdateItalic)
-        AddTool(self, ID_SOULIGNE, "Images/Teamword/souligne.png", kind=wx.ITEM_CHECK, label=_(u"Souligné"), handler=self.parent.OnUnderline, updateUI=self.parent.OnUpdateUnderline)
+        AddTool(self, ID_SOULIGNE, "Images/Teamword/souligne.png", kind=wx.ITEM_CHECK, label=_(u"SoulignÃ©"), handler=self.parent.OnUnderline, updateUI=self.parent.OnUpdateUnderline)
         self.AddSeparator()
         AddTool(self, ID_COULEUR_POLICE, "Images/Teamword/police_couleur.png", label=_(u"Couleur de la police"), handler=self.parent.OnColour)
         self.AddSeparator()
         AddTool(self, wx.ID_UNDO, "Images/Teamword/annuler.png", label=_(u"Annuler"), handler=self.parent.ForwardEvent, updateUI=self.parent.ForwardEvent)
-        AddTool(self, wx.ID_REDO, "Images/Teamword/repeter.png", label=_(u"Répéter"), handler=self.parent.ForwardEvent, updateUI=self.parent.ForwardEvent)
+        AddTool(self, wx.ID_REDO, "Images/Teamword/repeter.png", label=_(u"RÃ©pÃ©ter"), handler=self.parent.ForwardEvent, updateUI=self.parent.ForwardEvent)
         self.AddSeparator()
         AddTool(self, ID_GOMME, "Images/16x16/Gomme.png", label=_(u"Effacer tout le texte"), handler=self.parent.OnGomme)
 
@@ -618,8 +618,8 @@ class BarreOutils2(wx.ToolBar):
         AddTool(self, ID_INTER_DOUBLE, "Images/Teamword/interligne_double.png", label=_(u"Interligne double"), handler=self.parent.OnLineSpacingDouble)
         
         self.AddSeparator()
-        AddTool(self, ID_URL, "Images/Teamword/url.png", label=_(u"Insérer une url"), handler=self.parent.OnInsererURL)
-        AddTool(self, ID_IMAGE, "Images/Teamword/importer_image.png", label=_(u"Insérer une image"), handler=self.parent.OnImporterImage)
+        AddTool(self, ID_URL, "Images/Teamword/url.png", label=_(u"InsÃ©rer une url"), handler=self.parent.OnInsererURL)
+        AddTool(self, ID_IMAGE, "Images/Teamword/importer_image.png", label=_(u"InsÃ©rer une image"), handler=self.parent.OnImporterImage)
 
         self.SetToolBitmapSize((16, 16))
         self.Realize()
@@ -665,7 +665,7 @@ class CTRL(wx.Panel):
     def __init__(self, parent, size=(-1, -1)):
         wx.Panel.__init__(self, parent, id=-1, size=size, style=wx.TAB_TRAVERSAL)
         
-        # Contrôles
+        # ContrÃ´les
         self.barre_outils1 = BarreOutils1(self)
         self.barre_outils2 = BarreOutils2(self)
         self.AddRTCHandlers()
@@ -686,7 +686,7 @@ class CTRL(wx.Panel):
     def OnFileOpen(self, evt):
         """ Ouvrir un texte """
         wildcard, types = rt.RichTextBuffer.GetExtWildcard(save=False)
-        dlg = wx.FileDialog(self, _(u"Choisissez un fichier à ouvrir"), wildcard=wildcard, style=wx.FD_OPEN)
+        dlg = wx.FileDialog(self, _(u"Choisissez un fichier Ã  ouvrir"), wildcard=wildcard, style=wx.FD_OPEN)
         dlg.SetFilterIndex(2)
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.GetPath()
@@ -723,7 +723,7 @@ class CTRL(wx.Panel):
         data = wx.PrintDialogData() 
         data.SetAllPages(True)
         data.SetCollate(True) # Pour assembler les pages
-        # définit les paramètres de l'impression
+        # dÃ©finit les paramÃ¨tres de l'impression
         datapr = wx.PrintData()
         data.SetPrintData(datapr)
         # Impression
@@ -733,11 +733,11 @@ class CTRL(wx.Panel):
             return
         
         from Utils import UTILS_Printer
-        pfrm = UTILS_Printer.FramePreview(self, _(u"Aperçu avant impression"), preview)
+        pfrm = UTILS_Printer.FramePreview(self, _(u"AperÃ§u avant impression"), preview)
         pfrm.SetPosition(self.GetPosition())
         pfrm.SetSize(self.GetSize())
         pfrm.Show(True)     
-        # Pour éviter le bug des marges qui se rajoutent après l'aperçu
+        # Pour Ã©viter le bug des marges qui se rajoutent aprÃ¨s l'aperÃ§u
         self.SetXML(xml)  
             
     def OnPrint(self, event):
@@ -747,13 +747,13 @@ class CTRL(wx.Panel):
         data = wx.PrintDialogData() 
         data.SetAllPages(True)
         data.SetCollate(True) # Pour assembler les pages
-        # définit les paramètres de l'impression
+        # dÃ©finit les paramÃ¨tres de l'impression
         datapr = wx.PrintData()
         data.SetPrintData(datapr)
         # Impression
         printer = wx.Printer(data) 
         printer.Print(self, printout, True) 
-        # Pour éviter le bug des marges qui se rajoutent après l'aperçu
+        # Pour Ã©viter le bug des marges qui se rajoutent aprÃ¨s l'aperÃ§u
         self.SetXML(xml)  
 
     def OnBold(self, evt):
@@ -869,7 +869,7 @@ class CTRL(wx.Panel):
 
     def OnFont(self, evt):
         if not self.ctrl_editeur.HasSelection():
-            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner un texte."), _(u"Police"), wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sÃ©lectionner un texte."), _(u"Police"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -965,17 +965,17 @@ class CTRL(wx.Panel):
         self.ctrl_editeur.EndStyle()
 
     def OnImporterImage(self, event):
-        # Sélection d'une image
+        # SÃ©lection d'une image
         self.repCourant = os.getcwd()
         wildcard = "Toutes les images|*.jpg;*.png;*.gif|" \
                         "Images JPEG (*.jpg)|*.jpg|"     \
                         "Images PNG (*.png)|*.png|"     \
                         "Images GIF (*.gif)|*.gif|"     \
                         "Tous les fichiers (*.*)|*.*"
-        # Récupération du chemin des documents
+        # RÃ©cupÃ©ration du chemin des documents
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
-        # Ouverture de la fenêtre de dialogue
+        # Ouverture de la fenÃªtre de dialogue
         dlg = wx.FileDialog(
             self, message=_(u"Choisissez une image"),
             defaultDir=cheminDefaut, 
@@ -1000,7 +1000,7 @@ class CTRL(wx.Panel):
 ##        else:
 ##            dlg.Destroy()
 ##            return 
-        # Insère l'image dans l'éditeur
+        # InsÃ¨re l'image dans l'Ã©diteur
         if nomFichierLong.lower().endswith(".jpg") : typeBMP = wx.BITMAP_TYPE_JPEG
         elif nomFichierLong.lower().endswith(".png") : typeBMP = wx.BITMAP_TYPE_PNG
         elif nomFichierLong.lower().endswith(".gif") : typeBMP = wx.BITMAP_TYPE_GIF
@@ -1066,7 +1066,7 @@ class CTRL(wx.Panel):
         handler.DeleteTemporaryImages()
 
     def GetHTML(self, imagesIncluses=True, base64=False):
-        # Récupération de la source HTML
+        # RÃ©cupÃ©ration de la source HTML
         handler = rt.RichTextHTMLHandler()
         if imagesIncluses == True :
             if base64 == True :
@@ -1089,7 +1089,7 @@ class CTRL(wx.Panel):
         return source, listeImages, handler
 
     def GetHTML_base64(self):
-        # Récupération de la source HTML
+        # RÃ©cupÃ©ration de la source HTML
         handler = rt.RichTextHTMLHandler()
         handler.SetFlags(rt.RICHTEXT_HANDLER_SAVE_IMAGES_TO_BASE64)
         handler.SetFontSizeMapping([7, 9, 11, 12, 14, 22, 100])
@@ -1123,7 +1123,7 @@ class CTRL(wx.Panel):
         self.ctrl_editeur.SetXML(texteXml)
         
     def EcritTexte(self, texte=""):
-        """ Ecrit un texte à l'emplacement du focus """
+        """ Ecrit un texte Ã  l'emplacement du focus """
         self.ctrl_editeur.WriteText(texte)
         self.ctrl_editeur.SetFocus()
 

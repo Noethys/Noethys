@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -29,8 +29,8 @@ class Panel(wx.Panel):
         self.parent = parent
         self.IDactivite = IDactivite
         
-        # Unités
-        self.staticbox_unites_staticbox = wx.StaticBox(self, -1, _(u"Unités de consommation"))
+        # UnitÃ©s
+        self.staticbox_unites_staticbox = wx.StaticBox(self, -1, _(u"UnitÃ©s de consommation"))
         self.ctrl_unites = OL_Unites.ListView(self, IDactivite=self.IDactivite, id=-1, name="OL_unites", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_unites.SetMinSize((100, 100))
         self.ctrl_unites.MAJ()
@@ -41,7 +41,7 @@ class Panel(wx.Panel):
         self.bouton_unites_descendre = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Fleche_bas.png"), wx.BITMAP_TYPE_ANY))
         
         # Remplissage
-        self.staticbox_remplissage_staticbox = wx.StaticBox(self, -1, _(u"Unités de remplissage"))        
+        self.staticbox_remplissage_staticbox = wx.StaticBox(self, -1, _(u"UnitÃ©s de remplissage"))        
         self.ctrl_remplissage = OL_Unites_remplissage.ListView(self, IDactivite=self.IDactivite, id=-1, name="OL_unites", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_remplissage.SetMinSize((100, 100))
         self.ctrl_remplissage.MAJ()
@@ -67,17 +67,17 @@ class Panel(wx.Panel):
 
     def __set_properties(self):
         self.ctrl_unites.SetToolTip(wx.ToolTip(_(u"Liste des consommations")))
-        self.bouton_unites_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer une unité de consommation")))
-        self.bouton_unites_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'unité de consommation sélectionnée dans la liste")))
-        self.bouton_unites_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'unité de consommation sélectionnée dans la liste")))
-        self.bouton_unites_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter l'unité sélectionnée dans la liste")))
-        self.bouton_unites_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre l'unité sélectionnée dans la liste")))
-        self.ctrl_remplissage.SetToolTip(wx.ToolTip(_(u"Liste des unités de remplissage")))
-        self.bouton_remplissage_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer une unité de remplissage")))
-        self.bouton_remplissage_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'unité de remplissage sélectionnée dans la liste")))
-        self.bouton_remplissage_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'unité de remplissage selectionnée dans la liste")))
-        self.bouton_remplissage_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter l'unité sélectionnée dans la liste")))
-        self.bouton_remplissage_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre l'unité sélectionnée dans la liste")))
+        self.bouton_unites_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er une unitÃ© de consommation")))
+        self.bouton_unites_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'unitÃ© de consommation sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_unites_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'unitÃ© de consommation sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_unites_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter l'unitÃ© sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_unites_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre l'unitÃ© sÃ©lectionnÃ©e dans la liste")))
+        self.ctrl_remplissage.SetToolTip(wx.ToolTip(_(u"Liste des unitÃ©s de remplissage")))
+        self.bouton_remplissage_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er une unitÃ© de remplissage")))
+        self.bouton_remplissage_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'unitÃ© de remplissage sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_remplissage_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'unitÃ© de remplissage selectionnÃ©e dans la liste")))
+        self.bouton_remplissage_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter l'unitÃ© sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_remplissage_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre l'unitÃ© sÃ©lectionnÃ©e dans la liste")))
         
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)

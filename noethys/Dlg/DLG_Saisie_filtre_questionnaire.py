@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -82,7 +82,7 @@ class CTRL_Page_choix(wx.Panel):
     def __init__(self, parent, IDquestion=None):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL) 
         self.IDquestion = IDquestion
-        self.label_intro = wx.StaticText(self, -1, _(u"L'un des choix suivants est sélectionné :"))
+        self.label_intro = wx.StaticText(self, -1, _(u"L'un des choix suivants est sÃ©lectionnÃ© :"))
         self.ctrl_choix = CTRL_Choix(self, IDquestion=IDquestion)
         self.__do_layout()
         
@@ -128,8 +128,8 @@ class CTRL_Page_choix(wx.Panel):
 class CTRL_Page_coche(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL) 
-        self.radio_coche = wx.RadioButton(self, -1, _(u"Est coché"), style=wx.RB_GROUP)
-        self.radio_decoche = wx.RadioButton(self, -1, _(u"Est décoché"))
+        self.radio_coche = wx.RadioButton(self, -1, _(u"Est cochÃ©"), style=wx.RB_GROUP)
+        self.radio_decoche = wx.RadioButton(self, -1, _(u"Est dÃ©cochÃ©"))
         self.__do_layout()
         
     def __do_layout(self):
@@ -158,9 +158,9 @@ class CTRL_Page_coche(wx.Panel):
 class CTRL_Page_texte(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL) 
-        self.radio_egal = wx.RadioButton(self, -1, _(u"Est égal à"), style=wx.RB_GROUP)
+        self.radio_egal = wx.RadioButton(self, -1, _(u"Est Ã©gal Ã "), style=wx.RB_GROUP)
         self.ctrl_egal = wx.TextCtrl(self, -1, "", size=(200, -1))
-        self.radio_different = wx.RadioButton(self, -1, _(u"Est différent de"))
+        self.radio_different = wx.RadioButton(self, -1, _(u"Est diffÃ©rent de"))
         self.ctrl_different = wx.TextCtrl(self, -1, "", size=(200, -1))
         self.radio_contient = wx.RadioButton(self, -1, _(u"Contient"))
         self.ctrl_contient = wx.TextCtrl(self, -1, "", size=(200, -1))
@@ -264,17 +264,17 @@ class CTRL_Page_texte(wx.Panel):
 class CTRL_Page_entier(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL) 
-        self.radio_egal = wx.RadioButton(self, -1, _(u"Est égal à"), style=wx.RB_GROUP)
+        self.radio_egal = wx.RadioButton(self, -1, _(u"Est Ã©gal Ã "), style=wx.RB_GROUP)
         self.ctrl_egal = wx.SpinCtrl(self, -1, "", min=0, max=100)
-        self.radio_different = wx.RadioButton(self, -1, _(u"Est différent de"))
+        self.radio_different = wx.RadioButton(self, -1, _(u"Est diffÃ©rent de"))
         self.ctrl_different = wx.SpinCtrl(self, -1, "", min=0, max=100)
-        self.radio_sup = wx.RadioButton(self, -1, _(u"Est supérieur à"))
+        self.radio_sup = wx.RadioButton(self, -1, _(u"Est supÃ©rieur Ã "))
         self.ctrl_sup = wx.SpinCtrl(self, -1, "", min=0, max=100)
-        self.radio_supegal = wx.RadioButton(self, -1, _(u"Est supérieur ou égal à"))
+        self.radio_supegal = wx.RadioButton(self, -1, _(u"Est supÃ©rieur ou Ã©gal Ã "))
         self.ctrl_supegal = wx.SpinCtrl(self, -1, "", min=0, max=100)
-        self.radio_inf = wx.RadioButton(self, -1, _(u"Est inférieur à"))
+        self.radio_inf = wx.RadioButton(self, -1, _(u"Est infÃ©rieur Ã "))
         self.ctrl_inf = wx.SpinCtrl(self, -1, "", min=0, max=100)
-        self.radio_infegal = wx.RadioButton(self, -1, _(u"Est inférieur ou égal à"))
+        self.radio_infegal = wx.RadioButton(self, -1, _(u"Est infÃ©rieur ou Ã©gal Ã "))
         self.ctrl_infegal = wx.SpinCtrl(self, -1, "", min=0, max=100)
         self.radio_compris = wx.RadioButton(self, -1, _(u"Est compris entre"))
         self.ctrl_min = wx.SpinCtrl(self, -1, "", min=0, max=100)
@@ -408,17 +408,17 @@ class CTRL_Page_entier(wx.Panel):
 class CTRL_Page_montant(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL) 
-        self.radio_egal = wx.RadioButton(self, -1, _(u"Est égal à"), style=wx.RB_GROUP)
+        self.radio_egal = wx.RadioButton(self, -1, _(u"Est Ã©gal Ã "), style=wx.RB_GROUP)
         self.ctrl_egal = CTRL_Saisie_euros.CTRL(self)
-        self.radio_different = wx.RadioButton(self, -1, _(u"Est différent de"))
+        self.radio_different = wx.RadioButton(self, -1, _(u"Est diffÃ©rent de"))
         self.ctrl_different = CTRL_Saisie_euros.CTRL(self)
-        self.radio_sup = wx.RadioButton(self, -1, _(u"Est supérieur à"))
+        self.radio_sup = wx.RadioButton(self, -1, _(u"Est supÃ©rieur Ã "))
         self.ctrl_sup = CTRL_Saisie_euros.CTRL(self)
-        self.radio_supegal = wx.RadioButton(self, -1, _(u"Est supérieur ou égal à"))
+        self.radio_supegal = wx.RadioButton(self, -1, _(u"Est supÃ©rieur ou Ã©gal Ã "))
         self.ctrl_supegal = CTRL_Saisie_euros.CTRL(self)
-        self.radio_inf = wx.RadioButton(self, -1, _(u"Est inférieur à"))
+        self.radio_inf = wx.RadioButton(self, -1, _(u"Est infÃ©rieur Ã "))
         self.ctrl_inf = CTRL_Saisie_euros.CTRL(self)
-        self.radio_infegal = wx.RadioButton(self, -1, _(u"Est inférieur ou égal à"))
+        self.radio_infegal = wx.RadioButton(self, -1, _(u"Est infÃ©rieur ou Ã©gal Ã "))
         self.ctrl_infegal = CTRL_Saisie_euros.CTRL(self)
         self.radio_compris = wx.RadioButton(self, -1, _(u"Est compris entre"))
         self.ctrl_min = CTRL_Saisie_euros.CTRL(self)
@@ -553,17 +553,17 @@ class CTRL_Page_montant(wx.Panel):
 class CTRL_Page_date(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL) 
-        self.radio_egal = wx.RadioButton(self, -1, _(u"Est égal à"), style=wx.RB_GROUP)
+        self.radio_egal = wx.RadioButton(self, -1, _(u"Est Ã©gal Ã "), style=wx.RB_GROUP)
         self.ctrl_egal = CTRL_Saisie_date.Date2(self)
-        self.radio_different = wx.RadioButton(self, -1, _(u"Est différent de"))
+        self.radio_different = wx.RadioButton(self, -1, _(u"Est diffÃ©rent de"))
         self.ctrl_different = CTRL_Saisie_date.Date2(self)
-        self.radio_sup = wx.RadioButton(self, -1, _(u"Est supérieur à"))
+        self.radio_sup = wx.RadioButton(self, -1, _(u"Est supÃ©rieur Ã "))
         self.ctrl_sup = CTRL_Saisie_date.Date2(self)
-        self.radio_supegal = wx.RadioButton(self, -1, _(u"Est supérieur ou égal à"))
+        self.radio_supegal = wx.RadioButton(self, -1, _(u"Est supÃ©rieur ou Ã©gal Ã "))
         self.ctrl_supegal = CTRL_Saisie_date.Date2(self)
-        self.radio_inf = wx.RadioButton(self, -1, _(u"Est inférieur à"))
+        self.radio_inf = wx.RadioButton(self, -1, _(u"Est infÃ©rieur Ã "))
         self.ctrl_inf = CTRL_Saisie_date.Date2(self)
-        self.radio_infegal = wx.RadioButton(self, -1, _(u"Est inférieur ou égal à"))
+        self.radio_infegal = wx.RadioButton(self, -1, _(u"Est infÃ©rieur ou Ã©gal Ã "))
         self.ctrl_infegal = CTRL_Saisie_date.Date2(self)
         self.radio_compris = wx.RadioButton(self, -1, _(u"Est compris entre"))
         self.ctrl_min = CTRL_Saisie_date.Date2(self)
@@ -704,7 +704,7 @@ class CTRL_Page_vide(wx.Panel):
         return None
 
     def Validation(self):
-        dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune question !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune question !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
         dlg.ShowModal()
         dlg.Destroy()
         return False
@@ -785,7 +785,7 @@ class CTRL_Filtres(wx.Treebook):
         from Utils import UTILS_Linux
         UTILS_Linux.AdaptePolice(self)
 
-        # Création de l'ImageList
+        # CrÃ©ation de l'ImageList
         self.dictImages = {}
         self.il = wx.ImageList(32, 32)
         for controle in LISTE_CONTROLES :
@@ -817,8 +817,8 @@ class CTRL_Filtres(wx.Treebook):
 
             if (type in self.dictQuestions) == True :
                 
-                # Création de la page TYPE
-                panel = CTRL_Page_vide(self, texte=_(u"Veuillez sélectionner une question dans la liste !"))
+                # CrÃ©ation de la page TYPE
+                panel = CTRL_Page_vide(self, texte=_(u"Veuillez sÃ©lectionner une question dans la liste !"))
 
                 label = ""
                 for code, labelTemp, fichier_image in LISTE_CATEGORIES:
@@ -829,7 +829,7 @@ class CTRL_Filtres(wx.Treebook):
                 indexType = int(index)
                 index += 1
                 
-                # Création des pages QUESTIONS
+                # CrÃ©ation des pages QUESTIONS
                 for dictQuestion in self.dictQuestions[type] :
                     IDquestion = dictQuestion["IDquestion"]
                     titre = dictQuestion["label"]
@@ -946,15 +946,15 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("")
 
     def OnBoutonOk(self, event):
-        # Vérification des données saisies
+        # VÃ©rification des donnÃ©es saisies
         if self.ctrl_filtres.Validation() == False :
             return
         
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
     
     def GetValeur(self):
-        # Récupération des valeurs
+        # RÃ©cupÃ©ration des valeurs
         return self.ctrl_filtres.GetValeur() 
     
     def SetValeur(self, choix="", criteres=""):

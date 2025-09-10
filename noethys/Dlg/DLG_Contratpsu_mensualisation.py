@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -25,8 +25,8 @@ class Panel(wx.Panel):
         self.parent = parent
         self.clsbase = clsbase
 
-        # Mensualités
-        self.staticbox_mensualites_staticbox = wx.StaticBox(self, -1, _(u"Mensualités"))
+        # MensualitÃ©s
+        self.staticbox_mensualites_staticbox = wx.StaticBox(self, -1, _(u"MensualitÃ©s"))
         self.listviewAvecFooter = OL_Contratspsu_mensualites.ListviewAvecFooter(self, kwargs={})
         self.ctrl_mensualites = self.listviewAvecFooter.GetListview()
         self.ctrl_recherche = OL_Contratspsu_mensualites.CTRL_Outils(self, listview=self.ctrl_mensualites, afficherCocher=False)
@@ -45,13 +45,13 @@ class Panel(wx.Panel):
 
 
     def __set_properties(self):
-        self.bouton_mensualites_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste")))
+        self.bouton_mensualites_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperÃ§u avant impression de la liste")))
         self.bouton_mensualites_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         
-        # Mensualités
+        # MensualitÃ©s
         staticbox_mensualites = wx.StaticBoxSizer(self.staticbox_mensualites_staticbox, wx.VERTICAL)
         grid_sizer_mensualites = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
 

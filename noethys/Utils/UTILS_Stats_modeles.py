@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -30,7 +30,7 @@ import matplotlib.pyplot
 
 COULEUR_VERT_POMME = (151, 253, 79)
 COULEUR_BLEU_CIEL = (174, 212, 253)
-LISTE_NOMS_MOIS = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
+LISTE_NOMS_MOIS = (_(u"Janvier"), _(u"FÃ©vrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"AoÃ»t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"DÃ©cembre"))
 
 
 def DateEngEnDateDD(dateEng):
@@ -132,7 +132,7 @@ def Ligne_moyenne(x, n, type='simple'):
 
 
 def GetDatesPeriode(dictParametres={}):
-    """ Renvoie les dates de début et de fin de période de référence """
+    """ Renvoie les dates de dÃ©but et de fin de pÃ©riode de rÃ©fÃ©rence """
     if "mode" in dictParametres :
         if dictParametres["mode"] == "inscrits" :
             date_debut = datetime.date(1977, 1, 1)
@@ -146,7 +146,7 @@ def GetDatesPeriode(dictParametres={}):
     return date_debut, date_fin
 
 def GetConditionActivites(dictParametres={}):
-    """ Renvoie les conditions d'activités pour les req SQL """
+    """ Renvoie les conditions d'activitÃ©s pour les req SQL """
     conditionsActivites = ""
     if "listeActivites" in dictParametres:
         if len(dictParametres["listeActivites"]) == 0 : 
@@ -158,7 +158,7 @@ def GetConditionActivites(dictParametres={}):
     return conditionsActivites
 
 def GetInfosActivites(DB=None, listeActivites=[]):
-    """ Récupération des infos sur les activités souhaitées """
+    """ RÃ©cupÃ©ration des infos sur les activitÃ©s souhaitÃ©es """
     if len(listeActivites) == 0 : conditionActivites = "()"
     elif len(listeActivites) == 1 : conditionActivites = "(%d)" % listeActivites[0]
     else : conditionActivites = str(tuple(listeActivites))
@@ -177,7 +177,7 @@ def GetInfosActivites(DB=None, listeActivites=[]):
     return listeInfosActivites
 
 def GetDateExtremeActivites(DB=None, listeActivites=[], typeDate="date_debut", mode="min"):
-    """ Renvoie la date min ou max d'un ensemble d'activités """
+    """ Renvoie la date min ou max d'un ensemble d'activitÃ©s """
     """ typeDate = date_debut, date_fin ou date_milieu """
     listeInfosActivites = GetInfosActivites(DB, listeActivites)
     date = None
@@ -191,10 +191,10 @@ def GetDateExtremeActivites(DB=None, listeActivites=[], typeDate="date_debut", m
 
 
 def GetPeriodesComparatives(DB=None, dictParametres={}, date_min=None, date_max=None):
-    """ Récupère les périodes pour comparaison """
+    """ RÃ©cupÃ¨re les pÃ©riodes pour comparaison """
     listePeriodes = []
     
-    # Retourne aucune période
+    # Retourne aucune pÃ©riode
     if dictParametres == None : return listePeriodes
     if dictParametres["mode"] == "inscrits" : return listePeriodes
     if dictParametres["periode"] == None : return listePeriodes
@@ -226,12 +226,12 @@ def GetPeriodesComparatives(DB=None, dictParametres={}, date_min=None, date_max=
             dictTemp = {"mois":mois, "annee":annee, "date_debut":date_debut, "date_fin":date_fin, "label":label}
             listePeriodes.append(dictTemp)
 
-    # Année
+    # AnnÃ©e
     if dictPeriode["type"] == "annee" :
         for annee in range(date_min.year, date_max.year+1) :
             date_debut = datetime.date(annee, 1, 1)
             date_fin = datetime.date(annee, 12, 31)
-            label = _(u"Année %d") % annee
+            label = _(u"AnnÃ©e %d") % annee
             dictTemp = {"annee":annee, "date_debut":date_debut, "date_fin":date_fin, "label":label}
             listePeriodes.append(dictTemp)
 
@@ -261,14 +261,14 @@ def GetPeriodesComparatives(DB=None, dictParametres={}, date_min=None, date_max=
 
 
 
-#--- Classes Modèles --------------------------------------------------------------------------------------------------------------------
+#--- Classes ModÃ¨les --------------------------------------------------------------------------------------------------------------------
 
 class HTML():
     def __init__(self, liste_objets=[]):
         self.liste_objets = liste_objets
         self.dictParametres = {}
         
-        # Création du stock d'images
+        # CrÃ©ation du stock d'images
         wx.FileSystem.AddHandler(wx.MemoryFSHandler())
         self.stockImages = wx.MemoryFSHandler()
     
@@ -291,7 +291,7 @@ class HTML():
                 for objet in dictPage["objets"] :
                     if objet.visible == True and (tout == True or rubrique == dictRubrique["code"] or page == dictPage["code"]) :
                         
-                        # Vérifie qu'une mise à jour est nécessaire :
+                        # VÃ©rifie qu'une mise Ã  jour est nÃ©cessaire :
                         maj = False
                         if len(objet.dictParametres) > 0 :
                             if objet.dictParametres != self.dictParametres :
@@ -337,19 +337,19 @@ class HTML():
             numPage = 0
             alphabet = "abcdefghijklmnopqrstuvwxyz"
             
-            # Label de la période
+            # Label de la pÃ©riode
             if self.dictParametres["mode"] == "inscrits" :
-                labelPeriode = _(u"Aucune période spécifique")
+                labelPeriode = _(u"Aucune pÃ©riode spÃ©cifique")
             else:
                 date_debut = DateEngFr(str(self.dictParametres["periode"]["date_debut"]))
                 date_fin = DateEngFr(str(self.dictParametres["periode"]["date_fin"]))
-                labelPeriode = _(u"Période du %s au %s") % (date_debut, date_fin)
+                labelPeriode = _(u"PÃ©riode du %s au %s") % (date_debut, date_fin)
             
-            # Label des activités
+            # Label des activitÃ©s
             listeLabels = []
             for IDactivite in self.dictParametres["listeActivites"] :
                 listeLabels.append((self.dictParametres["dictActivites"][IDactivite]))
-            labelActivites = _(u"Activités : ") + u", ".join(listeLabels)
+            labelActivites = _(u"ActivitÃ©s : ") + u", ".join(listeLabels)
             
             # Titre
             html += u"""<CENTER><TABLE bgcolor="%s" CELLSPACING=1 BORDER=0 COLS=1 WIDTH="100%%">
@@ -388,7 +388,7 @@ class HTML():
         return html
                     
     def GetFigure(self, code=""):
-        """ Retourne la figure d'un graphe à partir de son code """
+        """ Retourne la figure d'un graphe Ã  partir de son code """
         DB = GestionDB.DB() 
         for dictRubrique in self.liste_objets :
             for dictPage in dictRubrique["pages"] :
@@ -446,7 +446,7 @@ class Tableau(Objet):
         couleurFondLigne = ConvertitCouleur((255, 255, 255))
         couleurFondTotaux = ConvertitCouleur((190, 190, 190))
         
-        # Création du tableau
+        # CrÃ©ation du tableau
         if len(self.lignes) == 0 :
             return html
             
@@ -456,18 +456,18 @@ class Tableau(Objet):
             largeurTableau = str(self.largeur)
         html = u"""<CENTER><TABLE bgcolor="%s" CELLSPACING=1 BORDER=0 COLS=%d WIDTH="%s">""" % (couleurCadre, len(self.colonnes), largeurTableau)
         
-        # Création du titre
+        # CrÃ©ation du titre
         if self.nom != u"" :
             html += """<TR bgcolor="%s" ALIGN=CENTER><TD COLSPAN="%d"><B>%s</B></TD></TR>""" % (couleurFondTitre, len(self.colonnes), self.nom)
         
-        # Création de la ligne des entêtes
+        # CrÃ©ation de la ligne des entÃªtes
         if len(self.colonnes) > 0 :
             html += u"""<TR ALIGN=CENTER>"""
             for label, largeur in self.colonnes :
                 html += u"""<TD bgcolor="%s" WIDTH="%s"><I>%s</I></TD>""" % (couleurFondLabel, largeur, label)
             html += u""""""
         
-        # Création des lignes
+        # CrÃ©ation des lignes
         if len(self.lignes) > 0 :
             for ligne in self.lignes :
                 html += u"""<TR ALIGN=CENTER>"""
@@ -475,7 +475,7 @@ class Tableau(Objet):
                     html += u"""<TD bgcolor="%s">%s</TD>""" % (couleurFondLigne, label)
                 html += u"""</TR>"""
 
-        # Création des totaux
+        # CrÃ©ation des totaux
         if len(self.totaux) > 0 :
             html += u"""<TR ALIGN=CENTER>"""
             for label in self.totaux :
@@ -505,13 +505,13 @@ class Graphe(Objet):
                 self.stockImages.RemoveFile(self.nomImage)
             except : pass
         
-        # Mémorise l'image dans le stockImages
+        # MÃ©morise l'image dans le stockImages
         self.bitmap = self.ConvertMPLtoBMP(figure)
         self.stockImages.AddFile(self.nomImage, self.bitmap , wx.BITMAP_TYPE_PNG)
         
     def GetObjetHTML(self):
         if self.bitmap == None : return u""
-        # Création Html
+        # CrÃ©ation Html
         html = """<CENTER><A HREF='%s'><img src="memory:%s"></A></CENTER>""" % (self.code, self.nomImage)
         return html
 
@@ -593,7 +593,7 @@ class FrameTest(wx.Frame):
             objet.MAJ(DB=DB, dictParametres=dictParametres)
         DB.Close() 
         
-        # Création de la page HTML
+        # CrÃ©ation de la page HTML
         html = u"""<HTML><BODY><FONT SIZE=-1><P>%s</P></FONT></BODY></HTML>""" % objet.GetObjetHTML()
         self.ctrl.SetPage(html)
 
@@ -609,7 +609,7 @@ class FrameTest(wx.Frame):
 ##    
 ##    DB = GestionDB.DB() 
 ##    
-##    # Recherche des données par individus
+##    # Recherche des donnÃ©es par individus
 ##    req = """SELECT IDindividu, MIN(date), MAX(date)
 ##    FROM consommations
 ##    WHERE date<='%s' 
@@ -628,14 +628,14 @@ class FrameTest(wx.Frame):
 ##        dateMin = DateEngEnDateDD(dateMin)
 ##        dateMax = DateEngEnDateDD(dateMax)
 ##        
-##        # Vérifie si individu présent sur la période de référence
+##        # VÃ©rifie si individu prÃ©sent sur la pÃ©riode de rÃ©fÃ©rence
 ##        if dateMax >= date_debut :
 ##            moisArrivee = (dateMin.year, dateMin.month)
 ##            if dictResultats.has_key(moisArrivee) == False :
 ##                dictResultats[moisArrivee] = 0
 ##            dictResultats[moisArrivee] += 1
 ##            
-##    # Crée tous les mois de la période
+##    # CrÃ©e tous les mois de la pÃ©riode
 ##    listeMois = []
 ##    for annee in range(date_debut.year, date_fin.year+1) :
 ##        for mois in range(1, 13):
@@ -654,16 +654,16 @@ if __name__ == "__main__":
     date_min = datetime.date(2010, 1, 1)
     date_max = datetime.date(2015, 1, 1)
     
-    # Test des périodes
+    # Test des pÃ©riodes
 ##    listePeriodes = GetPeriodesComparatives(DB, dictParametres, date_min, date_max) 
 ##    for periode in listePeriodes :
 ##        print periode
     
-    # Test des dates de début et de fin des activités
+    # Test des dates de dÃ©but et de fin des activitÃ©s
     for x in GetInfosActivites(DB, listeActivites=[1, 2, 3, 4]) :
         print(x)
     
-    # Tests de dates extremes d'un ensemble d'activités
+    # Tests de dates extremes d'un ensemble d'activitÃ©s
     print(GetDateExtremeActivites(DB, listeActivites=[1, 2, 3, 4], typeDate="date_milieu", mode="max"))
     
         

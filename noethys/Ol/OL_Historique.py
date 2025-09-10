@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -30,9 +30,9 @@ def DateEngFr(textDate):
     return text
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -77,7 +77,7 @@ class Track(object):
             self.nomComplet_individu = u"%s %s" % (self.nom_individu, self.prenom_individu)
         else:
             self.nomComplet_individu = u""
-        # Catégorie
+        # CatÃ©gorie
         self.IDcategorie = donnees[6]
         if self.IDcategorie in UTILS_Historique.CATEGORIES :
             self.nomCategorie = UTILS_Historique.CATEGORIES[self.IDcategorie]
@@ -89,7 +89,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.IDfamille = kwds.pop("IDfamille", None)
         self.IDindividu = kwds.pop("IDindividu", None)
         self.IDutilisateur = kwds.pop("IDutilisateur", None)
@@ -116,7 +116,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeID = None
         listeCriteres = []
         if self.IDfamille != None : listeCriteres.append("historique.IDfamille=%d" % self.IDfamille)
@@ -175,7 +175,7 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Utilisateur"), 'left', 130, "nomComplet_utilisateur", typeDonnee="texte"),
             ColumnDefn(_(u"Famille"), 'left', 120, "nomTitulaires", typeDonnee="texte"),
             ColumnDefn(_(u"Individu"), 'left', 120, "nomComplet_individu", typeDonnee="texte"),
-            ColumnDefn(_(u"Catégorie"), 'left', 150, "nomCategorie", typeDonnee="texte"),
+            ColumnDefn(_(u"CatÃ©gorie"), 'left', 150, "nomCategorie", typeDonnee="texte"),
             ColumnDefn(_(u"Action"), 'left', 700, "action", typeDonnee="texte"),
             ]
         
@@ -194,7 +194,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -202,7 +202,7 @@ class ListView(FastObjectListView):
         if ID == None :
             self.DefileDernier() 
         
-        # Envoie des données au Timeline
+        # Envoie des donnÃ©es au Timeline
         try :
             self.GetParent().MAJ_timeline(self.donnees)
         except : 
@@ -213,11 +213,11 @@ class ListView(FastObjectListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)

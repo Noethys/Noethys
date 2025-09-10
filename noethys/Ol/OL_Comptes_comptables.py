@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -34,7 +34,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -55,7 +55,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT IDcompte, nom, numero
@@ -90,7 +90,7 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(u"", "left", 0, "IDcompte", typeDonnee="entier"),
             ColumnDefn(_(u"Nom"), 'left', 200, "label", typeDonnee="texte", isSpaceFilling=True),
-            ColumnDefn(_(u"NumÈro"), 'left', 0, "numero", typeDonnee="texte"),
+            ColumnDefn(_(u"Num√©ro"), 'left', 0, "numero", typeDonnee="texte"),
             ]
         
         self.rowFormatter = rowFormatter
@@ -109,7 +109,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -127,7 +127,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDcompte
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -158,7 +158,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -195,7 +195,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_comptes_comptables", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun compte ‡ modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun compte √† modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -208,13 +208,13 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_comptes_comptables", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun compte ‡ supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun compte √† supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDcompte = self.Selection()[0].IDcompte
         
-        # VÈrifie que ce compte n'a pas dÈj‡ ÈtÈ attribuÈ ‡ une catÈgorie
+        # V√©rifie que ce compte n'a pas d√©j√† √©t√© attribu√© √† une cat√©gorie
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDcategorie)
         FROM compta_categories
@@ -224,7 +224,7 @@ class ListView(FastObjectListView):
         nbreCategorie = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreCategorie > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce compte a dÈj‡ ÈtÈ attribuÈ ‡ %d catÈgorie(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreCategorie, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce compte a d√©j√† √©t√© attribu√© √† %d cat√©gorie(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreCategorie, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -298,7 +298,7 @@ class MyFrame(wx.Frame):
 # -------------------------------------------------------------------------------------------------------------------------------------------
 
 def ImportationComptes():
-    # Recherche des donnÈes csv
+    # Recherche des donn√©es csv
     fichier = open("Travaux/plan_comptable.csv", "r")
     lignes = fichier.readlines()
     fichier.close() 
@@ -318,7 +318,7 @@ def ImportationComptes():
     DB = GestionDB.DB()
     for numero, nom in listeComptes :
         if six.PY2:
-            nom = nom.decode("iso-8859-15")
+            nom = nom.decode("utf8")
         nom = nom.capitalize()
         listeDonnees = [ ("nom", nom), ("numero", numero)]
         DB.ReqInsert("compta_comptes_comptables", listeDonnees)

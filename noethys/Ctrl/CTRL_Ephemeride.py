@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -36,9 +36,9 @@ from Utils import UTILS_Meteo
 
 
 def DateDDEnDateFR(dateDD):
-    """ Transforme une datetime.date en date complète FR """
+    """ Transforme une datetime.date en date complÃ¨te FR """
     listeJours = ("Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche")
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     return listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
 
 def DateEngEnDateDD(dateEng):
@@ -130,7 +130,7 @@ class CTRL(wx.Panel):
             # Infos Organisateur
             self.dictOrganisateur = self.GetOrganisateur() 
             
-            # Ajout des célébrations
+            # Ajout des cÃ©lÃ©brations
             texte = self.GetCelebrations()
             if texte != None :
                 listePages.append(texte)
@@ -150,7 +150,7 @@ class CTRL(wx.Panel):
             if texte != None :
                 listePages.append(texte)
 
-            # Ajout de la météo
+            # Ajout de la mÃ©tÃ©o
 ##            texte = self.GetMeteo()
 ##            if texte != None :
 ##                listePages.append(texte)
@@ -170,7 +170,7 @@ class CTRL(wx.Panel):
         self.ctrl_ticker.Stop()
 
     def GetOrganisateur(self):
-        """ Récupère les infos sur l'organisateur """
+        """ RÃ©cupÃ¨re les infos sur l'organisateur """
         req = """SELECT cp, ville, gps
         FROM organisateur WHERE IDorganisateur=1;"""
         self.DB.ExecuterReq(req)
@@ -188,41 +188,41 @@ class CTRL(wx.Panel):
         return dictOrganisateur
     
     def GetGPSOrganisateur(self, cp="", ville=""):
-        """ Récupère les coordonnées GPS de l'organisateur """
+        """ RÃ©cupÃ¨re les coordonnÃ©es GPS de l'organisateur """
         if ville == "" or cp == "" : 
             return None, None
-        # Recherche des coordonnées
+        # Recherche des coordonnÃ©es
         from Utils import UTILS_Gps
         dictGPS = UTILS_Gps.GPS(cp=cp, ville=ville, pays="France")
         if dictGPS == None : 
             lat, long = None, None
         else :
-            # Sauvegarde des coordonnées GPS dans la base
+            # Sauvegarde des coordonnÃ©es GPS dans la base
             lat, long = dictGPS["lat"], dictGPS["long"]
             self.DB.ReqMAJ("organisateur", [("gps", u"%s;%s" % (str(lat), str(long)) ),], "IDorganisateur", 1)
         return lat, long
         
     def GetCelebrations(self):
-        """ Récupère les célébrations du jour """
+        """ RÃ©cupÃ¨re les cÃ©lÃ©brations du jour """
         try :
-            # Fêtes
+            # FÃªtes
             texteFetes = ""
             if (self.dateJour.day, self.dateJour.month) in DICT_FETES :
                 noms = DICT_FETES[(self.dateJour.day, self.dateJour.month)]
                 listeNoms = noms.split(";")
                 texteFetes = Concatenation(listeNoms)
                 
-            # Fêtes
+            # FÃªtes
             texteCelebrations = ""
             if (self.dateJour.day, self.dateJour.month) in DICT_CELEBRATIONS :
                 texteCelebrations = DICT_CELEBRATIONS[(self.dateJour.day, self.dateJour.month)]
                 
-            # Mix des fêtes et des célébrations
+            # Mix des fÃªtes et des cÃ©lÃ©brations
             texte = u""
             intro = _(u"<t>LES CELEBRATIONS DU JOUR</t>")
-            if len(texteFetes) > 0 and len(texteCelebrations) > 0 : texte = _(u"%sNous fêtons aujourd'hui les %s et célébrons %s.") % (intro, texteFetes, texteCelebrations)
-            if len(texteFetes) > 0 and len(texteCelebrations) == 0 : texte = _(u"%sNous fêtons aujourd'hui les %s.") % (intro, texteFetes)
-            if len(texteFetes) == 0 and len(texteCelebrations) > 0 : texte = _(u"%sNous célébrons aujourd'hui %s.") % (intro, texteCelebrations)
+            if len(texteFetes) > 0 and len(texteCelebrations) > 0 : texte = _(u"%sNous fÃªtons aujourd'hui les %s et cÃ©lÃ©brons %s.") % (intro, texteFetes, texteCelebrations)
+            if len(texteFetes) > 0 and len(texteCelebrations) == 0 : texte = _(u"%sNous fÃªtons aujourd'hui les %s.") % (intro, texteFetes)
+            if len(texteFetes) == 0 and len(texteCelebrations) > 0 : texte = _(u"%sNous cÃ©lÃ©brons aujourd'hui %s.") % (intro, texteCelebrations)
             if texte == "" : 
                 return None
             return texte
@@ -231,7 +231,7 @@ class CTRL(wx.Panel):
             return None
 
     def GetAnniversaires(self):
-        """ Récupère les anniversaires """
+        """ RÃ©cupÃ¨re les anniversaires """
         try :
             conditionJour = "%02d-%02d" % (self.dateJour.month, self.dateJour.day) 
             req = """SELECT individus.IDindividu, nom, prenom, date_naiss
@@ -249,14 +249,14 @@ class CTRL(wx.Panel):
                 date_naiss = DateEngEnDateDD(date_naiss)
                 age = GetAge(date_naiss)
                 listeTextes.append(_(u"%s %s (%d ans)") % (prenom, nom, age))
-            texte = _(u"<t>LES ANNIVERSAIRES DU JOUR</t>Joyeux anniversaire à %s.") % Concatenation(listeTextes)
+            texte = _(u"<t>LES ANNIVERSAIRES DU JOUR</t>Joyeux anniversaire Ã  %s.") % Concatenation(listeTextes)
             return texte
         
         except :
             return None
 
     def GetCitation(self):
-        """ Récupère la citation du jour """
+        """ RÃ©cupÃ¨re la citation du jour """
         texte = ""
         index = random.randint(0, len(LISTE_CITATIONS) - 1)
         citation, auteur = LISTE_CITATIONS[index]
@@ -264,9 +264,9 @@ class CTRL(wx.Panel):
         return texte
 
     def GetSoleil(self):
-        """ Récupère les heures de lever et de coucher du soleil """
+        """ RÃ©cupÃ¨re les heures de lever et de coucher du soleil """
         try :
-            # Récupère les coordonnées GPS de l'organisateur
+            # RÃ©cupÃ¨re les coordonnÃ©es GPS de l'organisateur
             if self.dictOrganisateur == None : 
                 return None
             ville = self.dictOrganisateur["ville"]
@@ -275,20 +275,20 @@ class CTRL(wx.Panel):
             if ville == "" or ville == None or lat == None or long == None :
                 return None
             
-            # Récupère les heures de lever et de coucher du soleil
+            # RÃ©cupÃ¨re les heures de lever et de coucher du soleil
             c = City((ville, "France", float(lat), float(long), "Europe/Paris"))
             heureLever = c.sunrise()
             heureCoucher = c.sunset()
-            texte = _(u"<t>HORAIRES DU SOLEIL</t>Aujourd'hui à %s, le soleil se lève à %dh%02d et se couche à %dh%02d.") % (ville.capitalize(), heureLever.hour, heureLever.minute, heureCoucher.hour, heureCoucher.minute)
+            texte = _(u"<t>HORAIRES DU SOLEIL</t>Aujourd'hui Ã  %s, le soleil se lÃ¨ve Ã  %dh%02d et se couche Ã  %dh%02d.") % (ville.capitalize(), heureLever.hour, heureLever.minute, heureCoucher.hour, heureCoucher.minute)
             return texte
         
         except Exception as err :
             return None
     
     def GetMeteo(self):
-        """ Récupère la météo """
+        """ RÃ©cupÃ¨re la mÃ©tÃ©o """
         try :
-            # Récupère les coordonnées GPS de l'organisateur
+            # RÃ©cupÃ¨re les coordonnÃ©es GPS de l'organisateur
             if self.dictOrganisateur == None : 
                 return None
             ville = self.dictOrganisateur["ville"]
@@ -296,17 +296,17 @@ class CTRL(wx.Panel):
             if ville == "" or cp == "" :
                 return None
             
-            # Récupère la météo
+            # RÃ©cupÃ¨re la mÃ©tÃ©o
             dictMeteo = UTILS_Meteo.Meteo(ville, cp)
             if dictMeteo == None :
                 return None
-            texte = _(u"<t>METEO</t>Actuellement sur %s, c'est %s (%s°c - %s, %s). Prévision pour demain : %s.") % (
+            texte = _(u"<t>METEO</t>Actuellement sur %s, c'est %s (%sÂ°c - %s, %s). PrÃ©vision pour demain : %s.") % (
                     ville.capitalize(), 
-                    dictMeteo["jour"]["condition"].decode("iso-8859-15").replace(u"&#39;", "'").lower(), 
-                    dictMeteo["jour"]["temp"].decode("iso-8859-15"),
-                    dictMeteo["jour"]["vent"].decode("iso-8859-15"), 
-                    dictMeteo["jour"]["humidite"].decode("iso-8859-15"),
-                    dictMeteo["previsions"][1]["condition"].decode("iso-8859-15").replace(u"&#39;", "'").lower(),
+                    dictMeteo["jour"]["condition"].decode("utf8").replace(u"&#39;", "'").lower(), 
+                    dictMeteo["jour"]["temp"].decode("utf8"),
+                    dictMeteo["jour"]["vent"].decode("utf8"), 
+                    dictMeteo["jour"]["humidite"].decode("utf8"),
+                    dictMeteo["previsions"][1]["condition"].decode("utf8").replace(u"&#39;", "'").lower(),
                     )
             return texte
         
@@ -315,7 +315,7 @@ class CTRL(wx.Panel):
 
 
 # Pour astral :
-# Pour récupérer la liste de tous les timezones :
+# Pour rÃ©cupÃ©rer la liste de tous les timezones :
 # import pytz
 # from pytz import all_timezones
 # print all_timezones

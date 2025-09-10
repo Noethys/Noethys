@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -130,10 +130,10 @@ class Dialog(wx.Dialog):
         self.ctrl_analytique = CTRL_Analytique(self)
         self.ctrl_analytique.SetMinSize((300, -1))
         
-        self.label_categorie = wx.StaticText(self, wx.ID_ANY, _(u"Catégorie :"))
+        self.label_categorie = wx.StaticText(self, wx.ID_ANY, _(u"CatÃ©gorie :"))
         self.ctrl_categorie = CTRL_Categorie(self, typeOperation=typeOperation)
         
-        self.label_libelle = wx.StaticText(self, wx.ID_ANY, _(u"Libellé :"))
+        self.label_libelle = wx.StaticText(self, wx.ID_ANY, _(u"LibellÃ© :"))
         self.ctrl_libelle = wx.TextCtrl(self, wx.ID_ANY, u"")
         
         self.label_montant = wx.StaticText(self, wx.ID_ANY, _(u"Montant :"))
@@ -156,9 +156,9 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
         if self.typeOperation == "credit" : 
-            titre = _(u"Ventilation d'une opération budgétaire au crédit")
+            titre = _(u"Ventilation d'une opÃ©ration budgÃ©taire au crÃ©dit")
         elif self.typeOperation == "debit" : 
-            titre = _(u"Ventilation d'une opération budgétaire au débit")
+            titre = _(u"Ventilation d'une opÃ©ration budgÃ©taire au dÃ©bit")
         else :
             titre = u""
         self.SetTitle(titre)
@@ -167,12 +167,12 @@ class Dialog(wx.Dialog):
             self.Importation()
 
     def __set_properties(self):
-        self.ctrl_date_budget.SetToolTip(wx.ToolTip(_(u"Saisissez la date d'impact budgétaire")))
-        self.ctrl_categorie.SetToolTip(wx.ToolTip(_(u"Sélectionnez une catégorie")))
-        self.bouton_categories.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des catégories")))
-        self.ctrl_analytique.SetToolTip(wx.ToolTip(_(u"Sélectionnez un poste analytique")))
-        self.bouton_analytiques.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des postes analytiques")))
-        self.ctrl_libelle.SetToolTip(wx.ToolTip(_(u"Saisissez un libellé (Optionnel)")))
+        self.ctrl_date_budget.SetToolTip(wx.ToolTip(_(u"Saisissez la date d'impact budgÃ©taire")))
+        self.ctrl_categorie.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une catÃ©gorie")))
+        self.bouton_categories.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la gestion des catÃ©gories")))
+        self.ctrl_analytique.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un poste analytique")))
+        self.bouton_analytiques.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la gestion des postes analytiques")))
+        self.ctrl_libelle.SetToolTip(wx.ToolTip(_(u"Saisissez un libellÃ© (Optionnel)")))
         self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez un montant")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
@@ -282,21 +282,21 @@ class Dialog(wx.Dialog):
         montant = self.ctrl_montant.GetMontant()
         
         if date_budget == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date d'impact budgétaire !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date d'impact budgÃ©taire !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_budget.SetFocus()
             return False
         
         if IDanalytique == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un code analytique !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un code analytique !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_analytique.SetFocus()
             return False
         
         if IDcategorie == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une catégorie !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une catÃ©gorie !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_categorie.SetFocus()
@@ -309,7 +309,7 @@ class Dialog(wx.Dialog):
             self.ctrl_montant.SetFocus()
             return False
 
-        # Sauvegarde de l'opération
+        # Sauvegarde de l'opÃ©ration
         DB = GestionDB.DB()
         
         listeDonnees = [ 

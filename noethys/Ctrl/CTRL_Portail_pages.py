@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -24,7 +24,7 @@ COULEURS = [
     {"label": _(u"Gris"), "code": "gray", "couleur": "#d2d6de"},
     {"label": _(u"Rouge"), "code": "danger", "couleur": "#dd4b39"},
     {"label": _(u"Orange"), "code": "warning", "couleur": "#f39c12"},
-    {"label": _(u"Bleu foncé"), "code": "primary", "couleur": "#3c8dbc"},
+    {"label": _(u"Bleu foncÃ©"), "code": "primary", "couleur": "#3c8dbc"},
     {"label": _(u"Bleu clair"), "code": "info", "couleur": "#00c0ef"},
     {"label": _(u"Vert"), "code": "success", "couleur": "#00a65a"},
 ]
@@ -83,7 +83,7 @@ class CTRL(wx.TreeCtrl):
         self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.Modifier)
 
     def CreationImage(self, tailleImages, couleur=(255, 255, 255), type_element="page"):
-        """ Création des images pour le TreeCtrl """
+        """ CrÃ©ation des images pour le TreeCtrl """
         if couleur == None :
             return None
         if 'phoenix' in wx.PlatformInfo:
@@ -179,10 +179,10 @@ class CTRL(wx.TreeCtrl):
 
         self.SetImageList(self.il)
         
-        # Création de la racine
+        # CrÃ©ation de la racine
         self.root = self.AddRoot(_(u"Pages"))
         
-        # Création des branches activités
+        # CrÃ©ation des branches activitÃ©s
         for dictPage in self.listePages :
             item_page = self.AppendItem(self.root, dictPage["titre"])
             self.SetItemBold(item_page)
@@ -194,7 +194,7 @@ class CTRL(wx.TreeCtrl):
                 self.SetItemImage(item_page, self.dictImages["pages"][dictPage["IDpage"]], wx.TreeItemIcon_Normal)
             self.dictItems["pages"][dictPage["IDpage"]] = item_page
 
-            # Création des branches blocs
+            # CrÃ©ation des branches blocs
             for dictBloc in dictPage["listeBlocs"]:
                 item_bloc = self.AppendItem(item_page, dictBloc["titre"])
                 if 'phoenix' in wx.PlatformInfo:
@@ -216,7 +216,7 @@ class CTRL(wx.TreeCtrl):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """
-        # Recherche et sélection de l'item pointé avec la souris
+        # Recherche et sÃ©lection de l'item pointÃ© avec la souris
         item = self.FindTreeItem(event.GetPosition())
         if item != None:
             dictData = self.GetPyData(item)
@@ -224,7 +224,7 @@ class CTRL(wx.TreeCtrl):
         else :
             dictData = None
 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ajouter
@@ -252,14 +252,14 @@ class CTRL(wx.TreeCtrl):
         menuPop.AppendSeparator()
 
         # Item Deplacer vers le haut
-        itemx = wx.MenuItem(menuPop, 40, _(u"Déplacer vers le haut"))
+        itemx = wx.MenuItem(menuPop, 40, _(u"DÃ©placer vers le haut"))
         itemx.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_haut.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(itemx)
         self.Bind(wx.EVT_MENU, self.Monter, id=40)
         if item == None : itemx.Enable(False)
 
-        # Item Déplacer vers le bas
-        itemx = wx.MenuItem(menuPop, 50, _(u"Déplacer vers le bas"))
+        # Item DÃ©placer vers le bas
+        itemx = wx.MenuItem(menuPop, 50, _(u"DÃ©placer vers le bas"))
         itemx.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_bas.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(itemx)
         self.Bind(wx.EVT_MENU, self.Descendre, id=50)
@@ -269,7 +269,7 @@ class CTRL(wx.TreeCtrl):
         menuPop.Destroy()
 
     def FindTreeItem(self, position):
-        """ Permet de retrouver l'item pointé dans le TreeCtrl """
+        """ Permet de retrouver l'item pointÃ© dans le TreeCtrl """
         item, flags = self.HitTest(position)
         if item and flags & (wx.TREE_HITTEST_ONITEMLABEL |
                              wx.TREE_HITTEST_ONITEMICON):
@@ -278,14 +278,14 @@ class CTRL(wx.TreeCtrl):
     
     def Ajouter(self, event):
         """ Ajouter une page ou un bloc """
-        # Demande quel élément créer
+        # Demande quel Ã©lÃ©ment crÃ©er
         dlg = DLG_Choix_creation(self)
         if len(self.listePages) == 0 :
             dlg.bouton_bloc.Enable(False)
         reponse = dlg.ShowModal()
         dlg.Destroy()
 
-        # Création d'une page
+        # CrÃ©ation d'une page
         if reponse == 100 :
             dlg = DLG_Saisie_page(self, IDpage=None)
             if dlg.ShowModal() == wx.ID_OK:
@@ -293,7 +293,7 @@ class CTRL(wx.TreeCtrl):
                 self.MemoriseDateModification()
             dlg.Destroy()
 
-        # Création d'un bloc
+        # CrÃ©ation d'un bloc
         if reponse == 200 :
             from Dlg import DLG_Saisie_portail_bloc
             dlg = DLG_Saisie_portail_bloc.Dialog(self, IDbloc=None)
@@ -310,7 +310,7 @@ class CTRL(wx.TreeCtrl):
         else:
             dictData = self.GetPyData(item)
         if item == None or dictData == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une page ou un bloc à modifier !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une page ou un bloc Ã  modifier !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -348,7 +348,7 @@ class CTRL(wx.TreeCtrl):
         item = self.GetSelection()
         dictData = self.GetPyData(item)
         if item == None or dictData == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une page ou un bloc à supprimer !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une page ou un bloc Ã  supprimer !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -365,11 +365,11 @@ class CTRL(wx.TreeCtrl):
             listeTousEnfants = []
             if self.GetChildrenCount(item, recursively=True) > 0 :
 
-                # Récupère la liste des tous les items enfants (récursif)
+                # RÃ©cupÃ¨re la liste des tous les items enfants (rÃ©cursif)
                 self.GetItemsEnfants(listeTousEnfants, item)
 
                 # Demande de confirmation
-                dlg = wx.MessageDialog(self, _(u"Attention, cette page comporte des blocs.\n\nSouhaitez-vous vraiment supprimer cette page ? Les blocs seront également supprimées !"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+                dlg = wx.MessageDialog(self, _(u"Attention, cette page comporte des blocs.\n\nSouhaitez-vous vraiment supprimer cette page ? Les blocs seront Ã©galement supprimÃ©es !"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
                 reponse = dlg.ShowModal()
                 dlg.Destroy()
                 if reponse != wx.ID_YES :
@@ -383,7 +383,7 @@ class CTRL(wx.TreeCtrl):
                 # Suppression de la page
                 DB.ReqDEL("portail_pages", "IDpage", dictData["ID"])
 
-                # Suppression des blocs également
+                # Suppression des blocs Ã©galement
                 for dictTemp in listeTousEnfants :
                     DB.ReqDEL("portail_blocs", "IDbloc", dictTemp["ID"])
                     DB.ReqDEL("portail_elements", "IDbloc", dictTemp["ID"])
@@ -431,11 +431,11 @@ class CTRL(wx.TreeCtrl):
 
             dlg.Destroy()
 
-        # Mémorise la date de la modification
+        # MÃ©morise la date de la modification
         self.MemoriseDateModification()
 
     def Monter(self, event):
-        """ Déplacer vers le haut """
+        """ DÃ©placer vers le haut """
         self.Deplacer(-1)
 
     def Descendre(self, event):
@@ -446,7 +446,7 @@ class CTRL(wx.TreeCtrl):
         if item == None or self.GetPyData(item) == None :
             return
         
-        # Recherche l'item à remplacer
+        # Recherche l'item Ã  remplacer
         if sens == -1 :
             itemRemplace = self.GetPrevSibling(item)
         else :
@@ -467,13 +467,13 @@ class CTRL(wx.TreeCtrl):
         DB.Commit()
         DB.Close()
         
-        # MAJ du contrôle
+        # MAJ du contrÃ´le
         if dictData["type"] == "page":
             self.MAJ(IDpage=dictData["ID"])
         if dictData["type"] == "bloc":
             self.MAJ(IDbloc=dictData["ID"])
 
-        # Mémorise la date de la modification
+        # MÃ©morise la date de la modification
         self.MemoriseDateModification()
 
     def SetID(self, IDpage=None, IDbloc=None):
@@ -537,9 +537,9 @@ class DLG_Choix_creation(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Choix de l'élément à créer"))
-        self.bouton_page.SetToolTip(wx.ToolTip(_(u"Créer une nouvelle page.\n\nUne page est vide lors de sa création. Vous devez donc ensuite la remplir avec un ou plusieurs blocs.")))
-        self.bouton_bloc.SetToolTip(wx.ToolTip(_(u"Créer un nouveau bloc pour une page.\n\nChaque page est constituée d'un ou plusieurs bloc. Il existe plusieurs types de blocs. Exemples : Texte, onglets, calendrier, etc...")))
+        self.SetTitle(_(u"Choix de l'Ã©lÃ©ment Ã  crÃ©er"))
+        self.bouton_page.SetToolTip(wx.ToolTip(_(u"CrÃ©er une nouvelle page.\n\nUne page est vide lors de sa crÃ©ation. Vous devez donc ensuite la remplir avec un ou plusieurs blocs.")))
+        self.bouton_bloc.SetToolTip(wx.ToolTip(_(u"CrÃ©er un nouveau bloc pour une page.\n\nChaque page est constituÃ©e d'un ou plusieurs bloc. Il existe plusieurs types de blocs. Exemples : Texte, onglets, calendrier, etc...")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Obtenir de l'aide")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Annuler")))
         self.SetMinSize((340, 230))
@@ -602,7 +602,7 @@ class DLG_Saisie_page(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
 
-        # Init contrôles
+        # Init contrÃ´les
         if self.IDpage != None:
             self.SetTitle(_(u"Modification d'une page"))
             self.Importation()
@@ -611,7 +611,7 @@ class DLG_Saisie_page(wx.Dialog):
 
     def __set_properties(self):
         self.ctrl_titre.SetToolTip(wx.ToolTip(_(u"Saisissez le titre de la page")))
-        self.ctrl_couleur.SetToolTip(wx.ToolTip(_(u"Sélectionnez une couleur")))
+        self.ctrl_couleur.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une couleur")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -653,15 +653,15 @@ class DLG_Saisie_page(wx.Dialog):
     def OnBoutonOk(self, event):
         if self.Sauvegarde() == False:
             return
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def Sauvegarde(self):
-        """ Sauvegarde des données """
+        """ Sauvegarde des donnÃ©es """
         titre = self.ctrl_titre.GetValue()
         couleur = self.ctrl_couleur.GetID()
 
-        # Validation des données saisies
+        # Validation des donnÃ©es saisies
         if titre == "":
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un titre !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -676,7 +676,7 @@ class DLG_Saisie_page(wx.Dialog):
             ("couleur", couleur),
         ]
 
-        # Recherche l'ordre pour la création d'une nouvelle page
+        # Recherche l'ordre pour la crÃ©ation d'une nouvelle page
         if self.IDpage == None :
             req = """SELECT MAX(ordre) FROM portail_pages;"""
             DB.ExecuterReq(req)
@@ -746,7 +746,7 @@ class DLG_Saisie_bloc(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
 
-        # Init contrôles
+        # Init contrÃ´les
         if self.IDbloc != None:
             self.SetTitle(_(u"Modification d'un bloc"))
             self.Importation()
@@ -755,7 +755,7 @@ class DLG_Saisie_bloc(wx.Dialog):
 
     def __set_properties(self):
         self.ctrl_titre.SetToolTip(wx.ToolTip(_(u"Saisissez le titre du bloc")))
-        self.ctrl_couleur.SetToolTip(wx.ToolTip(_(u"Sélectionnez une couleur")))
+        self.ctrl_couleur.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une couleur")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -797,16 +797,16 @@ class DLG_Saisie_bloc(wx.Dialog):
     def OnBoutonOk(self, event):
         if self.Sauvegarde() == False:
             return
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def Sauvegarde(self):
-        """ Sauvegarde des données """
+        """ Sauvegarde des donnÃ©es """
         titre = self.ctrl_titre.GetValue()
         couleur = self.ctrl_couleur.GetValue()
         IDpage = 1 # PROVISOIRE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-        # Validation des données saisies
+        # Validation des donnÃ©es saisies
         if titre == "":
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un titre !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -815,7 +815,7 @@ class DLG_Saisie_bloc(wx.Dialog):
             return False
 
         if couleur == "":
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une couleur !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une couleur !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_couleur.SetFocus()
@@ -829,7 +829,7 @@ class DLG_Saisie_bloc(wx.Dialog):
             ("couleur", couleur),
         ]
 
-        # Recherche l'ordre pour la création d'une nouvelle page
+        # Recherche l'ordre pour la crÃ©ation d'une nouvelle page
         if self.IDbloc == None :
             req = """SELECT MAX(ordre) FROM portail_blocs WHERE IDpage=%d;""" % IDpage
             DB.ExecuterReq(req)
@@ -894,7 +894,7 @@ if __name__ == '__main__':
     frame_1.Show()
     app.MainLoop()
     
-    # Test Dialog de sélection d'étiquettes
+    # Test Dialog de sÃ©lection d'Ã©tiquettes
     # frame_1 = DialogSelection(None, listeActivites=[1,])
     # app.SetTopWindow(frame_1)
     # frame_1.ShowModal()

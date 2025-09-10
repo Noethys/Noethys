@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -17,7 +17,7 @@ from Ctrl import CTRL_Bouton_image
 import GestionDB
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 from Utils import UTILS_Interface
@@ -57,13 +57,13 @@ class Track(object):
 ##    "combinaisons" : [
 ##            { "IDaide_combi" : None, "listeUnites" : 
 ##                [
-##                {"IDaide_combi_unite" : None, "IDunite" : 35}, # Après-midi
+##                {"IDaide_combi_unite" : None, "IDunite" : 35}, # AprÃ¨s-midi
 ##                {"IDaide_combi_unite" : None, "IDunite" : 33}, # Repas
 ##                ],
 ##            },
 ##            { "IDaide_combi" : None, "listeUnites" : 
 ##                [
-##                {"IDaide_combi_unite" : None, "IDunite" : 34}, # Matinée
+##                {"IDaide_combi_unite" : None, "IDunite" : 34}, # MatinÃ©e
 ##                {"IDaide_combi_unite" : None, "IDunite" : 33}, # Repas
 ##                ],
 ##            },
@@ -72,7 +72,7 @@ class Track(object):
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         global DICT_UNITES
         DICT_UNITES = self.ImportationUnites() 
         self.listeMontants = []
@@ -109,7 +109,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
     
     def ImportationUnites(self):
-        # Recherche des unités disponibles de l'activité
+        # Recherche des unitÃ©s disponibles de l'activitÃ©
         db = GestionDB.DB()
         req = """SELECT IDunite, ordre, nom, abrege, type, heure_debut, heure_fin, date_debut, date_fin
         FROM unites
@@ -124,7 +124,7 @@ class ListView(FastObjectListView):
 
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeDonnees = []
         index = 0
         for dictMontant in self.listeMontants :
@@ -153,7 +153,7 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(_(u"ID"), "left", 0, "IDaide_montant"),
             ColumnDefn(_(u"Montant"), 'centre', 90, "montant", stringConverter=FormateMontant), 
-            ColumnDefn(_(u"Combinaisons d'unités"), 'left', 285, "texteCombinaisons", isSpaceFilling=True), 
+            ColumnDefn(_(u"Combinaisons d'unitÃ©s"), 'left', 285, "texteCombinaisons", isSpaceFilling=True), 
             ]
         
         self.SetColumns(liste_Colonnes)
@@ -178,7 +178,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDaide_montant
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -209,7 +209,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -239,7 +239,7 @@ class ListView(FastObjectListView):
     def Ajouter(self, event):
         from Dlg import DLG_Saisie_montant_aide
         if self.IDactivite == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune activité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune activitÃ© !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -252,7 +252,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun montant dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun montant dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -269,7 +269,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun montant dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun montant dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -332,13 +332,13 @@ LISTE_TEST = [
         "combinaisons" : [
                 { "IDaide_combi" : None, "listeUnites" : 
                     [
-                    {"IDaide_combi_unite" : None, "IDunite" : 35}, # Après-midi
+                    {"IDaide_combi_unite" : None, "IDunite" : 35}, # AprÃ¨s-midi
                     {"IDaide_combi_unite" : None, "IDunite" : 33}, # Repas
                     ],
                 },
                 { "IDaide_combi" : None, "listeUnites" : 
                     [
-                    {"IDaide_combi_unite" : None, "IDunite" : 34}, # Matinée
+                    {"IDaide_combi_unite" : None, "IDunite" : 34}, # MatinÃ©e
                     {"IDaide_combi_unite" : None, "IDunite" : 33}, # Repas
                     ],
                 },

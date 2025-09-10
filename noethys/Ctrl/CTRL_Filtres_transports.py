@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -33,7 +33,7 @@ class CTRL(CT.CustomTreeCtrl):
         self.SetAGWWindowStyleFlag(wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | CT.TR_AUTO_CHECK_PARENT | CT.TR_AUTO_CHECK_CHILD)
         self.EnableSelectionVista(True)
 
-        # Création de l'ImageList
+        # CrÃ©ation de l'ImageList
         self.dictImages = {}
         for code, valeurs in DICT_CATEGORIES.items() :
             self.dictImages[code] = {"img" : wx.Bitmap(Chemins.GetStaticPath('Images/16x16/%s.png' % valeurs["image"]), wx.BITMAP_TYPE_PNG), "index" : None}
@@ -54,7 +54,7 @@ class CTRL(CT.CustomTreeCtrl):
         self.DeleteAllItems()
         self.root = self.AddRoot(_(u"Objets"))
         
-        # Création de la condition
+        # CrÃ©ation de la condition
         if date_debut != None and date_fin != None :
             conditionDates = "(depart_date>='%s' AND depart_date<='%s') OR (arrivee_date>='%s' AND arrivee_date<='%s')" % (date_debut, date_fin, date_debut, date_fin)
         else :
@@ -68,7 +68,7 @@ class CTRL(CT.CustomTreeCtrl):
 
         DB = GestionDB.DB()
         
-        # Récupération des lignes
+        # RÃ©cupÃ©ration des lignes
         req = """SELECT IDligne, categorie, nom
         FROM transports_lignes;""" 
         DB.ExecuterReq(req)
@@ -77,7 +77,7 @@ class CTRL(CT.CustomTreeCtrl):
         for IDligne, categorie, nom in listeValeurs :
             dictLignes[IDligne] = nom
             
-        # Récupération des arrêts
+        # RÃ©cupÃ©ration des arrÃªts
         req = """SELECT IDarret, IDligne, nom
         FROM transports_arrets
         ORDER BY ordre;""" 
@@ -87,7 +87,7 @@ class CTRL(CT.CustomTreeCtrl):
         for IDarret, IDligne, nom in listeValeurs :
             dictArrets[IDarret] = {"IDligne":IDligne, "nom":nom}
             
-        # Récupération des lieux
+        # RÃ©cupÃ©ration des lieux
         req = """SELECT IDlieu, categorie, nom
         FROM transports_lieux;""" 
         DB.ExecuterReq(req)
@@ -96,7 +96,7 @@ class CTRL(CT.CustomTreeCtrl):
         for IDlieu, categorie, nom in listeValeurs :
             dictLieux[IDlieu] = nom
             
-        # Récupération des transports
+        # RÃ©cupÃ©ration des transports
         req = """SELECT IDtransport, categorie, IDligne, depart_IDarret, depart_IDlieu, arrivee_IDarret, arrivee_IDlieu
         FROM transports 
         WHERE %s;""" % conditionDates
@@ -109,7 +109,7 @@ class CTRL(CT.CustomTreeCtrl):
 
             typeTransports = DICT_CATEGORIES[categorie]["type"]
             
-            # Ajout catégorie
+            # Ajout catÃ©gorie
             if (categorie in dictResultats) == False :
                 dictResultats[categorie] = {"lignes":[], "arrets":[], "lieux":[]}
             
@@ -139,7 +139,7 @@ class CTRL(CT.CustomTreeCtrl):
         
         for categorie in listeCategories :
             
-            # Catégories
+            # CatÃ©gories
             brancheCategorie = self.AppendItem(self.root, DICT_CATEGORIES[categorie]["label"], ct_type=1)
             self.SetPyData(brancheCategorie, {"categorie":"categories", "code":categorie})
             self.SetItemBold(brancheCategorie)
@@ -163,12 +163,12 @@ class CTRL(CT.CustomTreeCtrl):
                 brancheLigne.Check() 
                 self.listeBranches.append(brancheLigne) 
 
-                # Arrêts
+                # ArrÃªts
                 for IDarret in dictResultats[categorie]["arrets"] :
                     if IDarret in dictArrets :
                         label = dictArrets[IDarret]["nom"]
                     else :
-                        label = _(u"Arrêt inconnu")
+                        label = _(u"ArrÃªt inconnu")
                     if IDarret == None or (IDarret in dictArrets and dictArrets[IDarret]["IDligne"] == IDligne):
                         brancheArret = self.AppendItem(brancheLigne, label, ct_type=1)
                         self.SetPyData(brancheArret, {"categorie":"arrets", "code":IDarret})
@@ -204,7 +204,7 @@ class CTRL(CT.CustomTreeCtrl):
             pass
         
     def GetCoches(self):
-        """ Obtient la liste des éléments cochés """
+        """ Obtient la liste des Ã©lÃ©ments cochÃ©s """
         dictCoches = {}
         for branche in self.listeBranches :
             if self.IsItemChecked(branche) == True :

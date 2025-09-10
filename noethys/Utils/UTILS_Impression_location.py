@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -15,7 +15,7 @@ import datetime
 import FonctionsPerso
 from Dlg import DLG_Noedoc
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 from reportlab.platypus.doctemplate import PageTemplate, BaseDocTemplate
 from reportlab.platypus import PageBreak
@@ -35,7 +35,7 @@ DICT_OPTIONS = {}
 
 
 def Template(canvas, doc):
-    """ Première page de l'attestation """
+    """ PremiÃ¨re page de l'attestation """
     doc.modeleDoc.DessineFond(canvas) 
     doc.modeleDoc.DessineFormes(canvas) 
 
@@ -46,7 +46,7 @@ class MyPageTemplate(PageTemplate):
         self.pageWidth = pageSize[0]
         self.pageHeight = pageSize[1]
         
-##        # Récupère les coordonnées du cadre principal
+##        # RÃ©cupÃ¨re les coordonnÃ©es du cadre principal
 ##        cadre_principal = doc.modeleDoc.FindObjet("cadre_principal")
 ##        x, y, l, h = doc.modeleDoc.GetCoordsObjet(cadre_principal)
 ##        global CADRE_CONTENU
@@ -101,11 +101,11 @@ class Impression():
             nomDoc = nomFichier
         doc = BaseDocTemplate(nomDoc, pagesize=TAILLE_PAGE, showBoundary=False)
         
-        # Mémorise le ID du modèle
+        # MÃ©morise le ID du modÃ¨le
         modeleDoc = DLG_Noedoc.ModeleDoc(IDmodele=IDmodele)
         doc.modeleDoc = modeleDoc
         
-        # Importe le template de la première page
+        # Importe le template de la premiÃ¨re page
         doc.addPageTemplates(MyPageTemplate(pageSize=TAILLE_PAGE, doc=doc))
         
         story = []

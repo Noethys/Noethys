@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -50,7 +50,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeListeView = []
         index = 0
         for donnees in self.liste_donnees :
@@ -74,12 +74,12 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(_(u"Index"), "left", 0, "index"),
             ColumnDefn(_(u"Nom"), 'left', 200, "nom", isSpaceFilling=True),
-            ColumnDefn(_(u"Donnée"), 'left', 180, "donnee_label"),
+            ColumnDefn(_(u"DonnÃ©e"), 'left', 180, "donnee_label"),
             ColumnDefn(_(u"Largeur"), 'left', 120, "largeur", stringConverter=FormateLargeur),
         ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucune colonne personnalisée"))
+        self.SetEmptyListMsg(_(u"Aucune colonne personnalisÃ©e"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[0])
         self.SetObjects(self.donnees)
@@ -87,7 +87,7 @@ class ListView(FastObjectListView):
     def MAJ(self, index=None):
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if index != None:
             self.SelectObject(self.donnees[index], deselectOthers=True, ensureVisible=True)
         self._ResizeSpaceFillingColumns()
@@ -102,7 +102,7 @@ class ListView(FastObjectListView):
         else:
             noSelection = False
 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -131,15 +131,15 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
         
         # Item Deplacer vers le haut
-        item = wx.MenuItem(menuPop, 60, _(u"Déplacer vers le haut"))
+        item = wx.MenuItem(menuPop, 60, _(u"DÃ©placer vers le haut"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_haut.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Monter, id=60)
         if noSelection == True : item.Enable(False)
         
-        # Item Déplacer vers le bas
-        item = wx.MenuItem(menuPop, 70, _(u"Déplacer vers le bas"))
+        # Item DÃ©placer vers le bas
+        item = wx.MenuItem(menuPop, 70, _(u"DÃ©placer vers le bas"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_bas.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -149,7 +149,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -186,7 +186,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune colonne à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune colonne Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -203,7 +203,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune colonne à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune colonne Ã  supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -218,7 +218,7 @@ class ListView(FastObjectListView):
 
     def Monter(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune colonne à déplacer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune colonne Ã  dÃ©placer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -230,7 +230,7 @@ class ListView(FastObjectListView):
     
     def Descendre(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune colonne à déplacer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune colonne Ã  dÃ©placer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -288,36 +288,36 @@ class DLG_Saisie_colonne(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER | wx.MAXIMIZE_BOX | wx.MINIMIZE_BOX)
         self.parent = parent
 
-        # Généralités
-        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralités"))
+        # GÃ©nÃ©ralitÃ©s
+        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"GÃ©nÃ©ralitÃ©s"))
 
         self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, "")
 
-        self.label_donnee = wx.StaticText(self, -1, _(u"Donnée :"))
+        self.label_donnee = wx.StaticText(self, -1, _(u"DonnÃ©e :"))
         liste_choix = [
             ("aucun", _(u"Aucune")),
             ("genre", _(u"Genre (M/F)")),
             ("date_naiss", _(u"Date de naissance")),
             ("ville_naissance", _(u"Ville de naissance")),
-            ("medecin_nom", _(u"Nom du médecin")),
-            ("tel_mobile", _(u"Tél. mobile")),
-            ("tel_domicile", _(u"Tél. domicile")),
+            ("medecin_nom", _(u"Nom du mÃ©decin")),
+            ("tel_mobile", _(u"TÃ©l. mobile")),
+            ("tel_domicile", _(u"TÃ©l. domicile")),
             ("mail", _(u"Email")),
-            ("ville_residence", _(u"Ville de résidence")),
-            ("adresse_residence", _(u"Adresse complète de résidence")),
-            ("secteur", _(u"Secteur géographique")),
+            ("ville_residence", _(u"Ville de rÃ©sidence")),
+            ("adresse_residence", _(u"Adresse complÃ¨te de rÃ©sidence")),
+            ("secteur", _(u"Secteur gÃ©ographique")),
             ("nom_ecole", _(u"Ecole")),
             ("nom_classe", _(u"Classe")),
             ("nom_niveau_scolaire", _(u"Niveau scolaire")),
             ("famille", _(u"Famille")),
-            ("regime", _(u"Régime social")),
+            ("regime", _(u"RÃ©gime social")),
             ("caisse", _(u"Caisse d'allocations")),
             ("quotient_familial", _(u"Quotient familial")),
             ("codebarres_individu", _(u"Code-barres de l'individu")),
             ]
 
-        # Intégration des questionnaires
+        # IntÃ©gration des questionnaires
         q = UTILS_Questionnaires.Questionnaires()
         for public in ("famille", "individu") :
             for dictTemp in q.GetQuestions(public) :
@@ -353,7 +353,7 @@ class DLG_Saisie_colonne(wx.Dialog):
     def __set_properties(self):
         self.ctrl_nom.SetMinSize((300, -1))
         self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le label de la colonne")))
-        self.ctrl_donnee.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici la donnée à insérer dans la colonne")))
+        self.ctrl_donnee.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici la donnÃ©e Ã  insÃ©rer dans la colonne")))
         self.ctrl_largeur.SetToolTip(wx.ToolTip(_(u"Saisissez ici la largeur de la colonne (en pixels)")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer")))
@@ -362,7 +362,7 @@ class DLG_Saisie_colonne(wx.Dialog):
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
 
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         staticbox_generalites = wx.StaticBoxSizer(self.staticbox_generalites_staticbox, wx.VERTICAL)
 
         grid_sizer_generalites = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
@@ -452,7 +452,7 @@ class MyFrame(wx.Frame):
 
         dictParametres = {}
         dictParametres["colonnes"] = [
-            {"nom" : u"Ville", "largeur" : "automatique", "donnee_code" : "ville_residence", "donnee_label" : u"Ville de résidence"},
+            {"nom" : u"Ville", "largeur" : "automatique", "donnee_code" : "ville_residence", "donnee_label" : u"Ville de rÃ©sidence"},
             {"nom": u"Signature", "largeur": "50", "donnee_code": None, "donnee_label": None},
             ]
         self.ctrl.SetParametres(dictParametres)

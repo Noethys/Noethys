@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-20 Ivan LUCAS
@@ -30,16 +30,16 @@ from Utils import UTILS_Questionnaires
 import FonctionsPerso
 from Ctrl import CTRL_Devis_options
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 DICT_CIVILITES = Civilites.GetDictCivilites()
 from Utils import UTILS_Infos_individus
 
 
 LISTE_DONNEES = [
     { "nom" : _(u"Devis"), "champs" : [
-        { "code" : "numero", "label" : _(u"Numéro")}, 
-        { "code" : "date", "label" : _(u"Date d'édition")}, 
-        { "code" : "lieu", "label" : _(u"Lieu d'édition")},
+        { "code" : "numero", "label" : _(u"NumÃ©ro")}, 
+        { "code" : "date", "label" : _(u"Date d'Ã©dition")}, 
+        { "code" : "lieu", "label" : _(u"Lieu d'Ã©dition")},
         ] },
     { "nom" : _(u"Destinataire"), "champs" : [ 
         { "code" : "nom", "label" : _(u"Nom")}, 
@@ -47,7 +47,7 @@ LISTE_DONNEES = [
         { "code" : "ville", "label" : _(u"CP + Ville")},
         ] },
     { "nom" : _(u"Organisme"), "champs" : [ 
-        { "code" : "siret", "label" : _(u"Numéro SIRET")}, 
+        { "code" : "siret", "label" : _(u"NumÃ©ro SIRET")}, 
         { "code" : "ape", "label" : _(u"Code APE")}, 
         ] },
     ]
@@ -91,7 +91,7 @@ class CTRL_Individus(wx.CheckListBox):
         dictIndividus = {}
         if self.date_debut == None or self.date_fin == None :
             return listeIndividus, dictIndividus 
-        # Récupération des individus
+        # RÃ©cupÃ©ration des individus
         DB = GestionDB.DB()
         req = """SELECT individus.IDindividu, individus.nom, individus.prenom
         FROM individus
@@ -141,7 +141,7 @@ class CTRL_Individus(wx.CheckListBox):
             index += 1
 
     def OnCheck(self, event):
-        """ Quand une sélection d'activités est effectuée... """
+        """ Quand une sÃ©lection d'activitÃ©s est effectuÃ©e... """
         listeIndividus = self.GetIDcoches()
         self.parent.ctrl_activites.SetDonnees(listeIndividus, self.date_debut, self.date_fin)
         listeActivites = self.parent.ctrl_activites.GetListeActivites()
@@ -154,7 +154,7 @@ class CTRL_Individus(wx.CheckListBox):
         return self.dictIndividus
     
     def GetTexteNoms(self):
-        """ Récupère les noms sous la forme David DUPOND et Maxime DURAND... """
+        """ RÃ©cupÃ¨re les noms sous la forme David DUPOND et Maxime DURAND... """
         listeNoms = []
         listeIDIndividu = self.GetListeIndividus() 
         for IDindividu, dictIndividu in self.dictIndividus.items() :
@@ -207,7 +207,7 @@ class CTRL_Activites(wx.CheckListBox):
         dictActivites = {}
         if len(self.listeIndividus) == 0 or self.date_debut == None or self.date_fin == None :
             return listeActivites, dictActivites 
-        # Récupération des activités disponibles
+        # RÃ©cupÃ©ration des activitÃ©s disponibles
         if len(self.listeIndividus) == 0 : conditionIndividus = "()"
         elif len(self.listeIndividus) == 1 : conditionIndividus = "(%d)" % self.listeIndividus[0]
         else : conditionIndividus = str(tuple(self.listeIndividus))
@@ -260,7 +260,7 @@ class CTRL_Activites(wx.CheckListBox):
                 self.Check(index)
 
     def OnCheck(self, event):
-        """ Quand une sélection d'activités est effectuée... """
+        """ Quand une sÃ©lection d'activitÃ©s est effectuÃ©e... """
         listeSelections = self.GetIDcoches()
         self.parent.ctrl_unites.SetDonnees(self.listeIndividus, listeSelections, self.date_debut, self.date_fin)
 
@@ -302,7 +302,7 @@ class CTRL_Unites(wx.CheckListBox):
         listeUnites = []
         if len(self.listeIndividus) == 0 or len(self.listeActivites) == 0 or self.date_debut == None or self.date_fin == None :
             return listeUnites 
-        # Récupération des activités disponibles
+        # RÃ©cupÃ©ration des activitÃ©s disponibles
         if len(self.listeIndividus) == 0 : conditionIndividus = "()"
         elif len(self.listeIndividus) == 1 : conditionIndividus = "(%d)" % self.listeIndividus[0]
         else : conditionIndividus = str(tuple(self.listeIndividus))
@@ -358,7 +358,7 @@ class CTRL_Unites(wx.CheckListBox):
             index += 1
 
     def OnCheck(self, event):
-        """ Quand une sélection d'activités est effectuée... """
+        """ Quand une sÃ©lection d'activitÃ©s est effectuÃ©e... """
         listeSelections = self.GetIDcoches()
         return
     
@@ -389,7 +389,7 @@ class CTRL_Donnees(gridlib.Grid):
             for dictChamp in dictCategorie["champs"] :
                 nbreLignes += 1
         
-        # Création de la grille
+        # CrÃ©ation de la grille
         self.CreateGrid(nbreLignes, 2)
         self.SetColSize(0, 150)
         self.SetColSize(1, 300)
@@ -398,12 +398,12 @@ class CTRL_Donnees(gridlib.Grid):
         self.SetRowLabelSize(1)
         self.SetColLabelSize(1)
         
-        # Remplissage avec les données
+        # Remplissage avec les donnÃ©es
         key = 0
         for dictCategorie in LISTE_DONNEES :
             nomCategorie = dictCategorie["nom"]
             
-            # Création d'une ligne CATEGORIE
+            # CrÃ©ation d'une ligne CATEGORIE
             self.SetRowLabelValue(key, "")
             self.SetCellFont(key, 0, wx.Font(8, wx.DEFAULT , wx.NORMAL, wx.BOLD))
             self.SetCellBackgroundColour(key, 0, "#C5DDFA")
@@ -417,7 +417,7 @@ class CTRL_Donnees(gridlib.Grid):
             
             key += 1
             
-            # Création d'une ligne de données
+            # CrÃ©ation d'une ligne de donnÃ©es
             for dictChamp in dictCategorie["champs"] :
                 code = dictChamp["code"]
                 label = dictChamp["label"]
@@ -429,14 +429,14 @@ class CTRL_Donnees(gridlib.Grid):
                 # Entete de ligne
                 self.SetRowLabelValue(key, "")
                 
-                # Création de la cellule LABEL
+                # CrÃ©ation de la cellule LABEL
                 self.SetCellValue(key, 0, label)
                 self.SetCellBackgroundColour(key, 0, "#EEF4FB")
                 self.SetReadOnly(key, 0, True)
                 self.SetCellAlignment(key, 0, wx.ALIGN_CENTRE, wx.ALIGN_CENTRE)
                 self.SetCellValue(key, 1, valeur)
             
-                # Mémorisation dans le dictionnaire des données
+                # MÃ©morisation dans le dictionnaire des donnÃ©es
                 self.dictCodes[key] = code
                 key += 1
             
@@ -448,7 +448,7 @@ class CTRL_Donnees(gridlib.Grid):
         self.moveTo = (1, 1)
 
     def OnCellChange(self, evt):
-        # Modification de la valeur dans le dict de données
+        # Modification de la valeur dans le dict de donnÃ©es
         numRow = evt.GetRow()
         valeur = self.GetCellValue(numRow, 1)
         code = self.dictCodes[numRow]
@@ -471,10 +471,10 @@ class CTRL_Donnees(gridlib.Grid):
         DICT_DONNEES[code] = valeur
 
     def MAJ_CTRL_Donnees(self):
-        """ Importe les valeurs de base dans le GRID Données """
+        """ Importe les valeurs de base dans le GRID DonnÃ©es """
         DB = GestionDB.DB()
         
-        # Récupération des infos sur le devis
+        # RÃ©cupÃ©ration des infos sur le devis
         dateDuJour = str(datetime.date.today())
         self.SetValeur("date", UTILS_Dates.DateEngFr(dateDuJour))
         
@@ -492,7 +492,7 @@ class CTRL_Donnees(gridlib.Grid):
                 numero += 1
         self.SetValeur("numero", u"%06d" % numero)
         
-        # Récupération des infos sur l'organisme
+        # RÃ©cupÃ©ration des infos sur l'organisme
         self.SetValeur("siret", "")
         self.SetValeur("ape", "")
         self.SetValeur("lieu", "")
@@ -527,12 +527,12 @@ class Dialog(wx.Dialog):
         self.dictSave = {}
                 
         # Bandeau
-        intro = _(u"Vous pouvez ici éditer un devis au format PDF. Saisissez une période, sélectionnez les éléments de votre choix, puis cliquez sur 'Aperçu'.")
+        intro = _(u"Vous pouvez ici Ã©diter un devis au format PDF. Saisissez une pÃ©riode, sÃ©lectionnez les Ã©lÃ©ments de votre choix, puis cliquez sur 'AperÃ§u'.")
         titre = _(u"Edition d'un devis")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Imprimante.png")
         
-        # Période
-        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"Période"))
+        # PÃ©riode
+        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"PÃ©riode"))
         self.label_date_debut = wx.StaticText(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date(self)
         self.bouton_date_debut = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Calendrier.png"), wx.BITMAP_TYPE_ANY))
@@ -541,22 +541,22 @@ class Dialog(wx.Dialog):
         self.bouton_date_fin = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Calendrier.png"), wx.BITMAP_TYPE_ANY))
 
         # Individus
-        self.staticbox_individus_staticbox = wx.StaticBox(self, -1, _(u"Sélection des individus"))
+        self.staticbox_individus_staticbox = wx.StaticBox(self, -1, _(u"SÃ©lection des individus"))
         self.ctrl_individus = CTRL_Individus(self)
         self.ctrl_individus.SetMinSize((170, 60))
 
-        # Activités
-        self.staticbox_activites_staticbox = wx.StaticBox(self, -1, _(u"Sélection des activités"))
+        # ActivitÃ©s
+        self.staticbox_activites_staticbox = wx.StaticBox(self, -1, _(u"SÃ©lection des activitÃ©s"))
         self.ctrl_activites = CTRL_Activites(self)
         self.ctrl_activites.SetMinSize((-1, 80))
         
-        # Unités
-        self.staticbox_unites_staticbox = wx.StaticBox(self, -1, _(u"Sélection des prestations"))
+        # UnitÃ©s
+        self.staticbox_unites_staticbox = wx.StaticBox(self, -1, _(u"SÃ©lection des prestations"))
         self.ctrl_unites = CTRL_Unites(self)
         self.ctrl_unites.SetMinSize((-1, 80))
 
-        # Données
-        self.staticbox_donnees_staticbox = wx.StaticBox(self, -1, _(u"Données"))
+        # DonnÃ©es
+        self.staticbox_donnees_staticbox = wx.StaticBox(self, -1, _(u"DonnÃ©es"))
         self.ctrl_donnees = CTRL_Donnees(self)
 
         # Options
@@ -565,7 +565,7 @@ class Dialog(wx.Dialog):
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_email = CTRL_Bouton_image.CTRL(self, texte=_(u"Envoyer par Email"), cheminImage="Images/32x32/Emails_exp.png")
-        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"AperÃ§u"), cheminImage="Images/32x32/Apercu.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
@@ -581,7 +581,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         self.Bind(wx.EVT_CLOSE, self.OnBoutonAnnuler)
         
-        # Init contrôles
+        # Init contrÃ´les
         if date_debut != None : 
             self.ctrl_date_debut.SetDate(date_debut)
         if date_fin != None : 
@@ -597,14 +597,14 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Edition d'un devis"))
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début")))
-        self.bouton_date_debut.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner la date de début")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de dÃ©but")))
+        self.bouton_date_debut.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner la date de dÃ©but")))
         self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin")))
-        self.bouton_date_fin.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner la date de fin")))
+        self.bouton_date_fin.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner la date de fin")))
         self.ctrl_individus.SetToolTip(wx.ToolTip(_(u"Cochez les individus")))
-        self.ctrl_activites.SetToolTip(wx.ToolTip(_(u"Cochez les activités")))
+        self.ctrl_activites.SetToolTip(wx.ToolTip(_(u"Cochez les activitÃ©s")))
         self.ctrl_unites.SetToolTip(wx.ToolTip(_(u"Cochez les unites")))
-        self.ctrl_donnees.SetToolTip(wx.ToolTip(_(u"Vous pouvez modifier ici les données de base")))
+        self.ctrl_donnees.SetToolTip(wx.ToolTip(_(u"Vous pouvez modifier ici les donnÃ©es de base")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer ce document par Email")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher le PDF")))
@@ -616,7 +616,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
         grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
         
-        # Période
+        # PÃ©riode
         staticbox_periode = wx.StaticBoxSizer(self.staticbox_periode_staticbox, wx.VERTICAL)
         grid_sizer_periode = wx.FlexGridSizer(rows=1, cols=8, vgap=5, hgap=5)
         grid_sizer_periode.Add((20, 20), 0, wx.EXPAND, 0)
@@ -637,7 +637,7 @@ class Dialog(wx.Dialog):
         staticbox_individus.Add(self.ctrl_individus, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_gauche.Add(staticbox_individus, 1, wx.EXPAND, 0)
         
-        # Activités
+        # ActivitÃ©s
         staticbox_activites = wx.StaticBoxSizer(self.staticbox_activites_staticbox, wx.VERTICAL)
         staticbox_activites.Add(self.ctrl_activites, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_gauche.Add(staticbox_activites, 1, wx.EXPAND, 0)
@@ -655,7 +655,7 @@ class Dialog(wx.Dialog):
         
         grid_sizer_droit = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
         
-        # Données
+        # DonnÃ©es
         staticbox_donnees = wx.StaticBoxSizer(self.staticbox_donnees_staticbox, wx.VERTICAL)
         staticbox_donnees.Add(self.ctrl_donnees, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_droit.Add(staticbox_donnees, 1, wx.EXPAND, 0)
@@ -734,7 +734,7 @@ class Dialog(wx.Dialog):
             return
         
         # Demande la confirmation de sauvegarde
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous mémoriser le devis ?\n\n(Cliquez NON si c'était juste un test sinon cliquez OUI)"), _(u"Sauvegarde"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous mÃ©moriser le devis ?\n\n(Cliquez NON si c'Ã©tait juste un test sinon cliquez OUI)"), _(u"Sauvegarde"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -758,20 +758,20 @@ class Dialog(wx.Dialog):
         IDdevis = DB.ReqInsert("devis", listeDonnees)
         DB.Close()
         
-        # Mémorisation de l'action dans l'historique
+        # MÃ©morisation de l'action dans l'historique
         UTILS_Historique.InsertActions([{
                 "IDfamille" : self.IDfamille,
                 "IDcategorie" : 36,
-                "action" : _(u"Edition d'un devis pour la période du %s au %s pour un total de %.02f ¤ et un solde de %.02f ¤") % (UTILS_Dates.DateEngFr(self.dictSave["date_debut"]), UTILS_Dates.DateEngFr(self.dictSave["date_fin"]), self.dictSave["total"], self.dictSave["solde"] ),
+                "action" : _(u"Edition d'un devis pour la pÃ©riode du %s au %s pour un total de %.02f â‚¬ et un solde de %.02f â‚¬") % (UTILS_Dates.DateEngFr(self.dictSave["date_debut"]), UTILS_Dates.DateEngFr(self.dictSave["date_fin"]), self.dictSave["total"], self.dictSave["solde"] ),
                 },])
         
-        # Mémorisation des paramètres
+        # MÃ©morisation des paramÃ¨tres
         self.ctrl_parametres.MemoriserParametres() 
         
     
     def OnBoutonAnnuler(self, event):
         self.Sauvegarder() 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def OnBoutonEmail(self, event): 
@@ -783,20 +783,20 @@ class Dialog(wx.Dialog):
         self.CreationPDF() 
 
     def CreationPDF(self, nomDoc=FonctionsPerso.GenerationNomDoc("DEVIS", "pdf") , afficherDoc=True):
-        # Récupération du dictOptions
+        # RÃ©cupÃ©ration du dictOptions
         dictOptions = self.ctrl_parametres.GetOptions() 
         if dictOptions == False :
             return False
 
         if dictOptions["IDmodele"] == -1:
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner un modèle de document !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner un modÃ¨le de document !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         dictChampsFusion = {}
 
-        # Récupération des valeurs
+        # RÃ©cupÃ©ration des valeurs
         date_debut = self.ctrl_date_debut.GetDate()
         date_fin = self.ctrl_date_fin.GetDate()
         listeIndividus = self.ctrl_individus.GetListeIndividus()
@@ -805,7 +805,7 @@ class Dialog(wx.Dialog):
         
         dictDonnees = DICT_DONNEES
         
-        # Récupération des présences
+        # RÃ©cupÃ©ration des prÃ©sences
         if len(listeIndividus) == 0 : conditionIndividus = "()"
         elif len(listeIndividus) == 1 : conditionIndividus = "(%d)" % listeIndividus[0]
         else : conditionIndividus = str(tuple(listeIndividus))
@@ -815,7 +815,7 @@ class Dialog(wx.Dialog):
         
         DB = GestionDB.DB()
         
-        # Récupération de tous les individus de la base
+        # RÃ©cupÃ©ration de tous les individus de la base
         req = """
         SELECT IDindividu, IDcivilite, nom, prenom, date_naiss, adresse_auto, rue_resid, cp_resid, ville_resid
         FROM individus
@@ -860,12 +860,12 @@ class Dialog(wx.Dialog):
                 listePrestations.append(donnees)
         
         if len(listePrestations) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Il n'existe aucune prestation avec les paramètres donnés !"), _(u"Annulation"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'existe aucune prestation avec les paramÃ¨tres donnÃ©s !"), _(u"Annulation"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
-        # Recherche des déductions
+        # Recherche des dÃ©ductions
         req = u"""
         SELECT IDdeduction, IDprestation, IDfamille, date, montant, label, IDaide
         FROM deductions
@@ -901,7 +901,7 @@ class Dialog(wx.Dialog):
             if date not in dictConsommations[IDprestation] :
                 dictConsommations[IDprestation].append(date)
         
-        # Recherche des numéros d'agréments
+        # Recherche des numÃ©ros d'agrÃ©ments
         req = """
         SELECT IDactivite, agrement, date_debut, date_fin
         FROM agrements
@@ -911,7 +911,7 @@ class Dialog(wx.Dialog):
         DB.ExecuterReq(req)
         listeAgrements = DB.ResultatReq()  
 
-        # Récupération des infos sur l'organisme
+        # RÃ©cupÃ©ration des infos sur l'organisme
         req = """SELECT nom, rue, cp, ville, tel, fax, mail, site, num_agrement, num_siret, code_ape
         FROM organisateur
         WHERE IDorganisateur=1;""" 
@@ -937,14 +937,14 @@ class Dialog(wx.Dialog):
         # Get noms Titulaires
         dictNomsTitulaires = UTILS_Titulaires.GetTitulaires(mode_adresse_facturation=True)
 
-        # Récupération des questionnaires
+        # RÃ©cupÃ©ration des questionnaires
         Questionnaires = UTILS_Questionnaires.ChampsEtReponses(type="famille")
 
-        # Récupération des infos de base individus et familles
+        # RÃ©cupÃ©ration des infos de base individus et familles
         self.infosIndividus = UTILS_Infos_individus.Informations(mode_adresse_facturation=True)
 
         # ----------------------------------------------------------------------------------------------------
-        # Analyse et regroupement des données
+        # Analyse et regroupement des donnÃ©es
         dictValeurs = {}
         listeActivitesUtilisees = []
         for IDprestation, IDcompte_payeur, IDfamille, date, categorie, label, montant_initial, montant, tva, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDcivilite, nomIndividu, prenomIndividu, dateNaiss, montant_ventilation, forfait_date_debut, forfait_date_fin in listePrestations :
@@ -963,7 +963,7 @@ class Dialog(wx.Dialog):
                 cp_resid = dictInfosTitulaires["adresse"]["cp"]
                 ville_resid = dictInfosTitulaires["adresse"]["ville"]
                 
-                # Mémorisation des infos                
+                # MÃ©morisation des infos                
                 dictValeurs[IDcompte_payeur] = {
                     "nomSansCivilite" : nomsTitulairesSansCivilite,
                     "IDfamille" : IDfamille,
@@ -1006,13 +1006,13 @@ class Dialog(wx.Dialog):
                 # Ajoute les infos de base familles
                 dictValeurs[IDcompte_payeur].update(self.infosIndividus.GetDictValeurs(mode="famille", ID=IDfamille, formatChamp=True))
                 
-                # Ajoute les réponses des questionnaires
+                # Ajoute les rÃ©ponses des questionnaires
                 for dictReponse in Questionnaires.GetDonnees(IDfamille) :
                     dictValeurs[IDcompte_payeur][dictReponse["champ"]] = dictReponse["reponse"]
                     if dictReponse["controle"] == "codebarres" :
                         dictValeurs[IDcompte_payeur]["{CODEBARRES_QUESTION_%d}" % dictReponse["IDquestion"]] = dictReponse["reponse"]
 
-                # Fusion pour textes personnalisés
+                # Fusion pour textes personnalisÃ©s
                 dictValeurs[IDcompte_payeur]["texte_titre"] = CTRL_Devis_options.RemplaceMotsCles(dictOptions["texte_titre"], dictValeurs[IDcompte_payeur])
                 dictValeurs[IDcompte_payeur]["texte_introduction"] = CTRL_Devis_options.RemplaceMotsCles(dictOptions["texte_introduction"], dictValeurs[IDcompte_payeur])
                 dictValeurs[IDcompte_payeur]["texte_conclusion"] = CTRL_Devis_options.RemplaceMotsCles(dictOptions["texte_conclusion"], dictValeurs[IDcompte_payeur])
@@ -1046,30 +1046,30 @@ class Dialog(wx.Dialog):
                     dateNaiss = dictIndividus[IDindividu]["date_naiss"]
                     if dateNaiss != None : 
                         if DICT_CIVILITES[IDcivilite]["sexe"] == "M" :
-                            texteDateNaiss = _(u", né le %s") % UTILS_Dates.DateEngFr(str(dateNaiss))
+                            texteDateNaiss = _(u", nÃ© le %s") % UTILS_Dates.DateEngFr(str(dateNaiss))
                         else:
-                            texteDateNaiss = _(u", née le %s") % UTILS_Dates.DateEngFr(str(dateNaiss))
+                            texteDateNaiss = _(u", nÃ©e le %s") % UTILS_Dates.DateEngFr(str(dateNaiss))
                     else:
                         texteDateNaiss = u""
                     texteIndividu = _(u"<b>%s %s</b><font size=7>%s</font>") % (nomIndividu, prenomIndividu, texteDateNaiss)
                     nom = u"%s %s" % (nomIndividu, prenomIndividu)
                     
                 else:
-                    # Si c'est pour une prestation familiale on créé un individu ID 0 :
+                    # Si c'est pour une prestation familiale on crÃ©Ã© un individu ID 0 :
                     nom = _(u"Prestations diverses")
                     texteIndividu = u"<b>%s</b>" % nom
                     
                 dictValeurs[IDcompte_payeur]["individus"][IDindividu] = { "texte" : texteIndividu, "activites" : {}, "total" : FloatToDecimal(0.0), "ventilation" : FloatToDecimal(0.0), "total_reports" : FloatToDecimal(0.0), "nom" : nom, "select" : True }
             
-            # Ajout de l'activité
+            # Ajout de l'activitÃ©
             if (IDactivite in dictValeurs[IDcompte_payeur]["individus"][IDindividu]["activites"]) == False :
                 texteActivite = nomActivite
                 agrement = RechercheAgrement(listeAgrements, IDactivite, date)
                 if agrement != None :
-                    texteActivite += _(u" - n° agrément : %s") % agrement
+                    texteActivite += _(u" - nÂ° agrÃ©ment : %s") % agrement
                 dictValeurs[IDcompte_payeur]["individus"][IDindividu]["activites"][IDactivite] = { "texte" : texteActivite, "presences" : {} }
             
-            # Ajout de la présence
+            # Ajout de la prÃ©sence
             if (date in dictValeurs[IDcompte_payeur]["individus"][IDindividu]["activites"][IDactivite]["presences"]) == False :
                 dictValeurs[IDcompte_payeur]["individus"][IDindividu]["activites"][IDactivite]["presences"][date] = { "texte" : UTILS_Dates.DateEngFr(str(date)), "unites" : [], "total" : FloatToDecimal(0.0) }
             
@@ -1079,7 +1079,7 @@ class Dialog(wx.Dialog):
             else:
                 listeDates = []
             
-            # Recherche des déductions
+            # Recherche des dÃ©ductions
             if IDprestation in dictDeductions :
                 deductions = dictDeductions[IDprestation]
             else :
@@ -1091,7 +1091,7 @@ class Dialog(wx.Dialog):
             if dictOptions["intitules"] == 3 and IDtarif != None :
                 label = nomActivite
             
-            # Mémorisation de la prestation
+            # MÃ©morisation de la prestation
             dictPrestation = {
                 "IDprestation" : IDprestation, "date" : date, "categorie" : categorie, "label" : label,
                 "montant_initial" : montant_initial, "montant" : montant, "tva" : tva, 
@@ -1109,17 +1109,17 @@ class Dialog(wx.Dialog):
             if montant_ventilation != None : 
                 dictValeurs[IDcompte_payeur]["individus"][IDindividu]["ventilation"] += montant_ventilation
             
-            # Stockage des IDprestation pour saisir le IDfacture après création de la facture
+            # Stockage des IDprestation pour saisir le IDfacture aprÃ¨s crÃ©ation de la facture
             dictValeurs[IDcompte_payeur]["listePrestations"].append( (IDindividu, IDprestation) )
             
-            # Mémorisation des activités concernées
+            # MÃ©morisation des activitÃ©s concernÃ©es
             if IDactivite != None :
                 listeActivitesUtilisees.append(IDactivite) 
         
         # --------------------------------------------------------------------------------------------------------------------
         
                 
-        # Préparation des données pour une sauvegarde du devis
+        # PrÃ©paration des donnÃ©es pour une sauvegarde du devis
         self.dictSave = {}
         self.dictSave["numero"] = dictDonnees["numero"]
         self.dictSave["IDfamille"] = self.IDfamille
@@ -1138,7 +1138,7 @@ class Dialog(wx.Dialog):
         dictOptions["date_fin"] = date_fin
         dictOptions["codeBarre"] = True
 
-        # Détail
+        # DÃ©tail
         if dictOptions["affichage_prestations"] == 0 :
             detail = True
         else:

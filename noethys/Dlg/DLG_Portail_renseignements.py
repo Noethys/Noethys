@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -32,8 +32,8 @@ else :
     from wx.lib.agw import ultimatelistctrl as ULC
 
 
-DICT_RENSEIGNEMENTS = {"nom" : u"Nom", "prenom" : u"Prénom", "date_naiss" : u"date de naissance", "cp_naiss" : u"CP de naissance", "ville_naiss" : u"Ville de naissance", "adresse_auto" : u"Adresse rattachée", "rue_resid" : u"Rue de l'adresse", "cp_resid" : u"CP de l'adresse", "ville_resid" : u"Ville de l'adresse",
-                    "tel_domicile" : u"Tél. Domicile", "tel_mobile" : u"Tél. Mobile", "mail" : u"Email", "profession" : u"Profession", "employeur" : u"Employeur", "travail_tel" : u"Tél. Pro.", "travail_mail" : u"Email Pro."}
+DICT_RENSEIGNEMENTS = {"nom" : u"Nom", "prenom" : u"PrÃ©nom", "date_naiss" : u"date de naissance", "cp_naiss" : u"CP de naissance", "ville_naiss" : u"Ville de naissance", "adresse_auto" : u"Adresse rattachÃ©e", "rue_resid" : u"Rue de l'adresse", "cp_resid" : u"CP de l'adresse", "ville_resid" : u"Ville de l'adresse",
+                    "tel_domicile" : u"TÃ©l. Domicile", "tel_mobile" : u"TÃ©l. Mobile", "mail" : u"Email", "profession" : u"Profession", "employeur" : u"Employeur", "travail_tel" : u"TÃ©l. Pro.", "travail_mail" : u"Email Pro."}
 
 
 
@@ -43,7 +43,7 @@ class CTRL_Adresse_auto(wx.Choice):
         wx.Choice.__init__(self, parent, -1, size=size)
         self.parent = parent
         self.IDindividu = IDindividu
-        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez une adresse de rattachement ou saisissez une adresse")))
+        self.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une adresse de rattachement ou saisissez une adresse")))
 
     def MAJ(self):
         if self.parent.IDindividu != None:
@@ -55,7 +55,7 @@ class CTRL_Adresse_auto(wx.Choice):
     def GetListeDonnees(self):
         DB = GestionDB.DB()
 
-        # Recherche des familles rattachées de l'individu
+        # Recherche des familles rattachÃ©es de l'individu
         req = """SELECT IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire
         FROM rattachements
         WHERE IDindividu=%d;""" % self.parent.IDindividu
@@ -71,11 +71,11 @@ class CTRL_Adresse_auto(wx.Choice):
             condition = "(%s)" % listeFamilles[0]
         else:
             condition = str(tuple(listeFamilles))
-        # Recherche des représentants des familles rattachées
+        # Recherche des reprÃ©sentants des familles rattachÃ©es
         req = """SELECT individus.IDindividu, individus.nom, individus.prenom, rue_resid, cp_resid, ville_resid, tel_domicile
         FROM rattachements
         LEFT JOIN individus ON individus.IDindividu = rattachements.IDindividu
-        WHERE IDfamille IN %s;""" % condition  # J'ai enlevé ici "IDcategorie=1 AND " pour afficher également les contacts
+        WHERE IDfamille IN %s;""" % condition  # J'ai enlevÃ© ici "IDcategorie=1 AND " pour afficher Ã©galement les contacts
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
@@ -217,28 +217,28 @@ class CTRL_Renseignements(ULC.UltimateListCtrl):
         """ Remplissage """
         self.dictControles = {}
 
-        # Création des colonnes
+        # CrÃ©ation des colonnes
         largeurColonneDonnee = 300
         self.InsertColumn(0, _(u"Champ"), width=180)
         self.InsertColumn(1, _(u"Valeur"), width=largeurColonneDonnee+5, format=ULC.ULC_FORMAT_LEFT)
 
-        # Création des lignes
+        # CrÃ©ation des lignes
         self.liste_lignes = [
             {"code": "nom", "label": _(u"Nom de famille"), "ctrl": wx.TextCtrl(self, -1, "", size=(largeurColonneDonnee, -1))},
-            {"code": "prenom", "label": _(u"Prénom"), "ctrl": wx.TextCtrl(self, -1, "", size=(largeurColonneDonnee, -1))},
+            {"code": "prenom", "label": _(u"PrÃ©nom"), "ctrl": wx.TextCtrl(self, -1, "", size=(largeurColonneDonnee, -1))},
 
             {"code": "date_naiss", "label": _(u"Date de naissance"), "ctrl": CTRL_Saisie_date.Date2(self, size=(largeurColonneDonnee, -1))},
             {"code": "ville_naiss", "label": _(u"Ville de naissance"), "ctrl": CTRL_Saisie_adresse.Adresse(self, size=(largeurColonneDonnee, -1))},
 
             {"code": "adresse", "label": _(u"Adresse"), "ctrl": Adresse(self, IDindividu=self.IDindividu, size=(largeurColonneDonnee, 100))},
 
-            {"code": "tel_domicile", "label": _(u"Tél. Domicile"), "ctrl": CTRL_Saisie_tel.Tel(self, intitule=_(u"Domicile"), size=(largeurColonneDonnee, -1))},
-            {"code": "tel_mobile", "label": _(u"Tél. Mobile"), "ctrl": CTRL_Saisie_tel.Tel(self, intitule=_(u"Mobile"), size=(largeurColonneDonnee, -1))},
+            {"code": "tel_domicile", "label": _(u"TÃ©l. Domicile"), "ctrl": CTRL_Saisie_tel.Tel(self, intitule=_(u"Domicile"), size=(largeurColonneDonnee, -1))},
+            {"code": "tel_mobile", "label": _(u"TÃ©l. Mobile"), "ctrl": CTRL_Saisie_tel.Tel(self, intitule=_(u"Mobile"), size=(largeurColonneDonnee, -1))},
             {"code": "mail", "label": _(u"Email"), "ctrl": CTRL_Saisie_mail.Mail(self, size=(largeurColonneDonnee, -1))},
 
             {"code": "profession", "label": _(u"Profession"), "ctrl": wx.TextCtrl(self, -1, "", size=(largeurColonneDonnee, -1))},
             {"code": "employeur", "label": _(u"Employeur"), "ctrl": wx.TextCtrl(self, -1, "", size=(largeurColonneDonnee, -1))},
-            {"code": "travail_tel", "label": _(u"Tél. Pro."), "ctrl": CTRL_Saisie_tel.Tel(self, intitule=_(u"Tél.Pro."), size=(largeurColonneDonnee, -1))},
+            {"code": "travail_tel", "label": _(u"TÃ©l. Pro."), "ctrl": CTRL_Saisie_tel.Tel(self, intitule=_(u"TÃ©l.Pro."), size=(largeurColonneDonnee, -1))},
             {"code": "travail_mail", "label": _(u"Email Pro."), "ctrl": CTRL_Saisie_mail.Mail(self, size=(largeurColonneDonnee, -1))},
             ]
 
@@ -250,7 +250,7 @@ class CTRL_Renseignements(ULC.UltimateListCtrl):
             self.InsertStringItem(index, ligne["label"], it_kind=1)
             self.SetItemPyData(index, ligne)
 
-            # Type de donnée
+            # Type de donnÃ©e
             item = self.GetItem(index, 1)
             ctrl = ligne["ctrl"]
             ctrl.SetBackgroundColour(wx.Colour(255, 255, 255))
@@ -278,7 +278,7 @@ class CTRL_Renseignements(ULC.UltimateListCtrl):
         self.Layout()
 
     def OnCheck(self, event):
-        """ Quand une sélection d'activités est effectuée... """
+        """ Quand une sÃ©lection d'activitÃ©s est effectuÃ©e... """
         index = event.m_itemIndex
         item = self.GetItem(index, 0)
         etat = item.IsChecked()
@@ -382,13 +382,13 @@ class Dialog(wx.Dialog):
         self.reponse = ""
 
         # Bandeau
-        intro = _(u"Vous pouvez gérer ici la demande de façon manuelle. Commencez par cliquer sur le bouton 'Appliquer la demande' pour voir apparaître les modifications demandées sur le portail. Vous pouvez alors effectuer manuellement d'éventuelles modifications avant de valider.")
+        intro = _(u"Vous pouvez gÃ©rer ici la demande de faÃ§on manuelle. Commencez par cliquer sur le bouton 'Appliquer la demande' pour voir apparaÃ®tre les modifications demandÃ©es sur le portail. Vous pouvez alors effectuer manuellement d'Ã©ventuelles modifications avant de valider.")
         titre = _(u"Traitement manuel des renseignements")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Cotisation.png")
 
-        # Détail demande
-        self.box_demande_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Détail de la demande"))
+        # DÃ©tail demande
+        self.box_demande_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"DÃ©tail de la demande"))
         self.ctrl_demande = CTRL_Html(self, couleurFond=self.GetBackgroundColour())
         self.ctrl_demande.SetMinSize((275, 100))
 
@@ -397,7 +397,7 @@ class Dialog(wx.Dialog):
         self.ctrl_renseignements = CTRL_Renseignements(self)
 
         # Journal
-        self.box_journal_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Journal d'évènements"))
+        self.box_journal_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Journal d'Ã©vÃ¨nements"))
         self.ctrl_log = CTRL_Log(self)
         self.ctrl_log.SetMinSize((100, 80))
         self.bouton_traiter = CTRL_Bouton_image.CTRL(self, texte=_(u"Appliquer la demande"), cheminImage="Images/32x32/Fleche_bas.png")
@@ -513,7 +513,7 @@ class Dialog(wx.Dialog):
     def OnBoutonTraiter(self, event=None):
         self.parent.EcritLog(_(u"Application de la demande de modification de renseignements"), self.ctrl_log)
 
-        # Recherche le détail des renseignements associés
+        # Recherche le dÃ©tail des renseignements associÃ©s
         DB = GestionDB.DB()
         req = """SELECT champ, valeur
         FROM portail_renseignements
@@ -566,21 +566,21 @@ class Dialog(wx.Dialog):
                 liste_champs_importes.append(champ)
 
             except Exception as err:
-                self.parent.EcritLog(_(u"Le champ '%s' n'a pas pu être importé. Erreur : %s") % (DICT_RENSEIGNEMENTS[champ], err), self.ctrl_log)
+                self.parent.EcritLog(_(u"Le champ '%s' n'a pas pu Ãªtre importÃ©. Erreur : %s") % (DICT_RENSEIGNEMENTS[champ], err), self.ctrl_log)
                 listeAnomalies.append(champ)
 
-        # Création du texte de réponse
+        # CrÃ©ation du texte de rÃ©ponse
         if len(liste_champs_importes) == 0 :
-            reponse = _(u"Aucun renseignement modifié")
+            reponse = _(u"Aucun renseignement modifiÃ©")
         elif len(liste_champs_importes) == 1 :
-            reponse = _(u"1 renseignement modifié")
+            reponse = _(u"1 renseignement modifiÃ©")
         else :
-            reponse = _(u"%d renseignements modifiés") % len(liste_champs_importes)
+            reponse = _(u"%d renseignements modifiÃ©s") % len(liste_champs_importes)
 
         if len(liste_champs_importes) > 0 :
             reponse += u" (%s)" % ", ".join([DICT_RENSEIGNEMENTS[champ] for champ in liste_champs_importes])
 
-        self.parent.EcritLog(_(u"Réponse : %s") % reponse, self.ctrl_log)
+        self.parent.EcritLog(_(u"RÃ©ponse : %s") % reponse, self.ctrl_log)
 
         self.reponse = reponse
 
@@ -602,7 +602,7 @@ class Dialog(wx.Dialog):
                     dlg.Destroy()
                     return False
 
-            # Préparation des données à sauvegarder
+            # PrÃ©paration des donnÃ©es Ã  sauvegarder
             if "date" in champ:
                 listeDonnees.append((champ, ctrl.GetDate()))
             elif "adresse" in champ:

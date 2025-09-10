@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -47,7 +47,7 @@ class CTRL_Villes(wx.ListBox):
     def Supprimer(self):
         index = self.GetSelection()
         if index == -1 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner une ville dans la liste !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sÃ©lectionner une ville dans la liste !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -100,14 +100,14 @@ class Dialog(wx.Dialog):
         self.IDcategorie_tarif = IDcategorie_tarif
         
         # Nom
-        self.staticbox_nom_staticbox = wx.StaticBox(self, -1, _(u"Nom de la catégorie"))
+        self.staticbox_nom_staticbox = wx.StaticBox(self, -1, _(u"Nom de la catÃ©gorie"))
         self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
         
         # Options
         self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
         self.ctrl_checkVille = wx.CheckBox(self, -1, u"")
-        self.label_ville = wx.StaticText(self, -1, _(u"Lors d'une inscription, attribuer par défaut cette catégorie aux\nindividus dont la ville de résidence figure dans la liste suivante :"))
+        self.label_ville = wx.StaticText(self, -1, _(u"Lors d'une inscription, attribuer par dÃ©faut cette catÃ©gorie aux\nindividus dont la ville de rÃ©sidence figure dans la liste suivante :"))
         self.ctrl_villes = CTRL_Villes(self, self.IDcategorie_tarif)
         self.bouton_villes_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_villes_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
@@ -133,10 +133,10 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.SetTitle(_(u"Saisie d'une catégorie de tarif"))
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour cette catégorie")))
+        self.SetTitle(_(u"Saisie d'une catÃ©gorie de tarif"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour cette catÃ©gorie")))
         self.bouton_villes_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une ville dans la liste")))
-        self.bouton_villes_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour enlever la ville sélectionnée de la liste")))
+        self.bouton_villes_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour enlever la ville sÃ©lectionnÃ©e de la liste")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -206,9 +206,9 @@ class Dialog(wx.Dialog):
         return self.IDcategorie_tarif
 
     def OnBoutonOk(self, event):
-        # Vérification des données
+        # VÃ©rification des donnÃ©es
         if self.ctrl_nom.GetValue() == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour cette catégorie !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour cette catÃ©gorie !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
@@ -229,7 +229,7 @@ class Dialog(wx.Dialog):
             DB.ReqMAJ("categories_tarifs", listeDonnees, "IDcategorie_tarif", self.IDcategorie_tarif)
         DB.Close() 
         self.ctrl_villes.Sauvegarde()
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
     
     def Importation(self):
@@ -244,7 +244,7 @@ class Dialog(wx.Dialog):
         # Nom
         nom = listeDonnees[0][0]
         self.ctrl_nom.SetValue(nom)
-        # Villes associées
+        # Villes associÃ©es
         self.ctrl_villes.Importation() 
         if len(self.ctrl_villes.listeDonnees) > 0 :
             self.ctrl_checkVille.SetValue(True)

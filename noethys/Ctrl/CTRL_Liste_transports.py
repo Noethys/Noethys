@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -36,9 +36,9 @@ def DateEngFr(textDate):
     return text
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -47,7 +47,7 @@ def DateEngEnDateDD(dateEng):
     return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
         
 def PeriodeComplete(mois, annee):
-    listeMois = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
+    listeMois = (_(u"Janvier"), _(u"FÃ©vrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"AoÃ»t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"DÃ©cembre"))
     periodeComplete = u"%s %d" % (listeMois[mois-1], annee)
     return periodeComplete
 
@@ -69,7 +69,7 @@ class CTRL(HTL.HyperTreeList):
         from Utils import UTILS_Linux
         UTILS_Linux.AdaptePolice(self)
 
-        # Création de l'ImageList
+        # CrÃ©ation de l'ImageList
         self.dictImages = {
             "ligne" : {"img" : wx.Bitmap(Chemins.GetStaticPath('Images/16x16/Ligne.png'), wx.BITMAP_TYPE_PNG), "index" : None, "nomFichier":"Ligne"},
             "arret" : {"img" : wx.Bitmap(Chemins.GetStaticPath('Images/16x16/Drapeau.png'), wx.BITMAP_TYPE_PNG), "index" : None, "nomFichier":"Drapeau"},
@@ -98,8 +98,8 @@ class CTRL(HTL.HyperTreeList):
 ##        self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnContextMenu)
     
     def MAJ(self, listeDates=[], dictFiltres={}):
-        """ Met à jour (redessine) tout le contrôle """
-        # Mémorisation pour impression
+        """ Met Ã  jour (redessine) tout le contrÃ´le """
+        # MÃ©morisation pour impression
         self.dictImpression = {"donnees" : [], "dates": listeDates}
         # MAJ
         self.DeleteAllItems()
@@ -113,7 +113,7 @@ class CTRL(HTL.HyperTreeList):
             self.RemoveColumn(indexColonne)
         
     def CreationColonnes(self, listeDates=[]):
-        # Création des colonnes
+        # CrÃ©ation des colonnes
         listeColonnes = [(u"", 300, wx.ALIGN_LEFT),]
         
         self.dictIndexColonnes = {}
@@ -132,10 +132,10 @@ class CTRL(HTL.HyperTreeList):
             numColonne += 1
 
     def Remplissage(self, listeDates=[], dictFiltres={}):        
-        # Importation des données
+        # Importation des donnÃ©es
         DB = GestionDB.DB()
         
-        # Création de la condition
+        # CrÃ©ation de la condition
         if len(listeDates) == 0 : 
             conditionDates = "depart_date='2999-01-01' "
         elif len(listeDates) == 1 : 
@@ -146,7 +146,7 @@ class CTRL(HTL.HyperTreeList):
                 listeTmp.append(str(dateTmp))
             conditionDates = "(depart_date IN %s OR arrivee_date IN %s)" % (str(tuple(listeTmp)), str(tuple(listeTmp)))
         
-        # Récupération des lignes
+        # RÃ©cupÃ©ration des lignes
         req = """SELECT IDligne, categorie, nom
         FROM transports_lignes;""" 
         DB.ExecuterReq(req)
@@ -155,7 +155,7 @@ class CTRL(HTL.HyperTreeList):
         for IDligne, categorie, nom in listeValeurs :
             dictLignes[IDligne] = nom
             
-        # Récupération des arrêts
+        # RÃ©cupÃ©ration des arrÃªts
         req = """SELECT IDarret, IDligne, nom
         FROM transports_arrets
         ORDER BY ordre;""" 
@@ -165,7 +165,7 @@ class CTRL(HTL.HyperTreeList):
         for IDarret, IDligne, nom in listeValeurs :
             dictArrets[IDarret] = {"IDligne":IDligne, "nom":nom}
             
-        # Récupération des lieux
+        # RÃ©cupÃ©ration des lieux
         req = """SELECT IDlieu, categorie, nom
         FROM transports_lieux;""" 
         DB.ExecuterReq(req)
@@ -174,7 +174,7 @@ class CTRL(HTL.HyperTreeList):
         for IDlieu, categorie, nom in listeValeurs :
             dictLieux[IDlieu] = nom
 
-        # Récupération des individus
+        # RÃ©cupÃ©ration des individus
         req = """SELECT IDindividu, nom, prenom
         FROM individus;""" 
         DB.ExecuterReq(req)
@@ -183,7 +183,7 @@ class CTRL(HTL.HyperTreeList):
         for IDindividu, nom, prenom in listeValeurs :
             dictIndividus[IDindividu] = u"%s %s" % (nom, prenom)
 
-        # Récupération des transports
+        # RÃ©cupÃ©ration des transports
         listeChamps = []
         for nom, type, info in DICT_TABLES["transports"] :
             listeChamps.append(nom)
@@ -220,7 +220,7 @@ class CTRL(HTL.HyperTreeList):
             categorie = dictTransport["categorie"]
             if VerifieFiltre("categories", categorie) == True :
             
-                # Catégorie
+                # CatÃ©gorie
                 if (categorie in dictDonnees) == False :
                     dictDonnees[categorie] = {"lignes":{}, "lieux":{}, "localisations":{}}
                 
@@ -368,8 +368,8 @@ class CTRL(HTL.HyperTreeList):
                         # Recherche la colonne date
                         if date in self.dictIndexColonnes :
                             indexColonne = self.dictIndexColonnes[date]
-                            if sens == "depart" : label = _(u"Départ")
-                            elif sens == "arrivee" : label = _(u"Arrivée")
+                            if sens == "depart" : label = _(u"DÃ©part")
+                            elif sens == "arrivee" : label = _(u"ArrivÃ©e")
                             else : label = u""
                             self.SetItemText(niveauIndividu, label, indexColonne)
                             dictImpressionColonnes[indexColonne] = label
@@ -387,7 +387,7 @@ class CTRL(HTL.HyperTreeList):
         # Remplissage
         for categorie in listeCategories :
             
-            # Catégories
+            # CatÃ©gories
             label = DICT_CATEGORIES[categorie]["label"]
             brancheCategorie = self.AppendItem(self.root, label)
             self.SetPyData(brancheCategorie, {"type":"categories", "code":categorie})
@@ -412,13 +412,13 @@ class CTRL(HTL.HyperTreeList):
                 self.SetPyData(niveauLigne, {"type":"lignes", "code":IDligne})
                 dictImpressionTemp["elements"].append({"type":"lignes", "texte":label, "marge":1})
                 
-                # Arrêts
+                # ArrÃªts
                 listeArrets = []
                 for IDarret, dictArret in dictDonnees[categorie]["lignes"][IDligne].items() :
                     if IDarret in dictArrets :
                         label = dictArrets[IDarret]["nom"]
                     else :
-                        label = _(u"Arrêt inconnu")
+                        label = _(u"ArrÃªt inconnu")
                     listeArrets.append((label, IDarret, dictArret))
                 listeArrets.sort() 
                 
@@ -465,7 +465,7 @@ class CTRL(HTL.HyperTreeList):
                 InsertionBranchesHeures(dictLocalisation, niveauLocalisation, marge=2)
 
             
-            # Mémorisation du bloc catégorie pour impression PDF
+            # MÃ©morisation du bloc catÃ©gorie pour impression PDF
             self.dictImpression["donnees"].append(dictImpressionTemp)
             
         self.ExpandAllChildren(self.root)
@@ -484,7 +484,7 @@ class CTRL(HTL.HyperTreeList):
         categorie = dictItem["categorie"]
         if categorie != "individus" : return
         
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ouvrir fiche famille
@@ -502,12 +502,12 @@ class CTRL(HTL.HyperTreeList):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         dictItem = self.GetMainWindow().GetItemPyData(self.GetSelection())
         if dictItem == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun individu dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun individu dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDindividu = dictItem["code"]
-        print(IDindividu) # Fonction pas terminée ici
+        print(IDindividu) # Fonction pas terminÃ©e ici
 ##        from Dlg import DLG_Famille
 ##        dlg = DLG_Famille.Dialog(self, IDfamille=IDfamille)
 ##        dlg.ShowModal()
@@ -518,12 +518,12 @@ class CTRL(HTL.HyperTreeList):
     def Imprimer(self, event=None):
         listeDates = self.dictImpression["dates"]
         if len(listeDates) > 26 :
-            dlg = wx.MessageDialog(self, _(u"Désolé mais vous ne pouvez pas imprimer plus de 26 jours sur une feuille !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"DÃ©solÃ© mais vous ne pouvez pas imprimer plus de 26 jours sur une feuille !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
-        # Création du PDF
+        # CrÃ©ation du PDF
         from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
         from reportlab.platypus.flowables import ParagraphAndImage, Image
         from reportlab.rl_config import defaultPageSize
@@ -534,7 +534,7 @@ class CTRL(HTL.HyperTreeList):
         self.hauteur_page = defaultPageSize[1]
         self.largeur_page = defaultPageSize[0]
         
-        # Recherche le format de la page à appliquer
+        # Recherche le format de la page Ã  appliquer
         largeurPremiereColonne = 140
         largeurColonnesDates = 24
         largeurMax = largeurPremiereColonne + (largeurColonnesDates*len(listeDates))
@@ -554,12 +554,12 @@ class CTRL(HTL.HyperTreeList):
         doc = SimpleDocTemplate(nomDoc, pagesize=(largeurPage, hauteurPage), topMargin=30, bottomMargin=30)
         story = []
         
-        # Création du titre du document
+        # CrÃ©ation du titre du document
         def Header():
             dataTableau = []
             largeursColonnes = ( (largeurContenu-100, 100) )
             dateDuJour = DateEngFr(str(datetime.date.today()))
-            dataTableau.append( (_(u"Liste des transports"), _(u"%s\nEdité le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
+            dataTableau.append( (_(u"Liste des transports"), _(u"%s\nEditÃ© le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
             style = TableStyle([
                     ('BOX', (0,0), (-1,-1), 0.25, colors.black), 
                     ('VALIGN', (0,0), (-1,-1), 'TOP'), 
@@ -573,7 +573,7 @@ class CTRL(HTL.HyperTreeList):
             story.append(tableau)
             story.append(Spacer(0,20))       
         
-        # Insère un header
+        # InsÃ¨re un header
         Header() 
         
         # Contenu
@@ -585,7 +585,7 @@ class CTRL(HTL.HyperTreeList):
             dataTableau = []
             largeursColonnes = [largeurPremiereColonne,]
             
-            # Création de la ligne de date
+            # CrÃ©ation de la ligne de date
             paraStyle = ParagraphStyle(name="categorie",
                       fontName="Helvetica-Bold",
                       fontSize=9,
@@ -598,12 +598,12 @@ class CTRL(HTL.HyperTreeList):
                 largeursColonnes.append(largeurColonnesDates)
             dataTableau.append(ligne)
         
-            # Création des lignes
+            # CrÃ©ation des lignes
             listeExtraStyles = []
             index = 1
             for element in elements :
                 
-                # Décoration de la ligne
+                # DÃ©coration de la ligne
                 if element["type"] in ("lieux", "lignes", "localisations") :
                     listeExtraStyles.append(('BACKGROUND', (0, index), (-1, index), (0.8, 0.8, 1) ))
 
@@ -650,7 +650,7 @@ class CTRL(HTL.HyperTreeList):
             for extraStyle in listeExtraStyles :
                 listeStyles.append(extraStyle)
                 
-            # Création du tableau
+            # CrÃ©ation du tableau
             tableau = Table(dataTableau, largeursColonnes)
             tableau.setStyle(TableStyle(listeStyles))
             story.append(tableau)
@@ -667,16 +667,16 @@ class CTRL(HTL.HyperTreeList):
 ##        listeStyles = [
 ##                ('VALIGN', (0,0), (-1,-1), 'MIDDLE'), # Centre verticalement toutes les cases
 ##                ('FONT',(0,0),(-1,-1), "Helvetica", 7), # Donne la police de caract. + taille de police 
-##                ('BOX', (0, 1), (-1,-1), 0.25, colors.black), # Crée la bordure noire pour tout le tableau
-##                ('ALIGN', (2, 0), (-1, -1), 'CENTRE'), # Ligne de labels colonne alignée au centre
-##                ('BOX', (0, 0), (-1,0), 0.25, colors.black), # Crée la bordure noire du nom de famille
+##                ('BOX', (0, 1), (-1,-1), 0.25, colors.black), # CrÃ©e la bordure noire pour tout le tableau
+##                ('ALIGN', (2, 0), (-1, -1), 'CENTRE'), # Ligne de labels colonne alignÃ©e au centre
+##                ('BOX', (0, 0), (-1,0), 0.25, colors.black), # CrÃ©e la bordure noire du nom de famille
 ##                ('FONT',(0,0),(0,0), "Helvetica-Bold", 8), # Donne la police de caract. + taille de police du titre de groupe
 ##                ('BACKGROUND', (0,0), (-1,0), couleurFond), # Donne la couleur de fond du titre de groupe
 ##                ('TOPPADDING',(0,0),(-1,-1), 1), 
 ##                ('BOTTOMPADDING',(0,0),(-1,-1), 1), 
 ##                ]
 ##            
-##        # Création du tableau
+##        # CrÃ©ation du tableau
 ##        tableau = Table(dataTableau, largeursColonnes)
 ##        tableau.setStyle(TableStyle(listeStyles))
 ##        story.append(tableau)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -61,7 +61,7 @@ def GetListe(listeActivites=None, presents=None, archives=False):
     else :
         conditionArchives = "AND individus.etat IS NULL"
 
-    # Conditions Présents
+    # Conditions PrÃ©sents
 ##    if presents == None :
 ##        conditionPresents = ""
 ##        jointurePresents = ""
@@ -71,7 +71,7 @@ def GetListe(listeActivites=None, presents=None, archives=False):
     
     DB = GestionDB.DB()
     
-    # Récupération des présents
+    # RÃ©cupÃ©ration des prÃ©sents
     listePresents = []
     if presents != None :
         req = """SELECT IDindividu, IDinscription
@@ -85,7 +85,7 @@ def GetListe(listeActivites=None, presents=None, archives=False):
             if IDindividu not in listePresents:
                 listePresents.append(IDindividu)
 
-    # Récupération des individus
+    # RÃ©cupÃ©ration des individus
     listeChamps = (
         "individus.IDindividu", "IDcivilite", "nom", "prenom", "num_secu","IDnationalite", 
         "date_naiss", "IDpays_naiss", "cp_naiss", "ville_naiss",
@@ -105,10 +105,10 @@ def GetListe(listeActivites=None, presents=None, archives=False):
     listeDonnees = DB.ResultatReq()
     DB.Close() 
     
-    # Récupération des civilités
+    # RÃ©cupÃ©ration des civilitÃ©s
     dictCivilites = Civilites.GetDictCivilites()
     
-    # Récupération des adresses auto
+    # RÃ©cupÃ©ration des adresses auto
     GetDictInfosIndividus()
 
     listeListeView = []
@@ -123,7 +123,7 @@ def GetListe(listeActivites=None, presents=None, archives=False):
             for index in range(0, len(listeChamps)) :
                 nomChamp = listeChamps[index]
                 dictTemp[nomChamp] = valeurs[index]
-            # Infos sur la civilité
+            # Infos sur la civilitÃ©
             if dictTemp["IDcivilite"] != None and dictTemp["IDcivilite"] != "" : 
                 IDcivilite = dictTemp["IDcivilite"]
             else :
@@ -196,7 +196,7 @@ class Track(object):
             
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -218,13 +218,13 @@ class ListView(FastObjectListView):
     def InitModel(self):
         self.donnees = self.GetTracks()
 
-        # Récupération des infos de base individus et familles
+        # RÃ©cupÃ©ration des infos de base individus et familles
         self.infosIndividus = UTILS_Infos_individus.Informations() 
         for track in self.donnees :
             self.infosIndividus.SetAsAttributs(parent=track, mode="individu", ID=track.IDindividu)
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeListeView = GetListe(self.listeActivites, self.presents, self.archives)
 ##        listeListeView = []
 ##        for IDfamille, dictTemp in dictDonnees.iteritems() :
@@ -235,7 +235,7 @@ class ListView(FastObjectListView):
         return listeListeView
 
     def InitObjectListView(self):
-        # Création du imageList
+        # CrÃ©ation du imageList
         for categorie, civilites in Civilites.LISTE_CIVILITES :
             for IDcivilite, CiviliteLong, CiviliteAbrege, nomImage, genre in civilites :
                 indexImg = self.AddNamedImages(nomImage, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s" % nomImage), wx.BITMAP_TYPE_PNG))
@@ -261,15 +261,15 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(u"", "left", 22, "IDindividu", typeDonnee="entier", imageGetter=GetImageCivilite),
             ColumnDefn(_(u"Nom"), 'left', 100, "nom", typeDonnee="texte"),
-            ColumnDefn(_(u"Prénom"), "left", 100, "prenom", typeDonnee="texte"),
+            ColumnDefn(_(u"PrÃ©nom"), "left", 100, "prenom", typeDonnee="texte"),
             ColumnDefn(_(u"Date naiss."), "left", 72, "date_naiss", typeDonnee="date", stringConverter=FormateDate),
             ColumnDefn(_(u"Genre"), "left", 50, "genre", typeDonnee="texte"),
             ColumnDefn(_(u"Age"), "left", 50, "age", typeDonnee="entier", stringConverter=FormateAge),
             ColumnDefn(_(u"Rue"), "left", 150, "rue_resid", typeDonnee="texte"),
             ColumnDefn(_(u"C.P."), "left", 50, "cp_resid", typeDonnee="texte"),
             ColumnDefn(_(u"Ville"), "left", 120, "ville_resid", typeDonnee="texte"),
-            ColumnDefn(_(u"Tél. domicile"), "left", 100, "tel_domicile", typeDonnee="texte"),
-            ColumnDefn(_(u"Tél. mobile"), "left", 100, "tel_mobile", typeDonnee="texte"),
+            ColumnDefn(_(u"TÃ©l. domicile"), "left", 100, "tel_domicile", typeDonnee="texte"),
+            ColumnDefn(_(u"TÃ©l. mobile"), "left", 100, "tel_mobile", typeDonnee="texte"),
             ColumnDefn(_(u"Email"), "left", 150, "mail", typeDonnee="texte"),
             ]
         
@@ -281,7 +281,7 @@ class ListView(FastObjectListView):
 
         listeChamps = UTILS_Infos_individus.GetNomsChampsPossibles(mode="individu")
         for titre, exemple, code in listeChamps :
-            if u"n°" not in titre and "_x_" not in code:
+            if u"nÂ°" not in titre and "_x_" not in code:
                 typeDonnee = UTILS_Infos_individus.GetTypeChamp(code)
                 code = code.replace("{", "").replace("}", "")
                 liste_Colonnes.append(ColumnDefn(titre, "left", 100, code, typeDonnee=typeDonnee, visible=False))
@@ -299,7 +299,7 @@ class ListView(FastObjectListView):
         self.presents = presents
         self.archives = archives
         self.labelParametres = labelParametres
-        attente = wx.BusyInfo(_(u"Recherche des données..."), self)
+        attente = wx.BusyInfo(_(u"Recherche des donnÃ©es..."), self)
         self.InitModel()
         self.InitObjectListView()
         del attente
@@ -315,10 +315,10 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDindividu
 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
                 
-        # Génération automatique des fonctions standards
+        # GÃ©nÃ©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
         
         # Commandes standards

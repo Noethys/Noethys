@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -60,20 +60,20 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        titre = _(u"Modèles d'Emails")
-        intro = _(u"Vous pouvez paramétrer ici des modèles d'Emails.")
+        titre = _(u"ModÃ¨les d'Emails")
+        intro = _(u"Vous pouvez paramÃ©trer ici des modÃ¨les d'Emails.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Emails_modele.png")
         
-        # Catégorie
-        self.staticbox_categorie_staticbox = wx.StaticBox(self, -1, _(u"Catégorie"))
-        self.label_categorie = wx.StaticText(self, -1, _(u"Catégorie :"))
+        # CatÃ©gorie
+        self.staticbox_categorie_staticbox = wx.StaticBox(self, -1, _(u"CatÃ©gorie"))
+        self.label_categorie = wx.StaticText(self, -1, _(u"CatÃ©gorie :"))
         self.ctrl_categorie = CTRL_Categorie(self)
         if categorie != None :
             self.ctrl_categorie.SetCategorie(categorie)
         
-        # Modèles
-        self.staticbox_modeles_staticbox = wx.StaticBox(self, -1, _(u"Modèles disponibles"))
+        # ModÃ¨les
+        self.staticbox_modeles_staticbox = wx.StaticBox(self, -1, _(u"ModÃ¨les disponibles"))
         self.ctrl_modeles = OL_Modeles_emails.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_ANY))
@@ -82,9 +82,9 @@ class Dialog(wx.Dialog):
         self.bouton_dupliquer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Dupliquer.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_defaut = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Ok.png"), wx.BITMAP_TYPE_ANY))
         
-##        self.hyper_telecharger = Hyperlien(self, label=_(u"Télécharger de nouveaux modèles"), infobulle=_(u"Cliquez ici pour télécharger de nouveaux modèles de documents sur internet"), URL="telecharger")
+##        self.hyper_telecharger = Hyperlien(self, label=_(u"TÃ©lÃ©charger de nouveaux modÃ¨les"), infobulle=_(u"Cliquez ici pour tÃ©lÃ©charger de nouveaux modÃ¨les de documents sur internet"), URL="telecharger")
 ##        self.label_separation = wx.StaticText(self, -1, u"|")
-##        self.hyper_proposer = Hyperlien(self, label=_(u"Proposer un modèle"), infobulle=_(u"Cliquez ici pour proposer un modèle à la communauté"), URL="proposer")
+##        self.hyper_proposer = Hyperlien(self, label=_(u"Proposer un modÃ¨le"), infobulle=_(u"Cliquez ici pour proposer un modÃ¨le Ã  la communautÃ©"), URL="proposer")
         
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
@@ -102,16 +102,16 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonFermer, self.bouton_fermer)
         
-        # Init contrôle
+        # Init contrÃ´le
         self.OnChoixCategorie(None)
 
     def __set_properties(self):
-        self.ctrl_categorie.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici une catégorie")))
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un nouveau modèle")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le modèle sélectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le modèle sélectionné dans la liste")))
-        self.bouton_dupliquer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dupliquer le modèle sélectionné dans la liste")))
-        self.bouton_defaut.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour définir ce modèle par défaut pour cette catégorie")))
+        self.ctrl_categorie.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici une catÃ©gorie")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er un nouveau modÃ¨le")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le modÃ¨le sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le modÃ¨le sÃ©lectionnÃ© dans la liste")))
+        self.bouton_dupliquer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dupliquer le modÃ¨le sÃ©lectionnÃ© dans la liste")))
+        self.bouton_defaut.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dÃ©finir ce modÃ¨le par dÃ©faut pour cette catÃ©gorie")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((650, 560))
@@ -120,7 +120,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
         
-        # Catégorie
+        # CatÃ©gorie
         staticbox_categorie = wx.StaticBoxSizer(self.staticbox_categorie_staticbox, wx.VERTICAL)
         grid_sizer_categorie = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
         grid_sizer_categorie.Add(self.label_categorie, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -129,7 +129,7 @@ class Dialog(wx.Dialog):
         staticbox_categorie.Add(grid_sizer_categorie, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(staticbox_categorie, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
-        # Modèles
+        # ModÃ¨les
         staticbox_modeles = wx.StaticBoxSizer(self.staticbox_modeles_staticbox, wx.VERTICAL)
         grid_sizer_modeles = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
         grid_sizer_modeles.Add(self.ctrl_modeles, 1, wx.EXPAND, 0)

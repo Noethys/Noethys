@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -31,10 +31,10 @@ class Dialog(wx.Dialog):
         self._mgr = aui.AuiManager()
         self._mgr.SetManagedWindow(self)
 
-        # Propriétés
+        # PropriÃ©tÃ©s
         self.SetMinSize((920, 740))
 
-        # Création des widgets
+        # CrÃ©ation des widgets
         couleur_zone_travail = wx.Colour(255, 255, 255)
         self.ctrl_canvas = Panel_canvas(self, IDmodele=IDmodele, categorie=categorie, couleur_zone_travail=couleur_zone_travail, IDdonnee=IDdonnee, champs_interactifs=champs_interactifs)
 
@@ -42,7 +42,7 @@ class Dialog(wx.Dialog):
         self.toolbar1 = self.MakeToolBar1()
         self.toolbar2 = self.MakeToolBar2()
 
-        # Création des panels détachables
+        # CrÃ©ation des panels dÃ©tachables
         self.ctrl_infos = Panel_infos(self)
         self.ctrl_commandes = Panel_commandes(self)
         self.ctrl_proprietes_doc = Panel_proprietes_image_interactive(self, self.ctrl_canvas, categorie=categorie)
@@ -53,7 +53,7 @@ class Dialog(wx.Dialog):
         self.ctrl_proprietes_doc.SetNom(nom)
         self.ctrl_proprietes_doc.SetObservations(observations)
 
-        # Création des panels amovibles
+        # CrÃ©ation des panels amovibles
         self._mgr.AddPane(self.ctrl_infos, aui.AuiPaneInfo().
                           Name("infos").Caption(_(u"Infos")).
                           Bottom().Layer(0).Position(1).CaptionVisible(False).CloseButton(False).MaximizeButton(False).MinSize((-1, 18)))
@@ -63,17 +63,17 @@ class Dialog(wx.Dialog):
                           Bottom().Layer(1).Position(2).CaptionVisible(False).CloseButton(False).MaximizeButton(False).MinSize((-1, 50)))
 
         self._mgr.AddPane(self.ctrl_proprietes_doc, aui.AuiPaneInfo().
-                          Name("proprietes_doc").Caption(_(u"Propriétés de l'image")).
+                          Name("proprietes_doc").Caption(_(u"PropriÃ©tÃ©s de l'image")).
                           Right().Layer(1).Position(1).Fixed().CloseButton(False).MaximizeButton(False))
 
         self._mgr.AddPane(self.ctrl_proprietes_objet, aui.AuiPaneInfo().
-                          Name("proprietes_objet").Caption(_(u"Propriétés de l'objet")).
+                          Name("proprietes_objet").Caption(_(u"PropriÃ©tÃ©s de l'objet")).
                           Right().Layer(1).Position(2).CloseButton(False).MaximizeButton(False).MinSize((160, -1)))
 
-        # Création du panel central
+        # CrÃ©ation du panel central
         self._mgr.AddPane(self.ctrl_canvas, aui.AuiPaneInfo().Name("canvas").CenterPane())
 
-        # Création des barres d'outils
+        # CrÃ©ation des barres d'outils
         self._mgr.AddPane(self.toolbar1, aui.AuiPaneInfo().
                           Name("barreOutil_modes").Caption("Modes").
                           ToolbarPane().Top().
@@ -122,11 +122,11 @@ class Dialog(wx.Dialog):
         tbar.ToggleTool(ID_OUTIL_CURSEUR, True)
 
         ID_OUTIL_DEPLACER = wx.Window.NewControlId()
-        tbar.AddSimpleTool(ID_OUTIL_DEPLACER, _(u"Déplacer"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Main.png"), wx.BITMAP_TYPE_ANY), _(u"Déplacer"), aui.ITEM_RADIO)
+        tbar.AddSimpleTool(ID_OUTIL_DEPLACER, _(u"DÃ©placer"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Main.png"), wx.BITMAP_TYPE_ANY), _(u"DÃ©placer"), aui.ITEM_RADIO)
         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_deplacer, id=ID_OUTIL_DEPLACER)
 
         ID_OUTIL_ZOOM_OUT = wx.Window.NewControlId()
-        tbar.AddSimpleTool(ID_OUTIL_ZOOM_OUT, _(u"Zoom arrière"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/zoom_moins.png"), wx.BITMAP_TYPE_ANY), _(u"Zoom arrière"), aui.ITEM_RADIO)
+        tbar.AddSimpleTool(ID_OUTIL_ZOOM_OUT, _(u"Zoom arriÃ¨re"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/zoom_moins.png"), wx.BITMAP_TYPE_ANY), _(u"Zoom arriÃ¨re"), aui.ITEM_RADIO)
         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_zoom_moins, id=ID_OUTIL_ZOOM_OUT)
 
         ID_OUTIL_ZOOM_IN = wx.Window.NewControlId()
@@ -142,7 +142,7 @@ class Dialog(wx.Dialog):
         tbar.AddSeparator()
 
         ID_OUTIL_AFFICHAGE_APERCU = wx.Window.NewControlId()
-        tbar.AddSimpleTool(ID_OUTIL_AFFICHAGE_APERCU, _(u"Afficher un aperçu PDF"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Pdf.png"), wx.BITMAP_TYPE_ANY), _(u"Afficher un aperçu PDF"))
+        tbar.AddSimpleTool(ID_OUTIL_AFFICHAGE_APERCU, _(u"Afficher un aperÃ§u PDF"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Pdf.png"), wx.BITMAP_TYPE_ANY), _(u"Afficher un aperÃ§u PDF"))
         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnAffichage_apercu, id=ID_OUTIL_AFFICHAGE_APERCU)
 
         tbar.Realize()
@@ -153,32 +153,32 @@ class Dialog(wx.Dialog):
         tbar.SetToolBitmapSize(wx.Size(32, 32))
 
         ID_OUTIL_OBJET_TEXTE_BLOC = wx.Window.NewControlId()
-        tbar.AddSimpleTool(ID_OUTIL_OBJET_TEXTE_BLOC, _(u"Insérer un bloc de texte multi-lignes"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Texte_ligne.png"), wx.BITMAP_TYPE_ANY), _(u"Insérer un bloc de texte multi-lignes"))
+        tbar.AddSimpleTool(ID_OUTIL_OBJET_TEXTE_BLOC, _(u"InsÃ©rer un bloc de texte multi-lignes"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Texte_ligne.png"), wx.BITMAP_TYPE_ANY), _(u"InsÃ©rer un bloc de texte multi-lignes"))
         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_texteBloc, id=ID_OUTIL_OBJET_TEXTE_BLOC)
 
         ID_OUTIL_OBJET_RECTANGLE = wx.Window.NewControlId()
-        tbar.AddSimpleTool(ID_OUTIL_OBJET_RECTANGLE, _(u"Insérer un rectangle"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Rectangle.png"), wx.BITMAP_TYPE_ANY), _(u"Insérer un rectangle"))
+        tbar.AddSimpleTool(ID_OUTIL_OBJET_RECTANGLE, _(u"InsÃ©rer un rectangle"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Rectangle.png"), wx.BITMAP_TYPE_ANY), _(u"InsÃ©rer un rectangle"))
         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_rectangle, id=ID_OUTIL_OBJET_RECTANGLE)
 
         ID_OUTIL_OBJET_LIGNE = wx.Window.NewControlId()
-        tbar.AddSimpleTool(ID_OUTIL_OBJET_LIGNE, _(u"Insérer une ligne"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Ligne.png"), wx.BITMAP_TYPE_ANY), _(u"Insérer une ligne"))
+        tbar.AddSimpleTool(ID_OUTIL_OBJET_LIGNE, _(u"InsÃ©rer une ligne"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Ligne.png"), wx.BITMAP_TYPE_ANY), _(u"InsÃ©rer une ligne"))
         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_ligne, id=ID_OUTIL_OBJET_LIGNE)
 
         ID_OUTIL_OBJET_CERCLE = wx.Window.NewControlId()
-        tbar.AddSimpleTool(ID_OUTIL_OBJET_CERCLE, _(u"Insérer une ellipse"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Cercle.png"), wx.BITMAP_TYPE_ANY), _(u"Insérer une ellipse"))
+        tbar.AddSimpleTool(ID_OUTIL_OBJET_CERCLE, _(u"InsÃ©rer une ellipse"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Cercle.png"), wx.BITMAP_TYPE_ANY), _(u"InsÃ©rer une ellipse"))
         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_cercle, id=ID_OUTIL_OBJET_CERCLE)
 
         ID_OUTIL_OBJET_POLYGONE = wx.Window.NewControlId()
-        tbar.AddSimpleTool(ID_OUTIL_OBJET_POLYGONE, _(u"Insérer un polygone"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Polygone.png"), wx.BITMAP_TYPE_ANY), _(u"Insérer un polygone"))
+        tbar.AddSimpleTool(ID_OUTIL_OBJET_POLYGONE, _(u"InsÃ©rer un polygone"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Polygone.png"), wx.BITMAP_TYPE_ANY), _(u"InsÃ©rer un polygone"))
         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_polygone, id=ID_OUTIL_OBJET_POLYGONE)
 
         ID_OUTIL_OBJET_POLYLINE = wx.Window.NewControlId()
-        tbar.AddSimpleTool(ID_OUTIL_OBJET_POLYLINE, _(u"Dessiner un polygone à main levée"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Polyline.png"), wx.BITMAP_TYPE_ANY), _(u"Dessiner un polygone à main levée"))
+        tbar.AddSimpleTool(ID_OUTIL_OBJET_POLYLINE, _(u"Dessiner un polygone Ã  main levÃ©e"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Polyline.png"), wx.BITMAP_TYPE_ANY), _(u"Dessiner un polygone Ã  main levÃ©e"))
         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_polyline, id=ID_OUTIL_OBJET_POLYLINE)
 
         ID_OUTIL_OBJET_IMAGE_DROPDOWN = wx.Window.NewControlId()
         ID_OUTIL_OBJET_IMAGE = wx.Window.NewControlId()
-        tbar.AddSimpleTool(ID_OUTIL_OBJET_IMAGE_DROPDOWN, _(u"Insérer une image"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Image.png"), wx.BITMAP_TYPE_ANY), _(u"Insérer une image"))
+        tbar.AddSimpleTool(ID_OUTIL_OBJET_IMAGE_DROPDOWN, _(u"InsÃ©rer une image"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Image.png"), wx.BITMAP_TYPE_ANY), _(u"InsÃ©rer une image"))
         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_image, id=ID_OUTIL_OBJET_IMAGE)
         self.Bind(aui.EVT_AUITOOLBAR_TOOL_DROPDOWN, self.ctrl_canvas.OnDropDownImage, id=ID_OUTIL_OBJET_IMAGE_DROPDOWN)
         tbar.SetToolDropDown(ID_OUTIL_OBJET_IMAGE_DROPDOWN, True)

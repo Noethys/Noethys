@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -41,7 +41,7 @@ else:
 
 
 class Propriete_date(wxpg.PyProperty):
-    def __init__(self, label, name=wxpg.LABEL_AS_NAME, value=None):
+    def __init__(self, label, name=wxpg.PG_LABEL, value=None):
         wxpg.PyProperty.__init__(self, label, name)
         self.SetValue(value)
 
@@ -125,7 +125,7 @@ class Propriete_choix(Property):
 # ---------------------------------------------------------------------------------------------------------------
 
 class Propriete_multichoix(ArrayStringProperty):
-    """ Propriété Multichoix """
+    """ PropriÃ©tÃ© Multichoix """
     def __init__(self, label, name = NAME, liste_choix=[], liste_selections=[]):
         self.liste_choix = liste_choix
         self.liste_selections = liste_selections
@@ -136,7 +136,7 @@ class Propriete_multichoix(ArrayStringProperty):
         # Set default delimiter
         self.SetAttribute("Delimiter", ',')
 
-        # Importation des sélections
+        # Importation des sÃ©lections
         self.SetValue(self.liste_selections)
 
     def GetEditor(self):
@@ -198,7 +198,7 @@ class Propriete_multichoix(ArrayStringProperty):
 
     def OnEvent(self, propgrid, primaryEditor, event):
         if event.GetEventType() == wx.wxEVT_COMMAND_BUTTON_CLICKED:
-            dlg = wx.MultiChoiceDialog(propgrid, _(u"Cochez les éléments à sélectionner :"), _(u"Sélection"), [x[1] for x in self.liste_choix])
+            dlg = wx.MultiChoiceDialog(propgrid, _(u"Cochez les Ã©lÃ©ments Ã  sÃ©lectionner :"), _(u"sÃ©lection"), [x[1] for x in self.liste_choix])
             liste_index = []
             index = 0
             for id, valeur in self.liste_choix :
@@ -223,7 +223,7 @@ class Propriete_multichoix(ArrayStringProperty):
 # -------------------------------------------------------------------------------------------------
 
 class Propriete_liste(ArrayStringProperty):
-    """ Propriété Multichoix """
+    """ PropriÃ©tÃ© Multichoix """
     def __init__(self, label, name = NAME, type_donnees=int, liste_selections=[]):
         self.type_donnees = type_donnees
         self.liste_selections = liste_selections
@@ -234,7 +234,7 @@ class Propriete_liste(ArrayStringProperty):
         # Set default delimiter
         self.SetAttribute("Delimiter", ',')
 
-        # Importation des sélections
+        # Importation des sÃ©lections
         self.SetValue(self.liste_selections)
 
     def GetEditor(self):
@@ -305,7 +305,7 @@ class EditeurComboBoxAvecBoutons(ChoiceEditor):
 
         # Add two regular buttons
         buttons.AddBitmapButton(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_PNG))
-        buttons.GetButton(0).SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des paramètres")))
+        buttons.GetButton(0).SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la gestion des paramÃªtres")))
         
         # Create the 'primary' editor control (textctrl in this case)
         if 'phoenix' in wx.PlatformInfo:
@@ -480,7 +480,7 @@ class CTRL(wxpg.PropertyGrid) :
         wxpg.PropertyGrid.__init__(self, parent, -1, style=style)
         self.parent = parent
         
-        # Définition des éditeurs personnalisés
+        # dÃ©finition des Ã©diteurs personnalisÃ©s
         if not getattr(sys, '_PropGridEditorsRegistered', False):
             self.RegisterEditor(EditeurComboBoxAvecBoutons)
             self.RegisterEditor(EditeurHeure)
@@ -497,10 +497,10 @@ class CTRL(wxpg.PropertyGrid) :
 
         self.Bind( wxpg.EVT_PG_CHANGED, self.OnPropGridChange )
         
-        # Remplissage du contrôle
+        # Remplissage du contrÃ´le
         self.Remplissage() 
         
-        # Mémorisation des valeurs par défaut
+        # mÃ©morisation des valeurs par dÃ©faut
         self.dictValeursDefaut = self.GetPropertyValues()
         
         # Importation des valeurs
@@ -513,13 +513,13 @@ class CTRL(wxpg.PropertyGrid) :
     def Reinitialisation(self, afficher_dlg=True):
         # Demande confirmation
         if afficher_dlg == True :
-            dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment réinitialiser tous les paramètres ?"), _(u"Paramètres par défaut"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment rÃ©initialiser tous les paramÃªtres ?"), _(u"ParamÃªtres par dÃ©faut"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES :
                 return False
 
-        # Réinitialisation
+        # RÃ©initialisation
         for nom, valeur in self.dictValeursDefaut.items() :
             propriete = self.GetPropertyByName(nom)
             if self.GetPropertyAttribute(propriete, "reinitialisation_interdite") != True :
@@ -537,7 +537,7 @@ class Bouton_reinitialisation(wx.BitmapButton):
     def __init__(self, parent, ctrl_parametres=None):
         wx.BitmapButton.__init__(self, parent, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Actualiser.png"), wx.BITMAP_TYPE_ANY))
         self.ctrl_parametres = ctrl_parametres
-        self.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour réinitialiser tous les paramètres")))
+        self.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rÃ©initialiser tous les paramÃªtres")))
         self.Bind(wx.EVT_BUTTON, self.OnBouton)
     
     def OnBouton(self, event):
@@ -547,7 +547,7 @@ class Bouton_sauvegarde(wx.BitmapButton):
     def __init__(self, parent, ctrl_parametres=None):
         wx.BitmapButton.__init__(self, parent, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Sauvegarder.png"), wx.BITMAP_TYPE_ANY))
         self.ctrl_parametres = ctrl_parametres
-        self.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour mémoriser tous les paramètres")))
+        self.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour mÃ©moriser tous les paramÃªtres")))
         self.Bind(wx.EVT_BUTTON, self.OnBouton)
     
     def OnBouton(self, event):
@@ -563,43 +563,43 @@ class CTRL_TEST(CTRL) :
     
     def Remplissage(self):
 
-        # Catégorie
+        # CatÃ©gorie
         self.Append( wxpg.PropertyCategory(_(u"Tests")) )
 
         # CTRL Heure
         propriete = wxpg.StringProperty(label=_(u"Heure"), name="heure")
-        propriete.SetHelpString(_(u"Sélectionnez une heure"))
+        propriete.SetHelpString(_(u"sÃ©lectionnez une heure"))
         propriete.SetEditor("EditeurHeure")
         self.Append(propriete)
 
         # CTRL Date
         propriete = wxpg.StringProperty(label=_(u"Date"), name="date", value=UTILS_Dates.DateDDEnFr(datetime.date.today()))
-        propriete.SetHelpString(_(u"Sélectionnez une date"))
+        propriete.SetHelpString(_(u"sÃ©lectionnez une date"))
         propriete.SetEditor("EditeurDate")
         self.Append(propriete)
 
-        # Catégorie 
-        self.Append( wxpg.PropertyCategory(_(u"Mémorisation")) )
+        # CatÃ©gorie 
+        self.Append( wxpg.PropertyCategory(_(u"mÃ©morisation")) )
         
-        # Mémorisation des paramètres
-        propriete = wxpg.EnumProperty(label=_(u"Mémoriser les paramètres"), name="memoriser_parametres", labels=[_(u"Non"), _(u"Uniquement sur cet ordinateur"), _(u"Pour tous les ordinateurs")], values=[0, 1, 3] , value=3)
-        propriete.SetHelpString(_(u"Mémoriser les paramètres")) 
+        # mÃ©morisation des paramÃªtres
+        propriete = wxpg.EnumProperty(label=_(u"mÃ©moriser les paramÃªtres"), name="memoriser_parametres", labels=[_(u"Non"), _(u"Uniquement sur cet ordinateur"), _(u"Pour tous les ordinateurs")], values=[0, 1, 3] , value=3)
+        propriete.SetHelpString(_(u"mÃ©moriser les paramÃªtres")) 
         self.Append(propriete)
 
-        # Répertoire de sauvegarde
+        # RÃ©pertoire de sauvegarde
         if 'phoenix' in wx.PlatformInfo:
-            propriete = wxpg.DirProperty(name=_(u"Répertoire pour copie unique"), label="repertoire_copie", value="")
+            propriete = wxpg.DirProperty(name=_(u"RÃ©pertoire pour copie unique"), label="repertoire_copie", value="")
         else:
-            propriete = wxpg.DirProperty(label=_(u"Répertoire pour copie unique"), name="repertoire_copie", value="")
-        propriete.SetHelpString(_(u"Enregistrer une copie unique de chaque document dans le répertoire sélectionné")) 
+            propriete = wxpg.DirProperty(label=_(u"RÃ©pertoire pour copie unique"), name="repertoire_copie", value="")
+        propriete.SetHelpString(_(u"Enregistrer une copie unique de chaque document dans le RÃ©pertoire sÃ©lectionnÃ©")) 
         self.Append(propriete)
 
-        # Catégorie 
-        self.Append( wxpg.PropertyCategory(_(u"Eléments à afficher")) )
+        # CatÃ©gorie 
+        self.Append( wxpg.PropertyCategory(_(u"ElÃ©ments Ã  afficher")) )
         
-        # Afficher les coupons-réponse
-        propriete = wxpg.BoolProperty(label=_(u"Afficher le coupon-réponse"), name="coupon_reponse", value=True)
-        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher un coupon-réponse dans le document")) 
+        # Afficher les coupons-rÃ©ponse
+        propriete = wxpg.BoolProperty(label=_(u"Afficher le coupon-rÃ©ponse"), name="coupon_reponse", value=True)
+        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher un coupon-rÃ©ponse dans le document")) 
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
         
@@ -609,9 +609,9 @@ class CTRL_TEST(CTRL) :
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Afficher le rappel des impayés
-        propriete = wxpg.BoolProperty(label=_(u"Afficher le rappel des impayés"), name="impayes", value=True)
-        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher le rappel des impayés dans le document")) 
+        # Afficher le rappel des impayÃ©s
+        propriete = wxpg.BoolProperty(label=_(u"Afficher le rappel des impayÃ©s"), name="impayes", value=True)
+        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher le rappel des impayÃ©s dans le document")) 
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
@@ -621,13 +621,13 @@ class CTRL_TEST(CTRL) :
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
         
-        # Afficher les avis de prélèvements
-        propriete = wxpg.BoolProperty(label=_(u"Afficher les avis de prélèvements"), name="avis_prelevements", value=True)
-        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher les avis de prélèvements dans le document")) 
+        # Afficher les avis de prÃ©lÃ¨vements
+        propriete = wxpg.BoolProperty(label=_(u"Afficher les avis de prÃ©lÃ¨vements"), name="avis_prelevements", value=True)
+        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher les avis de prÃ©lÃ¨vements dans le document")) 
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
         
-        # Catégorie 
+        # CatÃ©gorie 
         self.Append( wxpg.PropertyCategory(_(u"Titre")) )
 
         # Afficher le titre
@@ -637,126 +637,126 @@ class CTRL_TEST(CTRL) :
         self.Append(propriete)
 
         propriete = wxpg.StringProperty(label=_(u"Titre du document"), name="titre_document", value=_(u"Facture"))
-        propriete.SetHelpString(_(u"Saisissez le titre du document (Par défaut 'Facture')")) 
+        propriete.SetHelpString(_(u"Saisissez le titre du document (Par dÃ©faut 'Facture')")) 
         self.Append(propriete)
 
         propriete = wxpg.IntProperty(label=_(u"Taille de texte du titre"), name="taille_texte_titre", value=19)
-        propriete.SetHelpString(_(u"Saisissez la taille de texte du titre (29 par défaut)")) 
+        propriete.SetHelpString(_(u"Saisissez la taille de texte du titre (29 par dÃ©faut)")) 
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_titre", "SpinCtrl")
         
-        propriete = wxpg.BoolProperty(label=_(u"Afficher la période de facturation"), name="afficher_periode", value=True)
-        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher la période de facturation dans le document")) 
+        propriete = wxpg.BoolProperty(label=_(u"Afficher la pÃ©riode de facturation"), name="afficher_periode", value=True)
+        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher la pÃ©riode de facturation dans le document")) 
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
         
-        propriete = wxpg.IntProperty(label=_(u"Taille de texte de la période"), name="taille_texte_periode", value=8)
-        propriete.SetHelpString(_(u"Saisissez la taille de texte de la période (8 par défaut)")) 
+        propriete = wxpg.IntProperty(label=_(u"Taille de texte de la pÃ©riode"), name="taille_texte_periode", value=8)
+        propriete.SetHelpString(_(u"Saisissez la taille de texte de la pÃ©riode (8 par dÃ©faut)")) 
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_periode", "SpinCtrl")
 
-        # Catégorie 
+        # CatÃ©gorie 
         self.Append( wxpg.PropertyCategory(_(u"Tableau des prestations")) )
 
-        # Affichage condensé ou détaillé
-        propriete = wxpg.EnumProperty(label=_(u"Affichage des prestations"), name="affichage_prestations", labels=[_(u"Détaillé"), _(u"Condensé")], values=[0, 1] , value=0)
-        propriete.SetHelpString(_(u"Sélectionnez un type d'affichage")) 
+        # Affichage condensÃ© ou DÃ©taillnÃ©
+        propriete = wxpg.EnumProperty(label=_(u"Affichage des prestations"), name="affichage_prestations", labels=[_(u"DÃ©taillnÃ©"), _(u"CondensÃ©")], values=[0, 1] , value=0)
+        propriete.SetHelpString(_(u"sÃ©lectionnez un type d'affichage")) 
         self.Append(propriete)
 
-        # Intitulés des prestations
-        labels = [_(u"Intitulé original"), _(u"Intitulé original + état 'Absence injustifiée'"), _(u"Nom du tarif"), _(u"Nom de l'activité")]
-        propriete = wxpg.EnumProperty(label=_(u"Intitulés des prestations"), name="intitules", labels=labels, values=[0, 1, 2, 3] , value=0)
-        propriete.SetHelpString(_(u"Sélectionnez le type d'intitulé à afficher pour les prestations")) 
+        # intitulÃ©s des prestations
+        labels = [_(u"intitulÃ© original"), _(u"intitulÃ© original + Ã©tat 'Absence injustifinÃ©e'"), _(u"Nom du tarif"), _(u"Nom de l'activitÃ©")]
+        propriete = wxpg.EnumProperty(label=_(u"intitulÃ©s des prestations"), name="intitules", labels=labels, values=[0, 1, 2, 3] , value=0)
+        propriete.SetHelpString(_(u"sÃ©lectionnez le type d'intitulÃ© Ã  afficher pour les prestations")) 
         self.Append(propriete)
         
         # Couleur 1
         propriete = wxpg.ColourProperty(label=_(u"Couleur de fond 1"), name="couleur_fond_1", value=wx.Colour(255, 0, 0) )
-        propriete.SetHelpString(_(u"Sélectionnez la couleur 1")) 
+        propriete.SetHelpString(_(u"sÃ©lectionnez la couleur 1")) 
         self.Append(propriete)
         
         # Couleur 2
         propriete = wxpg.ColourProperty(label=_(u"Couleur de fond 2"), name="couleur_fond_2", value=wx.Colour(255, 0, 0) )
-        propriete.SetHelpString(_(u"Sélectionnez la couleur 2")) 
+        propriete.SetHelpString(_(u"sÃ©lectionnez la couleur 2")) 
         self.Append(propriete)
         
         # Largeur colonne Date
-        propriete = wxpg.IntProperty(label=_(u"Largeur de la colonne Date (ou Qté)"), name="largeur_colonne_date", value=50)
-        propriete.SetHelpString(_(u"Saisissez la largeur de la colonne Date (50 par défaut)")) 
+        propriete = wxpg.IntProperty(label=_(u"Largeur de la colonne Date (ou QtnÃ©)"), name="largeur_colonne_date", value=50)
+        propriete.SetHelpString(_(u"Saisissez la largeur de la colonne Date (50 par dÃ©faut)")) 
         self.Append(propriete)
         self.SetPropertyEditor("largeur_colonne_date", "SpinCtrl")
         
         # Largeur colonne Montant HT
         propriete = wxpg.IntProperty(label=_(u"Largeur de la colonne Montant HT"), name="largeur_colonne_montant_ht", value=50)
-        propriete.SetHelpString(_(u"Saisissez la largeur de la colonne Montant HT (50 par défaut)")) 
+        propriete.SetHelpString(_(u"Saisissez la largeur de la colonne Montant HT (50 par dÃ©faut)")) 
         self.Append(propriete)
         self.SetPropertyEditor("largeur_colonne_montant_ht", "SpinCtrl")
 
         # Largeur colonne Montant TVA
         propriete = wxpg.IntProperty(label=_(u"Largeur de la colonne Montant TVA"), name="largeur_colonne_montant_tva", value=50)
-        propriete.SetHelpString(_(u"Saisissez la largeur de la colonne Montant TVA (50 par défaut)")) 
+        propriete.SetHelpString(_(u"Saisissez la largeur de la colonne Montant TVA (50 par dÃ©faut)")) 
         self.Append(propriete)
         self.SetPropertyEditor("largeur_colonne_montant_tva", "SpinCtrl")
 
         # Largeur colonne Montant TTC
         propriete = wxpg.IntProperty(label=_(u"Largeur de la colonne Montant TTC"), name="largeur_colonne_montant_ttc", value=70)
-        propriete.SetHelpString(_(u"Saisissez la largeur de la colonne Montant TTC (70 par défaut)")) 
+        propriete.SetHelpString(_(u"Saisissez la largeur de la colonne Montant TTC (70 par dÃ©faut)")) 
         self.Append(propriete)
         self.SetPropertyEditor("largeur_colonne_montant_ttc", "SpinCtrl")
         
         # Taille de texte du nom de l'individu
         propriete = wxpg.IntProperty(label=_(u"Taille de texte de l'individu"), name="taille_texte_individu", value=9)
-        propriete.SetHelpString(_(u"Saisissez la taille de texte de l'individu (9 par défaut)")) 
+        propriete.SetHelpString(_(u"Saisissez la taille de texte de l'individu (9 par dÃ©faut)")) 
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_individu", "SpinCtrl")
 
-        # Taille de texte du nom de l'activité
-        propriete = wxpg.IntProperty(label=_(u"Taille de texte de l'activité"), name="taille_texte_activite", value=6)
-        propriete.SetHelpString(_(u"Saisissez la taille de texte de l'activité (6 par défaut)")) 
+        # Taille de texte du nom de l'activitÃ©
+        propriete = wxpg.IntProperty(label=_(u"Taille de texte de l'activitÃ©"), name="taille_texte_activite", value=6)
+        propriete.SetHelpString(_(u"Saisissez la taille de texte de l'activitÃ© (6 par dÃ©faut)")) 
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_activite", "SpinCtrl")
 
         # Taille de texte des noms de colonnes
         propriete = wxpg.IntProperty(label=_(u"Taille de texte des noms de colonnes"), name="taille_texte_noms_colonnes", value=5)
-        propriete.SetHelpString(_(u"Saisissez la taille de texte des noms de colonnes (5 par défaut)")) 
+        propriete.SetHelpString(_(u"Saisissez la taille de texte des noms de colonnes (5 par dÃ©faut)")) 
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_noms_colonnes", "SpinCtrl")
 
         # Taille de texte des prestations
         propriete = wxpg.IntProperty(label=_(u"Taille de texte de des prestations"), name="taille_texte_prestation", value=7)
-        propriete.SetHelpString(_(u"Saisissez la taille de texte des prestations (7 par défaut)")) 
+        propriete.SetHelpString(_(u"Saisissez la taille de texte des prestations (7 par dÃ©faut)")) 
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_prestation", "SpinCtrl")
         
-        # Catégorie 
+        # CatÃ©gorie 
         self.Append( wxpg.PropertyCategory(_(u"Autres textes")) )
 
         propriete = wxpg.LongStringProperty(label=_(u"Texte d'introduction"), name="texte_introduction", value=u"")
-        propriete.SetHelpString(_(u"Saisissez un texte d'introduction (Aucun par défaut)")) 
+        propriete.SetHelpString(_(u"Saisissez un texte d'introduction (Aucun par dÃ©faut)")) 
         self.Append(propriete)
 
         propriete = wxpg.IntProperty(label=_(u"Taille de texte d'introduction"), name="taille_texte_introduction", value=9)
-        propriete.SetHelpString(_(u"Saisissez la taille de texte d'introduction (9 par défaut)")) 
+        propriete.SetHelpString(_(u"Saisissez la taille de texte d'introduction (9 par dÃ©faut)")) 
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_introduction", "SpinCtrl")
 
         propriete = wxpg.LongStringProperty(label=_(u"Texte de conclusion"), name="texte_conclusion", value=u"")
-        propriete.SetHelpString(_(u"Saisissez un texte de conclusion (Aucun par défaut)")) 
+        propriete.SetHelpString(_(u"Saisissez un texte de conclusion (Aucun par dÃ©faut)")) 
         self.Append(propriete)
 
         propriete = wxpg.IntProperty(label=_(u"Taille de texte de conclusion"), name="taille_texte_conclusion", value=9)
-        propriete.SetHelpString(_(u"Saisissez la taille de texte de conclusion (9 par défaut)")) 
+        propriete.SetHelpString(_(u"Saisissez la taille de texte de conclusion (9 par dÃ©faut)")) 
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_conclusion", "SpinCtrl")
         
     def Importation(self):
-        """ Importation des valeurs dans le contrôle """
-        # Récupération des noms et valeurs par défaut du contrôle
+        """ Importation des valeurs dans le contrÃ´le """
+        # RÃ©cupÃ©ration des noms et valeurs par dÃ©faut du contrÃ´le
         dictValeurs = copy.deepcopy(self.GetPropertyValues())
 ##        for nom, valeur in dictValeurs.iteritems() :
 ##            print (nom, valeur, str(type(valeur)))
-        # Recherche les paramètres mémorisés
+        # Recherche les paramÃªtres mÃ©morisÃ©s
         dictParametres = UTILS_Parametres.ParametresCategorie(mode="get", categorie="impression_facture", dictParametres=dictValeurs)
-        # Envoie les paramètres dans le contrôle
+        # Envoie les paramÃªtres dans le contrÃ´le
         for nom, valeur in dictParametres.items() :
             propriete = self.GetPropertyByName(nom)
             # propriete
@@ -764,8 +764,8 @@ class CTRL_TEST(CTRL) :
             propriete.SetValue(valeur)
     
     def Sauvegarde(self):
-        """ Mémorisation des valeurs du contrôle """
-        # Récupération des noms et valeurs par défaut du contrôle
+        """ mÃ©morisation des valeurs du contrÃ´le """
+        # RÃ©cupÃ©ration des noms et valeurs par dÃ©faut du contrÃ´le
         dictValeurs = copy.deepcopy(self.GetPropertyValues())
         # Sauvegarde des valeurs
         UTILS_Parametres.ParametresCategorie(mode="set", categorie="impression_facture", dictParametres=dictValeurs)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -28,7 +28,7 @@ IMAGE_DEFAUT = Chemins.GetStaticPath("Images/Special/Image_non_disponible.png")
 
 
 def GetImage(bufferImage):
-    """ RÈcupËre une image """ 
+    """ R√©cup√®re une image """ 
     # Adaptation pour wxPython >= 2.9
     qualite = wx.IMAGE_QUALITY_HIGH
         
@@ -47,7 +47,7 @@ def GetImage(bufferImage):
             return None
 
     else:
-        # Si aucune image est trouvÈe, on prend l'image par dÈfaut
+        # Si aucune image est trouv√©e, on prend l'image par d√©faut
         bmp = GetImageDefaut() 
         return bmp
 
@@ -78,9 +78,9 @@ class Track(object):
         self.nbre_emetteurs = donnees[3] 
         self.texte_emetteurs = ""
         if self.nbre_emetteurs == 1 :
-            self.texte_emetteurs = _(u"1 Èmetteur")
+            self.texte_emetteurs = _(u"1 √©metteur")
         elif self.nbre_emetteurs > 1 :
-            self.texte_emetteurs = _(u"%s Èmetteurs") % self.nbre_emetteurs
+            self.texte_emetteurs = _(u"%s √©metteurs") % self.nbre_emetteurs
 
 
 
@@ -105,7 +105,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT 
@@ -139,7 +139,7 @@ class ListView(FastObjectListView):
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
 
-        # CrÈation du imageList avec une taille personnalisÈe
+        # Cr√©ation du imageList avec une taille personnalis√©e
         dictImages = {}
         imageList = wx.ImageList(TAILLE_IMAGE[0], TAILLE_IMAGE[1])
         for track in self.donnees :
@@ -155,11 +155,11 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"IDmode"), "left", 0, "IDmode", typeDonnee="entier"),
             ColumnDefn(_(u"Image"), 'left', TAILLE_IMAGE[0]+1, "", imageGetter=GetImage),
             ColumnDefn(_(u"Nom"), 'left', 400, "label", typeDonnee="texte"),
-            ColumnDefn(_(u"Nbre Èmetteurs"), 'left', 190, "texte_emetteurs", typeDonnee="texte"),
+            ColumnDefn(_(u"Nbre √©metteurs"), 'left', 190, "texte_emetteurs", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucun mode de rËglement"))
+        self.SetEmptyListMsg(_(u"Aucun mode de r√®glement"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[2])
         self.SetObjects(self.donnees)
@@ -173,7 +173,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -190,7 +190,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDmode
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -221,7 +221,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -239,12 +239,12 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des modes de rËglements"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des modes de r√®glements"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des modes de rËglements"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des modes de r√®glements"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def Ajouter(self, event):
@@ -258,7 +258,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_modes_reglements", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun mode de rËglement ‡ modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun mode de r√®glement √† modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -271,21 +271,21 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_modes_reglements", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun mode de rËglement ‡ supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun mode de r√®glement √† supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDmode = self.Selection()[0].IDmode
         nbre_emetteurs = self.Selection()[0].nbre_emetteurs
         
-        # VÈrifie que des Èmetteurs ne sont pas dÈj‡ associÈs ‡ ce mode
+        # V√©rifie que des √©metteurs ne sont pas d√©j√† associ√©s √† ce mode
         if nbre_emetteurs > 0 :
-            dlg = wx.MessageDialog(self, _(u"%d Èmetteurs(s) sont dÈj‡ attribuÈs ‡ ce mode de rËglement.\n\nVous ne pouvez donc pas le supprimer !") % nbre_emetteurs, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"%d √©metteurs(s) sont d√©j√† attribu√©s √† ce mode de r√®glement.\n\nVous ne pouvez donc pas le supprimer !") % nbre_emetteurs, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
-        # VÈrifie que ce mode n'a pas dÈj‡ attribuÈ ‡ des rËglements
+        # V√©rifie que ce mode n'a pas d√©j√† attribu√© √† des r√®glements
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDreglement)
         FROM reglements 
@@ -295,13 +295,13 @@ class ListView(FastObjectListView):
         nbreReglements = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreReglements > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce mode de rËglement a dÈj‡ ÈtÈ attribuÈ ‡ %d rËglement(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreReglements, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce mode de r√®glement a d√©j√† √©t√© attribu√© √† %d r√®glement(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreReglements, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         # Confirmation de suppression
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cet Èmetteur ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cet √©metteur ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             
             DB = GestionDB.DB()
@@ -318,7 +318,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(_(u"Rechercher un mode de rËglement..."))
+        self.SetDescriptiveText(_(u"Rechercher un mode de r√®glement..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

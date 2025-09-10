@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -36,9 +36,9 @@ else :
 
 
 STATUTS = [
-    {"code": "ok", "label_long": _(u"Inscription validée"), "label_court": _(u"Valide"), "image" : "Ok4.png"},
+    {"code": "ok", "label_long": _(u"Inscription validÃ©e"), "label_court": _(u"Valide"), "image" : "Ok4.png"},
     {"code": "attente", "label_long": _(u"Inscription en attente"), "label_court": _(u"Attente"), "image" : "Attente.png"},
-    {"code": "refus", "label_long": _(u"Inscription refusée"), "label_court": _(u"Refus"), "image" : "Interdit.png"},
+    {"code": "refus", "label_long": _(u"Inscription refusÃ©e"), "label_court": _(u"Refus"), "image" : "Interdit.png"},
 ]
 
 
@@ -134,7 +134,7 @@ class ListBox(wx.ListBox):
                     label = "Inconnu (ID%d)" % dictValeurs["ID"]
                 listeItems.append(label)
         self.Set(listeItems)
-        # Si un seul item dans la liste, le sélectionne...
+        # Si un seul item dans la liste, le sÃ©lectionne...
         if len(self.listeDonnees) == 1 :
             self.Select(0)
         if selection_actuelle != None :
@@ -230,7 +230,7 @@ class CTRL_Parametres(wx.Notebook):
         self.mode = mode
 
         self.listePages = [
-            {"code": "activite", "ctrl": Page_Activite(self, self.IDinscription), "label": _(u"Paramètres"), "image": "Mecanisme.png"},
+            {"code": "activite", "ctrl": Page_Activite(self, self.IDinscription), "label": _(u"ParamÃ¨tres"), "image": "Mecanisme.png"},
             {"code": "questionnaire", "ctrl": Page_Questionnaire(self, self.IDinscription), "label": _(u"Questionnaire"), "image": "Questionnaire.png"},
         ]
 
@@ -241,7 +241,7 @@ class CTRL_Parametres(wx.Notebook):
             self.dictImages[dictPage["code"]] = il.Add(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s" % dictPage["image"]), wx.BITMAP_TYPE_PNG))
         self.AssignImageList(il)
 
-        # Création des pages
+        # CrÃ©ation des pages
         self.dictPages = {}
         index = 0
         for dictPage in self.listePages:
@@ -263,7 +263,7 @@ class CTRL_Parametres(wx.Notebook):
             index += 1
 
     def OnPageChanged(self, event):
-        """ Quand une page du notebook est sélectionnée """
+        """ Quand une page du notebook est sÃ©lectionnÃ©e """
         if event.GetOldSelection() == -1: return
         indexPage = event.GetSelection()
         page = self.GetPage(indexPage)
@@ -328,8 +328,8 @@ class Page_Activite(wx.Panel):
         self.action_consommation = None
         self.ancien_statut = None
 
-        # Activité
-        self.staticbox_activite_staticbox = wx.StaticBox(self, -1, _(u"Activité"))
+        # ActivitÃ©
+        self.staticbox_activite_staticbox = wx.StaticBox(self, -1, _(u"ActivitÃ©"))
         self.ctrl_activite = CTRL_Activite(self)
         self.bouton_activites = CTRL_Bouton_image.CTRL(self, texte=_(u"Rechercher"), cheminImage="Images/32x32/Loupe.png")
         self.ctrl_activite.SetMinSize((-1, self.bouton_activites.GetSize()[1]))
@@ -339,26 +339,26 @@ class Page_Activite(wx.Panel):
         self.ctrl_groupes = ListBox(self, type="groupes")
         self.ctrl_groupes.SetMinSize((-1, 50))
 
-        # Catégorie
-        self.staticbox_categorie_staticbox = wx.StaticBox(self, -1, _(u"Catégorie de tarif"))
+        # CatÃ©gorie
+        self.staticbox_categorie_staticbox = wx.StaticBox(self, -1, _(u"CatÃ©gorie de tarif"))
         self.ctrl_categories = ListBox(self, type="categories")
         self.ctrl_categories.SetMinSize((-1, 50))
 
-        # Départ
-        self.staticbox_depart_staticbox = wx.StaticBox(self, -1, _(u"Départ de l'activité"))
-        self.ctrl_check_depart = wx.CheckBox(self, -1, _(u"L'individu ne fréquente plus l'activité depuis le"))
+        # DÃ©part
+        self.staticbox_depart_staticbox = wx.StaticBox(self, -1, _(u"DÃ©part de l'activitÃ©"))
+        self.ctrl_check_depart = wx.CheckBox(self, -1, _(u"L'individu ne frÃ©quente plus l'activitÃ© depuis le"))
         self.ctrl_date_depart = CTRL_Saisie_date.Date2(self)
         self.ctrl_date_depart.SetDate(datetime.date.today())
         self.bouton_remboursement = wx.Button(self, -1, _(u"Remboursement"))
 
         # Properties
-        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"Activité sélectionnée")))
-        self.bouton_activites.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner une activité")))
-        self.ctrl_groupes.SetToolTip(wx.ToolTip(_(u"Sélectionnez un groupe")))
-        self.ctrl_check_depart.SetToolTip(wx.ToolTip(_(u"Cochez cette case si l'individu ne fréquente plus cette activité")))
-        self.ctrl_date_depart.SetToolTip(wx.ToolTip(_(u"Saisissez la date de départ de l'activité (le dernier jour)")))
-        self.bouton_remboursement.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour générer un remboursement lié au départ de l'activité")))
-        self.ctrl_categories.SetToolTip(wx.ToolTip(_(u"Sélectionnez une catégorie de tarif")))
+        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"ActivitÃ© sÃ©lectionnÃ©e")))
+        self.bouton_activites.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner une activitÃ©")))
+        self.ctrl_groupes.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un groupe")))
+        self.ctrl_check_depart.SetToolTip(wx.ToolTip(_(u"Cochez cette case si l'individu ne frÃ©quente plus cette activitÃ©")))
+        self.ctrl_date_depart.SetToolTip(wx.ToolTip(_(u"Saisissez la date de dÃ©part de l'activitÃ© (le dernier jour)")))
+        self.bouton_remboursement.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour gÃ©nÃ©rer un remboursement liÃ© au dÃ©part de l'activitÃ©")))
+        self.ctrl_categories.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une catÃ©gorie de tarif")))
 
         # Bind
         self.Bind(wx.EVT_BUTTON, self.OnBoutonActivites, self.bouton_activites)
@@ -370,7 +370,7 @@ class Page_Activite(wx.Panel):
 
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=5, hgap=5)
 
-        # Activités
+        # ActivitÃ©s
         staticbox_activite = wx.StaticBoxSizer(self.staticbox_activite_staticbox, wx.VERTICAL)
         grid_sizer_activite = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
         grid_sizer_activite.Add(self.ctrl_activite, 1, wx.EXPAND, 0)
@@ -385,12 +385,12 @@ class Page_Activite(wx.Panel):
         staticbox_groupe.Add(self.ctrl_groupes, 1, wx.ALL | wx.EXPAND, 5)
         grid_sizer_base.Add(staticbox_groupe, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 0)
 
-        # Catégories de tarifs
+        # CatÃ©gories de tarifs
         staticbox_categorie = wx.StaticBoxSizer(self.staticbox_categorie_staticbox, wx.VERTICAL)
         staticbox_categorie.Add(self.ctrl_categories, 1, wx.ALL | wx.EXPAND, 5)
         grid_sizer_base.Add(staticbox_categorie, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 0)
 
-        # Départ
+        # DÃ©part
         staticbox_depart = wx.StaticBoxSizer(self.staticbox_depart_staticbox, wx.VERTICAL)
         grid_sizer_depart = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
         grid_sizer_depart.Add(self.ctrl_check_depart, 0, wx.ALIGN_CENTER_VERTICAL, 0)
@@ -448,28 +448,28 @@ class Page_Activite(wx.Panel):
     def Validation(self):
         IDactivite = self.GetIDactivite()
         if IDactivite == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une activité !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une activitÃ© !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         IDgroupe = self.ctrl_groupes.GetID()
         if IDgroupe == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un groupe !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un groupe !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         IDcategorie_tarif = self.ctrl_categories.GetID()
         if IDcategorie_tarif == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une catégorie de tarifs !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une catÃ©gorie de tarifs !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         IDfamille = self.GetGrandParent().ctrl_famille.GetID()
         if IDfamille == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une famille !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une famille !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -482,10 +482,10 @@ class Page_Activite(wx.Panel):
 
         self.action_consommation = None
 
-        # Date départ
+        # Date dÃ©part
         if self.ctrl_check_depart.IsChecked():
             if self.ctrl_date_depart.GetDate() == None or self.ctrl_date_depart.Validation() == False :
-                dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de départ valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de dÃ©part valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 DB.Close()
@@ -493,14 +493,14 @@ class Page_Activite(wx.Panel):
 
             if self.date_inscription != None and self.ctrl_date_depart.GetDate() < self.date_inscription :
                 DB.Close()
-                dlg = wx.MessageDialog(self, _(u"La date de départ doit être supérieure ou égale à la date d'inscription !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La date de dÃ©part doit Ãªtre supÃ©rieure ou Ã©gale Ã  la date d'inscription !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
 
             date_desinscription = str(self.ctrl_date_depart.GetDate())
 
-            # Vérifie que il n'existe pas des conso après cette date
+            # VÃ©rifie que il n'existe pas des conso aprÃ¨s cette date
             if self.IDinscription != None :
                 req = """SELECT IDconso, date
                 FROM consommations
@@ -508,9 +508,9 @@ class Page_Activite(wx.Panel):
                 DB.ExecuterReq(req)
                 listeConso = DB.ResultatReq()
                 titre = _(u"Consommations existantes")
-                introduction = _(u"Il existe %d consommations enregistrées après la date de départ. ") % len(listeConso)
-                introduction += _(u"Si vous les conservez elles seront considérées comme gratuites. ")
-                introduction += _(u"Voulez-vous les supprimer définitivement.")
+                introduction = _(u"Il existe %d consommations enregistrÃ©es aprÃ¨s la date de dÃ©part. ") % len(listeConso)
+                introduction += _(u"Si vous les conservez elles seront considÃ©rÃ©es comme gratuites. ")
+                introduction += _(u"Voulez-vous les supprimer dÃ©finitivement.")
                 conclusion = _(u"Oui pour les supprimer.\n")
                 conclusion += _(u"Non pour les conserver.")
                 if len(listeConso) > 0 :
@@ -543,7 +543,7 @@ class Page_Activite(wx.Panel):
             DB.Close()
             return False
 
-        # Vérifie que l'individu n'est pas déjà inscrit à cette activite
+        # VÃ©rifie que l'individu n'est pas dÃ©jÃ  inscrit Ã  cette activite
         if self.parent.mode == "saisie" and self.dictActivite["inscriptions_multiples"] != 1:
             req = """SELECT IDinscription, IDindividu, IDfamille
             FROM inscriptions
@@ -552,33 +552,33 @@ class Page_Activite(wx.Panel):
             listeDonnees = DB.ResultatReq()
             if len(listeDonnees) > 0 :
                 DB.Close()
-                dlg = wx.MessageDialog(self, _(u"Cet individu est déjà inscrit à l'activité '%s' !") % nomActivite, _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Cet individu est dÃ©jÃ  inscrit Ã  l'activitÃ© '%s' !") % nomActivite, _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
 
-        # Vérification du nombre d'inscrits max de l'activité
+        # VÃ©rification du nombre d'inscrits max de l'activitÃ©
         if (statut == "ok" and self.ancien_statut != "ok") or (IDgroupe != self.IDgroupe) :
             reponse = None
 
             if self.dictActivite["nbre_places_disponibles"] != None :
                 if self.dictActivite["nbre_places_disponibles"] <= 0 :
-                    intro = _(u"Le nombre maximal d'inscrits autorisé pour cette activité (%d places max) a été atteint !\n\nQue souhaitez-vous faire ?") % self.dictActivite["nbre_inscrits_max"]
-                    dlg = DLG_Messagebox.Dialog(self, titre=_(u"Nbre d'inscrit maximal atteint"), introduction=intro, detail=None, icone=wx.ICON_EXCLAMATION, boutons=[_(u"Valider quand même"), _(u"Mettre en attente"), _(u"Refuser"), _(u"Annuler")], defaut=1)
+                    intro = _(u"Le nombre maximal d'inscrits autorisÃ© pour cette activitÃ© (%d places max) a Ã©tÃ© atteint !\n\nQue souhaitez-vous faire ?") % self.dictActivite["nbre_inscrits_max"]
+                    dlg = DLG_Messagebox.Dialog(self, titre=_(u"Nbre d'inscrit maximal atteint"), introduction=intro, detail=None, icone=wx.ICON_EXCLAMATION, boutons=[_(u"Valider quand mÃªme"), _(u"Mettre en attente"), _(u"Refuser"), _(u"Annuler")], defaut=1)
                     reponse = dlg.ShowModal()
                     dlg.Destroy()
 
-            # Vérification du nombre d'inscrits max du groupe
+            # VÃ©rification du nombre d'inscrits max du groupe
             if reponse == None:
                 for dictGroupe in self.dictActivite["groupes"] :
                     if dictGroupe["IDgroupe"] == IDgroupe and dictGroupe["nbre_places_disponibles"] != None :
                         if dictGroupe["nbre_places_disponibles"] <= 0 :
-                            intro = _(u"Le nombre maximal d'inscrits autorisé sur ce groupe (%d places max) a été atteint !\n\nQue souhaitez-vous faire ?") % dictGroupe["nbre_inscrits_max"]
-                            dlg = DLG_Messagebox.Dialog(self, titre=_(u"Nbre d'inscrit maximal atteint"), introduction=intro, detail=None, icone=wx.ICON_EXCLAMATION, boutons=[_(u"Valider quand même"), _(u"Mettre en attente"), _(u"Refuser"), _(u"Annuler")], defaut=1)
+                            intro = _(u"Le nombre maximal d'inscrits autorisÃ© sur ce groupe (%d places max) a Ã©tÃ© atteint !\n\nQue souhaitez-vous faire ?") % dictGroupe["nbre_inscrits_max"]
+                            dlg = DLG_Messagebox.Dialog(self, titre=_(u"Nbre d'inscrit maximal atteint"), introduction=intro, detail=None, icone=wx.ICON_EXCLAMATION, boutons=[_(u"Valider quand mÃªme"), _(u"Mettre en attente"), _(u"Refuser"), _(u"Annuler")], defaut=1)
                             reponse = dlg.ShowModal()
                             dlg.Destroy()
 
-            # Applique un statut à l'inscription
+            # Applique un statut Ã  l'inscription
             if reponse != None :
                 if reponse == 0:
                     self.parent.parent.ctrl_statut.SetID("ok")
@@ -590,7 +590,7 @@ class Page_Activite(wx.Panel):
                     DB.Close()
                     return False
 
-        # Si changement de statut : Vérifie si l'individu n'a pas déjà des prestations
+        # Si changement de statut : VÃ©rifie si l'individu n'a pas dÃ©jÃ  des prestations
         if self.IDinscription != None and statut != "ok" and self.ancien_statut == "ok" :
             req = """SELECT IDprestation, prestations.date, prestations.forfait
             FROM prestations
@@ -600,7 +600,7 @@ class Page_Activite(wx.Panel):
             listePrestations = DB.ResultatReq()
             if len(listePrestations) > 0 :
                 DB.Close()
-                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas modifier le statut de cette inscription car des prestations y ont déjà été associées !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas modifier le statut de cette inscription car des prestations y ont dÃ©jÃ  Ã©tÃ© associÃ©es !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -609,7 +609,7 @@ class Page_Activite(wx.Panel):
         return True
 
     def Sauvegarde(self):
-        # Récupération des données à sauvegarder
+        # RÃ©cupÃ©ration des donnÃ©es Ã  sauvegarder
         IDactivite = self.GetIDactivite()
         IDgroupe = self.ctrl_groupes.GetID()
         IDcategorie_tarif = self.ctrl_categories.GetID()
@@ -642,7 +642,7 @@ class Page_Activite(wx.Panel):
         else :
             DB.ReqMAJ("inscriptions", listeDonnees, "IDinscription", self.IDinscription)
 
-        # Création d'une prestation négative pour la famille correspondant au remboursement
+        # CrÃ©ation d'une prestation nÃ©gative pour la famille correspondant au remboursement
         if self.dict_remboursement != None:
             listeDonnees = [
                 ("IDcompte_payeur", IDcompte_payeur),
@@ -659,20 +659,20 @@ class Page_Activite(wx.Panel):
             ]
             DB.ReqInsert("prestations", listeDonnees)
 
-        # Si une action consommation est nécessaire, on l'exécute
+        # Si une action consommation est nÃ©cessaire, on l'exÃ©cute
         if self.action_consommation != None:
             self.action_consommation(DB, date_desinscription)
 
         DB.Commit()
         DB.Close()
 
-        # Mémorise l'action dans l'historique
+        # MÃ©morise l'action dans l'historique
         if self.parent.mode == "saisie" :
             IDcategorie_historique = 18
-            texte_historique = _(u"Inscription à l'activité '%s' sur le groupe '%s' avec la tarification '%s'") % (nomActivite, nomGroupe, nomCategorie)
+            texte_historique = _(u"Inscription Ã  l'activitÃ© '%s' sur le groupe '%s' avec la tarification '%s'") % (nomActivite, nomGroupe, nomCategorie)
         else :
             IDcategorie_historique = 20
-            texte_historique = _(u"Modification de l'inscription à l'activité '%s' sur le groupe '%s' avec la tarification '%s'") % (nomActivite, nomGroupe, nomCategorie)
+            texte_historique = _(u"Modification de l'inscription Ã  l'activitÃ© '%s' sur le groupe '%s' avec la tarification '%s'") % (nomActivite, nomGroupe, nomCategorie)
 
         UTILS_Historique.InsertActions([{
             "IDindividu" : self.parent.IDindividu,
@@ -687,14 +687,14 @@ class Page_Activite(wx.Panel):
             f = DLG_Appliquer_forfait.Forfaits(IDfamille=IDfamille, listeActivites=[IDactivite,], listeIndividus=[self.parent.IDindividu,], saisieManuelle=False, saisieAuto=True)
             resultat = f.Applique_forfait(selectionIDcategorie_tarif=IDcategorie_tarif, inscription=True, selectionIDactivite=IDactivite, selectionIDinscription=self.IDinscription)
             if resultat == False :
-                dlg = wx.MessageDialog(self, _(u"Cet individu a bien été inscrit mais le forfait associé n'a pas été créé !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Cet individu a bien Ã©tÃ© inscrit mais le forfait associÃ© n'a pas Ã©tÃ© crÃ©Ã© !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
 
         return self.IDinscription
 
     def GetCompteFamille(self, IDfamille=None):
-        """ Récupère le compte_payeur par défaut de la famille """
+        """ RÃ©cupÃ¨re le compte_payeur par dÃ©faut de la famille """
         DB = GestionDB.DB()
         req = """SELECT IDfamille, IDcompte_payeur
         FROM familles
@@ -720,7 +720,7 @@ class Page_Activite(wx.Panel):
         self.bouton_remboursement.Enable(self.ctrl_check_depart.IsChecked())
 
     def OnBoutonRemboursement(self, event=None):
-        """ Générer un remboursement """
+        """ GÃ©nÃ©rer un remboursement """
         dlg = DLG_Inscription_desinscription.Dialog(self)
         dlg.SetDonnees(self.dict_remboursement)
         if dlg.ShowModal() == wx.ID_OK :
@@ -755,7 +755,7 @@ class Page_Activite(wx.Panel):
 
         DB = GestionDB.DB()
 
-        # Recherche des activités
+        # Recherche des activitÃ©s
         req = """SELECT nom, abrege, date_debut, date_fin, nbre_inscrits_max, inscriptions_multiples
         FROM activites
         WHERE IDactivite=%d;""" % IDactivite
@@ -799,21 +799,21 @@ class Page_Activite(wx.Panel):
             else :
                 nbre_places_disponibles = None
 
-            # Mémorise le groupe
+            # MÃ©morise le groupe
             dictActivite["groupes"].append({"IDgroupe" : IDgroupe, "nom" : nom, "nbre_places_disponibles" : nbre_places_disponibles, "nbre_inscrits" : nbre_inscrits, "nbre_inscrits_max" : nbre_inscrits_max})
 
-        # Recherche le nombre d'inscrits total de l'activité
+        # Recherche le nombre d'inscrits total de l'activitÃ©
         dictActivite["nbre_inscrits"] = 0
         for IDgroupe, nbre_inscrits in dictActivite["inscriptions"].items() :
             dictActivite["nbre_inscrits"] += nbre_inscrits
 
-        # Recherche du nombre de places disponibles sur l'activité
+        # Recherche du nombre de places disponibles sur l'activitÃ©
         if dictActivite["nbre_inscrits_max"] not in (None, 0) :
             dictActivite["nbre_places_disponibles"] = dictActivite["nbre_inscrits_max"] - dictActivite["nbre_inscrits"]
         else :
             dictActivite["nbre_places_disponibles"] = None
 
-        # Recherche des catégories de tarifs
+        # Recherche des catÃ©gories de tarifs
         req = """SELECT IDcategorie_tarif, nom
         FROM categories_tarifs
         WHERE IDactivite=%d
@@ -821,7 +821,7 @@ class Page_Activite(wx.Panel):
         DB.ExecuterReq(req)
         listeCategories = DB.ResultatReq()
 
-        # Recherche des villes rattachées à la catégorie de tarif
+        # Recherche des villes rattachÃ©es Ã  la catÃ©gorie de tarif
         req = """SELECT IDville, IDcategorie_tarif, cp, nom
         FROM categories_tarifs_villes; """
         DB.ExecuterReq(req)
@@ -867,7 +867,7 @@ class Dialog(wx.Dialog):
         self.mode = mode
 
         if intro == None :
-            intro = _(u"Pour inscrire un individu à une activité, vous devez sélectionner une activité, un groupe et une catégorie de tarifs. Utilisez la case Départ pour indiquer que l'individu ne fréquente plus l'activité. Le questionnaire permet une saisie d'informations liées à l'inscription.")
+            intro = _(u"Pour inscrire un individu Ã  une activitÃ©, vous devez sÃ©lectionner une activitÃ©, un groupe et une catÃ©gorie de tarifs. Utilisez la case DÃ©part pour indiquer que l'individu ne frÃ©quente plus l'activitÃ©. Le questionnaire permet une saisie d'informations liÃ©es Ã  l'inscription.")
         if self.mode == "saisie" :
             titre = _(u"Saisie d'une inscription")
         else :
@@ -875,14 +875,14 @@ class Dialog(wx.Dialog):
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Activite.png")
 
         # Famille
-        self.staticbox_famille = wx.StaticBox(self, -1, _(u"Famille rattachée"))
+        self.staticbox_famille = wx.StaticBox(self, -1, _(u"Famille rattachÃ©e"))
         self.ctrl_famille = Choix_famille(self, IDindividu=self.IDindividu, verrouillage=self.mode!="saisie")
 
         # Famille
         self.staticbox_statut = wx.StaticBox(self, -1, _(u"Statut"))
         self.ctrl_statut = Choix_statut(self)
 
-        # Paramètres
+        # ParamÃ¨tres
         self.ctrl_parametres = CTRL_Parametres(self, mode=mode, IDindividu=IDindividu, IDinscription=IDinscription, IDfamille=IDfamille, cp=cp, ville=ville)
         self.ctrl_parametres.SetMinSize((650, 460))
 
@@ -896,13 +896,13 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
 
-        # Init contrôles
+        # Init contrÃ´les
         self.ctrl_famille.SetID(self.IDfamille)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Inscription à une activité"))
-        self.ctrl_famille.SetToolTip(wx.ToolTip(_(u"Sélectionnez une famille")))
-        self.ctrl_statut.SetToolTip(wx.ToolTip(_(u"Sélectionnez un statut")))
+        self.SetTitle(_(u"Inscription Ã  une activitÃ©"))
+        self.ctrl_famille.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une famille")))
+        self.ctrl_statut.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un statut")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -950,7 +950,7 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Activits1")
 
     def OnBoutonOk(self, event):
-        # Vérification des données saisies
+        # VÃ©rification des donnÃ©es saisies
         if self.ctrl_parametres.Validation() == False :
             return False
 
@@ -960,7 +960,7 @@ class Dialog(wx.Dialog):
         self.ctrl_parametres.GetPageAvecCode("questionnaire").ctrl_questionnaire.Sauvegarde(DB=DB, IDdonnee=self.IDinscription)
         DB.Close()
 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def GetPageActivite(self):

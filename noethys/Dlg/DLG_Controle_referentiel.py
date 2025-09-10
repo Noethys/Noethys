@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -44,23 +44,23 @@ class Dialog(wx.Dialog):
         self.dictParametres = dictParametres
 
         # Bandeau
-        intro = _(u"La recherche est totalement automatisée mais vous pouvez effectuer une recherche manuelle en modifiant les paramètres de recherche puis en cliquant sur Rechercher.")
-        titre = _(u"Contrôle des coordonnées")
+        intro = _(u"La recherche est totalement automatisÃ©e mais vous pouvez effectuer une recherche manuelle en modifiant les paramÃ¨tres de recherche puis en cliquant sur Rechercher.")
+        titre = _(u"ContrÃ´le des coordonnÃ©es")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Personnes.png")
         
-        # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Paramètres"))
+        # ParamÃ¨tres
+        self.box_parametres_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"ParamÃ¨tres"))
         self.label_nom = wx.StaticText(self, wx.ID_ANY, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, "")
-        self.label_prenom = wx.StaticText(self, wx.ID_ANY, _(u"Prénom :"))
+        self.label_prenom = wx.StaticText(self, wx.ID_ANY, _(u"PrÃ©nom :"))
         self.ctrl_prenom = wx.TextCtrl(self, -1, "")
         self.label_adresse = wx.StaticText(self, wx.ID_ANY, _(u"Adresse :"))
         self.ctrl_adresse = wx.TextCtrl(self, -1, "")
 
         self.bouton_valider = wx.Button(self, -1, _(u"Rechercher"))
 
-        # Résultats
+        # RÃ©sultats
         self.ctrl_resultats = MyHtml(self)
         self.ctrl_resultats.SetMinSize((450, 180))
 
@@ -81,7 +81,7 @@ class Dialog(wx.Dialog):
         self.Rechercher()
 
     def __set_properties(self):
-        self.bouton_valider.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider les paramètres de la recherche")))
+        self.bouton_valider.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider les paramÃ¨tres de la recherche")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
 
@@ -89,7 +89,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(4, 1, 10, 10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
 
-        # Paramètres
+        # ParamÃ¨tres
         box_parametres = wx.StaticBoxSizer(self.box_parametres_staticbox, wx.VERTICAL)
         grid_sizer_parametres = wx.FlexGridSizer(4, 2, 10, 10)
         grid_sizer_parametres.Add(self.label_nom, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
@@ -106,7 +106,7 @@ class Dialog(wx.Dialog):
 
         grid_sizer_base.Add(box_parametres, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10)
 
-        # Résultats
+        # RÃ©sultats
         grid_sizer_base.Add(self.ctrl_resultats, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10)
         
         # Boutons
@@ -155,7 +155,7 @@ class Dialog(wx.Dialog):
             pass
 
     def Rechercher(self, event=None):
-        # Récupération des champs saisis
+        # RÃ©cupÃ©ration des champs saisis
         nom = self.ctrl_nom.GetValue()
         if nom == "" :
             dlg = wx.MessageDialog(self, _(u"Vous devez renseigner le nom !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
@@ -165,7 +165,7 @@ class Dialog(wx.Dialog):
 
         prenom = self.ctrl_prenom.GetValue()
         if prenom == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez renseigner le prénom !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez renseigner le prÃ©nom !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -177,7 +177,7 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return
 
-        # Récupération de l'URL
+        # RÃ©cupÃ©ration de l'URL
         url = UTILS_Customize.GetValeur("referentiel", "url", None, ajouter_si_manquant=False)
         if url == None :
             dlg = wx.MessageDialog(self, _(u"Vous devez renseigner l'URL dans le fichier Customize !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
@@ -186,7 +186,7 @@ class Dialog(wx.Dialog):
             return
         url = u"%s/%s* %s*" % (url, nom, prenom)
 
-        # Requête
+        # RequÃªte
         try :
             reponse = requests.get(url)
         except Exception as error :
@@ -195,7 +195,7 @@ class Dialog(wx.Dialog):
 
         # Si erreur
         if reponse.status_code != 200:
-            self.ctrl_resultats.SetTexte(_(u"Accès au référentiel impossible (Erreur %s)") % reponse.status_code)
+            self.ctrl_resultats.SetTexte(_(u"AccÃ¨s au rÃ©fÃ©rentiel impossible (Erreur %s)") % reponse.status_code)
             return
 
         # Conversion en XML
@@ -218,7 +218,7 @@ class Dialog(wx.Dialog):
             nbreResultats += 1
             listeResultats.append(ligne)
 
-        # Analyse des résultats
+        # Analyse des rÃ©sultats
         listeResultatsTraites = []
         for dictTemp in listeResultats :
             texte1 = u"%s#%s#%s" % (dictTemp["nom"], dictTemp["prenom"], dictTemp["adresse"])
@@ -226,14 +226,14 @@ class Dialog(wx.Dialog):
             pourcent = GetRatioDiffTextes(texte1, texte2)
             listeResultatsTraites.append((pourcent, dictTemp))
 
-        # Tri en fonction du nombre de similarités
+        # Tri en fonction du nombre de similaritÃ©s
         listeResultatsTraites.sort(reverse=True)
 
-        # Affichage des résultats
+        # Affichage des rÃ©sultats
         if nbreResultats > 0 :
-            texte = _(u"<FONT SIZE=5><B>%d résultats :</B><BR></FONT><BR>") % nbreResultats
+            texte = _(u"<FONT SIZE=5><B>%d rÃ©sultats :</B><BR></FONT><BR>") % nbreResultats
         else :
-            texte = _(u"<FONT SIZE=5><B>Aucun résultat</B><BR></FONT><BR>")
+            texte = _(u"<FONT SIZE=5><B>Aucun rÃ©sultat</B><BR></FONT><BR>")
 
         for pourcent, dictTemp in listeResultatsTraites :
             if pourcent == 100 :
@@ -246,17 +246,17 @@ class Dialog(wx.Dialog):
             texte += _(u"""
             <FONT SIZE=2 COLOR='%s'>Pertinence : %s%%</FONT> <BR>
             Nom : <B>%s</B> <BR>
-            Prénom : <B>%s</B> <BR>
+            PrÃ©nom : <B>%s</B> <BR>
             Adresse : <B>%s</B> <BR>
             <BR>
             """) % (couleur, pourcent, dictTemp["nom"], dictTemp["prenom"], dictTemp["adresse"])
 
-        # Affichage des résultats
+        # Affichage des rÃ©sultats
         self.ctrl_resultats.SetTexte(texte)
 
 
 def GetRatioDiffTextes(texte1="", texte2=""):
-    """ Retourne un pourcentage des similarités entre deux chaînes """
+    """ Retourne un pourcentage des similaritÃ©s entre deux chaÃ®nes """
     m = SequenceMatcher(None, texte1.lower(), texte2.lower())
     pourcent = int(m.ratio() * 100)
     return pourcent

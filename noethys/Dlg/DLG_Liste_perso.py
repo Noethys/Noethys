@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -29,13 +29,13 @@ class Dialog(wx.Dialog):
         self.parent = parent  
 
         # Bandeau
-        intro = _(u"Vous pouvez afficher ici les résultats d'une requête SQL. Pour en savoir davantage sur le langage SQL, consultez les sites dédiés sur internet.")
-        titre = _(u"Liste personnalisée")
+        intro = _(u"Vous pouvez afficher ici les rÃ©sultats d'une requÃªte SQL. Pour en savoir davantage sur le langage SQL, consultez les sites dÃ©diÃ©s sur internet.")
+        titre = _(u"Liste personnalisÃ©e")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Sql.png")
         
-        # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Requête SQL"))
+        # ParamÃ¨tres
+        self.box_parametres_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"RequÃªte SQL"))
         self.ctrl_req = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE)
         self.ctrl_req.SetMinSize((-1, 80))
         self.bouton_actualiser = wx.Button(self, wx.ID_ANY, _(u"Actualiser la liste"))
@@ -67,8 +67,8 @@ class Dialog(wx.Dialog):
         
     def __set_properties(self):
         self.ctrl_req.SetToolTip(wx.ToolTip(u""))
-        self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher les résultats de la requête")))
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste")))
+        self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher les rÃ©sultats de la requÃªte")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperÃ§u avant impression de la liste")))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
         self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
         self.bouton_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Texte")))

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -13,7 +13,7 @@ import sys
 
 
 def AdaptePolice(ctrl):
-    """ Adapte la taille de la police du ctrl donnÈ """
+    """ Adapte la taille de la police du ctrl donn√© """
     taille = 8
     if "linux" in sys.platform :
         ft = ctrl.GetFont()
@@ -22,12 +22,12 @@ def AdaptePolice(ctrl):
 
 
 def AdaptationsDemarrage():
-    """ Adaptations au dÈmarrage de Noethys """
+    """ Adaptations au d√©marrage de Noethys """
     if sys.path[0] :
         os.chdir(sys.path[0])
     else :
         os.chdir(sys.path[1])
-    # VÈrifie que les rÈpertoires vides sont bien l‡
+    # V√©rifie que les r√©pertoires vides sont bien l√†
     for rep in ("Temp",) :
         if os.path.isdir(rep) == False :
             try :

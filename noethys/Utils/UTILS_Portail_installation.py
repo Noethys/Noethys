@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -41,7 +41,7 @@ def IsException(name):
     return False
 
 def GetNbreFichiers(rep="") :
-    """ RÈcupÈration du nombre des fichiers ‡ transfÈrer """
+    """ R√©cup√©ration du nombre des fichiers √† transf√©rer """
     def listdirectory(path):
         fichier=[]
         for root, dirs, files in os.walk(path):
@@ -76,8 +76,8 @@ def FormateTailleFichier(taille):
     return texte
 
 def GetExclusions(liste_versions=[], version_ancienne=""):
-    """ RÈcupÈration de la liste des exclusions entre 2 numÈros de versions """
-    """ Cette astuce permet d'allÈger le tÈlÈchargement des mises ‡ jour de Connecthys """
+    """ R√©cup√©ration de la liste des exclusions entre 2 num√©ros de versions """
+    """ Cette astuce permet d'all√©ger le t√©l√©chargement des mises √† jour de Connecthys """
     nbre_versions = None
     dict_exclusions = {}
     for dictVersion in liste_versions :
@@ -88,7 +88,7 @@ def GetExclusions(liste_versions=[], version_ancienne=""):
 
         else :
 
-            # Recherche les exclusions ‡ partir de la version trouvÈe
+            # Recherche les exclusions √† partir de la version trouv√©e
             if nbre_versions != None :
 
                 if "exclusions" in dictVersion :
@@ -144,22 +144,22 @@ class Installer():
         self.index = 0
 
     def Telecharger(self):
-        """ TÈlÈchargement de la source depuis Github """
+        """ T√©l√©chargement de la source depuis Github """
         self.dlgprogress = wx.ProgressDialog(_(u"Veuillez patienter"), _(u"Lancement de l'installation..."), maximum=100, parent=self.parent, style= wx.PD_SMOOTH | wx.PD_ESTIMATED_TIME | wx.PD_REMAINING_TIME | wx.PD_CAN_ABORT | wx.PD_AUTO_HIDE | wx.PD_APP_MODAL)
 
         def _hook(nb_blocs, taille_bloc, taille_fichier):
             if nb_blocs % 5 == 0 :
                 pourcentage = GetPourcentage(nb_blocs*taille_bloc, taille_fichier)
-                keepGoing, skip = self.dlgprogress.Update(pourcentage, _(u"TÈlÈchargement de Connecthys en cours... %s %%") % pourcentage)
+                keepGoing, skip = self.dlgprogress.Update(pourcentage, _(u"T√©l√©chargement de Connecthys en cours... %s %%") % pourcentage)
                 if keepGoing == False :
-                    raise Abort(u"TÈlÈchargement interrompu")
+                    raise Abort(u"T√©l√©chargement interrompu")
 
         urlretrieve(self.url_telechargement, self.nom_fichier_dest, _hook)
 
         return True
 
     def Dezipper(self, fichier_zip, chemin_dest=""):
-        """ DÈzippe un fichier ZIP dans un rÈpertoire donnÈ """
+        """ D√©zippe un fichier ZIP dans un r√©pertoire donn√© """
         #self.dlgprogress = wx.ProgressDialog(_(u"Veuillez patienter"), _(u"Lancement de l'installation..."), maximum=100, parent=self.parent, style= wx.PD_SMOOTH | wx.PD_ESTIMATED_TIME | wx.PD_REMAINING_TIME | wx.PD_CAN_ABORT | wx.PD_AUTO_HIDE | wx.PD_APP_MODAL)
         self.dlgprogress.Raise()
 
@@ -172,7 +172,7 @@ class Installer():
             if 'phoenix' not in wx.PlatformInfo:
                 wx.Yield()
             pourcentage = GetPourcentage(index, nbre_fichiers)
-            keepGoing, skip = self.dlgprogress.Update(pourcentage, _(u"DÈcompression de Connecthys en cours... %s %%") % pourcentage)
+            keepGoing, skip = self.dlgprogress.Update(pourcentage, _(u"D√©compression de Connecthys en cours... %s %%") % pourcentage)
             if os.path.isdir(os.path.join(chemin_dest, i)) or "2.5" in i or "." not in i :
                 try: os.makedirs(os.path.join(chemin_dest, i))
                 except: pass
@@ -205,7 +205,7 @@ class Installer():
                     except Exception as err :
                         keepGoing = True
 
-                    # Stoppe la procÈdure
+                    # Stoppe la proc√©dure
                     if keepGoing == False :
                         raise Abort(u"Transfert interrompu")
 
@@ -219,7 +219,7 @@ class Installer():
                     if self.dict_parametres["hebergement_type"] == 1 :
                         ftp.storbinary('STOR ' + name, open(localpath, 'rb'))
 
-                        # Permission spÈciale
+                        # Permission sp√©ciale
                         # ATTENTION: beaucoup d'hebergements n autorisent pas le chmod/ftp et ftplib ne permet pas de lister les commandes acceptees par le serveur ftp
                         # TODO: boite de dialogue pour indiquer de modifier les droits autrement
                         if self.dict_parametres["serveur_type"] == 1 and name == self.dict_parametres["serveur_cgi_file"] :
@@ -238,28 +238,28 @@ class Installer():
                     if self.dict_parametres["hebergement_type"] == 2 :
                         ftp.put(localpath, os.path.join(destpath, name))
 
-                        # Permission spÈciale
+                        # Permission sp√©ciale
                         if self.dict_parametres["serveur_type"] == 1 and name == self.dict_parametres["serveur_cgi_file"] :
                             try :
                                 ftp.chmod(os.path.join(destpath, name), mode=0o755)
                             except Exception as err :
                                 print("CHMOD 0755 sur %s impossible :" % self.dict_parametres["serveur_cgi_file"], err)
 
-                            # VÈrifie les droits du fichier cgi (connecthys.cgi par dÈfaut)
+                            # V√©rifie les droits du fichier cgi (connecthys.cgi par d√©faut)
                             mode = int(oct(stat.S_IMODE(ftp.stat(os.path.join(destpath, name)).st_mode)))
                             if mode != 755 :
                                 message = u"Attention, le fichier %s n'a pas les bonnes permissions : %d au lieu de 0755." % (self.dict_parametres["serveur_cgi_file"], mode)
                                 self.parent.EcritLog(message)
                                 print(message)
 
-                # Envoi des rÈpertoires
+                # Envoi des r√©pertoires
                 elif os.path.isdir(localpath):
 
                     if name not in liste_exclusions :
 
-                        # CrÈation d'un rÈpertoire local
+                        # Cr√©ation d'un r√©pertoire local
                         if self.dict_parametres["hebergement_type"] == 0 :
-                            # Remplissage du rÈpertoire local
+                            # Remplissage du r√©pertoire local
                             fulldestpath = os.path.join(destpath, name)
                             try:
                                 os.makedirs(fulldestpath)
@@ -268,7 +268,7 @@ class Installer():
 
                             self.TransfertRepertoire(path=localpath, destpath=fulldestpath, nbre_total=nbre_total, liste_exclusions=liste_exclusions)
 
-                        # CrÈation et remplissage d'un rÈpertoire FTP
+                        # Cr√©ation et remplissage d'un r√©pertoire FTP
                         if self.dict_parametres["hebergement_type"] == 1 :
                             try :
                                 ftp.mkd(name)
@@ -277,12 +277,12 @@ class Installer():
                                 if not e.args[0].startswith('550'):
                                     raise
 
-                            # Remplissage du rÈpertoire FTP
+                            # Remplissage du r√©pertoire FTP
                             ftp.cwd(name)
                             self.TransfertRepertoire(path=localpath, ftp=ftp, nbre_total=nbre_total, liste_exclusions=liste_exclusions)
                             ftp.cwd("..")
 
-                        # CrÈation et remplissage d'un rÈpertoire SSH/SFTP
+                        # Cr√©ation et remplissage d'un r√©pertoire SSH/SFTP
                         if self.dict_parametres["hebergement_type"] == 2 :
                             try :
                                 ftp.mkdir(name)
@@ -292,20 +292,20 @@ class Installer():
                                 #if not e.args[0].startswith('550'):
                                 #    raise
 
-                            # Remplissage du rÈpertoire SSH/SFTP
+                            # Remplissage du r√©pertoire SSH/SFTP
                             ftp.chdir(name)
                             self.TransfertRepertoire(path=localpath, ftp=ftp, nbre_total=nbre_total, liste_exclusions=liste_exclusions)
                             ftp.chdir("..")
 
     def Upload(self, source_repertoire=""):
-        # RÈcupÈration du nombre de fichiers ‡ transfÈrer
+        # R√©cup√©ration du nombre de fichiers √† transf√©rer
         nbreFichiers = GetNbreFichiers(source_repertoire)
 
         # Initialisation pour transfert local
         if self.dict_parametres["hebergement_type"] == 0 :
-            keepGoing, skip = self.dlgprogress.Update(1, _(u"PrÈparation de la copie..."))
+            keepGoing, skip = self.dlgprogress.Update(1, _(u"Pr√©paration de la copie..."))
 
-            # CrÈation du rÈpertoire s'il n'existe pas
+            # Cr√©ation du r√©pertoire s'il n'existe pas
             localrep = self.dict_parametres["hebergement_local_repertoire"]
             try:
                 os.makedirs(localrep)
@@ -320,7 +320,7 @@ class Installer():
             keepGoing, skip = self.dlgprogress.Update(1, _(u"Connexion FTP en cours..."))
             ftp = ftplib.FTP(self.dict_parametres["ftp_serveur"], self.dict_parametres["ftp_utilisateur"], self.dict_parametres["ftp_mdp"])
 
-            # CrÈation du rÈpertoire s'il n'existe pas
+            # Cr√©ation du r√©pertoire s'il n'existe pas
             try:
                 ftp.mkd(self.dict_parametres["ftp_repertoire"])
             except Exception as e:
@@ -329,7 +329,7 @@ class Installer():
                     raise
 
             ftp.cwd(self.dict_parametres["ftp_repertoire"])
-            keepGoing, skip = self.dlgprogress.Update(2, _(u"Connexion FTP effectuÈe..."))
+            keepGoing, skip = self.dlgprogress.Update(2, _(u"Connexion FTP effectu√©e..."))
 
         # Initialisation pour un transfert SSH
         if self.dict_parametres["hebergement_type"] == 2 :
@@ -342,7 +342,7 @@ class Installer():
                 self.parent.EcritLog(_(u"[ERREUR] %s") % err)
                 raise
 
-            # CrÈation du rÈpertoire s'il n'existe pas
+            # Cr√©ation du r√©pertoire s'il n'existe pas
             try:
                 ftp.mkdir("/" + self.dict_parametres["ssh_repertoire"])
             except Exception as e:
@@ -352,11 +352,11 @@ class Installer():
                 #    raise
 
             ftp.chdir("/" + self.dict_parametres["ssh_repertoire"])
-            keepGoing, skip = self.dlgprogress.Update(2, _(u"Connexion SSH/SFTP effectuÈe..."))
+            keepGoing, skip = self.dlgprogress.Update(2, _(u"Connexion SSH/SFTP effectu√©e..."))
 
-        # Recherche le numÈro de version de l'application dÈj‡ installÈe
+        # Recherche le num√©ro de version de l'application d√©j√† install√©e
         try :
-        # ATTENTION: ne peut fonctionner que si Connecthys est lancÈ
+        # ATTENTION: ne peut fonctionner que si Connecthys est lanc√©
             if self.dict_parametres["serveur_type"] == 0 :
                 url = self.dict_parametres["url_connecthys"]
             if self.dict_parametres["serveur_type"] == 1 :
@@ -365,7 +365,7 @@ class Installer():
                 url = self.dict_parametres["url_connecthys"]
             url += "/get_version"
 
-            # RÈcupÈration des donnÈes au format json
+            # R√©cup√©ration des donn√©es au format json
             req = Request(url)
             reponse = urlopen(req)
             page = reponse.read()
@@ -379,7 +379,7 @@ class Installer():
         if version_ancienne == None :
             liste_exclusions = []
         else :
-            # Importation de la liste des exclusions dans le rÈpertoire source
+            # Importation de la liste des exclusions dans le r√©pertoire source
             fichier = open(os.path.join(source_repertoire, "versions.txt"), "r")
             lignes = fichier.readlines()
             fichier.close()
@@ -393,7 +393,7 @@ class Installer():
             # versions = importlib.import_module(nomFichier.replace(".py", ""))
             # liste_exclusions = GetExclusions(liste_versions=versions.VERSIONS, version_ancienne=version_ancienne)
 
-        # Envoi des donnÈes
+        # Envoi des donn√©es
         self.index = 0
 
         # Transfert local
@@ -417,13 +417,13 @@ class Installer():
 
         time.sleep(4)
 
-        # DÈmarrage du serveur ici si serveur autonome
+        # D√©marrage du serveur ici si serveur autonome
         if self.server_ctrl != None and self.dict_parametres["serveur_type"] == 0 and self.server_ctrl.GetServerStatus() == False:
             keepGoing, skip = self.dlgprogress.Update(98, _(u"Tentative de lancement du serveur Connecthys..."))
             self.server_ctrl.Demarrer_serveur(event=None)
 
         # Demande un upgrade de l'application
-        keepGoing, skip = self.dlgprogress.Update(99, _(u"Demande la mise ‡ jour de l'application..."))
+        keepGoing, skip = self.dlgprogress.Update(99, _(u"Demande la mise √† jour de l'application..."))
         synchro.Upgrade_application()
 
         # Fermeture du FTP
@@ -436,7 +436,7 @@ class Installer():
 
     def Installer(self):
         """ Installation de Connecthys """
-        dlg = wx.MessageDialog(None, _(u"Confirmez-vous l'installation du portail internet Connecthys ?\n\nRemarque : Ce processus peut nÈcessiter plusieurs dizaines de minutes (selon votre connexion internet)"), _(u"Installation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(None, _(u"Confirmez-vous l'installation du portail internet Connecthys ?\n\nRemarque : Ce processus peut n√©cessiter plusieurs dizaines de minutes (selon votre connexion internet)"), _(u"Installation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -444,7 +444,7 @@ class Installer():
 
         try :
 
-            # Recherche la taille du fichier ‡ tÈlÈcharger sur Github
+            # Recherche la taille du fichier √† t√©l√©charger sur Github
             num_essai = 1
             taille_fichier = 0
             while num_essai < 3 :
@@ -457,15 +457,15 @@ class Installer():
             if taille_fichier == 0 :
                 raise Abort(u"Impossible de trouver le source de Connecthys sur internet ! ")
 
-            # TÈlÈchargement de la source sur Github
-            self.parent.EcritLog(_(u"TÈlÈchargement des fichiers source Connecthys"))
+            # T√©l√©chargement de la source sur Github
+            self.parent.EcritLog(_(u"T√©l√©chargement des fichiers source Connecthys"))
             self.Telecharger()
 
-            # DÈzippage du fichier
-            self.parent.EcritLog(_(u"DÈcompression des fichiers source Connecthys"))
+            # D√©zippage du fichier
+            self.parent.EcritLog(_(u"D√©compression des fichiers source Connecthys"))
             self.Dezipper(self.nom_fichier_dest, UTILS_Fichiers.GetRepTemp())
 
-            # Envoi des fichiers dans le rÈpertoire d installation
+            # Envoi des fichiers dans le r√©pertoire d installation
             self.parent.EcritLog(_(u"Upload des fichiers Connecthys"))
             source_repertoire = UTILS_Fichiers.GetRepTemp("Connecthys-master/connecthys")
             self.Upload(source_repertoire)
@@ -478,7 +478,7 @@ class Installer():
                 del self.dlgprogress
 
             time.sleep(2)
-            dlg = wx.MessageDialog(None, _(u"ProcÈdure d'installation interrompue."), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Proc√©dure d'installation interrompue."), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.Raise()
             dlg.ShowModal()
             dlg.Destroy()
@@ -496,7 +496,7 @@ class Installer():
             print(err)
 
             time.sleep(2)
-            dlg = wx.MessageDialog(None, _(u"Une erreur a ÈtÈ rencontrÈe !"), "Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(None, _(u"Une erreur a √©t√© rencontr√©e !"), "Erreur", wx.OK | wx.ICON_ERROR)
             dlg.Raise()
             dlg.ShowModal()
             dlg.Destroy()
@@ -509,7 +509,7 @@ class Installer():
             pass
 
         # Message de confirmation
-        dlg = wx.MessageDialog(None, _(u"L'installation s'est terminÈe avec succËs.\n\nVous devriez pouvoir maintenant lancer une synchronisation des donnÈes."), "Fin de l'installation", wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(None, _(u"L'installation s'est termin√©e avec succ√®s.\n\nVous devriez pouvoir maintenant lancer une synchronisation des donn√©es."), "Fin de l'installation", wx.OK | wx.ICON_INFORMATION)
         dlg.Raise()
         dlg.ShowModal()
         dlg.Destroy()

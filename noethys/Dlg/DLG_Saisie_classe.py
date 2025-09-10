@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -130,7 +130,7 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom de la classe. Ex : 'CP - Mme PICHON'...")))
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de début de saison")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de dÃ©but de saison")))
         self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de saison")))
         self.ctrl_niveaux.SetToolTip(wx.ToolTip(_(u"Cochez les niveaux scolaires de la classe")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir l'aide")))
@@ -194,7 +194,7 @@ class Dialog(wx.Dialog):
         self.ctrl_date_fin.SetDate(date_fin)
         self.ctrl_niveaux.SetIDcoches(niveaux.split(";"))
 
-        # Vérifie que cette classe n'a pas été attribuée à un individu
+        # VÃ©rifie que cette classe n'a pas Ã©tÃ© attribuÃ©e Ã  un individu
         req = """SELECT IDscolarite, niveaux_scolaires.IDniveau, niveaux_scolaires.abrege
         FROM scolarite 
         LEFT JOIN niveaux_scolaires ON niveaux_scolaires.IDniveau = scolarite.IDniveau
@@ -211,7 +211,7 @@ class Dialog(wx.Dialog):
 
         if len(listeDonnees) > 0:
             liste_noms_niveaux = [niveau["nom"] for IDniveau, niveau in self.niveaux_bloques.items()]
-            dlg = wx.MessageDialog(self, _(u"Cette classe a déjà été attribuée à %d individus.\n\nVous ne pourrez donc pas modifier la période ni les niveaux suivants : %s.") % (len(listeDonnees), ", ".join(liste_noms_niveaux)), _(u"Avertissement"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cette classe a dÃ©jÃ  Ã©tÃ© attribuÃ©e Ã  %d individus.\n\nVous ne pourrez donc pas modifier la pÃ©riode ni les niveaux suivants : %s.") % (len(listeDonnees), ", ".join(liste_noms_niveaux)), _(u"Avertissement"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
 
@@ -233,28 +233,28 @@ class Dialog(wx.Dialog):
             return
 
         if date_debut == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une date de début de saison !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une date de dÃ©but de saison !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
             return
 
         if date_fin == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une date de fin de saison !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une date de fin de saison !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
             return
 
         if date_debut > date_fin :
-            dlg = wx.MessageDialog(self, _(u"La date de début ne peut pas être supérieure à celle de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de dÃ©but ne peut pas Ãªtre supÃ©rieure Ã  celle de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
             return
         
         if len(listeNiveaux) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun niveau scolaire pour cette classe. \n\nEtes-vous sûr de vouloir tout de même valider cette saisie ?"), _(u"Attention"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun niveau scolaire pour cette classe. \n\nEtes-vous sÃ»r de vouloir tout de mÃªme valider cette saisie ?"), _(u"Attention"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             if dlg.ShowModal() != wx.ID_YES :
                 return
             dlg.Destroy()
@@ -262,7 +262,7 @@ class Dialog(wx.Dialog):
         if len(self.niveaux_bloques):
             for IDniveau, niveau in self.niveaux_bloques.items():
                 if IDniveau not in listeNiveaux:
-                    dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas décocher le niveau '%s' car il est déjà utilisé par un individu !") % niveau["nom"], _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas dÃ©cocher le niveau '%s' car il est dÃ©jÃ  utilisÃ© par un individu !") % niveau["nom"], _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False

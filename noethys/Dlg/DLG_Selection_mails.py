@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -29,11 +29,11 @@ class Page_Saisie_manuelle(wx.Panel):
         self.parent = parent
         self.maj_done = True
 
-        # Contrôles
+        # ContrÃ´les
         self.ctrl = wx.TextCtrl(self, -1, style=wx.TE_MULTILINE)
         self.ctrl.SetMinSize((10, 10))
         self.Bind(wx.EVT_TEXT, self.OnCheck, self.ctrl)
-        self.ctrl.SetToolTip(wx.ToolTip(_(u"Saisissez manuellement des adresses emails en les séparant par des points-virgules (;)")))
+        self.ctrl.SetToolTip(wx.ToolTip(_(u"Saisissez manuellement des adresses emails en les sÃ©parant par des points-virgules (;)")))
         
         # Layout
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -80,7 +80,7 @@ class CTRL_Listes_diffusion(wx.CheckListBox):
         self.parent = parent
         self.data = []
         self.date = None
-        self.SetToolTip(wx.ToolTip(_(u"Cochez les listes de diffusion souhaitées")))
+        self.SetToolTip(wx.ToolTip(_(u"Cochez les listes de diffusion souhaitÃ©es")))
         self.listeDiff = []
         self.dictDiff = {}
         self.dictAbonnements = {}
@@ -97,7 +97,7 @@ class CTRL_Listes_diffusion(wx.CheckListBox):
         dictDiff = {}
         dictAbonnements = {}
         DB = GestionDB.DB()
-        # Recherche les individus abonnés
+        # Recherche les individus abonnÃ©s
         req = """SELECT IDabonnement, IDliste, abonnements.IDindividu, individus.mail
         FROM abonnements
         LEFT JOIN individus ON individus.IDindividu = abonnements.IDindividu
@@ -119,9 +119,9 @@ class CTRL_Listes_diffusion(wx.CheckListBox):
         for IDliste, nom in listeListes :
             dictDiff[IDliste] = nom
             if IDliste in dictAbonnements :
-                txtAbonnements = _(u"(%d abonnés)") % len(dictAbonnements[IDliste])
+                txtAbonnements = _(u"(%d abonnÃ©s)") % len(dictAbonnements[IDliste])
             else:
-                txtAbonnements = _(u"(Aucun abonné)")
+                txtAbonnements = _(u"(Aucun abonnÃ©)")
             label = u"%s %s" % (nom, txtAbonnements)
             listeDiff.append((label, IDliste))
         listeDiff.sort()
@@ -183,7 +183,7 @@ class Page_Listes_diffusion(wx.Panel):
         self.parent = parent
         self.maj_done = False
         
-        # Contrôles
+        # ContrÃ´les
         self.liste = CTRL_Listes_diffusion(self)
         self.liste.SetMinSize((10, 10))
         self.Bind(wx.EVT_CHECKLISTBOX, self.OnCheck, self.liste)
@@ -230,7 +230,7 @@ class Page_Familles_individus(wx.Panel):
         self.categorie = categorie
         self.maj_done = False
         
-        # Contrôles
+        # ContrÃ´les
         self.listview = OL_Etiquettes.ListView(self, id=-1, categorie=categorie, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.listview.SetMinSize((10, 10))
         self.barre_recherche = OL_Etiquettes.CTRL_Outils(self, listview=self.listview, afficherCocher=True)
@@ -267,7 +267,7 @@ class Page_Familles_individus(wx.Panel):
         
         if len(listeNonValides) > 0 :
             image = wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Activite.png"), wx.BITMAP_TYPE_ANY)
-            texteIntro = _(u"Attention, les %d destinataires sélectionnés suivants n'ont pas d'adresse valide :") % len(listeNonValides)
+            texteIntro = _(u"Attention, les %d destinataires sÃ©lectionnÃ©s suivants n'ont pas d'adresse valide :") % len(listeNonValides)
             texteDetail = "\n".join(listeNonValides)
             dlg = dialogs.MultiMessageDialog(self, texteIntro, caption=_(u"Avertissement"), msg2=texteDetail, style = wx.ICON_EXCLAMATION | wx.OK | wx.CANCEL, icon=None, btnLabels={wx.ID_OK : _(u"Continuer"), wx.ID_CANCEL:_(u"Annuler")})
             reponse = dlg.ShowModal() 
@@ -312,7 +312,7 @@ class Page_Carnet_adresses(wx.Panel):
         self.parent = parent
         self.maj_done = False
 
-        # Contrôles
+        # ContrÃ´les
         self.listview = OL_Contacts.ListView(self, id=-1, mode_coche=True, style=wx.LC_REPORT | wx.SUNKEN_BORDER | wx.LC_SINGLE_SEL | wx.LC_HRULES | wx.LC_VRULES)
         self.listview.SetMinSize((10, 10))
         self.barre_recherche = OL_Etiquettes.CTRL_Outils(self, listview=self.listview, afficherCocher=True)
@@ -346,7 +346,7 @@ class Page_Carnet_adresses(wx.Panel):
 
         if len(listeNonValides) > 0:
             image = wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Activite.png"), wx.BITMAP_TYPE_ANY)
-            texteIntro = _(u"Attention, les %d destinataires sélectionnés suivants n'ont pas d'adresse valide :") % len(listeNonValides)
+            texteIntro = _(u"Attention, les %d destinataires sÃ©lectionnÃ©s suivants n'ont pas d'adresse valide :") % len(listeNonValides)
             texteDetail = "\n".join(listeNonValides)
             dlg = dialogs.MultiMessageDialog(self, texteIntro, caption=_(u"Avertissement"), msg2=texteDetail,
                                              style=wx.ICON_EXCLAMATION | wx.OK | wx.CANCEL, icon=None,
@@ -381,7 +381,7 @@ class Page_Carnet_adresses(wx.Panel):
 
 def AjouteTexteImage(image=None, texte="", alignement="droite-bas", padding=0, taille_police=9):
     """ Ajoute un texte sur une image bitmap """
-    # Création du bitmap
+    # CrÃ©ation du bitmap
     largeurImage, hauteurImage = image.GetSize()
     if 'phoenix' in wx.PlatformInfo:
         bmp = wx.Bitmap(largeurImage, hauteurImage)
@@ -392,7 +392,7 @@ def AjouteTexteImage(image=None, texte="", alignement="droite-bas", padding=0, t
     mdc.SetBackgroundMode(wx.TRANSPARENT)
     mdc.Clear()
 
-    # Paramètres
+    # ParamÃ¨tres
     dc.SetBrush(wx.Brush(wx.RED))
     dc.SetPen(wx.TRANSPARENT_PEN)
     dc.SetFont(wx.Font(taille_police, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))
@@ -450,7 +450,7 @@ class CTRL_Pages(wx.Notebook):
             self.imageList.Add(dictPage["image"])
         self.AssignImageList(self.imageList)
         
-        # Création des pages
+        # CrÃ©ation des pages
         index = 0
         for dictPage in self.listePages :
             self.AddPage(dictPage["page"], dictPage["label"], imageId=index)
@@ -502,9 +502,9 @@ class CTRL_Pages(wx.Notebook):
         if len(listeAdressesUniques) == 0 :
             texte = self.parent.texte_intro
         elif len(listeAdressesUniques) == 1 :
-            texte = _(u"Vous avez sélectionné 1 destinataire valide. Cliquez sur OK pour valider la sélection.")
+            texte = _(u"Vous avez sÃ©lectionnÃ© 1 destinataire valide. Cliquez sur OK pour valider la sÃ©lection.")
         else :
-            texte = _(u"Vous avez sélectionné %d destinataires valides. Cliquez sur OK pour valider la sélection.") % len(listeAdressesUniques)
+            texte = _(u"Vous avez sÃ©lectionnÃ© %d destinataires valides. Cliquez sur OK pour valider la sÃ©lection.") % len(listeAdressesUniques)
         self.parent.ctrl_intro.SetLabel(texte)
 
     def GetListeAdressesUniques(self):
@@ -538,7 +538,7 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent   
         
-        self.texte_intro = _(u"Sélectionnez des adresses Emails grâce aux contrôles ci-dessous...")
+        self.texte_intro = _(u"SÃ©lectionnez des adresses Emails grÃ¢ce aux contrÃ´les ci-dessous...")
         self.ctrl_intro = wx.StaticText(self, -1, self.texte_intro)
         
         self.ctrl_pages = CTRL_Pages(self)
@@ -555,12 +555,12 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonDetail, self.bouton_detail)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
 
-        # MAJ la première page
+        # MAJ la premiÃ¨re page
         page = self.ctrl_pages.GetPage(0)
         self.ctrl_pages.MAJ_page(page)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Sélection des destinataires"))
+        self.SetTitle(_(u"SÃ©lection des destinataires"))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_detail.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher la liste des adresses valides")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
@@ -589,7 +589,7 @@ class Dialog(wx.Dialog):
         self.CenterOnScreen() 
 
     def OnBoutonDetail(self, event):
-        """ Affiche la liste détaillée des adresses valides """
+        """ Affiche la liste dÃ©taillÃ©e des adresses valides """
         listeAdressesUniques = self.ctrl_pages.GetListeAdressesUniques()
         if len(listeAdressesUniques) == 0 :
             texte = _(u"Aucune adresse valide")
@@ -610,13 +610,13 @@ class Dialog(wx.Dialog):
         
         donnees, listeAdressesUniques = self.ctrl_pages.GetDonnees()
         if len(listeAdressesUniques) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune adresse valide.\n\nSouhaitez-vous tout de même valider ?"), _(u"Information"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune adresse valide.\n\nSouhaitez-vous tout de mÃªme valider ?"), _(u"Information"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
                 return False
         
-        # Ferme la fenêtre
+        # Ferme la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def GetDonnees(self):

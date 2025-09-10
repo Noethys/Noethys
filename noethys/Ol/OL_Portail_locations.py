@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-20 Ivan LUCAS
@@ -23,14 +23,14 @@ from Utils import UTILS_Dates
 
 
 def Verif_dispo_produit(track, IDlocation_exception=None, IDlocation_portail_exception=None):
-    # Vérifie que la quantité demandée est disponible
+    # VÃ©rifie que la quantitÃ© demandÃ©e est disponible
     dictPeriodes = UTILS_Locations.GetStockDisponible(IDproduit=track.IDproduit, date_debut=track.date_debut, date_fin=track.date_fin, IDlocation_exception=IDlocation_exception, IDlocation_portail_exception=IDlocation_portail_exception)
     liste_periode_non_dispo = []
     for periode, valeurs in dictPeriodes.items():
         if valeurs["disponible"] < track.quantite:
             debut = datetime.datetime.strftime(periode[0], "%d/%m/%Y-%Hh%M")
             if periode[1].year == 2999:
-                fin = _(u"Illimité")
+                fin = _(u"IllimitÃ©")
             else:
                 fin = datetime.datetime.strftime(periode[1], "%d/%m/%Y-%Hh%M")
             liste_periode_non_dispo.append(_(u"Stock disponible du %s au %s : %d produits") % (debut, fin, valeurs["disponible"]))
@@ -53,64 +53,64 @@ class Track(object):
         self.action_possible = False
         self.date_debut_txt = self.date_debut.strftime("%d/%m/%Y-%H:%M")
 
-        # Formate état
+        # Formate Ã©tat
         if self.etat == "ajouter":
-            self.action = u"Ajouter %s de %s à %s" % (self.nom_produit, self.date_debut.strftime("%d/%m/%Y-%H:%M"), self.date_fin.strftime("%d/%m/%Y-%H:%M"))
+            self.action = u"Ajouter %s de %s Ã  %s" % (self.nom_produit, self.date_debut.strftime("%d/%m/%Y-%H:%M"), self.date_fin.strftime("%d/%m/%Y-%H:%M"))
             liste_periodes_non_dispo = Verif_dispo_produit(self)
             if len(liste_periodes_non_dispo) > 0:
                 self.action_possible = False
-                self.statut = _(u"Produit non disponible sur la période demandée")
+                self.statut = _(u"Produit non disponible sur la pÃ©riode demandÃ©e")
             else:
                 self.action_possible = True
                 self.statut = _(u"Ajout possible")
 
         if self.etat == "modifier":
             if self.IDlocation in parent.dict_locations_existantes:
-                # Recherche la location à modifier
+                # Recherche la location Ã  modifier
                 temp = parent.dict_locations_existantes[self.IDlocation]
-                self.action = u"Modifier %s de %s à %s > %s de %s à %s" % (
+                self.action = u"Modifier %s de %s Ã  %s > %s de %s Ã  %s" % (
                     temp["nom_produit"], temp["date_debut"].strftime("%d/%m/%Y-%H:%M"), temp["date_fin"].strftime("%d/%m/%Y-%H:%M"),
                     self.nom_produit, self.date_debut.strftime("%d/%m/%Y-%H:%M"), self.date_fin.strftime("%d/%m/%Y-%H:%M")
                     )
                 self.action_possible = True
                 self.statut = _(u"Modification possible")
-                # Vérifie disponibilité produit
+                # VÃ©rifie disponibilitÃ© produit
                 if "-" in self.IDlocation:
                     liste_periodes_non_dispo = Verif_dispo_produit(self, IDlocation_portail_exception=self.IDlocation)
                 else:
                     liste_periodes_non_dispo = Verif_dispo_produit(self, IDlocation_exception=int(self.IDlocation))
                 if len(liste_periodes_non_dispo) > 0:
                     self.action_possible = False
-                    self.statut = _(u"Produit non disponible sur la période demandée")
+                    self.statut = _(u"Produit non disponible sur la pÃ©riode demandÃ©e")
             else:
                 self.action_possible = False
-                self.statut = _(u"La location à modifier est inexistante")
+                self.statut = _(u"La location Ã  modifier est inexistante")
                 self.action = _(u"Modifier : Location initiale inexistante !")
 
         if self.etat == "supprimer":
-            self.action = u"Supprimer %s de %s à %s" % (self.nom_produit, self.date_debut.strftime("%d/%m/%Y-%H:%M"), self.date_fin.strftime("%d/%m/%Y-%H:%M"))
-            # Recherche la location à supprimer
+            self.action = u"Supprimer %s de %s Ã  %s" % (self.nom_produit, self.date_debut.strftime("%d/%m/%Y-%H:%M"), self.date_fin.strftime("%d/%m/%Y-%H:%M"))
+            # Recherche la location Ã  supprimer
             if self.IDlocation in parent.dict_locations_existantes:
                 self.action_possible = True
                 self.statut = _(u"Suppression possible")
             else:
                 self.action_possible = False
-                self.statut = _(u"La location à supprimer est inexistante")
+                self.statut = _(u"La location Ã  supprimer est inexistante")
 
         if self.partage:
-            self.action += u" (Partage autorisé)"
+            self.action += u" (Partage autorisÃ©)"
 
         if self.resultat == "ok":
             self.action_possible = False
-            if self.etat == "ajouter": self.statut = _(u"Ajout effectué")
-            if self.etat == "modifier": self.statut = _(u"Modification effectuée")
-            if self.etat == "supprimer": self.statut = _(u"Suppression effectuée")
+            if self.etat == "ajouter": self.statut = _(u"Ajout effectuÃ©")
+            if self.etat == "modifier": self.statut = _(u"Modification effectuÃ©e")
+            if self.etat == "supprimer": self.statut = _(u"Suppression effectuÃ©e")
 
         if self.resultat == "refus":
             self.action_possible = True
-            if self.etat == "ajouter": self.statut = _(u"Ajout refusé")
-            if self.etat == "modifier": self.statut = _(u"Modification refusée")
-            if self.etat == "supprimer": self.statut = _(u"Suppression refusée")
+            if self.etat == "ajouter": self.statut = _(u"Ajout refusÃ©")
+            if self.etat == "modifier": self.statut = _(u"Modification refusÃ©e")
+            if self.etat == "supprimer": self.statut = _(u"Suppression refusÃ©e")
 
 
 
@@ -126,7 +126,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         DB = GestionDB.DB()
         req = """SELECT IDreservation, date_debut, date_fin, partage, IDlocation, portail_reservations_locations.IDproduit, etat, resultat, produits.nom, description
         FROM portail_reservations_locations
@@ -170,7 +170,7 @@ class ListView(FastObjectListView):
             if IDlocation_portail:
                 self.dict_locations_existantes[IDlocation_portail] = dict_temp
 
-        # Mémorisation des tracks
+        # MÃ©morisation des tracks
         listeListeView = []
         for item in listeDonnees:
             listeListeView.append(Track(self, item))
@@ -182,14 +182,14 @@ class ListView(FastObjectListView):
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
         
-        # Préparation de la liste Images
+        # PrÃ©paration de la liste Images
         self.AddNamedImages("ajouter", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Plus.png"), wx.BITMAP_TYPE_PNG))
         self.AddNamedImages("modifier", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Crayon.png"), wx.BITMAP_TYPE_PNG))
         self.AddNamedImages("supprimer", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Moins.png"), wx.BITMAP_TYPE_PNG))
         self.AddNamedImages("ok", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok4.png"), wx.BITMAP_TYPE_PNG))
         self.AddNamedImages("pasok", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Interdit2.png"), wx.BITMAP_TYPE_PNG))
 
-        # Formatage des données
+        # Formatage des donnÃ©es
         def GetImageEtat(track):
             return track.etat
 
@@ -219,7 +219,7 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Action"), 'left', 500, "action", typeDonnee="texte", imageGetter=GetImageEtat),
             # ColumnDefn(_(u"Action"), 'left', 100, "etat", typeDonnee="texte", stringConverter=FormateEtat, imageGetter=GetImageEtat),
             # ColumnDefn(_(u"Produit"), 'left', 150, "nom_produit", typeDonnee="texte"),
-            # ColumnDefn(_(u"Début"), 'centre', 110, "date_debut", typeDonnee="date", stringConverter=FormateDateDT),
+            # ColumnDefn(_(u"DÃ©but"), 'centre', 110, "date_debut", typeDonnee="date", stringConverter=FormateDateDT),
             # ColumnDefn(_(u"Fin"), 'centre', 110, "date_fin", typeDonnee="date", stringConverter=FormateDateDT),
             ColumnDefn(_(u"Statut"), 'left', 280, "statut", typeDonnee="texte", imageGetter=GetImageStatut),
             ]

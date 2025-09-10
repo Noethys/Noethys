@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -28,7 +28,7 @@ class Dialog(wx.Dialog):
         self.ctrl_familles.SetMinSize((750, 500))
         self.ctrl_recherche = OL_Selection_famille.CTRL_Outils(self, listview=self.ctrl_familles)
 
-        self.ctrl_activites_valides = wx.CheckBox(self, -1, _(u"Afficher uniquement les activités ouvertes"))
+        self.ctrl_activites_valides = wx.CheckBox(self, -1, _(u"Afficher uniquement les activitÃ©s ouvertes"))
         self.ctrl_activites_valides.SetFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.NORMAL))
         self.ctrl_activites_valides.SetValue(True)
 
@@ -44,7 +44,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_CHECKBOX, self.OnCocheActivitesValides, self.ctrl_activites_valides)
 
-        # Init contrôles
+        # Init contrÃ´les
         self.ctrl_familles.MAJ()
 
         if IDfamille == None :
@@ -54,8 +54,8 @@ class Dialog(wx.Dialog):
             wx.CallLater(10, self.ctrl_familles.SetFocus)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Sélection d'une famille"))
-        self.ctrl_familles.SetToolTip(wx.ToolTip(_(u"Double-cliquez sur une ligne pour la sélectionner rapidement")))
+        self.SetTitle(_(u"SÃ©lection d'une famille"))
+        self.ctrl_familles.SetToolTip(wx.ToolTip(_(u"Double-cliquez sur une ligne pour la sÃ©lectionner rapidement")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -100,14 +100,14 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("")
 
     def OnBoutonOk(self, event=None):
-        # Vérification des données saisies
+        # VÃ©rification des donnÃ©es saisies
         if self.ctrl_familles.GetID() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une famille !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une famille !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def GetIDfamille(self):

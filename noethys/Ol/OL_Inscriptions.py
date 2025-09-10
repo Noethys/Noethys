@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -69,19 +69,19 @@ class Track(object):
 ##        self.bmp = self.GetImage()
 
         # Nom des titulaires de famille
-        self.nomTitulaires = _(u"IDfamille n∞%d") % self.IDfamille
+        self.nomTitulaires = _(u"IDfamille n¬∞%d") % self.IDfamille
         if parent.dictFamillesRattachees != None :
             if self.IDfamille in parent.dictFamillesRattachees : 
                 self.nomTitulaires = parent.dictFamillesRattachees[self.IDfamille]["nomsTitulaires"]
 
-        # ValiditÈ de la piËce
+        # Validit√© de la pi√®ce
         if (datetime.date.today() <= self.date_fin and (self.date_desinscription is None or self.date_desinscription >= datetime.date.today())):
             self.valide = True
         else:
             self.valide = False
             
 ##    def GetImage(self):
-##        """ RÈcupËre une image """            
+##        """ R√©cup√®re une image """            
 ##        # Recherche de l'image
 ##        if self.logo_activite != None :
 ##            io = six.BytesIO(self.logo_activite)
@@ -90,13 +90,13 @@ class Track(object):
 ##            bmp = img.ConvertToBitmap()
 ##            return bmp
 ##        else:
-##            # Si aucune image est trouvÈe, on prend l'image de l'organisateur
+##            # Si aucune image est trouv√©e, on prend l'image de l'organisateur
 ##            return LOGO_ORGANISATEUR
 
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.IDindividu = kwds.pop("IDindividu", None)
         self.dictFamillesRattachees = kwds.pop("dictFamillesRattachees", {} )
         self.activeDoubleclick = kwds.pop("activeDoubleclick", True)
@@ -128,7 +128,7 @@ class ListView(FastObjectListView):
             img = RecadreImg(img)
             bmp = img.ConvertToBitmap()
         else:
-            # CrÈation d'une image vide si l'organisateur n'a pas de logo
+            # Cr√©ation d'une image vide si l'organisateur n'a pas de logo
             img = wx.EmptyImage(TAILLE_IMAGE[0], TAILLE_IMAGE[1])
             img.SetRGBRect((0, 0, TAILLE_IMAGE[0], TAILLE_IMAGE[1]), 255, 255, 255)
             bmp = img.ConvertToBitmap()
@@ -142,7 +142,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeID = None
         DB = GestionDB.DB()
         req = """SELECT IDinscription, IDindividu, IDfamille, 
@@ -191,7 +191,7 @@ class ListView(FastObjectListView):
             self.AddNamedImages(dictStatut["code"], wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s" % dictStatut["image"]), wx.BITMAP_TYPE_PNG))
 
         
-        # CrÈation du imageList avec une taille personnalisÈe
+        # Cr√©ation du imageList avec une taille personnalis√©e
 ##        dictImages = {}
 ##        imageList = wx.ImageList(TAILLE_IMAGE[0], TAILLE_IMAGE[1])
 ##        for track in self.donnees :
@@ -238,9 +238,9 @@ class ListView(FastObjectListView):
                 # ColumnDefn(u"", 'left', TAILLE_IMAGE[0]+1, "", imageGetter=GetLogo),
                 ColumnDefn(_(u"Date"), 'center', 70, "date_inscription", typeDonnee="date", stringConverter=DateEngFr),
                 ColumnDefn(_(u"Statut"), 'left', 70, "statut", typeDonnee="texte", stringConverter=FormateStatut, imageGetter=GetImageStatut),
-                ColumnDefn(_(u"Nom de l'activitÈ"), 'left', 110, "nom_activite", typeDonnee="texte", isSpaceFilling=True),
+                ColumnDefn(_(u"Nom de l'activit√©"), 'left', 110, "nom_activite", typeDonnee="texte", isSpaceFilling=True),
                 ColumnDefn(_(u"Groupe"), 'left', 80, "nom_groupe", typeDonnee="texte"),
-                ColumnDefn(_(u"CatÈgorie de tarifs"), 'left', 110, "nom_categorie", typeDonnee="texte"),
+                ColumnDefn(_(u"Cat√©gorie de tarifs"), 'left', 110, "nom_categorie", typeDonnee="texte"),
                 ColumnDefn(_(u"Famille"), 'left', 110, "nomTitulaires", typeDonnee="texte"),
                 ]
         else:
@@ -249,14 +249,14 @@ class ListView(FastObjectListView):
                 # ColumnDefn(u"", 'left', TAILLE_IMAGE[0]+1, "", imageGetter=GetLogo),
                 ColumnDefn(_(u"Date"), 'center', 70, "date_inscription", typeDonnee="date", stringConverter=DateEngFr),
                 ColumnDefn(_(u"Statut"), 'left', 70, "statut", typeDonnee="texte", stringConverter=FormateStatut, imageGetter=GetImageStatut),
-                ColumnDefn(_(u"Nom de l'activitÈ"), 'left', 160, "nom_activite", typeDonnee="texte", isSpaceFilling=True),
+                ColumnDefn(_(u"Nom de l'activit√©"), 'left', 160, "nom_activite", typeDonnee="texte", isSpaceFilling=True),
                 ColumnDefn(_(u"Groupe"), 'left', 100, "nom_groupe", typeDonnee="texte"),
-                ColumnDefn(_(u"CatÈgorie de tarifs"), 'left', 140, "nom_categorie", typeDonnee="texte"),
+                ColumnDefn(_(u"Cat√©gorie de tarifs"), 'left', 140, "nom_categorie", typeDonnee="texte"),
                 ]
 
         self.rowFormatter = rowFormatter
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucune activitÈ"))
+        self.SetEmptyListMsg(_(u"Aucune activit√©"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -270,7 +270,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -288,7 +288,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDinscription
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -342,24 +342,24 @@ class ListView(FastObjectListView):
         
         menuPop.AppendSeparator()
 
-        # GÈnÈration automatique des fonctions standards
+        # G√©n√©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop, titre=_(u"Liste des inscriptions"))
 
         self.PopupMenu(menuPop)
         menuPop.Destroy()
 
     def Ajouter(self, event):
-        # Recherche si l'individu est rattachÈ ‡ d'autres familles
+        # Recherche si l'individu est rattach√© √† d'autres familles
         listeNoms = []
         listeFamille = []
-        # VÈrifie que l'individu est rattachÈ comme REPRESENTANT ou ENFANT ‡ une famille
+        # V√©rifie que l'individu est rattach√© comme REPRESENTANT ou ENFANT √† une famille
         if self.dictFamillesRattachees != None :
             valide = False
             for IDfamille, dictFamille in self.dictFamillesRattachees.items() :
                 if dictFamille["IDcategorie"] in (1, 2) :
                     valide = True
             if valide == False :
-                dlg = wx.MessageDialog(self, _(u"Pour Ítre inscrit ‡ une activitÈ, un individu doit obligatoirement Ítre\nrattachÈ comme reprÈsentant ou enfant ‡ une fiche famille !"), _(u"Inscription impossible"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Pour √™tre inscrit √† une activit√©, un individu doit obligatoirement √™tre\nrattach√© comme repr√©sentant ou enfant √† une fiche famille !"), _(u"Inscription impossible"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -369,7 +369,7 @@ class ListView(FastObjectListView):
             listeFamille.append(IDfamille)
             listeNoms.append(self.dictFamillesRattachees[IDfamille]["nomsTitulaires"])
         else:
-            # Si rattachÈe ‡ plusieurs familles
+            # Si rattach√©e √† plusieurs familles
             for IDfamille, dictFamille in self.dictFamillesRattachees.items() :
                 IDcategorie = dictFamille["IDcategorie"]
                 if IDcategorie in (1, 2) :
@@ -379,8 +379,8 @@ class ListView(FastObjectListView):
             if len(listeFamille) == 1 :
                 IDfamille = listeFamille[0]
             else:
-                # On demande ‡ quelle famille rattacher cette inscription
-                dlg = wx.SingleChoiceDialog(self, _(u"Cet individu est rattachÈ ‡ %d familles.\nA quelle famille souhaitez-vous rattacher cette inscription ?") % len(listeNoms), _(u"Rattachements multiples"), listeNoms, wx.CHOICEDLG_STYLE)
+                # On demande √† quelle famille rattacher cette inscription
+                dlg = wx.SingleChoiceDialog(self, _(u"Cet individu est rattach√© √† %d familles.\nA quelle famille souhaitez-vous rattacher cette inscription ?") % len(listeNoms), _(u"Rattachements multiples"), listeNoms, wx.CHOICEDLG_STYLE)
                 if dlg.ShowModal() == wx.ID_OK:
                     indexSelection = dlg.GetSelection()
                     IDfamille = listeFamille[indexSelection]
@@ -389,7 +389,7 @@ class ListView(FastObjectListView):
                     dlg.Destroy()
                     return
         
-        # Recherche de la ville de l'individu pour sÈlection auto de la catÈgorie de tarif
+        # Recherche de la ville de l'individu pour s√©lection auto de la cat√©gorie de tarif
         cp, ville = None, None
         try :
             dictAdresse = self.GetGrandParent().GetPageAvecCode("coords").GetAdresseIndividu()
@@ -406,7 +406,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune inscription ‡ modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune inscription √† modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -420,7 +420,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune inscription ‡ supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune inscription √† supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -448,7 +448,7 @@ class ListView(FastObjectListView):
             date = UTILS_Dates.DateEngEnDateDD(date)
             listeConso.append({"IDconso" : IDconso, "date" : date, "forfait" : forfait})
         if len(listeConso) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Il existe dÈj‡ %d consommations enregistrÈes sur cette inscription. \n\nIl est donc impossible de la supprimer !") % len(listeConso), _(u"Annulation impossible"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Il existe d√©j√† %d consommations enregistr√©es sur cette inscription. \n\nIl est donc impossible de la supprimer !") % len(listeConso), _(u"Annulation impossible"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             DB.Close() 
@@ -473,7 +473,7 @@ class ListView(FastObjectListView):
                 if IDprestation not in listePrestationsNormales : 
                     listePrestationsNormales.append(IDprestation)
         if len(listePrestations) - len(listePrestationsForfait) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Il existe dÈj‡ %d prestations enregistrÈes sur cette inscription. \n\nIl est donc impossible de la supprimer !") % len(listePrestations), _(u"Annulation impossible"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Il existe d√©j√† %d prestations enregistr√©es sur cette inscription. \n\nIl est donc impossible de la supprimer !") % len(listePrestations), _(u"Annulation impossible"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             DB.Close() 
@@ -481,21 +481,21 @@ class ListView(FastObjectListView):
         
         DB.Close() 
 
-        # PÈriodes de gestion
+        # P√©riodes de gestion
         self.gestion = UTILS_Gestion.Gestion(self)
         if self.gestion.Verification("consommations", listeConso) == False: return False
         if self.gestion.Verification("prestations", listeDatesPrestations) == False: return False
 
         # Demande de confirmation
         if len(listePrestationsForfait) == 0 : texteForfait = u""
-        elif len(listePrestationsForfait) == 1 : texteForfait = _(u"\n\n(La prestation associÈe sera Ègalement supprimÈe)")
-        else : texteForfait = _(u"\n\n(Les %d prestations associÈes seront Ègalement supprimÈes)") % len(listePrestationsForfait)
+        elif len(listePrestationsForfait) == 1 : texteForfait = _(u"\n\n(La prestation associ√©e sera √©galement supprim√©e)")
+        else : texteForfait = _(u"\n\n(Les %d prestations associ√©es seront √©galement supprim√©es)") % len(listePrestationsForfait)
         dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette inscription ?%s") % texteForfait, _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             IDinscription = self.Selection()[0].IDinscription
             DB = GestionDB.DB()
             DB.ReqDEL("inscriptions", "IDinscription", IDinscription)
-            # Suppression des forfaits associÈs dÈj‡ saisis
+            # Suppression des forfaits associ√©s d√©j√† saisis
             for IDprestation in listePrestationsForfait :
                 DB.ReqDEL("prestations", "IDprestation", IDprestation)
                 DB.ReqDEL("consommations", "IDprestation", IDprestation)
@@ -503,12 +503,12 @@ class ListView(FastObjectListView):
                 DB.ReqDEL("ventilation", "IDprestation", IDprestation)
             DB.Close() 
             
-            # MÈmorise l'action dans l'historique
+            # M√©morise l'action dans l'historique
             UTILS_Historique.InsertActions([{
                 "IDindividu" : self.IDindividu,
                 "IDfamille" : IDfamille,
                 "IDcategorie" : 19, 
-                "action" : _(u"Suppression de l'inscription ‡ l'activitÈ '%s'") % nomActivite
+                "action" : _(u"Suppression de l'inscription √† l'activit√© '%s'") % nomActivite
                 },])
                 
             # Actualise l'affichage
@@ -517,8 +517,8 @@ class ListView(FastObjectListView):
 
 
     def GetListeActivites(self):
-        """ Retourne la liste des activitÈs sur lesquelles l'individu est inscrit """
-        """ Sert pour le ctrl DLG_Individu_inscriptions (saisir d'un forfait datÈ) """
+        """ Retourne la liste des activit√©s sur lesquelles l'individu est inscrit """
+        """ Sert pour le ctrl DLG_Individu_inscriptions (saisir d'un forfait dat√©) """
         listeActivites = []
         for track in self.donnees :
             listeActivites.append(track.IDactivite)
@@ -527,7 +527,7 @@ class ListView(FastObjectListView):
 
     def EditerConfirmation(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune inscription dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune inscription dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -539,7 +539,7 @@ class ListView(FastObjectListView):
 
     def ImprimerPDF(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune inscription ‡ imprimer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune inscription √† imprimer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -551,7 +551,7 @@ class ListView(FastObjectListView):
     def EnvoyerEmail(self, event):
         """ Envoyer l'inscription par Email """
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune inscription ‡ envoyer par Email !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune inscription √† envoyer par Email !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -561,7 +561,7 @@ class ListView(FastObjectListView):
         UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=track.IDfamille, nomDoc=FonctionsPerso.GenerationNomDoc("INSCRIPTION", "pdf") , categorie="inscription")
 
     def CreationPDF(self, nomDoc="", afficherDoc=True):
-        """ CrÈation du PDF pour Email """
+        """ Cr√©ation du PDF pour Email """
         IDinscription = self.Selection()[0].IDinscription
         from Utils import UTILS_Inscriptions
         inscription = UTILS_Inscriptions.Inscription()

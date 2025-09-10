@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -26,7 +26,7 @@ from Dlg.DLG_Ouvertures import Track_tarif
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.donnees = []
         # Initialisation du listCtrl
         self.nom_fichier_liste = __file__
@@ -46,7 +46,7 @@ class ListView(FastObjectListView):
         pass
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         return self.track_evenement.tarifs
 
     def InitObjectListView(self):            
@@ -69,7 +69,7 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Du"), 'left', 80, "date_debut", typeDonnee="date", stringConverter=FormateDate),
             ColumnDefn(_(u"au"), 'left', 80, "date_fin", typeDonnee="date", stringConverter=FormateDate),
             ColumnDefn(_(u"Description"), "left", 190, "description", typeDonnee="texte"),
-            ColumnDefn(_(u"MÈthode de calcul"), 'left', 190, "methode", typeDonnee="texte", stringConverter=GetMethode),
+            ColumnDefn(_(u"M√©thode de calcul"), 'left', 190, "methode", typeDonnee="texte", stringConverter=GetMethode),
             ]
 
         self.SetColumns(liste_Colonnes)
@@ -81,7 +81,7 @@ class ListView(FastObjectListView):
     def MAJ(self, track=None):
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if track != None :
             self.SelectObject(track, deselectOthers=True, ensureVisible=True)
 
@@ -95,7 +95,7 @@ class ListView(FastObjectListView):
         else:
             noSelection = False
 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -143,7 +143,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun tarif ‡ modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun tarif √† modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -163,13 +163,13 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun tarif ‡ supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun tarif √† supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track_tarif = self.Selection()[0]
 
-        # VÈrifie que ce tarif n'est pas dÈj‡ attribuÈ ‡ une prestation
+        # V√©rifie que ce tarif n'est pas d√©j√† attribu√© √† une prestation
         if track_tarif.IDtarif != None :
             DB = GestionDB.DB()
             req = """SELECT IDprestation FROM prestations WHERE IDtarif=%d;""" % track_tarif.IDtarif
@@ -178,7 +178,7 @@ class ListView(FastObjectListView):
             DB.Close()
             nbrePrestations = len(listePrestations)
             if nbrePrestations > 0 :
-                dlg = wx.MessageDialog(self, _(u"Ce tarif a dÈj‡ ÈtÈ attribuÈ ‡ %d prestations.\nIl est donc impossible de le supprimer !") % nbrePrestations, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Ce tarif a d√©j√† √©t√© attribu√© √† %d prestations.\nIl est donc impossible de le supprimer !") % nbrePrestations, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return

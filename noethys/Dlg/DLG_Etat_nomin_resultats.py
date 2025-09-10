@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -22,7 +22,7 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        self.label_intro = wx.StaticText(self, -1, _(u"Voici la liste des résultats. Vous pouvez maintenant imprimer cette liste ou l'exporter au format texte ou Ms Excel."))
+        self.label_intro = wx.StaticText(self, -1, _(u"Voici la liste des rÃ©sultats. Vous pouvez maintenant imprimer cette liste ou l'exporter au format texte ou Ms Excel."))
         
         self.ctrl_listview = OL_Etat_nomin_resultats.ListView(self, id=-1, dictParametres=dictParametres, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         
@@ -51,8 +51,8 @@ class Dialog(wx.Dialog):
         self.ctrl_listview.MAJ() 
 
     def __set_properties(self):
-        self.SetTitle(_(u"Aperçu des résultats"))
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu de la liste")))
+        self.SetTitle(_(u"AperÃ§u des rÃ©sultats"))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er un aperÃ§u de la liste")))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
         self.bouton_export_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format texte")))
         self.bouton_export_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format MS Excel")))
@@ -117,19 +117,19 @@ if __name__ == u"__main__":
     #wx.InitAllImageHandlers()
     import datetime
     import GestionDB
-    # Paramètres de tests
+    # ParamÃ¨tres de tests
     IDprofil = 3
     listeActivites = [1, 2, 3, 4]
     dateMin = datetime.date(2012, 1, 1)
     dateMax = datetime.date(2012, 12, 31)
     
-    # Récupération de tous les champs disponibles
+    # RÃ©cupÃ©ration de tous les champs disponibles
     from Ol import OL_Etat_nomin_champs
     champs = OL_Etat_nomin_champs.Champs(listeActivites=listeActivites, dateMin=dateMin, dateMax=dateMax)
     dictChamps = champs.GetDictChamps() 
     listeChampsDispo = champs.GetChamps() 
     
-    # Récupération des champs sélectionnés du profil
+    # RÃ©cupÃ©ration des champs sÃ©lectionnÃ©s du profil
     DB = GestionDB.DB()
     req = """SELECT IDselection, IDprofil, code, ordre
     FROM etat_nomin_selections
@@ -151,7 +151,7 @@ if __name__ == u"__main__":
             dictTemp = {"IDselection":IDselection, "IDprofil":IDprofil, "code":code, "ordre":ordre, "label":_(u"Non disponible"), "type":None, "categorie":None, "titre":None, "formule":None}
         listeChamps.append(OL_Etat_nomin_selections.Track(dictTemp))
         
-    # Création des paramètres
+    # CrÃ©ation des paramÃ¨tres
     dictParametres = {
         "caisses" : [1, 2],
         "champs" : listeChamps,

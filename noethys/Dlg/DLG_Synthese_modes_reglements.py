@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -117,7 +117,7 @@ class CTRL_Groupes(wx.CheckListBox):
             index += 1
 
     def GetLabelsGroupes(self):
-        """ Renvoie les labels des groupes d'activités sélectionnés """
+        """ Renvoie les labels des groupes d'activitÃ©s sÃ©lectionnÃ©s """
         listeLabels = []
         index = 0
         for nomGroupe, IDtype_groupe_activite in self.listeDonnees :
@@ -152,7 +152,7 @@ class CTRL_Activites(wx.CheckListBox):
         index = 0
         for IDactivite, nom in self.listeDonnees :
             if nom == None :
-                nom = _(u"Activité inconnue")
+                nom = _(u"ActivitÃ© inconnue")
             self.Append(nom)
             self.dictIndex[index] = IDactivite
             self.dictActivites[IDactivite] = nom
@@ -205,13 +205,13 @@ class Parametres(wx.Panel):
         self.parent = parent
         
         # Mode
-        self.staticbox_mode_staticbox = wx.StaticBox(self, -1, _(u"Type de règlements"))
+        self.staticbox_mode_staticbox = wx.StaticBox(self, -1, _(u"Type de rÃ¨glements"))
         self.radio_saisis = wx.RadioButton(self, -1, _(u"Saisis"), style = wx.RB_GROUP)
-        self.radio_deposes = wx.RadioButton(self, -1, _(u"Déposés"))
-        self.radio_nondeposes = wx.RadioButton(self, -1, _(u"Non déposés"))
+        self.radio_deposes = wx.RadioButton(self, -1, _(u"DÃ©posÃ©s"))
+        self.radio_nondeposes = wx.RadioButton(self, -1, _(u"Non dÃ©posÃ©s"))
 
-        # Période
-        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"Période de référence"))
+        # PÃ©riode
+        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"PÃ©riode de rÃ©fÃ©rence"))
         self.label_date_debut = wx.StaticText(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_date_fin = wx.StaticText(self, -1, _(u"Au"))
@@ -230,23 +230,23 @@ class Parametres(wx.Panel):
         self.radio_autres.SetValue(True)
         self.radio_avoirs.SetValue(True)
 
-##        # Activités
-##        self.staticbox_activites_staticbox = wx.StaticBox(self, -1, _(u"Activités"))
+##        # ActivitÃ©s
+##        self.staticbox_activites_staticbox = wx.StaticBox(self, -1, _(u"ActivitÃ©s"))
 ##        self.ctrl_activites = CTRL_Selection_activites.CTRL(self)
 ##        self.ctrl_activites.SetMinSize((-1, 90))
 
-        # Activités
-        self.staticbox_activites_staticbox = wx.StaticBox(self, -1, _(u"Activités"))
-        self.radio_toutes = wx.RadioButton(self, -1, _(u"Toutes les activités"), style=wx.RB_GROUP)
-        self.radio_groupes = wx.RadioButton(self, -1, _(u"Sélectionner un groupe d'activités"))
+        # ActivitÃ©s
+        self.staticbox_activites_staticbox = wx.StaticBox(self, -1, _(u"ActivitÃ©s"))
+        self.radio_toutes = wx.RadioButton(self, -1, _(u"Toutes les activitÃ©s"), style=wx.RB_GROUP)
+        self.radio_groupes = wx.RadioButton(self, -1, _(u"SÃ©lectionner un groupe d'activitÃ©s"))
         self.ctrl_groupes = CTRL_Groupes(self)
         self.ctrl_groupes.SetMinSize((-1, 60))
-        self.radio_activites = wx.RadioButton(self, -1, _(u"Sélectionner une ou plusieurs activités"))
+        self.radio_activites = wx.RadioButton(self, -1, _(u"SÃ©lectionner une ou plusieurs activitÃ©s"))
         self.ctrl_activites = CTRL_Activites(self)
         self.ctrl_activites.SetMinSize((200, 60))
 
         # Boutons Actualiser
-        self.bouton_actualiser = CTRL_Bouton_image.CTRL(self, texte=_(u"Rafraîchir la liste"), cheminImage="Images/32x32/Actualiser.png")
+        self.bouton_actualiser = CTRL_Bouton_image.CTRL(self, texte=_(u"RafraÃ®chir la liste"), cheminImage="Images/32x32/Actualiser.png")
         self.bouton_actualiser.SetMinSize((-1, 50)) 
 
         self.__set_properties()
@@ -265,23 +265,23 @@ class Parametres(wx.Panel):
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioActivites, self.radio_groupes)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioActivites, self.radio_activites)
 
-        # Init Contrôles
+        # Init ContrÃ´les
         self.OnRadioActivites(None)
 
 
 
     def __set_properties(self):
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début de période")))
-        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de période")))
-        self.radio_saisis.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour considérer les règlements saisis dans Noethys sur la période de référence")))
-        self.radio_deposes.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour considérer les règlements déposés en banque sur la période de référence")))
-        self.radio_deposes.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour considérer les règlements pas encore déposés en banque à ce jour")))
-        self.radio_cotisations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les cotisations dans la synthèse")))
-        self.radio_consommations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les consommations dans la synthèse")))
-        self.radio_locations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les locations dans la synthèse")))
-        self.radio_autres.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les autres types de prestations dans la synthèse")))
-        self.radio_avoirs.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les avoirs (règlements non ventilés)")))
-        self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser les résultats en fonction des paramètres sélectionnés")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de dÃ©but de pÃ©riode")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de pÃ©riode")))
+        self.radio_saisis.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour considÃ©rer les rÃ¨glements saisis dans Noethys sur la pÃ©riode de rÃ©fÃ©rence")))
+        self.radio_deposes.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour considÃ©rer les rÃ¨glements dÃ©posÃ©s en banque sur la pÃ©riode de rÃ©fÃ©rence")))
+        self.radio_deposes.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour considÃ©rer les rÃ¨glements pas encore dÃ©posÃ©s en banque Ã  ce jour")))
+        self.radio_cotisations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les cotisations dans la synthÃ¨se")))
+        self.radio_consommations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les consommations dans la synthÃ¨se")))
+        self.radio_locations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les locations dans la synthÃ¨se")))
+        self.radio_autres.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les autres types de prestations dans la synthÃ¨se")))
+        self.radio_avoirs.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les avoirs (rÃ¨glements non ventilÃ©s)")))
+        self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser les rÃ©sultats en fonction des paramÃ¨tres sÃ©lectionnÃ©s")))
         
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
@@ -295,7 +295,7 @@ class Parametres(wx.Panel):
         staticbox_mode.Add(grid_sizer_mode, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(staticbox_mode, 1, wx.RIGHT|wx.EXPAND, 5)
 
-        # Date de référence
+        # Date de rÃ©fÃ©rence
         staticbox_periode = wx.StaticBoxSizer(self.staticbox_periode_staticbox, wx.VERTICAL)
         grid_sizer_periode = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
         grid_sizer_periode.Add(self.label_date_debut, 0, wx.ALIGN_CENTER_VERTICAL, 0)
@@ -316,7 +316,7 @@ class Parametres(wx.Panel):
         staticbox_affichage.Add(grid_sizer_affichage, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(staticbox_affichage, 1, wx.RIGHT|wx.EXPAND, 5)
 
-        # Activités
+        # ActivitÃ©s
 ##        staticbox_activites = wx.StaticBoxSizer(self.staticbox_activites_staticbox, wx.VERTICAL)
 ##        staticbox_activites.Add(self.ctrl_activites, 1, wx.ALL|wx.EXPAND, 5)
 ##        grid_sizer_base.Add(staticbox_activites, 1, wx.RIGHT|wx.EXPAND, 5)
@@ -360,11 +360,11 @@ class Parametres(wx.Panel):
         if self.radio_nondeposes.GetValue() == True : return "nondeposes"
             
     def OnBoutonActualiser(self, event):
-        """ Validation des données saisies """
-        # Vérifie date de référence
+        """ Validation des donnÃ©es saisies """
+        # VÃ©rifie date de rÃ©fÃ©rence
         date_debut = self.ctrl_date_debut.GetDate()
         if self.ctrl_date_debut.FonctionValiderDate() == False or date_debut == None :
-            dlg = wx.MessageDialog(self, _(u"La date de début de période ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de dÃ©but de pÃ©riode ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
@@ -372,13 +372,13 @@ class Parametres(wx.Panel):
 
         date_fin = self.ctrl_date_fin.GetDate()
         if self.ctrl_date_fin.FonctionValiderDate() == False or date_fin == None :
-            dlg = wx.MessageDialog(self, _(u"La date de fin de période ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de fin de pÃ©riode ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
             return False
         
-        # Envoi des données
+        # Envoi des donnÃ©es
         self.parent.MAJ()
         
         return True
@@ -415,15 +415,15 @@ class Parametres(wx.Panel):
         return dictActivites
 
     def GetLabelActivites(self):
-        """ Renvoie les labels des groupes ou activités sélectionnées """
+        """ Renvoie les labels des groupes ou activitÃ©s sÃ©lectionnÃ©es """
         if self.radio_toutes.GetValue() == True :
-            return _(u"Toutes les activités")
+            return _(u"Toutes les activitÃ©s")
         if self.radio_groupes.GetValue() == True :
-            # Groupe d'activités
+            # Groupe d'activitÃ©s
             listeTemp = self.ctrl_groupes.GetLabelsGroupes()
             return ", ".join(listeTemp)
         else :
-            # Activités
+            # ActivitÃ©s
             listeTemp = []
             dictActivites = self.GetDictActivites()
             for IDactivite in self.ctrl_activites.GetIDcoches()  :
@@ -440,24 +440,24 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = _(u"Vous pouvez ici afficher la répartition des modes de règlements par activité. Commencez par sélectionner un mode de calcul, saisir une période de référence puis sélectionner les activités souhaitées. Il est ensuite possible d'exporter les résultats sous forme de PDF ou sous Ms Excel.")
-        titre = _(u"Synthèse des modes de règlements")
+        intro = _(u"Vous pouvez ici afficher la rÃ©partition des modes de rÃ¨glements par activitÃ©. Commencez par sÃ©lectionner un mode de calcul, saisir une pÃ©riode de rÃ©fÃ©rence puis sÃ©lectionner les activitÃ©s souhaitÃ©es. Il est ensuite possible d'exporter les rÃ©sultats sous forme de PDF ou sous Ms Excel.")
+        titre = _(u"SynthÃ¨se des modes de rÃ¨glements")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Diagramme.png")
         self.SetTitle(titre)
         
-        # Panel Paramètres
+        # Panel ParamÃ¨tres
         self.ctrl_parametres = Parametres(self)
         
         # CTRL Coefficients
-        self.staticbox_stats_staticbox = wx.StaticBox(self, -1, _(u"Résultats"))
+        self.staticbox_stats_staticbox = wx.StaticBox(self, -1, _(u"RÃ©sultats"))
         self.ctrl_stats = CTRL_Synthese_modes_reglements.CTRL(self)
         
         # Commandes de liste
         self.bouton_apercu = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_excel = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Excel.png"), wx.BITMAP_TYPE_ANY))
 
-        # Commandes de résultats
-        self.check_details = wx.CheckBox(self, -1, _(u"Afficher détails"))
+        # Commandes de rÃ©sultats
+        self.check_details = wx.CheckBox(self, -1, _(u"Afficher dÃ©tails"))
         self.check_details.SetValue(True) 
 
         self.hyper_developper = self.Build_Hyperlink_developper()
@@ -487,7 +487,7 @@ class Dialog(wx.Dialog):
         self.__set_properties()
         self.__do_layout()
                 
-        # Initialisation des contrôles
+        # Initialisation des contrÃ´les
         anneeActuelle = datetime.date.today().year
         self.ctrl_parametres.ctrl_date_debut.SetDate(datetime.date(anneeActuelle, 1, 1))
         self.ctrl_parametres.ctrl_date_fin.SetDate(datetime.date(anneeActuelle, 12, 31))
@@ -500,10 +500,10 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu avant impression des résultats (PDF)")))
-        self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter les résultats au format MS Excel")))
-        self.check_details.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher les détails dans les résultats")))
-        self.ctrl_ventilation.SetToolTip(wx.ToolTip(_(u"Vous pouvez filtrer ici les résultats par période de ventilation")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er un aperÃ§u avant impression des rÃ©sultats (PDF)")))
+        self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter les rÃ©sultats au format MS Excel")))
+        self.check_details.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher les dÃ©tails dans les rÃ©sultats")))
+        self.ctrl_ventilation.SetToolTip(wx.ToolTip(_(u"Vous pouvez filtrer ici les rÃ©sultats par pÃ©riode de ventilation")))
         self.SetMinSize((980, 720))
 
     def __do_layout(self):
@@ -512,7 +512,7 @@ class Dialog(wx.Dialog):
         
         grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         
-        # Panel des paramètres
+        # Panel des paramÃ¨tres
         grid_sizer_contenu.Add(self.ctrl_parametres, 1, wx.EXPAND, 0)
         
         # STATS
@@ -533,7 +533,7 @@ class Dialog(wx.Dialog):
         
         grid_sizer_contenu2.Add( (5, 5), 0, wx.EXPAND, 0)
 
-        # Résultats
+        # RÃ©sultats
         grid_sizer_contenu2.Add(self.ctrl_stats, 1, wx.EXPAND, 0)
         
         # Boutons de liste
@@ -581,14 +581,14 @@ class Dialog(wx.Dialog):
     def Build_Hyperlink_developper(self) :
         """ Construit un hyperlien """
         self.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL, False))
-        hyper = hl.HyperLinkCtrl(self, -1, _(u"Tout développer"), URL="")
+        hyper = hl.HyperLinkCtrl(self, -1, _(u"Tout dÃ©velopper"), URL="")
         hyper.Bind(hl.EVT_HYPERLINK_LEFT, self.OnLeftLink_developper)
         hyper.AutoBrowse(False)
         hyper.SetColours("BLUE", "BLUE", "BLUE")
         hyper.EnableRollover(True)
         hyper.SetUnderlines(False, False, True)
         hyper.SetBold(False)
-        hyper.SetToolTip(wx.ToolTip(_(u"Tout développer")))
+        hyper.SetToolTip(wx.ToolTip(_(u"Tout dÃ©velopper")))
         hyper.UpdateLink()
         hyper.DoPopup(False)
         return hyper
@@ -599,14 +599,14 @@ class Dialog(wx.Dialog):
     def Build_Hyperlink_reduire(self) :
         """ Construit un hyperlien """
         self.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL, False))
-        hyper = hl.HyperLinkCtrl(self, -1, _(u"Tout réduire"), URL="")
+        hyper = hl.HyperLinkCtrl(self, -1, _(u"Tout rÃ©duire"), URL="")
         hyper.Bind(hl.EVT_HYPERLINK_LEFT, self.OnLeftLink_reduire)
         hyper.AutoBrowse(False)
         hyper.SetColours("BLUE", "BLUE", "BLUE")
         hyper.EnableRollover(True)
         hyper.SetUnderlines(False, False, True)
         hyper.SetBold(False)
-        hyper.SetToolTip(wx.ToolTip(_(u"Tout réduire")))
+        hyper.SetToolTip(wx.ToolTip(_(u"Tout rÃ©duire")))
         hyper.UpdateLink()
         hyper.DoPopup(False)
         return hyper
@@ -626,7 +626,7 @@ class Dialog(wx.Dialog):
         valeur = self.ctrl_ventilation.GetStringSelection() 
         listeAnnees = self.ctrl_stats.GetVentilation()
         listeAnnees.sort()
-        listeTemp = [_(u"Aucun"), _(u"Non ventilé"), _(u"La période suivante")]
+        listeTemp = [_(u"Aucun"), _(u"Non ventilÃ©"), _(u"La pÃ©riode suivante")]
         for annee in listeAnnees :
             listeTemp.append(str(annee))
         self.ctrl_ventilation.SetItems(listeTemp)
@@ -687,9 +687,9 @@ class Dialog(wx.Dialog):
         date_fin = self.ctrl_parametres.ctrl_date_fin.GetDate()
         if date_debut == None : date_debut = "---"
         if date_fin == None : date_fin= "---"
-        if mode == "saisis" : listeParametres.append(_(u"Règlements saisis du %s au %s") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin))))
-        if mode == "deposes" : listeParametres.append(_(u"Règlements déposés du %s au %s") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin))))
-        if mode == "nondeposes" : listeParametres.append(_(u"Règlements non déposés"))
+        if mode == "saisis" : listeParametres.append(_(u"RÃ¨glements saisis du %s au %s") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin))))
+        if mode == "deposes" : listeParametres.append(_(u"RÃ¨glements dÃ©posÃ©s du %s au %s") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin))))
+        if mode == "nondeposes" : listeParametres.append(_(u"RÃ¨glements non dÃ©posÃ©s"))
         
         # Affichage
         listeAffichage = []
@@ -700,21 +700,21 @@ class Dialog(wx.Dialog):
             if filtre == "autre" : listeAffichage.append("Autres")
             if filtre == "avoir" : listeAffichage.append("Avoirs")
         affichage = ", ".join(listeAffichage)
-        listeParametres.append(_(u"Eléments affichés : %s") % affichage)
+        listeParametres.append(_(u"ElÃ©ments affichÃ©s : %s") % affichage)
         
-        # Activités
+        # ActivitÃ©s
         activites = self.ctrl_parametres.GetLabelActivites()
-        listeParametres.append(_(u"Activités : %s") % activites)
+        listeParametres.append(_(u"ActivitÃ©s : %s") % activites)
         
-        # Année de ventilation
+        # AnnÃ©e de ventilation
         ventilation = self.GetVentilation() 
         if ventilation != None :
             if ventilation == 0 : 
-                listeParametres.append(_(u"Uniquement des règlements non ventilés"))
+                listeParametres.append(_(u"Uniquement des rÃ¨glements non ventilÃ©s"))
             elif type(ventilation) == list :
-                listeParametres.append(_(u"Uniquement des règlements ventilés sur la période du %s au %s") % (UTILS_Dates.DateDDEnFr(ventilation[0]), UTILS_Dates.DateDDEnFr(ventilation[1])))
+                listeParametres.append(_(u"Uniquement des rÃ¨glements ventilÃ©s sur la pÃ©riode du %s au %s") % (UTILS_Dates.DateDDEnFr(ventilation[0]), UTILS_Dates.DateDDEnFr(ventilation[1])))
             else :
-                listeParametres.append(_(u"Uniquement des règlements ventilés sur l'année %d") % ventilation)
+                listeParametres.append(_(u"Uniquement des rÃ¨glements ventilÃ©s sur l'annÃ©e %d") % ventilation)
         
         labelParametres = " | ".join(listeParametres)
         return labelParametres

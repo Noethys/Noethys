@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -20,7 +20,7 @@ from Dlg import DLG_Saisie_virement
 import datetime
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 from Utils import UTILS_Interface
@@ -61,7 +61,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.IDcompte_bancaire = kwds.pop("IDcompte_bancaire", None)
         self.ctrl_soldes = None
         # Initialisation du listCtrl
@@ -81,7 +81,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         if self.IDcompte_bancaire != None :
             conditions = "WHERE compta_operations.IDcompte_bancaire=%d" % self.IDcompte_bancaire
         else :
@@ -125,7 +125,7 @@ class ListView(FastObjectListView):
             listeListeView.append(track)
         
         self.ctrl_soldes.label_solde_jour.SetLabel(_(u"Solde du jour : %.2f %s") % (soldeJour, SYMBOLE))
-        self.ctrl_soldes.label_solde_pointe.SetLabel(_(u"Solde pointé : %.2f %s") % (soldePointe, SYMBOLE))
+        self.ctrl_soldes.label_solde_pointe.SetLabel(_(u"Solde pointÃ© : %.2f %s") % (soldePointe, SYMBOLE))
         self.ctrl_soldes.label_solde.SetLabel(_(u"Solde final : %.2f %s") % (solde, SYMBOLE))
         self.ctrl_soldes.Layout() 
         
@@ -151,20 +151,20 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(u"", "left", 0, "IDoperation", typeDonnee="entier"),
             ColumnDefn(_(u"Date"), 'left', 80, "date", typeDonnee="date", stringConverter=FormateDate),
-            ColumnDefn(_(u"Libellé"), 'left', 180, "libelle", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(_(u"LibellÃ©"), 'left', 180, "libelle", typeDonnee="texte", isSpaceFilling=True),
             ColumnDefn(_(u"Tiers"), 'left', 130, "nomTiers", typeDonnee="texte"),
             ColumnDefn(_(u"Mode"), 'left', 90, "nomMode", typeDonnee="texte"),
-            ColumnDefn(_(u"N° Chèque"), 'left', 80, "num_piece", typeDonnee="texte"),
+            ColumnDefn(_(u"NÂ° ChÃ¨que"), 'left', 80, "num_piece", typeDonnee="texte"),
 ##            ColumnDefn(_(u"Compte bancaire"), 'left', 120, "nomCompte"),
-            ColumnDefn(_(u"Relevé"), 'left', 90, "nomReleve", typeDonnee="texte"),
-            ColumnDefn(_(u"Débit"), "right", 80, "debit", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(_(u"Crédit"), "right", 80, "credit", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"RelevÃ©"), 'left', 90, "nomReleve", typeDonnee="texte"),
+            ColumnDefn(_(u"DÃ©bit"), "right", 80, "debit", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"CrÃ©dit"), "right", 80, "credit", typeDonnee="montant", stringConverter=FormateMontant),
             ColumnDefn(_(u"Solde"), "right", 80, "solde", typeDonnee="montant", stringConverter=FormateMontant),
             ]
 
         self.rowFormatter = rowFormatter
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucune opération de trésorerie"))
+        self.SetEmptyListMsg(_(u"Aucune opÃ©ration de trÃ©sorerie"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -173,7 +173,7 @@ class ListView(FastObjectListView):
         self.Freeze()
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if track != None :
             self.SelectObject(track, deselectOthers=True, ensureVisible=True)
         if IDoperation != None :
@@ -201,17 +201,17 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDoperation
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 10, _(u"Ajouter une opération au débit"))
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter une opÃ©ration au dÃ©bit"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Addition.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.AjouterDebit, id=10)
 
-        item = wx.MenuItem(menuPop, 11, _(u"Ajouter une opération au crédit"))
+        item = wx.MenuItem(menuPop, 11, _(u"Ajouter une opÃ©ration au crÃ©dit"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Addition.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -244,7 +244,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -278,21 +278,21 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des opérations"), format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des opÃ©rations"), format="A", orientation=wx.LANDSCAPE)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des opérations"), format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des opÃ©rations"), format="A", orientation=wx.LANDSCAPE)
         prt.Print()
 
     def ExportTexte(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Liste des opérations"))
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des opÃ©rations"))
         
     def ExportExcel(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Liste des opérations"))
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des opÃ©rations"))
 
     def AjouterDebit(self, event):
         self.Ajouter("debit")
@@ -315,7 +315,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
 ##        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_categories_comptables", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune opération à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune opÃ©ration Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -334,20 +334,20 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
 ##        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_categories_comptables", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune opération à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune opÃ©ration Ã  supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
         
         if track.IDvirement == None and track.IDreleve != None :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer une opération pointée sur un relevé bancaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer une opÃ©ration pointÃ©e sur un relevÃ© bancaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
         if track.IDvirement != None :
-            # Vérifie que les 2 opérations du virement ne sont pas sur un relevé
+            # VÃ©rifie que les 2 opÃ©rations du virement ne sont pas sur un relevÃ©
             DB = GestionDB.DB()
             req = """SELECT IDoperation, compta_operations.IDreleve, compta_releves.nom, comptes_bancaires.nom
             FROM compta_operations 
@@ -360,13 +360,13 @@ class ListView(FastObjectListView):
             DB.Close()
             for IDoperation, IDreleve, nomReleve, nomCompte in listeDonnees :
                 if IDreleve != None :
-                    dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer ce virement car il a déjà été pointé sur le relevé '%s' du compte '%s' !") % (nomReleve, nomCompte), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer ce virement car il a dÃ©jÃ  Ã©tÃ© pointÃ© sur le relevÃ© '%s' du compte '%s' !") % (nomReleve, nomCompte), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return
             
         # Suppression
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette opération ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette opÃ©ration ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             if track.IDvirement == None :
@@ -427,8 +427,8 @@ class BarreRecherche(wx.SearchCtrl):
 ##class ListviewAvecFooter(PanelAvecFooter):
 ##    def __init__(self, parent, kwargs={}):
 ##        dictColonnes = {
-##            "nomTiers" : {"mode" : "nombre", "singulier" : _(u"opération"), "pluriel" : _(u"opérations"), "alignement" : wx.ALIGN_CENTER},
-##            "libelle" : {"mode" : "texte", "texte" : _(u"Solde du jour : 10000.00 ¤"), "alignement" : wx.ALIGN_CENTER},
+##            "nomTiers" : {"mode" : "nombre", "singulier" : _(u"opÃ©ration"), "pluriel" : _(u"opÃ©rations"), "alignement" : wx.ALIGN_CENTER},
+##            "libelle" : {"mode" : "texte", "texte" : _(u"Solde du jour : 10000.00 â‚¬"), "alignement" : wx.ALIGN_CENTER},
 ##            "solde" : {"mode" : "total"},
 ##            }
 ##        PanelAvecFooter.__init__(self, parent, ListView, kwargs, dictColonnes)
@@ -440,9 +440,9 @@ class BarreSoldes(wx.Panel):
         wx.Panel.__init__(self, parent, -1, style=wx.TAB_TRAVERSAL)
         self.barreRecherche = CTRL_Outils(self, listview) # BarreRecherche(self, listview)
         self.barreRecherche.SetMinSize((350, -1))
-        self.label_solde_jour = wx.StaticText(self, wx.ID_ANY, _(u"Solde du jour : 0.00 ¤"))
-        self.label_solde_pointe = wx.StaticText(self, wx.ID_ANY, _(u"Solde pointé : 0.00 ¤"))
-        self.label_solde = wx.StaticText(self, wx.ID_ANY, _(u"Solde final : 0.00 ¤"))
+        self.label_solde_jour = wx.StaticText(self, wx.ID_ANY, _(u"Solde du jour : 0.00 â‚¬"))
+        self.label_solde_pointe = wx.StaticText(self, wx.ID_ANY, _(u"Solde pointÃ© : 0.00 â‚¬"))
+        self.label_solde = wx.StaticText(self, wx.ID_ANY, _(u"Solde final : 0.00 â‚¬"))
 
         grid_sizer_1 = wx.FlexGridSizer(1, 5, 0, 0)
         grid_sizer_1.Add(self.barreRecherche, 0, wx.EXPAND, 0)

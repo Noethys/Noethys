@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -58,7 +58,7 @@ class Track(object):
         self.item = None
         self.itemParent = None
         
-        # Contrôles
+        # ContrÃ´les
         self.ctrl_type = None
         self.ctrl_coeff  = None
         self.ctrl_arrondi  = None
@@ -69,7 +69,7 @@ class Track(object):
         self.ctrl_formule = None
 
     def GetType(self):
-        """ Retourne le type de calcul sélectionné """
+        """ Retourne le type de calcul sÃ©lectionnÃ© """
         return self.ctrl_type.GetSelection() 
     
     def ValidationCoeff(self):
@@ -134,10 +134,10 @@ class Track(object):
         # Type de calcul
         if "typeCalcul" in dictParametres :
             self.ctrl_type.SetParametre(dictParametres["typeCalcul"])
-        # Durée seuil
+        # DurÃ©e seuil
         if "duree_seuil" in dictParametres :
             self.ctrl_duree_seuil.SetValeur(dictParametres["duree_seuil"])
-        # Durée plafond
+        # DurÃ©e plafond
         if "duree_plafond" in dictParametres :
             self.ctrl_duree_plafond.SetValeur(dictParametres["duree_plafond"])
         # Heure seuil
@@ -154,13 +154,13 @@ class Track(object):
 
 class CTRL_Type(wx.Choice):
     def __init__(self, parent, id=-1, item=None, track=None):
-        """ Type de calcul : Par unité ou par avec coefficient """
+        """ Type de calcul : Par unitÃ© ou par avec coefficient """
         wx.Choice.__init__(self, parent, id=id, size=(200, -1)) 
         self.parent = parent
         self.item = item
         self.track = track
-        self.SetItems([_(u"Nombre d'unités consommées"), _(u"Temps réél de présence"), _(u"Temps de présence facturé"), _(u"Formule")])
-        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez le type de calcul à appliquer à cette unité de consommation")))
+        self.SetItems([_(u"Nombre d'unitÃ©s consommÃ©es"), _(u"Temps rÃ©Ã©l de prÃ©sence"), _(u"Temps de prÃ©sence facturÃ©"), _(u"Formule")])
+        self.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le type de calcul Ã  appliquer Ã  cette unitÃ© de consommation")))
         self.Bind(wx.EVT_CHOICE, self.OnChoice)
         # Defaut
         if self.track.typeUnite == "Horaire" :
@@ -190,7 +190,7 @@ class CTRL_Type(wx.Choice):
 
 class CTRL_Arrondi(wx.Choice):
     def __init__(self, parent, id=-1, item=None, track=None):
-        """ Arrondi à appliquer. Ex : Au quart d'heures supérieur """
+        """ Arrondi Ã  appliquer. Ex : Au quart d'heures supÃ©rieur """
         wx.Choice.__init__(self, parent, id=id, size=(140, -1))
         self.parent = parent
         self.item = item
@@ -198,11 +198,11 @@ class CTRL_Arrondi(wx.Choice):
 
         self.listeValeurs = [
             (_(u"Aucun"), None),
-            (_(u"Durée : 5 min. sup."), ("duree", 5)),
-            (_(u"Durée : 10 min. sup."), ("duree", 10)),
-            (_(u"Durée : 15 min. sup."), ("duree", 15)),
-            (_(u"Durée : 30 min. sup."), ("duree", 30)),
-            (_(u"Durée : 60 min. sup."), ("duree", 60)),
+            (_(u"DurÃ©e : 5 min. sup."), ("duree", 5)),
+            (_(u"DurÃ©e : 10 min. sup."), ("duree", 10)),
+            (_(u"DurÃ©e : 15 min. sup."), ("duree", 15)),
+            (_(u"DurÃ©e : 30 min. sup."), ("duree", 30)),
+            (_(u"DurÃ©e : 60 min. sup."), ("duree", 60)),
             (_(u"Horaire : 5 min."), ("tranche_horaire", 5)),
             (_(u"Horaire : 10 min."), ("tranche_horaire", 10)),
             (_(u"Horaire : 15 min."), ("tranche_horaire", 15)),
@@ -217,7 +217,7 @@ class CTRL_Arrondi(wx.Choice):
             self.listeArrondis.append(valeur)
 
         self.SetItems(self.listeLabels)
-        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez un arrondi à appliquer à chaque consommation. \n\nExemples : \n\nDurée 15 min. sup. = Arrondit la durée de la consommation aux 15 minutes supérieures (Si durée = 1h20 alors la durée devient 1h30)\n\nHoraire 30 min. = Arrondit l'heure de début à la demi-heure inférieure et l'heure de fin à la demi-heure supérieure (Si consommation de 13h10 à 13h45 alors durée = 1h)")))
+        self.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un arrondi Ã  appliquer Ã  chaque consommation. \n\nExemples : \n\nDurÃ©e 15 min. sup. = Arrondit la durÃ©e de la consommation aux 15 minutes supÃ©rieures (Si durÃ©e = 1h20 alors la durÃ©e devient 1h30)\n\nHoraire 30 min. = Arrondit l'heure de dÃ©but Ã  la demi-heure infÃ©rieure et l'heure de fin Ã  la demi-heure supÃ©rieure (Si consommation de 13h10 Ã  13h45 alors durÃ©e = 1h)")))
         # Defaut
         self.SetSelection(0)
     
@@ -235,12 +235,12 @@ class CTRL_Arrondi(wx.Choice):
 
 class CTRL_Coeff(wx.TextCtrl):
     def __init__(self, parent, id=-1, item=None, track=None):
-        """ Coefficient à appliquer"""
+        """ Coefficient Ã  appliquer"""
         wx.TextCtrl.__init__(self, parent, id=id, value="", size=(70, -1)) 
         self.parent = parent
         self.item = item
         self.track = track
-        self.SetToolTip(wx.ToolTip(_(u"Saisissez le coefficient multiplicateur à appliquer")))
+        self.SetToolTip(wx.ToolTip(_(u"Saisissez le coefficient multiplicateur Ã  appliquer")))
     
     def Validation(self):
         valeur = self.GetValue() 
@@ -347,9 +347,9 @@ class DLG_Saisie_formule(wx.Dialog):
         self.staticbox_texte_staticbox = wx.StaticBox(self, -1, _(u"Formule python"))
         self.ctrl_texte = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE )
         self.ctrl_texte.SetMinSize((600, 200))
-        self.hyper_formule = Hyperlien(self, label=_(u"Insérer une unité"), infobulle=_(u"Cliquez ici pour insérer une unité de consommation"), URL="")
+        self.hyper_formule = Hyperlien(self, label=_(u"InsÃ©rer une unitÃ©"), infobulle=_(u"Cliquez ici pour insÃ©rer une unitÃ© de consommation"), URL="")
 
-        formule_exemple = u"""Exemples de variables et de fonctions spéciales :
+        formule_exemple = u"""Exemples de variables et de fonctions spÃ©ciales :
         debut, fin, duree, HEURE(), SI(condition, alors, sinon), ET, OU
         unite1, unite1.debut, unite1.fin, unite1.duree
         
@@ -382,9 +382,9 @@ Exemples de formule :
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'une formule"))
-        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à l'aide")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  l'aide")))
         self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour effacer le contenu du texte")))
-        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider ou tapez sur la touche Entrée du clavier")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider ou tapez sur la touche EntrÃ©e du clavier")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
@@ -443,7 +443,7 @@ Exemples de formule :
         listeLabels = []
         for track in self.parent.listeTracks:
             listeLabels.append(u"unite%d = %s (%s)" % (track.IDunite, track.nomUnite, track.nomActivite))
-        dlg = wx.SingleChoiceDialog(None, _(u"Sélectionnez une unité de consommation à insérer :"), _(u"Insérer une unité"), listeLabels, wx.CHOICEDLG_STYLE)
+        dlg = wx.SingleChoiceDialog(None, _(u"SÃ©lectionnez une unitÃ© de consommation Ã  insÃ©rer :"), _(u"InsÃ©rer une unitÃ©"), listeLabels, wx.CHOICEDLG_STYLE)
         dlg.SetSize((580, 450))
         dlg.CenterOnScreen()
         if dlg.ShowModal() == wx.ID_OK:
@@ -465,15 +465,15 @@ class CTRL(HTL.HyperTreeList):
         self.listeActivites = []
         self.periode = (None, None)
                 
-        # Création des colonnes
+        # CrÃ©ation des colonnes
         listeColonnes = [
-            ( _(u"Unité de consommation"), 225, wx.ALIGN_LEFT),
+            ( _(u"UnitÃ© de consommation"), 225, wx.ALIGN_LEFT),
             ( _(u"Type de calcul"), 210, wx.ALIGN_LEFT),
             ( _(u"Coefficient"), 80, wx.ALIGN_LEFT),
             ( _(u"Formule"), 100, wx.ALIGN_LEFT),
             ( _(u"Arrondi"), 150, wx.ALIGN_LEFT),
-            ( _(u"Durée seuil"), 90, wx.ALIGN_LEFT),
-            ( _(u"Durée plafond"), 90, wx.ALIGN_LEFT),
+            ( _(u"DurÃ©e seuil"), 90, wx.ALIGN_LEFT),
+            ( _(u"DurÃ©e plafond"), 90, wx.ALIGN_LEFT),
             ( _(u"Heure seuil"), 90, wx.ALIGN_LEFT),
             ( _(u"Heure plafond"), 90, wx.ALIGN_LEFT),
             ]
@@ -493,12 +493,12 @@ class CTRL(HTL.HyperTreeList):
         self.EnableSelectionVista(True)
                     
     def Importation(self):
-        # Vérifie les dates de la période
+        # VÃ©rifie les dates de la pÃ©riode
         date_debut, date_fin = self.periode
         if date_debut == None or date_fin == None :
             return []
         
-        # Importation des unités de consommations
+        # Importation des unitÃ©s de consommations
         if len(self.listeActivites) == 0 : return []
         elif len(self.listeActivites) == 1 : conditionActivites = "unites.IDactivite=%d" % self.listeActivites[0]
         else : conditionActivites = "unites.IDactivite IN %s" % str(tuple(self.listeActivites))
@@ -523,8 +523,8 @@ class CTRL(HTL.HyperTreeList):
         return listeTracks
 
     def MAJ(self, reinitialisation=False):
-        """ Met à jour (redessine) tout le contrôle """
-        # Mémorise les paramètres de chaque unité
+        """ Met Ã  jour (redessine) tout le contrÃ´le """
+        # MÃ©morise les paramÃ¨tres de chaque unitÃ©
         dict_parametres = self.GetParametres()
         if len(dict_parametres) > 0 :
             self.dict_parametres = dict_parametres
@@ -535,12 +535,12 @@ class CTRL(HTL.HyperTreeList):
         self.DeleteAllItems()
         self.root = self.AddRoot(_(u"Racine"))
         self.Remplissage()
-        # Applique les parametres mémorisés
+        # Applique les parametres mÃ©morisÃ©s
         self.SetParametres(self.dict_parametres)
         self.Thaw()
 
     def Remplissage(self):        
-        # Importation des données
+        # Importation des donnÃ©es
         listeTracks = self.Importation() 
 
         # Regroupement
@@ -553,16 +553,16 @@ class CTRL(HTL.HyperTreeList):
         # Tri des Keys
         listeKeys.sort()
         
-        # Création des branches
+        # CrÃ©ation des branches
         for nomActivite, IDactivite in listeKeys :
             
-            # Niveau Nom de l'activité
+            # Niveau Nom de l'activitÃ©
             brancheActivite = self.AppendItem(self.root, nomActivite)
             self.SetPyData(brancheActivite, IDactivite)
             self.SetItemBold(brancheActivite, True)
             self.SetItemBackgroundColour(brancheActivite, wx.Colour(*COULEUR_FOND_REGROUPEMENT))
             
-            # Niveau Unités de consommation
+            # Niveau UnitÃ©s de consommation
             for track in listeTracks :
                 
                 if track.IDactivite == IDactivite :
@@ -571,7 +571,7 @@ class CTRL(HTL.HyperTreeList):
                     self.SetPyData(brancheUnite, track.IDunite)
                     self.CheckItem(brancheUnite, True)
                     
-                    # Mémorisation des items dans le track
+                    # MÃ©morisation des items dans le track
                     track.item = brancheUnite
                     track.itemParent = brancheActivite
                                         
@@ -595,23 +595,23 @@ class CTRL(HTL.HyperTreeList):
                     self.SetItemWindow(brancheUnite, ctrl_arrondi, 4)
                     track.ctrl_arrondi = ctrl_arrondi
 
-                    # CTRL durée seuil
-                    ctrl_duree_seuil = CTRL_Heure(self.GetMainWindow(), item=brancheUnite, track=track, tooltip=_(u"Saisissez la durée seuil pour chaque consommation : La durée de chaque consommation ne pourra être inférieure à cette valeur"))
+                    # CTRL durÃ©e seuil
+                    ctrl_duree_seuil = CTRL_Heure(self.GetMainWindow(), item=brancheUnite, track=track, tooltip=_(u"Saisissez la durÃ©e seuil pour chaque consommation : La durÃ©e de chaque consommation ne pourra Ãªtre infÃ©rieure Ã  cette valeur"))
                     self.SetItemWindow(brancheUnite, ctrl_duree_seuil, 5)
                     track.ctrl_duree_seuil = ctrl_duree_seuil
 
-                    # CTRL durée plafond
-                    ctrl_duree_plafond = CTRL_Heure(self.GetMainWindow(), item=brancheUnite, track=track, tooltip=_(u"Saisissez la durée plafond pour chaque consommation : La durée de chaque consommation ne pourra être supérieure à cette valeur"))
+                    # CTRL durÃ©e plafond
+                    ctrl_duree_plafond = CTRL_Heure(self.GetMainWindow(), item=brancheUnite, track=track, tooltip=_(u"Saisissez la durÃ©e plafond pour chaque consommation : La durÃ©e de chaque consommation ne pourra Ãªtre supÃ©rieure Ã  cette valeur"))
                     self.SetItemWindow(brancheUnite, ctrl_duree_plafond, 6)
                     track.ctrl_duree_plafond = ctrl_duree_plafond
 
                     # CTRL heure seuil
-                    ctrl_heure_seuil = CTRL_Heure(self.GetMainWindow(), item=brancheUnite, track=track, tooltip=_(u"Saisissez une heure seuil pour chaque consommation : La durée sera calculée uniquement à partir de cette heure-là"))
+                    ctrl_heure_seuil = CTRL_Heure(self.GetMainWindow(), item=brancheUnite, track=track, tooltip=_(u"Saisissez une heure seuil pour chaque consommation : La durÃ©e sera calculÃ©e uniquement Ã  partir de cette heure-lÃ "))
                     self.SetItemWindow(brancheUnite, ctrl_heure_seuil, 7)
                     track.ctrl_heure_seuil = ctrl_heure_seuil
 
                     # CTRL heure plafond
-                    ctrl_heure_plafond = CTRL_Heure(self.GetMainWindow(), item=brancheUnite, track=track, tooltip=_(u"Saisissez une heure plafond pour chaque consommation : La durée sera calculée uniquement jusqu'à cette heure-là"))
+                    ctrl_heure_plafond = CTRL_Heure(self.GetMainWindow(), item=brancheUnite, track=track, tooltip=_(u"Saisissez une heure plafond pour chaque consommation : La durÃ©e sera calculÃ©e uniquement jusqu'Ã  cette heure-lÃ "))
                     self.SetItemWindow(brancheUnite, ctrl_heure_plafond, 8)
                     track.ctrl_heure_plafond = ctrl_heure_plafond
 
@@ -619,7 +619,7 @@ class CTRL(HTL.HyperTreeList):
 
         self.ExpandAllChildren(self.root)
         
-        # Pour éviter le bus de positionnement des contrôles
+        # Pour Ã©viter le bus de positionnement des contrÃ´les
         self.GetMainWindow().CalculatePositions() 
         
         self.listeTracks = listeTracks
@@ -632,7 +632,7 @@ class CTRL(HTL.HyperTreeList):
         self.Initialisation()
     
     def GetDictCoeff(self):
-        # Mémorise les coeff déjà saisis
+        # MÃ©morise les coeff dÃ©jÃ  saisis
         for track in self.listeTracks :
             if self.IsItemChecked(track.item) :
                 if track.GetType() == 0 :
@@ -641,7 +641,7 @@ class CTRL(HTL.HyperTreeList):
         return self.dictCoeff
     
     def GetDonnees(self):
-        """ Récupère les résultats des données saisies """
+        """ RÃ©cupÃ¨re les rÃ©sultats des donnÃ©es saisies """
         dictDonnees = {}
         for track in self.listeTracks :
             
@@ -658,40 +658,40 @@ class CTRL(HTL.HyperTreeList):
                 if typeCalcul == 0 :
                     # Heure selon coeff
                     if track.ValidationCoeff() == False :
-                        dlg = wx.MessageDialog(self, _(u"Le coefficient de l'unité '%s' semble incorrecte !") % track.nomUnite, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                        dlg = wx.MessageDialog(self, _(u"Le coefficient de l'unitÃ© '%s' semble incorrecte !") % track.nomUnite, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                         dlg.ShowModal()
                         dlg.Destroy()
                         return False
                     coeff = track.GetCoeff() 
 
                 elif typeCalcul == 1 :
-                    # heures réelles
+                    # heures rÃ©elles
                     if track.GetDureeSeuil() == False :
-                        dlg = wx.MessageDialog(self, _(u"Le seuil de l'unité '%s' semble incorrecte !") % track.nomUnite, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                        dlg = wx.MessageDialog(self, _(u"Le seuil de l'unitÃ© '%s' semble incorrecte !") % track.nomUnite, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                         dlg.ShowModal()
                         dlg.Destroy()
                         return False
 
                     if track.GetDureePlafond() == False :
-                        dlg = wx.MessageDialog(self, _(u"Le plafond de l'unité '%s' semble incorrecte !") % track.nomUnite, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                        dlg = wx.MessageDialog(self, _(u"Le plafond de l'unitÃ© '%s' semble incorrecte !") % track.nomUnite, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                         dlg.ShowModal()
                         dlg.Destroy()
                         return False
 
                     if track.GetHeureSeuil() == False :
-                        dlg = wx.MessageDialog(self, _(u"L'heure seuil de l'unité '%s' semble incorrecte !") % track.nomUnite, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                        dlg = wx.MessageDialog(self, _(u"L'heure seuil de l'unitÃ© '%s' semble incorrecte !") % track.nomUnite, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                         dlg.ShowModal()
                         dlg.Destroy()
                         return False
 
                     if track.GetHeurePlafond() == False :
-                        dlg = wx.MessageDialog(self, _(u"L'heure plafond de l'unité '%s' semble incorrecte !") % track.nomUnite, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                        dlg = wx.MessageDialog(self, _(u"L'heure plafond de l'unitÃ© '%s' semble incorrecte !") % track.nomUnite, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                         dlg.ShowModal()
                         dlg.Destroy()
                         return False
 
                     if track.GetHeurePlafond() != None and track.GetHeureSeuil() != None and track.GetHeurePlafond() < track.GetHeureSeuil() :
-                        dlg = wx.MessageDialog(self, _(u"L'heure plafond de l'unité '%s' doit obligatoirement être supérieure à l'heure seuil !") % track.nomUnite, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                        dlg = wx.MessageDialog(self, _(u"L'heure plafond de l'unitÃ© '%s' doit obligatoirement Ãªtre supÃ©rieure Ã  l'heure seuil !") % track.nomUnite, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                         dlg.ShowModal()
                         dlg.Destroy()
                         return False
@@ -703,14 +703,14 @@ class CTRL(HTL.HyperTreeList):
                     heure_plafond = track.GetHeurePlafond()
 
                 elif typeCalcul == 2:
-                    # Heures facturées
+                    # Heures facturÃ©es
                     pass
 
                 elif typeCalcul == 3:
                     formule = track.GetFormule()
 
 
-                # Mémorisation des valeurs
+                # MÃ©morisation des valeurs
                 dictValeurs = {
                     "IDunite" : track.IDunite,
                     "IDactivite" : track.IDactivite,
@@ -731,19 +731,19 @@ class CTRL(HTL.HyperTreeList):
                 
 
     def GetParametres(self):
-        """ Récupération des paramètres pour sauvegarde dans profil """
+        """ RÃ©cupÃ©ration des paramÃ¨tres pour sauvegarde dans profil """
         dictParametres = {}
         for track in self.listeTracks:
             dictParametres["parametres_unite_%d" % track.IDunite] = track.GetParametres()
         return dictParametres
 
     def SetParametres(self, dictParametres={}):
-        """ Importation de paramètres """
-        # Réinitialisation si aucun profil
+        """ Importation de paramÃ¨tres """
+        # RÃ©initialisation si aucun profil
         if dictParametres == None :
             self.MAJ(reinitialisation=True)
             return
-        # Envoi des paramètres au Ctrl
+        # Envoi des paramÃ¨tres au Ctrl
         for IDunite, dictParametresTrack in dictParametres.items():
             if type(IDunite) in (str, six.text_type) and IDunite.startswith("parametres_unite_"):
                 IDunite = int(IDunite.replace("parametres_unite_", ""))
@@ -751,7 +751,7 @@ class CTRL(HTL.HyperTreeList):
                 if IDunite == track.IDunite :
                     track.SetParametres(dictParametresTrack)
 
-        # Mémorisation des paramètres
+        # MÃ©morisation des paramÃ¨tres
         self.dict_parametres = dictParametres
 
 # -------------------------------------------------------------------------------------------------------------------------------------------

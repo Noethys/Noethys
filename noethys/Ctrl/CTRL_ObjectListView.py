@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -38,7 +38,7 @@ class ReportFormat(OLV.ReportFormat):
 
 class ObjectListView(OLV.ObjectListView):
     def __init__(self, *args, **kwargs):
-        # Variables spÈciales
+        # Variables sp√©ciales
         self.listeColonnes = [] 
         self.listeFiltresColonnes = []
         self.nomListe = None
@@ -84,7 +84,7 @@ class ObjectListView(OLV.ObjectListView):
 
 
     def AddColumnDefn(self, defn):
-        # EnlËve l'espace gauche sur tous les headers du listctrl sous Phoenix en ajoutant une image transparente
+        # Enl√®ve l'espace gauche sur tous les headers du listctrl sous Phoenix en ajoutant une image transparente
         # if 'phoenix' in wx.PlatformInfo:
         #     if defn.headerImage == -1 :
         #         smallImage = wx.Bitmap(16, 16)
@@ -163,11 +163,11 @@ class ObjectListView(OLV.ObjectListView):
         else :
             proportion = 2
         try :
-            self.stEmptyListMsg.SetSize(0, sz.GetHeight()/proportion, sz.GetWidth(), sz.GetHeight()) # J'ai mis 2 a la place de 3
+            self.stEmptyListMsg.SetSize(0, int(sz.GetHeight()/proportion), int(sz.GetWidth()), sz.GetHeight()) # J'ai mis 2 a la place de 3
         except :
-            self.stEmptyListMsg.SetDimensions(0, sz.GetHeight() / proportion, sz.GetWidth(), sz.GetHeight())  # J'ai mis 2 a la place de 3
+            self.stEmptyListMsg.SetDimensions(0, int(sz.GetHeight() / proportion), int(sz.GetWidth()), sz.GetHeight())  # J'ai mis 2 a la place de 3
 
-        # Masque le texte "Aucun" si version phoenix (‡ cause des colonnes bleues)
+        # Masque le texte "Aucun" si version phoenix (√† cause des colonnes bleues)
         if 'phoenix' in wx.PlatformInfo:
             self.stEmptyListMsg.Hide()
 
@@ -242,7 +242,7 @@ class ObjectListView(OLV.ObjectListView):
         self.objectToIndexMap = None
 
     def SetColumns2(self, colonnes=[], nomListe=None):
-        """ Pour une liste avec possibilitÈs de configuration """
+        """ Pour une liste avec possibilit√©s de configuration """
         self.nomListe = nomListe
         if self.listeColonnes == [] :
             from Dlg import DLG_Configuration_listes
@@ -252,7 +252,7 @@ class ObjectListView(OLV.ObjectListView):
         self.SetColumns(self.listeColonnes)
 
     def AjouterCommandesMenuContext(self, menu=None):
-        # SÈparation
+        # s√©paration
         menu.AppendSeparator()
         
         # Item Configurer la liste
@@ -261,7 +261,7 @@ class ObjectListView(OLV.ObjectListView):
         menu.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.MenuConfigurerListe, id=8601)
 
-        # SÈparation
+        # s√©paration
         menu.AppendSeparator()
         
         # Statistiques de la liste
@@ -282,20 +282,20 @@ class ObjectListView(OLV.ObjectListView):
         colonnes_dispo = []
         for col in self.listeColonnesDefaut:
             if hasattr(col, "visible"):
-                # MÈmorise colonne disponible
+                # m√©morise colonne disponible
                 nom = col.title
                 if nom == "":
                     nom = col.valueGetter
                 colonnes_dispo.append({"nom" : nom, "code" : col.valueGetter, "col" : col})
 
-        # MÈmorise sÈlection actuelle
+        # m√©morise s√©lection actuelle
         colonnes_selection = []
         for col in self.listeColonnes :
             if hasattr(col, "visible"):
                 if col.visible == True :
                     colonnes_selection.append(col.valueGetter)
 
-        # Recherche les colonnes par dÈfaut
+        # Recherche les colonnes par d√©faut
         colonnes_defaut = copy.copy(self.listeCodesDefaut)
 
         # DLG de la configuration de listes
@@ -308,7 +308,7 @@ class ObjectListView(OLV.ObjectListView):
             dlg.Destroy()
             return
 
-        # Analyse des rÈsultats
+        # Analyse des r√©sultats
         self.listeColonnes = []
         for dictColonne in listeColonnesSelection :
             col = dictColonne["col"]
@@ -318,12 +318,12 @@ class ObjectListView(OLV.ObjectListView):
         # Sauvegarde
         self.SauvegardeConfiguration()
 
-        # Annule le regroupement Èventuel
+        # Annule le regroupement √©ventuel
         if hasattr(self, "SetShowGroups"):
             self.SetShowGroups(False)
         self.useExpansionColumn = False
 
-        # Mise ‡ jour de la liste
+        # Mise √† jour de la liste
         attente = wx.BusyInfo(u"Configuration de la liste en cours...", self)
         self.OnConfigurationListe()
         self.InitModel()
@@ -350,7 +350,7 @@ class ObjectListView(OLV.ObjectListView):
             print(colWidth, boundedWidth)
 
 
-        # RÈcupÈration des totaux des colonnes souhaitÈes
+        # R√©cup√©ration des totaux des colonnes souhait√©es
         dictTotaux = {}
         nbreLignes = 0
         for track in self.modelObjects :
@@ -509,13 +509,13 @@ class ObjectListView(OLV.ObjectListView):
                 if choix == "AJOUR":
                     filtre = "track.ID%s in %s" % (code, self.GetCotisations(mode=code, choix=choix, criteres=criteres))
 
-            # MÈmorisation
+            # m√©morisation
             listeFiltresFinale.append(filtre) 
         
         return listeFiltresFinale
 
     def GetCotisations(self, mode="individu", choix="", criteres={}):
-        """ RÈcupÈration de la liste des individus inscrits et prÈsents """
+        """ R√©cup√©ration de la liste des individus inscrits et pr√©sents """
         date = criteres["date"]
         liste_cotisations = [int(IDtype_cotisation) for IDtype_cotisation in criteres["listeCotisations"].split(";")]
 
@@ -538,7 +538,7 @@ class ObjectListView(OLV.ObjectListView):
         return [donnees[0] for donnees in listeDonnees]
 
     def GetInscrits(self, mode="individu", choix="", criteres={}):
-        """ RÈcupÈration de la liste des individus inscrits et prÈsents """
+        """ R√©cup√©ration de la liste des individus inscrits et pr√©sents """
         listeActivites = criteres["listeActivites"]
         listeGroupes = criteres["listeGroupes"]
         if choix == "PRESENTS":
@@ -566,7 +566,7 @@ class ObjectListView(OLV.ObjectListView):
             if periode != None :
                 conditionGroupes = conditionGroupes.replace("inscriptions", "consommations")
                 
-        # Conditions PrÈsents
+        # Conditions pr√©sents
         conditionPresents = ""
         jointurePresents = ""
         if periode != None :
@@ -643,7 +643,7 @@ class ObjectListView(OLV.ObjectListView):
             if "total" in dictParametres: total = dictParametres["total"]
             if "orientation" in dictParametres: orientation = dictParametres["orientation"]
 
-        # Met ‡ jour le titre de la liste si besoin
+        # Met √† jour le titre de la liste si besoin
         if titre != None :
             self.titre = titre
 
@@ -661,9 +661,9 @@ class ObjectListView(OLV.ObjectListView):
             menu.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.CocheListeTout, id=id)
 
-            # Item Tout dÈcocher
+            # Item Tout d√©cocher
             id = wx.Window.NewControlId()
-            item = wx.MenuItem(menu, id, _(u"Tout dÈcocher"))
+            item = wx.MenuItem(menu, id, _(u"Tout d√©cocher"))
             item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Decocher.png"), wx.BITMAP_TYPE_PNG))
             menu.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.CocheListeRien, id=id)
@@ -672,7 +672,7 @@ class ObjectListView(OLV.ObjectListView):
 
         # Apercu avant impression
         id = wx.Window.NewControlId()
-        item = wx.MenuItem(menu, id, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menu, id, _(u"aper√ßu avant impression"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=id)
@@ -869,9 +869,9 @@ class CTRL_Outils(wx.Panel):
         self.listview = listview
         self.afficherRegroupement = afficherRegroupement
         
-        # ContrÙles
+        # Contr√¥les
         self.barreRecherche = BarreRecherche(self, listview=listview, texteDefaut=texteDefaut)
-##        self.bouton_filtrage = wx.Button(self, -1, u"Filtrage avancÈ", size=(-1, 20))
+##        self.bouton_filtrage = wx.Button(self, -1, u"Filtrage avanc√©", size=(-1, 20))
 ##        self.bouton_filtrage = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Filtrer_liste_2.png", wx.BITMAP_TYPE_ANY))
         
         import wx.lib.platebtn as platebtn
@@ -881,7 +881,7 @@ class CTRL_Outils(wx.Panel):
         self.bouton_filtrer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour filtrer cette liste")))
         
         menu = UTILS_Adaptations.Menu()
-        item = wx.MenuItem(menu, 10, u"Ajouter, modifier ou supprimer des filtres", u"Cliquez ici pour accÈder ‡ la gestion des filtres de listes")
+        item = wx.MenuItem(menu, 10, u"Ajouter, modifier ou supprimer des filtres", u"Cliquez ici pour acc√©der √† la gestion des filtres de listes")
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Filtre.png"), wx.BITMAP_TYPE_ANY))
         menu.AppendItem(item)
         menu.AppendSeparator()
@@ -894,13 +894,13 @@ class CTRL_Outils(wx.Panel):
         # Bouton Cocher
         if afficherCocher == True :
             self.bouton_cocher = platebtn.PlateButton(self, -1, u" Cocher", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Cocher.png"), wx.BITMAP_TYPE_ANY))
-            self.bouton_cocher.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour cocher ou dÈcocher rapidement tous les ÈlÈments de cette liste")))
+            self.bouton_cocher.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour cocher ou d√©cocher rapidement tous les √©l√©ments de cette liste")))
             
             menu = UTILS_Adaptations.Menu()
-            item = wx.MenuItem(menu, 20, u"Tout cocher", u"Cliquez ici pour cocher tous les ÈlÈments de la liste")
+            item = wx.MenuItem(menu, 20, u"Tout cocher", u"Cliquez ici pour cocher tous les √©l√©ments de la liste")
             item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Cocher.png"), wx.BITMAP_TYPE_ANY))
             menu.AppendItem(item)
-            item = wx.MenuItem(menu, 21, u"Tout dÈcocher", u"Cliquez ici pour dÈcocher tous les ÈlÈments de la liste")
+            item = wx.MenuItem(menu, 21, u"Tout d√©cocher", u"Cliquez ici pour d√©cocher tous les √©l√©ments de la liste")
             item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Decocher.png"), wx.BITMAP_TYPE_ANY))
             menu.AppendItem(item)        
             self.bouton_cocher.SetMenu(menu)
@@ -933,10 +933,10 @@ class CTRL_Outils(wx.Panel):
         event.Skip() 
         
     def MAJ_ctrl_filtrer(self):
-        """ Met ‡ jour l'image du bouton Filtrage """
+        """ Met √† jour l'image du bouton Filtrage """
         nbreFiltres = len(self.listview.listeFiltresColonnes)
         
-        # Modifie l'image selon le nbre de filtres activÈs
+        # Modifie l'image selon le nbre de filtres activ√©s
         if nbreFiltres == 0 :
             nomImage = "Filtre"
         elif nbreFiltres < 10 :
@@ -946,14 +946,14 @@ class CTRL_Outils(wx.Panel):
         self.bouton_filtrer.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s.png" % nomImage), wx.BITMAP_TYPE_ANY))
         self.bouton_filtrer.Refresh() 
         
-        # Modifie le tip en fonction des filtres activÈs
+        # Modifie le tip en fonction des filtres activ√©s
         if nbreFiltres == 0 :
             texte = u"Cliquez ici pour filtrer cette liste"
         else :
             if nbreFiltres == 1 :
-                texte = u"Cliquez ici pour filtrer cette liste\n> 1 filtre activÈ"
+                texte = u"Cliquez ici pour filtrer cette liste\n> 1 filtre activ√©"
             else :
-                texte = u"Cliquez ici pour filtrer cette liste\n> %d filtres activÈs" % nbreFiltres        
+                texte = u"Cliquez ici pour filtrer cette liste\n> %d filtres activ√©s" % nbreFiltres        
         self.bouton_filtrer.SetToolTip(wx.ToolTip(texte))
         
     def OnBoutonFiltrer(self, event):
@@ -977,7 +977,7 @@ class CTRL_Outils(wx.Panel):
         
     def OnMenu(self, event):
         ID = event.GetId()
-        # AccÈder ‡ la gestion des filtres
+        # acc√©der √† la gestion des filtres
         if ID == 10 : 
             self.OnBoutonFiltrer(None)
         # Supprimer tous les filtres
@@ -988,7 +988,7 @@ class CTRL_Outils(wx.Panel):
         # Tout cocher
         if ID == 20 :
             self.listview.CocheListeTout()
-        # Tout dÈcocher
+        # Tout d√©cocher
         if ID == 21 :
             self.listview.CocheListeRien()
 
@@ -1143,7 +1143,7 @@ class PanelAvecFooter(wx.Panel):
     def __init__(self, parent, listview=None, kwargs={}, dictColonnes={}, style=wx.SUNKEN_BORDER|wx.TAB_TRAVERSAL):
         wx.Panel.__init__(self, parent, id=-1, style=style)
         
-        # ContrÙles
+        # Contr√¥les
         kwargs["parent"] = self
 ##        if kwargs.has_key("parent") == False : kwargs["parent"] = self # BUG ICI
         if ("id" in kwargs) == False : kwargs["id"] = -1

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -67,7 +67,7 @@ class CTRL_Email(wx.Panel):
                 
     def OnClic(self):
         from Dlg import DLG_Selection_email
-        intro = _(u"Sélectionnez ici l'adresse Email à laquelle envoyer les factures.")
+        intro = _(u"SÃ©lectionnez ici l'adresse Email Ã  laquelle envoyer les factures.")
         titre = _(u"Activation de l'envoi des factures par Email")
         dlg = DLG_Selection_email.Dialog(self, IDfamille=self.IDfamille, champ="email_factures", intro=intro, titre=titre, adresses_multiples=True)
         dlg.ShowModal() 
@@ -117,7 +117,7 @@ class Panel(wx.Panel):
         self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Apercu.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_email = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Emails_exp.png"), wx.BITMAP_TYPE_ANY))
         
-        # Prélèvement
+        # PrÃ©lÃ¨vement
         self.ctrl_email = CTRL_Email(self, IDfamille)
 
         # Binds
@@ -126,11 +126,11 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonImprimer, self.bouton_imprimer)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonEmail, self.bouton_email)
         
-        # Propriétés
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer une facture pour cette famille")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la facture sélectionnée")))
-        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rééditer la facture sélectionnée (PDF)")))
-        self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer la facture sélectionnée par Email")))
+        # PropriÃ©tÃ©s
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er une facture pour cette famille")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la facture sÃ©lectionnÃ©e")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rÃ©Ã©diter la facture sÃ©lectionnÃ©e (PDF)")))
+        self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer la facture sÃ©lectionnÃ©e par Email")))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
@@ -167,13 +167,13 @@ class Panel(wx.Panel):
         grid_sizer_base.AddGrowableRow(0)
     
     def OnBoutonAjouter(self, event):
-        """ Créer une facture """
+        """ CrÃ©er une facture """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_factures", "creer") == False : return
         
         from Dlg import DLG_Verification_ventilation
         tracks = DLG_Verification_ventilation.Verification(self.IDcompte_payeur)
         if len(tracks) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Un ou plusieurs règlements peuvent être ventilés.\n\nSouhaitez-vous le faire maintenant (conseillé) ?"), _(u"Ventilation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Un ou plusieurs rÃ¨glements peuvent Ãªtre ventilÃ©s.\n\nSouhaitez-vous le faire maintenant (conseillÃ©) ?"), _(u"Ventilation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse == wx.ID_YES :
@@ -200,11 +200,11 @@ class Panel(wx.Panel):
             noSelection = False
             ID = self.ctrl_listview.Selection()[0].IDfacture
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
     
-        # Item Rééditer facture
-        item = wx.MenuItem(menuPop, 10, _(u"Aperçu PDF de la facture"))
+        # Item RÃ©Ã©diter facture
+        item = wx.MenuItem(menuPop, 10, _(u"AperÃ§u PDF de la facture"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -214,7 +214,7 @@ class Panel(wx.Panel):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 20, _(u"Aperçu avant impression de la liste"))
+        item = wx.MenuItem(menuPop, 20, _(u"AperÃ§u avant impression de la liste"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -261,14 +261,14 @@ class Panel(wx.Panel):
             DB.Close()
             self.IDcompte_payeur = listeDonnees[0][0]
             self.ctrl_listview.SetIDcompte_payeur(self.IDcompte_payeur)
-        # MAJ des contrôles
+        # MAJ des contrÃ´les
         self.ctrl_listview.MAJ() 
         self.ctrl_listview.DefileDernier() 
         self.ctrl_email.MAJ() 
         self.Refresh()
                 
     def ValidationData(self):
-        """ Return True si les données sont valides et pretes à être sauvegardées """
+        """ Return True si les donnÃ©es sont valides et pretes Ã  Ãªtre sauvegardÃ©es """
         return True
     
     def Sauvegarde(self):

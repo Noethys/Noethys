@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -25,8 +25,8 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.IDfamille = IDfamille
         
-        intro = _(u"Vous pouvez ici consulter la liste complète des reçus de règlements créés dans le logiciel.")
-        titre = _(u"Liste des reçus de règlements")
+        intro = _(u"Vous pouvez ici consulter la liste complÃ¨te des reÃ§us de rÃ¨glements crÃ©Ã©s dans le logiciel.")
+        titre = _(u"Liste des reÃ§us de rÃ¨glements")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Note.png")
         
         self.ctrl_listview = OL_Recus.ListView(self, id=-1, IDfamille=self.IDfamille, name="OL_recus", style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
@@ -47,9 +47,9 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Liste des reçus de règlements"))
-        self.bouton_ouvrir_fiche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la fiche famille du reçu sélectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le reçu sélectionné dans la liste")))
+        self.SetTitle(_(u"Liste des reÃ§us de rÃ¨glements"))
+        self.bouton_ouvrir_fiche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la fiche famille du reÃ§u sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le reÃ§u sÃ©lectionnÃ© dans la liste")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((600, 500))

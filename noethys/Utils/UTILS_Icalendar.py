@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -45,7 +45,7 @@ class Calendrier():
         return listeEvents
     
     def RechercheElement(self, component=None, nom="DTSTART", type="date"):
-        """ Recherche un élément dans un Event """
+        """ Recherche un Ã©lÃ©ment dans un Event """
         if nom in component :
             if type == "date" : return component.decoded(nom)
             if type == "texte" : return u"%s" % component[nom]
@@ -53,7 +53,7 @@ class Calendrier():
             return None
     
     def GetTitre(self):
-        """ Récupère le titre du calendrier """
+        """ RÃ©cupÃ¨re le titre du calendrier """
         try :
             titre = self.cal["X-WR-CALNAME"]
         except :
@@ -61,16 +61,16 @@ class Calendrier():
         return titre
     
     def GetVacances(self):
-        """ Récupère les périodes de vacances """
+        """ RÃ©cupÃ¨re les pÃ©riodes de vacances """
         listeEvents = self.GetEvents() 
         listeResultats = []
 
         # Recherche les petites vacances
         listeCorrespondances = [
-            (_(u"hiver"), _(u"Février")),
-            (_(u"printemps"), _(u"Pâques")),
+            (_(u"hiver"), _(u"FÃ©vrier")),
+            (_(u"printemps"), _(u"PÃ¢ques")),
             (_(u"Toussaint"), _(u"Toussaint")),
-            (_(u"Noël"), _(u"Noël")),
+            (_(u"NoÃ«l"), _(u"NoÃ«l")),
             ]
 
         for nomOriginal, nomFinal in listeCorrespondances :
@@ -85,20 +85,20 @@ class Calendrier():
         # Recherche les grandes vacances
         dictTemp = {}
         for dictEvent in listeEvents :
-            if u"élèves" or u"été" in dictEvent["description"] :
+            if u"Ã©lÃ¨ves" or u"Ã©tÃ©" in dictEvent["description"] :
                 annee = dictEvent["date_debut"].year
                 if (annee in dictTemp) == False :
                     dictTemp[annee] = {"date_debut" : None, "date_fin" : None}
-                if u"été" in dictEvent["description"] :
+                if u"Ã©tÃ©" in dictEvent["description"] :
                     dictTemp[annee]["date_debut"] = dictEvent["date_debut"] + datetime.timedelta(days=1)
-                if u"élèves" in dictEvent["description"] :
+                if u"Ã©lÃ¨ves" in dictEvent["description"] :
                     dictTemp[annee]["date_fin"] = dictEvent["date_debut"] - datetime.timedelta(days=1)
 
         for annee, dictDates in dictTemp.items() :
             if dictDates["date_debut"] != None and dictDates["date_fin"] != None :
-                listeResultats.append({"annee" : annee, "nom" : _(u"Eté"), "date_debut" : dictDates["date_debut"], "date_fin" : dictDates["date_fin"]})
+                listeResultats.append({"annee" : annee, "nom" : _(u"EtÃ©"), "date_debut" : dictDates["date_debut"], "date_fin" : dictDates["date_fin"]})
 
-        # Tri par date de début
+        # Tri par date de dÃ©but
         if six.PY2:
             listeResultats.sort(lambda x,y: cmp(x["date_debut"], y["date_debut"]))
         else:

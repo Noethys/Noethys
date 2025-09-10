@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -14,7 +14,7 @@ LISTE_SERVEURS_FAI = [
     ( u"ALICE ADSL", "smtp.aliceadsl.fr", None, False, False),
     ( u"AOL", "smtp.neuf.fr", None, False, False),
     ( u"Bouygues BBOX", "smtp.bbox.fr", None, False, False),
-    ( u"Bouygues Télécom", "smtp.bouygtel.fr", None, False, False),
+    ( u"Bouygues TÃ©lÃ©com", "smtp.bouygtel.fr", None, False, False),
     ( u"CEGETEL", "smtp.cegetel.net", None, False, False),
     ( u"CLUB INTERNET", "mail.club-internet.fr", None, False, False),
     ( u"DARTY BOX", "smtpauth.dbmail.com", None, False, False),
@@ -28,7 +28,7 @@ LISTE_SERVEURS_FAI = [
     ( u"MAGIC ONLINE", "smtp.magic.fr", None, False, False),
     ( u"NERIM", "smtp.nerim.net", None, False, False),
     ( u"NOOS", "mail.noos.fr", None, False, False),
-    ( u"Numéricable", "smtp.numericable.fr", None, False, False),
+    ( u"NumÃ©ricable", "smtp.numericable.fr", None, False, False),
     ( u"ORANGE", "smtp.orange.fr", None, False, False),
     ( u"OREKA", "mail.oreka.fr", None, False, False),
     ( u"SYMPATICO", "smtp1.sympatico.ca", None, False, False),

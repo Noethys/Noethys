@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -59,7 +59,7 @@ class CustomTaskBarIcon():
 
     def AjouteTexteImage(self, image=None, texte="", alignement="droite-bas", padding=0, taille_police=9):
         """ Ajoute un texte sur une image bitmap """
-        # Création du bitmap
+        # CrÃ©ation du bitmap
         largeurImage, hauteurImage = image.GetSize()
         if 'phoenix' in wx.PlatformInfo:
             bmp = wx.Bitmap(largeurImage, hauteurImage)
@@ -70,7 +70,7 @@ class CustomTaskBarIcon():
         mdc.SetBackground(wx.Brush("black"))
         mdc.Clear()
 
-        # Paramètres
+        # ParamÃ¨tres
         dc.SetBrush(wx.Brush(wx.RED))
         dc.SetPen(wx.TRANSPARENT_PEN)
         dc.SetFont(wx.Font(taille_police, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))

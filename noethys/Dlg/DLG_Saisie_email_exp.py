@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-19 Ivan LUCAS
@@ -49,7 +49,7 @@ class Page_SMTP(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
 
-        # RÈcupÈration des serveurs prÈdÈfinis
+        # R√©cup√©ration des serveurs pr√©d√©finis
         self.listeServeurs = DATA_Serveurs_fai.LISTE_SERVEURS_FAI
         listeServeursChoices = []
         for fai, smtp, port, auth, startTLS in self.listeServeurs:
@@ -58,13 +58,13 @@ class Page_SMTP(wx.Panel):
         # Serveur
         self.static_sizer_serveur_staticbox = wx.StaticBox(self, -1, _(u"Serveur de messagerie"))
         self.radio_predefini = wx.RadioButton(self, -1, "")
-        self.label_predefini = wx.StaticText(self, -1, _(u"Serveur prÈdÈfini :"))
+        self.label_predefini = wx.StaticText(self, -1, _(u"Serveur pr√©d√©fini :"))
         self.ctrl_predefinis = wx.Choice(self, -1, choices=listeServeursChoices)
         self.radio_personnalise = wx.RadioButton(self, -1, "")
-        self.label_personnalise = wx.StaticText(self, -1, _(u"Serveur personnalisÈ :"))
+        self.label_personnalise = wx.StaticText(self, -1, _(u"Serveur personnalis√© :"))
         self.label_smtp = wx.StaticText(self, -1, _(u"Serveur SMTP :"))
         self.ctrl_smtp = wx.TextCtrl(self, -1, "")
-        self.label_port = wx.StaticText(self, -1, _(u"NumÈro de port :"))
+        self.label_port = wx.StaticText(self, -1, _(u"Num√©ro de port :"))
         self.ctrl_port = wx.TextCtrl(self, -1, "")
         self.label_authentification = wx.StaticText(self, -1, _(u"Authentification :"))
         self.ctrl_authentification = wx.CheckBox(self, -1, "")
@@ -75,7 +75,7 @@ class Page_SMTP(wx.Panel):
         self.static_sizer_adresse_staticbox = wx.StaticBox(self, -1, _(u"Adresse de messagerie"))
         self.label_adresse = wx.StaticText(self, -1, _(u"Adresse d'envoi :"))
         self.ctrl_adresse = wx.TextCtrl(self, -1, "")
-        self.label_nom_adresse = wx.StaticText(self, -1, _(u"Nom affichÈ :"))
+        self.label_nom_adresse = wx.StaticText(self, -1, _(u"Nom affich√© :"))
         self.ctrl_nom_adresse = wx.TextCtrl(self, -1, "")
         self.label_utilisateur = wx.StaticText(self, -1, _(u"Utilisateur :"))
         self.ctrl_utilisateur = wx.TextCtrl(self, -1, "")
@@ -85,7 +85,7 @@ class Page_SMTP(wx.Panel):
 
         # Options
         self.static_sizer_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
-        self.ctrl_notification = wx.CheckBox(self, -1, _(u"AccusÈ de rÈception"))
+        self.ctrl_notification = wx.CheckBox(self, -1, _(u"Accus√© de r√©ception"))
         self.ctrl_envoi_lot = wx.CheckBox(self, -1, _(u"Envoi par lot"))
         self.label_nbre_lot = wx.StaticText(self, -1, _(u"Mails par lot :"))
         self.ctrl_nbre_lot = wx.SpinCtrl(self, -1, u"", size=(60, -1), min=1, max=1000)
@@ -100,21 +100,21 @@ class Page_SMTP(wx.Panel):
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckEnvoiLot, self.ctrl_envoi_lot)
 
         # Properties
-        self.radio_predefini.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÈlectionner un serveur prÈdÈfini dans la liste")))
+        self.radio_predefini.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour s√©lectionner un serveur pr√©d√©fini dans la liste")))
         self.ctrl_predefinis.SetMinSize((350, -1))
-        self.radio_personnalise.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir manuellement les caractÈristiques du serveur de messagerie")))
+        self.radio_personnalise.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir manuellement les caract√©ristiques du serveur de messagerie")))
         self.ctrl_smtp.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom du serveur SMPT (exemple : smtp.orange.fr)")))
         self.ctrl_port.SetMinSize((60, -1))
-        self.ctrl_port.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numÈro de port (laissez la case vide pour utiliser le numÈro de port par dÈfaut)")))
-        self.ctrl_authentification.SetToolTip(wx.ToolTip(_(u"Cliquez ici si le serveur de messagerie nÈcessite une authentification")))
+        self.ctrl_port.SetToolTip(wx.ToolTip(_(u"Saisissez ici le num√©ro de port (laissez la case vide pour utiliser le num√©ro de port par d√©faut)")))
+        self.ctrl_authentification.SetToolTip(wx.ToolTip(_(u"Cliquez ici si le serveur de messagerie n√©cessite une authentification")))
         self.ctrl_adresse.SetToolTip(wx.ToolTip(_(u"Saisissez ici votre adresse mail d'envoi")))
-        self.ctrl_nom_adresse.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom qui sera affichÈ pour l'adresse mail d'envoi")))
+        self.ctrl_nom_adresse.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom qui sera affich√© pour l'adresse mail d'envoi")))
         self.ctrl_utilisateur.SetToolTip(wx.ToolTip(_(u"Saisissez ici votre nom d'utilisateur (il s'agit souvent de l'adresse d'envoi)")))
-        self.ctrl_mdp.SetToolTip(wx.ToolTip(_(u"Saisissez ici le mot de passe s'il s'agit d'une connexion authentifiÈe")))
+        self.ctrl_mdp.SetToolTip(wx.ToolTip(_(u"Saisissez ici le mot de passe s'il s'agit d'une connexion authentifi√©e")))
         self.ctrl_startTLS.SetToolTip(wx.ToolTip(_(u"Cochez cette case si votre messagerie utilise le protocole TLS")))
-        self.ctrl_notification.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour demander ‡ recevoir un accusÈ de rÈception (Attention : Ne fonctionne qu'avec certaines messageries)")))
-        self.ctrl_envoi_lot.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour envoyer les mails par lot espacÈs d'une pause du temps souhaitÈ")))
-        self.ctrl_nbre_lot.SetToolTip(wx.ToolTip(_(u"Saisissez le nombre de mails ‡ envoyer avant la pause")))
+        self.ctrl_notification.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour demander √† recevoir un accus√© de r√©ception (Attention : Ne fonctionne qu'avec certaines messageries)")))
+        self.ctrl_envoi_lot.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour envoyer les mails par lot espac√©s d'une pause du temps souhait√©")))
+        self.ctrl_nbre_lot.SetToolTip(wx.ToolTip(_(u"Saisissez le nombre de mails √† envoyer avant la pause")))
         self.ctrl_duree_pause.SetToolTip(wx.ToolTip(_(u"Saisissez le nombre de secondes d'attente entre deux envois de lots")))
 
         # Layout
@@ -124,7 +124,7 @@ class Page_SMTP(wx.Panel):
         grid_sizer_serveur = wx.FlexGridSizer(rows=6, cols=2, vgap=15, hgap=0)
         grid_sizer_serveur.Add(self.radio_predefini, 0, wx.ALIGN_CENTER_VERTICAL, 0)
 
-        # Serveur prÈdÈfini
+        # Serveur pr√©d√©fini
         grid_sizer_predefini = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_predefini.Add(self.label_predefini, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_predefini.Add(self.ctrl_predefinis, 0, wx.EXPAND, 0)
@@ -135,7 +135,7 @@ class Page_SMTP(wx.Panel):
         grid_sizer_serveur.Add(self.label_personnalise, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_serveur.Add((5, 5), 0, wx.EXPAND, 0)
 
-        # PersonnalisÈ
+        # Personnalis√©
         grid_sizer_personnalise = wx.FlexGridSizer(rows=4, cols=2, vgap=5, hgap=5)
         grid_sizer_personnalise.Add(self.label_smtp, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_personnalise.Add(self.ctrl_smtp, 0, wx.EXPAND, 0)
@@ -235,20 +235,20 @@ class Page_SMTP(wx.Panel):
     def ActiveCtrlMdp(self):
         etatAuth = False
         if self.radio_predefini.GetValue() == True:
-            # Si serveur prÈdÈfini
+            # Si serveur pr√©d√©fini
             selection = self.ctrl_predefinis.GetSelection()
             if selection != -1:
                 etatAuth = self.listeServeurs[selection][3]
                 self.ctrl_authentification.SetValue(etatAuth)
                 self.ctrl_startTLS.SetValue(self.listeServeurs[selection][4])
         else:
-            # Si serveur personnalisÈ
+            # Si serveur personnalis√©
             etatAuth = self.ctrl_authentification.GetValue()
         self.ctrl_utilisateur.Enable(etatAuth)
         self.ctrl_mdp.Enable(etatAuth)
 
     def GetDonnees(self):
-        # RÈcupÈration des valeurs saisies
+        # R√©cup√©ration des valeurs saisies
         if self.radio_predefini.GetValue() == True:
 
             adresse = self.ctrl_adresse.GetValue()
@@ -303,7 +303,7 @@ class Page_SMTP(wx.Panel):
             parametres.append("nbre_mails==%d" % self.ctrl_nbre_lot.GetValue())
             parametres.append("duree_pause==%d" % self.ctrl_duree_pause.GetValue())
 
-        # Renvoie un dict des donnÈes
+        # Renvoie un dict des donn√©es
         dict_donnees = {
             "moteur": "smtp", "adresse": adresse, "nom_adresse": nom_adresse, "motdepasse": motdepasse, "smtp": smtp, "port": port,
             "auth": auth, "startTLS": startTLS, "utilisateur": utilisateur, "parametres":"##".join(parametres)}
@@ -319,7 +319,7 @@ class Page_SMTP(wx.Panel):
         if dictDonnees["utilisateur"] != None:
             self.ctrl_utilisateur.SetValue(dictDonnees["utilisateur"])
 
-        # ParamËtres
+        # Param√®tres
         parametres = dictDonnees.get("parametres", None)
         dict_parametres = {}
         if parametres not in ("", None):
@@ -334,7 +334,7 @@ class Page_SMTP(wx.Panel):
         self.ctrl_nbre_lot.SetValue(int(dict_parametres.get("nbre_mails", 1)))
         self.ctrl_duree_pause.SetValue(int(dict_parametres.get("duree_pause", 1)))
 
-        # Recherche si les paramËtres correspondent ‡ un serveur prÈdÈfini
+        # Recherche si les param√®tres correspondent √† un serveur pr√©d√©fini
         index = 0
         indexPredefini = None
         for fai, smtpTmp, portTmp, authTmp, startTLSTmp in self.listeServeurs:
@@ -343,11 +343,11 @@ class Page_SMTP(wx.Panel):
             index += 1
 
         if indexPredefini != None:
-            # PrÈdÈfini :
+            # Pr√©d√©fini :
             self.ctrl_predefinis.SetSelection(indexPredefini)
             self.radio_predefini.SetValue(True)
         else:
-            # Serveur personnalisÈ :
+            # Serveur personnalis√© :
             if dictDonnees["smtp"] != None:
                 self.ctrl_smtp.SetValue(dictDonnees["smtp"])
             if dictDonnees["port"] != None:
@@ -365,14 +365,14 @@ class Page_SMTP(wx.Panel):
     def Validation(self):
         if self.radio_predefini.GetValue() == True:
 
-            # Validation du serveur prÈdÈfini
+            # Validation du serveur pr√©d√©fini
             if self.ctrl_predefinis.GetSelection() == -1:
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun serveur de messagerie dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun serveur de messagerie dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
 
-            # Validation du serveur prÈdÈfini
+            # Validation du serveur pr√©d√©fini
             if self.ctrl_adresse.GetValue() == "":
                 dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une adresse de messagerie !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
@@ -405,7 +405,7 @@ class Page_SMTP(wx.Panel):
                 try:
                     test = int(self.ctrl_port.GetValue())
                 except:
-                    dlg = wx.MessageDialog(self, _(u"Le numÈro de port que vous avez saisi n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+                    dlg = wx.MessageDialog(self, _(u"Le num√©ro de port que vous avez saisi n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
@@ -433,14 +433,14 @@ class Page_MAILJET(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
 
-        self.static_sizer_adresse_staticbox = wx.StaticBox(self, -1, _(u"ParamËtres Mailjet"))
+        self.static_sizer_adresse_staticbox = wx.StaticBox(self, -1, _(u"Param√®tres Mailjet"))
         self.label_adresse = wx.StaticText(self, -1, _(u"Adresse d'envoi :"))
         self.ctrl_adresse = wx.TextCtrl(self, -1, "")
-        self.label_nom_adresse = wx.StaticText(self, -1, _(u"Nom affichÈ :"))
+        self.label_nom_adresse = wx.StaticText(self, -1, _(u"Nom affich√© :"))
         self.ctrl_nom_adresse = wx.TextCtrl(self, -1, "")
-        self.label_api_key = wx.StaticText(self, -1, _(u"ClÈ API :"))
+        self.label_api_key = wx.StaticText(self, -1, _(u"Cl√© API :"))
         self.ctrl_api_key = wx.TextCtrl(self, -1, "")
-        self.label_api_secret = wx.StaticText(self, -1, _(u"ClÈ secrËte :"))
+        self.label_api_secret = wx.StaticText(self, -1, _(u"Cl√© secr√®te :"))
         self.ctrl_api_secret = wx.TextCtrl(self, -1, "")
 
         self.static_sizer_infos_staticbox = wx.StaticBox(self, -1, _(u"Informations"))
@@ -448,16 +448,16 @@ class Page_MAILJET(wx.Panel):
 
         self.ctrl_infos.SetLabel(u"""<FONT SIZE=2><IMG SRC="%s">
         Mailjet est un service d'envoi d'emails qui facilite l'envoi et le suivi de vos emails.
-        Vous devez crÈer un compte Mailjet gratuit ou payant puis rÈcupÈrer votre clÈ API et votre clÈ secrËte sur la page 'ParamËtres SMTP' de votre compte Mailjet. <br><br>
-        N'oubliez pas de saisir sur la page 'Domaines et adresses d'expÈditeur' de votre compte Mailjet l'adresse d'expÈdition que vous renseignez ici.<br><br>
+        Vous devez cr√©er un compte Mailjet gratuit ou payant puis r√©cup√©rer votre cl√© API et votre cl√© secr√®te sur la page 'Param√®tres SMTP' de votre compte Mailjet. <br><br>
+        N'oubliez pas de saisir sur la page 'Domaines et adresses d'exp√©diteur' de votre compte Mailjet l'adresse d'exp√©dition que vous renseignez ici.<br><br>
         Pour en savoir davantage sur Mailjet, consultez la page <A HREF="https://fr.mailjet.com">https://fr.mailjet.com</A>
         """ % Chemins.GetStaticPath(u"Images/16x16/Astuce.png"))
 
         # Properties
         self.ctrl_adresse.SetToolTip(wx.ToolTip(_(u"Saisissez ici votre adresse mail d'envoi")))
-        self.ctrl_nom_adresse.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom qui sera affichÈ dans le client de messagerie de votre destinataire")))
-        self.ctrl_api_key.SetToolTip(wx.ToolTip(_(u"Saisissez ici votre clÈ API Mailjet")))
-        self.ctrl_api_secret.SetToolTip(wx.ToolTip(_(u"Saisissez ici votre clÈ secrËte Mailjet")))
+        self.ctrl_nom_adresse.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom qui sera affich√© dans le client de messagerie de votre destinataire")))
+        self.ctrl_api_key.SetToolTip(wx.ToolTip(_(u"Saisissez ici votre cl√© API Mailjet")))
+        self.ctrl_api_secret.SetToolTip(wx.ToolTip(_(u"Saisissez ici votre cl√© secr√®te Mailjet")))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
@@ -488,7 +488,7 @@ class Page_MAILJET(wx.Panel):
         self.Layout()
 
     def GetDonnees(self):
-        # Renvoie un dict des donnÈes
+        # Renvoie un dict des donn√©es
         adresse = self.ctrl_adresse.GetValue()
         nom_adresse = self.ctrl_nom_adresse.GetValue()
         api_key = self.ctrl_api_key.GetValue()
@@ -520,25 +520,25 @@ class Page_MAILJET(wx.Panel):
         api_secret = self.ctrl_api_secret.GetValue()
 
         if adresse == "":
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir l'adresse d'expÈdition !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir l'adresse d'exp√©dition !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         if nom_adresse == "":
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir le nom ‡ afficher !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir le nom √† afficher !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         if api_key == "":
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir votre clÈ API Mailjet !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir votre cl√© API Mailjet !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         if api_secret == "":
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir votre clÈ secrËte Mailjet !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir votre cl√© secr√®te Mailjet !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -554,7 +554,7 @@ class Dialog(wx.Dialog):
         self.defaut = False
 
         # Intro
-        self.label_intro = wx.StaticText(self, -1, _(u"SÈlectionnez un moteur d'envoi (SMTP par dÈfaut) puis renseignez les paramËtres obligatoires."))
+        self.label_intro = wx.StaticText(self, -1, _(u"S√©lectionnez un moteur d'envoi (SMTP par d√©faut) puis renseignez les param√®tres obligatoires."))
 
         # Book
         self.ctrl_labelbook = LB.FlatImageBook(self, -1, agwStyle=LB.INB_LEFT)
@@ -577,8 +577,8 @@ class Dialog(wx.Dialog):
             self.Importation()
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÈder ‡ l'aide")))
-        self.bouton_tester.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rÈaliser un test d'envoi d'email")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour acc√©der √† l'aide")))
+        self.bouton_tester.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour r√©aliser un test d'envoi d'email")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler la saisie")))
 
@@ -663,14 +663,14 @@ class Dialog(wx.Dialog):
 
         self.defaut = bool(defaut)
 
-        # Envoie les donnÈes vers la page du book
+        # Envoie les donn√©es vers la page du book
         self.GetPage(moteur=moteur).SetDonnees(dictDonnees=dictDonnees)
         wx.CallAfter(self.SetPageActive, moteur)
 
         return listeDonnees
     
     def GetNbreAdresses(self):
-        """ RÈcupËre le nbre d'adresses dÈj‡ saisies """
+        """ R√©cup√®re le nbre d'adresses d√©j√† saisies """
         DB = GestionDB.DB()        
         req = """SELECT IDadresse, adresse, nom_adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS, utilisateur
         FROM adresses_mail ORDER BY adresse; """
@@ -687,7 +687,7 @@ class Dialog(wx.Dialog):
         if self.GetPageActive().Validation() == False :
             return False
 
-        # RÈcupÈration des paramËtres
+        # R√©cup√©ration des param√®tres
         dict_donnees = self.GetPageActive().GetDonnees()
 
         # Demande une adresse de destination
@@ -698,7 +698,7 @@ class Dialog(wx.Dialog):
             return
         adresse = dlg.GetValue()
         dlg.Destroy()
-        # MÈmorise l'adresse saisie
+        # M√©morise l'adresse saisie
         if UTILS_Envoi_email.ValidationEmail(adresse) == False :
             dlg = wx.MessageDialog(self, _(u"L'adresse saisie n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -706,11 +706,11 @@ class Dialog(wx.Dialog):
             return
         UTILS_Parametres.Parametres(mode="set", categorie="emails", nom="adresse_test", valeur=adresse)
 
-        # CrÈation du message de test
+        # Cr√©ation du message de test
         message = UTILS_Envoi_email.Message(
             destinataires=[adresse, ],
             sujet=u"Test de messagerie",
-            texte_html=u"<p>Ceci est un <b>test de messagerie</b> envoyÈ ‡ %s.</p>" % datetime.datetime.now().strftime("%H:%M:%S"),
+            texte_html=u"<p>Ceci est un <b>test de messagerie</b> envoy√© √† %s.</p>" % datetime.datetime.now().strftime("%H:%M:%S"),
         )
 
         try :
@@ -732,42 +732,42 @@ class Dialog(wx.Dialog):
         except Exception as err:
             err = str(err)
             if six.PY2:
-                err = err.decode("iso-8859-15")
+                err = err.decode("utf8")
             intro = _(u"L'envoi de l'email de test est impossible :")
-            conclusion = _(u"VÈrifiez votre connexion internet ou les paramËtres de votre adresse d'expÈdition.")
+            conclusion = _(u"V√©rifiez votre connexion internet ou les param√®tres de votre adresse d'exp√©dition.")
             dlgErreur = DLG_Messagebox.Dialog(self, titre=_(u"Erreur"), introduction=intro, detail=err, conclusion=conclusion, icone=wx.ICON_ERROR, boutons=[_(u"Ok"),])
             dlgErreur.ShowModal()
             dlgErreur.Destroy()
             return False
 
-        dlg = wx.MessageDialog(self, _(u"L'email de test a ÈtÈ envoyÈ avec succËs."), _(u"Test de connexion"), wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"L'email de test a √©t√© envoy√© avec succ√®s."), _(u"Test de connexion"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 
     def OnBoutonOk(self, event):
-        """ Validation des donnÈes saisies """
+        """ Validation des donn√©es saisies """
         if self.GetPageActive().Validation() == False :
             return False
 
         # Sauvegarde
         self.Sauvegarde()
                 
-        # Ferme la boÓte de dialogue
+        # Ferme la bo√Æte de dialogue
         self.EndModal(wx.ID_OK)  
 
     def Sauvegarde(self):
-        """ Sauvegarde des donnÈes """
-        # RÈcupÈration des donnÈes
+        """ Sauvegarde des donn√©es """
+        # R√©cup√©ration des donn√©es
         dict_donnees = self.GetPageActive().GetDonnees()
 
-        # Si c'est la premiËre adresse saisie, on la met comme defaut
+        # Si c'est la premi√®re adresse saisie, on la met comme defaut
         nbreAdresses = self.GetNbreAdresses()
         if nbreAdresses == 0 :
             defaut = True
         else:
             defaut = self.defaut
 
-        # Enregistrement des donnÈes
+        # Enregistrement des donn√©es
         DB = GestionDB.DB()
         listeDonnees = [
             ("adresse", dict_donnees["adresse"]),

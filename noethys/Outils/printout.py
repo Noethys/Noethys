@@ -66,7 +66,7 @@ class PrintBase(object):
 
                     elif self.align == wx.ALIGN_CENTRE:
                         diff = self.GetCellDiff(test_out, self.region)
-                        self.DC.DrawText(test_out, self.indent+diff/2, y)
+                        self.DC.DrawText(test_out, int(self.indent+diff/2), int(y))
 
                     elif self.align == wx.ALIGN_RIGHT:
                         diff = self.GetCellDiff(test_out, self.region)
@@ -154,7 +154,7 @@ class PrintBase(object):
 
                     elif align == wx.ALIGN_CENTRE:
                         diff = self.GetCellDiff(test_out, pagew)
-                        self.DC.DrawText(test_out, indent+diff/2, y)
+                        self.DC.DrawText(test_out, int(indent+diff/2), int(y))
 
                     elif align == wx.ALIGN_RIGHT:
                         diff = self.GetCellDiff(test_out, pagew)

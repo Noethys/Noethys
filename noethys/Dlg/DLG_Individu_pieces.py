@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -27,15 +27,15 @@ class Panel(wx.Panel):
         self.IDindividu = IDindividu
         self.dictFamillesRattachees = dictFamillesRattachees
 
-        # Pièces à fournir
-        self.staticbox_pieces_obligatoires = wx.StaticBox(self, -1, _(u"Pièces à fournir"))
+        # PiÃ¨ces Ã  fournir
+        self.staticbox_pieces_obligatoires = wx.StaticBox(self, -1, _(u"PiÃ¨ces Ã  fournir"))
         self.ctrl_pieces_obligatoires = CTRL_Pieces_obligatoires.CTRL(self, IDindividu=IDindividu, dictFamillesRattachees=dictFamillesRattachees, largeurColonne=140)
         couleur_fond = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
         self.ctrl_pieces_obligatoires.SetBackgroundColour(couleur_fond)
         self.ctrl_pieces_obligatoires.SetMinSize((150, 50))
         
-        # Pièces fournies
-        self.staticbox_pieces = wx.StaticBox(self, -1, _(u"Pièces fournies"))
+        # PiÃ¨ces fournies
+        self.staticbox_pieces = wx.StaticBox(self, -1, _(u"PiÃ¨ces fournies"))
         self.ctrl_pieces = OL_Pieces.ListView(self, IDindividu=IDindividu, dictFamillesRattachees=self.dictFamillesRattachees, id=-1, name="OL_pieces", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
         self.ctrl_pieces.SetMinSize((150, 50))
         
@@ -62,20 +62,20 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonModifier_Cotisation, self.bouton_modifier_cotisation)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonSupprimer_Cotisation, self.bouton_supprimer_cotisation)
 
-        # Propriétés
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir une pièce")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la pièce sélectionnée")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la pièce sélectionnée")))
+        # PropriÃ©tÃ©s
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir une piÃ¨ce")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la piÃ¨ce sÃ©lectionnÃ©e")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la piÃ¨ce sÃ©lectionnÃ©e")))
         self.bouton_ajouter_cotisation.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir une cotisation individuelle")))
-        self.bouton_modifier_cotisation.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la cotisation individuelle sélectionnée")))
-        self.bouton_supprimer_cotisation.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la cotisation individuelle sélectionnée")))
+        self.bouton_modifier_cotisation.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la cotisation individuelle sÃ©lectionnÃ©e")))
+        self.bouton_supprimer_cotisation.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la cotisation individuelle sÃ©lectionnÃ©e")))
 
         # --- Layout ---
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=0, hgap=0)
         
         grid_sizer_haut = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
         
-        # Pièces à fournir
+        # PiÃ¨ces Ã  fournir
         staticbox_pieces_obligatoires = wx.StaticBoxSizer(self.staticbox_pieces_obligatoires, wx.VERTICAL)
         grid_sizer_pieces_obligatoires = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_pieces_obligatoires.Add(self.ctrl_pieces_obligatoires, 1, wx.EXPAND, 0)
@@ -84,7 +84,7 @@ class Panel(wx.Panel):
         staticbox_pieces_obligatoires.Add(grid_sizer_pieces_obligatoires, 1, wx.EXPAND|wx.ALL, 5)
         grid_sizer_haut.Add(staticbox_pieces_obligatoires, 0, wx.EXPAND, 0)
         
-        # Pièces à fournir
+        # PiÃ¨ces Ã  fournir
         staticbox_pieces = wx.StaticBoxSizer(self.staticbox_pieces, wx.VERTICAL)
         grid_sizer_pieces = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_pieces.Add(self.ctrl_pieces, 1, wx.EXPAND, 0)
@@ -156,7 +156,7 @@ class Panel(wx.Panel):
         self.Refresh()
         
     def ValidationData(self):
-        """ Return True si les données sont valides et pretes à être sauvegardées """
+        """ Return True si les donnÃ©es sont valides et pretes Ã  Ãªtre sauvegardÃ©es """
         return True
     
     def Sauvegarde(self):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -79,15 +79,15 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
         self.Bind(wxpg.EVT_PG_CHANGED, self.OnPropGridChange)
 
     def Remplissage(self):
-        # Heure min affichée
-        propriete = wxpg.StringProperty(label=_(u"Heure minimale affichée"), name="heure_min", value="08:30")
+        # Heure min affichÃ©e
+        propriete = wxpg.StringProperty(label=_(u"Heure minimale affichÃ©e"), name="heure_min", value="08:30")
         propriete.SetHelpString(_(u"Saisissez une heure"))
         propriete.SetEditor("EditeurHeure")
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
-        # Heure max affichée
-        propriete = wxpg.StringProperty(label=_(u"Heure maximale affichée"), name="heure_max", value="22:30")
+        # Heure max affichÃ©e
+        propriete = wxpg.StringProperty(label=_(u"Heure maximale affichÃ©e"), name="heure_max", value="22:30")
         propriete.SetHelpString(_(u"Saisissez une heure"))
         propriete.SetEditor("EditeurHeure")
         propriete.SetAttribute("obligatoire", True)
@@ -100,16 +100,16 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
-        # Durée minimale barre
-        propriete = wxpg.StringProperty(label=_(u"Durée minimale location"), name="barre_duree_minimale", value="00:30")
-        propriete.SetHelpString(_(u"Saisissez une durée"))
+        # DurÃ©e minimale barre
+        propriete = wxpg.StringProperty(label=_(u"DurÃ©e minimale location"), name="barre_duree_minimale", value="00:30")
+        propriete.SetHelpString(_(u"Saisissez une durÃ©e"))
         propriete.SetEditor("EditeurHeure")
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Hauteur de ligne
         propriete = wxpg.IntProperty(label=_(u"Hauteur de ligne"), name="case_hauteur", value=50)
-        propriete.SetHelpString(_(u"Saisissez une hauteur de ligne (50 par défaut)"))
+        propriete.SetHelpString(_(u"Saisissez une hauteur de ligne (50 par dÃ©faut)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("case_hauteur", "SpinCtrl")
@@ -130,13 +130,13 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
         self.parent.ctrl_tableau.MAJ(reinit_scroll_h=True, reinit_scroll_v=True)
 
     def Validation(self):
-        """ Validation des données saisies """
-        # Vérifie que les données obligatoires ont été saisies
+        """ Validation des donnÃ©es saisies """
+        # VÃ©rifie que les donnÃ©es obligatoires ont Ã©tÃ© saisies
         for nom, valeur in self.GetPropertyValues().items():
             propriete = self.GetPropertyByName(nom)
             if self.GetPropertyAttribute(propriete, "obligatoire") == True:
                 if valeur == "" or valeur == None:
-                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner le paramètre '%s' !") % self.GetPropertyLabel(nom), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner le paramÃ¨tre '%s' !") % self.GetPropertyLabel(nom), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
@@ -146,12 +146,12 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
         return True
 
     def Importation(self):
-        """ Importation des valeurs dans le contrôle """
-        # Récupération des noms et valeurs par défaut du contrôle
+        """ Importation des valeurs dans le contrÃ´le """
+        # RÃ©cupÃ©ration des noms et valeurs par dÃ©faut du contrÃ´le
         dictValeurs = copy.deepcopy(self.GetPropertyValues())
-        # Recherche les paramètres mémorisés
+        # Recherche les paramÃ¨tres mÃ©morisÃ©s
         dictParametres = UTILS_Parametres.ParametresCategorie(mode="get", categorie="dlg_locations_tableau", dictParametres=dictValeurs)
-        # Envoie les paramètres dans le contrôle
+        # Envoie les paramÃ¨tres dans le contrÃ´le
         for nom, valeur in dictParametres.items():
             if valeur not in ("", None):
                 propriete = self.GetPropertyByName(nom)
@@ -159,7 +159,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
                 propriete.SetValue(valeur)
 
     def Sauvegarde(self, forcer=False):
-        """ Mémorisation des valeurs du contrôle """
+        """ MÃ©morisation des valeurs du contrÃ´le """
         dictValeurs = copy.deepcopy(self.GetPropertyValues())
         UTILS_Parametres.ParametresCategorie(mode="set", categorie="dlg_locations_tableau", dictParametres=dictValeurs)
 
@@ -176,16 +176,16 @@ class CTRL(wx.Panel):
         self.parent = parent
         self.ctrl_tableau = ctrl_tableau
 
-        # Période
-        self.staticBox_periode = wx.StaticBox(self, -1, _(u"Sélection de la période"))
+        # PÃ©riode
+        self.staticBox_periode = wx.StaticBox(self, -1, _(u"SÃ©lection de la pÃ©riode"))
         self.ctrl_periode = CTRL_Selection_periode_simple.CTRL(self, callback=self.OnChangePeriode)
 
-        # Catégories de produits
-        self.staticBox_categories = wx.StaticBox(self, -1, _(u"Catégories de produits"))
+        # CatÃ©gories de produits
+        self.staticBox_categories = wx.StaticBox(self, -1, _(u"CatÃ©gories de produits"))
         self.ctrl_categories = CTRL_Categories(self)
 
         # Options
-        self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
+        self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, _(u"ParamÃ¨tres"))
         self.ctrl_parametres = CTRL_Parametres(self)
         self.ctrl_parametres.SetMinSize((400, 80))
         self.bouton_reinitialisation = CTRL_Propertygrid.Bouton_reinitialisation(self, self.ctrl_parametres)
@@ -197,17 +197,17 @@ class CTRL(wx.Panel):
         # Layout
         grid_sizer_base = wx.FlexGridSizer(1, 4, 10, 10)
 
-        # Période
+        # PÃ©riode
         staticBox_periode = wx.StaticBoxSizer(self.staticBox_periode, wx.HORIZONTAL)
         staticBox_periode.Add(self.ctrl_periode, 1, wx.EXPAND | wx.ALL, 5)
         grid_sizer_base.Add(staticBox_periode, 1, wx.EXPAND, 0)
 
-        # Catégories
+        # CatÃ©gories
         staticBox_categories = wx.StaticBoxSizer(self.staticBox_categories, wx.HORIZONTAL)
         staticBox_categories.Add(self.ctrl_categories, 1, wx.EXPAND | wx.ALL, 5)
         grid_sizer_base.Add(staticBox_categories, 1, wx.EXPAND, 0)
 
-        # Paramètres
+        # ParamÃ¨tres
         box_parametres = wx.StaticBoxSizer(self.staticbox_parametres_staticbox, wx.VERTICAL)
         grid_sizer_parametres = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_parametres.Add(self.ctrl_parametres, 1, wx.EXPAND, 0)
@@ -264,7 +264,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
 
-        # Contrôles
+        # ContrÃ´les
         self.ctrl_options = CTRL(panel)
 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)

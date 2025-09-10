@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -39,12 +39,12 @@ class Track(object):
         if type(self.categories) == str :
             self.categories = UTILS_Texte.ConvertStrToListe(self.categories)
 
-        # Génération du texte Catégories
+        # GÃ©nÃ©ration du texte CatÃ©gories
         listeTemp = []
         for IDcategorie in self.categories :
             nom = None
             if IDcategorie == 0 :
-                nom = _(u"Toutes les catégories inutilisées")
+                nom = _(u"Toutes les catÃ©gories inutilisÃ©es")
             if IDcategorie in self.parent.dictCategories:
                 nom = self.parent.dictCategories[IDcategorie]
             if nom != None :
@@ -90,7 +90,7 @@ class ListView(FastObjectListView):
         self.MAJ()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeListeView = []
         index = 0
         for item in self.listeDonnees :
@@ -112,7 +112,7 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u""), "left", 0, "", typeDonnee="texte"),
             ColumnDefn(_(u"Ordre"), "center", 70, "index", typeDonnee="entier", stringConverter=FormateIndex),
             ColumnDefn(_(u"Nom de la colonne"), "left", 180, "nom", typeDonnee="texte"),
-            ColumnDefn(_(u"Catégories associées"), "left", 110, "texte_categories", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(_(u"CatÃ©gories associÃ©es"), "left", 110, "texte_categories", typeDonnee="texte", isSpaceFilling=True),
             ]
         
         self.SetColumns(liste_Colonnes)
@@ -124,7 +124,7 @@ class ListView(FastObjectListView):
     def MAJ(self, index=None):
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if index != None :
             self.SelectObject(self.GetObjectAt(index), deselectOthers=True, ensureVisible=True)
         self._ResizeSpaceFillingColumns()
@@ -139,7 +139,7 @@ class ListView(FastObjectListView):
         else:
             noSelection = False
 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ajouter
@@ -170,15 +170,15 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
         
         # Item Deplacer vers le haut
-        item = wx.MenuItem(menuPop, 40, _(u"Déplacer vers le haut"))
+        item = wx.MenuItem(menuPop, 40, _(u"DÃ©placer vers le haut"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_haut.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Monter, id=40)
         if noSelection == True : item.Enable(False)
         
-        # Item Déplacer vers le bas
-        item = wx.MenuItem(menuPop, 50, _(u"Déplacer vers le bas"))
+        # Item DÃ©placer vers le bas
+        item = wx.MenuItem(menuPop, 50, _(u"DÃ©placer vers le bas"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_bas.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -188,7 +188,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -225,7 +225,7 @@ class ListView(FastObjectListView):
         
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune colonne à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune colonne Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -240,7 +240,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune colonne à supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune colonne Ã  supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -253,7 +253,7 @@ class ListView(FastObjectListView):
 
     def Monter(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune colonne dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune colonne dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -266,7 +266,7 @@ class ListView(FastObjectListView):
     
     def Descendre(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune colonne dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune colonne dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -299,7 +299,7 @@ class CTRL_Categories(wx.CheckListBox):
         listeDonnees = DB.ResultatReq()
         DB.Close()
         self.dictCategories = {0 : 0}
-        self.Append(_(u"Toutes les catégories inutilisées"))
+        self.Append(_(u"Toutes les catÃ©gories inutilisÃ©es"))
         index = 1
         for IDcategorie, nom in listeDonnees:
             self.Append(nom)
@@ -333,7 +333,7 @@ class DLG_Saisie(wx.Dialog):
         if nom != None :
             self.ctrl_nom.SetValue(nom)
             
-        self.label_categories = wx.StaticText(self, -1, _(u"Catégories :"))
+        self.label_categories = wx.StaticText(self, -1, _(u"CatÃ©gories :"))
         self.ctrl_categories = CTRL_Categories(self)
         self.ctrl_categories.SetMinSize((280, 160))
 
@@ -396,7 +396,7 @@ class DLG_Saisie(wx.Dialog):
             self.ctrl_nom.SetFocus()
             return
         if categories == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner au moins une catégorie !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner au moins une catÃ©gorie !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_categories.SetFocus()

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -26,9 +26,9 @@ from Ctrl import CTRL_Selection_activites
 class CTRL_Page_texte(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL) 
-        self.radio_egal = wx.RadioButton(self, -1, _(u"Est égal à"), style=wx.RB_GROUP)
+        self.radio_egal = wx.RadioButton(self, -1, _(u"Est Ã©gal Ã "), style=wx.RB_GROUP)
         self.ctrl_egal = wx.TextCtrl(self, -1, "", size=(200, -1))
-        self.radio_different = wx.RadioButton(self, -1, _(u"Est différent de"))
+        self.radio_different = wx.RadioButton(self, -1, _(u"Est diffÃ©rent de"))
         self.ctrl_different = wx.TextCtrl(self, -1, "", size=(200, -1))
         self.radio_contient = wx.RadioButton(self, -1, _(u"Contient"))
         self.ctrl_contient = wx.TextCtrl(self, -1, "", size=(200, -1))
@@ -174,17 +174,17 @@ class CTRL_Page_bool(wx.Panel):
 class CTRL_Page_entier(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL) 
-        self.radio_egal = wx.RadioButton(self, -1, _(u"Est égal à"), style=wx.RB_GROUP)
+        self.radio_egal = wx.RadioButton(self, -1, _(u"Est Ã©gal Ã "), style=wx.RB_GROUP)
         self.ctrl_egal = wx.SpinCtrl(self, -1, "", min=0, max=999999)
-        self.radio_different = wx.RadioButton(self, -1, _(u"Est différent de"))
+        self.radio_different = wx.RadioButton(self, -1, _(u"Est diffÃ©rent de"))
         self.ctrl_different = wx.SpinCtrl(self, -1, "", min=0, max=999999)
-        self.radio_sup = wx.RadioButton(self, -1, _(u"Est supérieur à"))
+        self.radio_sup = wx.RadioButton(self, -1, _(u"Est supÃ©rieur Ã "))
         self.ctrl_sup = wx.SpinCtrl(self, -1, "", min=0, max=999999)
-        self.radio_supegal = wx.RadioButton(self, -1, _(u"Est supérieur ou égal à"))
+        self.radio_supegal = wx.RadioButton(self, -1, _(u"Est supÃ©rieur ou Ã©gal Ã "))
         self.ctrl_supegal = wx.SpinCtrl(self, -1, "", min=0, max=999999)
-        self.radio_inf = wx.RadioButton(self, -1, _(u"Est inférieur à"))
+        self.radio_inf = wx.RadioButton(self, -1, _(u"Est infÃ©rieur Ã "))
         self.ctrl_inf = wx.SpinCtrl(self, -1, "", min=0, max=999999)
-        self.radio_infegal = wx.RadioButton(self, -1, _(u"Est inférieur ou égal à"))
+        self.radio_infegal = wx.RadioButton(self, -1, _(u"Est infÃ©rieur ou Ã©gal Ã "))
         self.ctrl_infegal = wx.SpinCtrl(self, -1, "", min=0, max=999999)
         self.radio_compris = wx.RadioButton(self, -1, _(u"Est compris entre"))
         self.ctrl_min = wx.SpinCtrl(self, -1, "", min=0, max=999999)
@@ -329,17 +329,17 @@ class CTRL_Page_entier(wx.Panel):
 class CTRL_Page_montant(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL) 
-        self.radio_egal = wx.RadioButton(self, -1, _(u"Est égal à"), style=wx.RB_GROUP)
+        self.radio_egal = wx.RadioButton(self, -1, _(u"Est Ã©gal Ã "), style=wx.RB_GROUP)
         self.ctrl_egal = CTRL_Saisie_euros.CTRL(self)
-        self.radio_different = wx.RadioButton(self, -1, _(u"Est différent de"))
+        self.radio_different = wx.RadioButton(self, -1, _(u"Est diffÃ©rent de"))
         self.ctrl_different = CTRL_Saisie_euros.CTRL(self)
-        self.radio_sup = wx.RadioButton(self, -1, _(u"Est supérieur à"))
+        self.radio_sup = wx.RadioButton(self, -1, _(u"Est supÃ©rieur Ã "))
         self.ctrl_sup = CTRL_Saisie_euros.CTRL(self)
-        self.radio_supegal = wx.RadioButton(self, -1, _(u"Est supérieur ou égal à"))
+        self.radio_supegal = wx.RadioButton(self, -1, _(u"Est supÃ©rieur ou Ã©gal Ã "))
         self.ctrl_supegal = CTRL_Saisie_euros.CTRL(self)
-        self.radio_inf = wx.RadioButton(self, -1, _(u"Est inférieur à"))
+        self.radio_inf = wx.RadioButton(self, -1, _(u"Est infÃ©rieur Ã "))
         self.ctrl_inf = CTRL_Saisie_euros.CTRL(self)
-        self.radio_infegal = wx.RadioButton(self, -1, _(u"Est inférieur ou égal à"))
+        self.radio_infegal = wx.RadioButton(self, -1, _(u"Est infÃ©rieur ou Ã©gal Ã "))
         self.ctrl_infegal = CTRL_Saisie_euros.CTRL(self)
         self.radio_compris = wx.RadioButton(self, -1, _(u"Est compris entre"))
         self.ctrl_min = CTRL_Saisie_euros.CTRL(self)
@@ -486,17 +486,17 @@ class CTRL_Page_date(wx.Panel):
     def __init__(self, parent, heure=False):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.heure = heure
-        self.radio_egal = wx.RadioButton(self, -1, _(u"Est égal à"), style=wx.RB_GROUP)
+        self.radio_egal = wx.RadioButton(self, -1, _(u"Est Ã©gal Ã "), style=wx.RB_GROUP)
         self.ctrl_egal = CTRL_Saisie_date.Date2(self, heure=heure)
-        self.radio_different = wx.RadioButton(self, -1, _(u"Est différent de"))
+        self.radio_different = wx.RadioButton(self, -1, _(u"Est diffÃ©rent de"))
         self.ctrl_different = CTRL_Saisie_date.Date2(self, heure=heure)
-        self.radio_sup = wx.RadioButton(self, -1, _(u"Est supérieur à"))
+        self.radio_sup = wx.RadioButton(self, -1, _(u"Est supÃ©rieur Ã "))
         self.ctrl_sup = CTRL_Saisie_date.Date2(self, heure=heure)
-        self.radio_supegal = wx.RadioButton(self, -1, _(u"Est supérieur ou égal à"))
+        self.radio_supegal = wx.RadioButton(self, -1, _(u"Est supÃ©rieur ou Ã©gal Ã "))
         self.ctrl_supegal = CTRL_Saisie_date.Date2(self, heure=heure)
-        self.radio_inf = wx.RadioButton(self, -1, _(u"Est inférieur à"))
+        self.radio_inf = wx.RadioButton(self, -1, _(u"Est infÃ©rieur Ã "))
         self.ctrl_inf = CTRL_Saisie_date.Date2(self, heure=heure)
-        self.radio_infegal = wx.RadioButton(self, -1, _(u"Est inférieur ou égal à"))
+        self.radio_infegal = wx.RadioButton(self, -1, _(u"Est infÃ©rieur ou Ã©gal Ã "))
         self.ctrl_infegal = CTRL_Saisie_date.Date2(self, heure=heure)
         self.radio_compris = wx.RadioButton(self, -1, _(u"Est compris entre"))
         self.ctrl_min = CTRL_Saisie_date.Date2(self, heure=heure)
@@ -641,19 +641,19 @@ class CTRL_Page_inscrits(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL) 
 
-        # Activités
-        self.label_intro = wx.StaticText(self, -1, _(u"Uniquement les individus inscrits aux activités suivantes :"))
+        # ActivitÃ©s
+        self.label_intro = wx.StaticText(self, -1, _(u"Uniquement les individus inscrits aux activitÃ©s suivantes :"))
         self.ctrl_activites = CTRL_Selection_activites.CTRL(self, modeGroupes=True)
 
-        # Présents
-        self.check_presents = wx.CheckBox(self, -1, _(u"Et présents du"))
+        # PrÃ©sents
+        self.check_presents = wx.CheckBox(self, -1, _(u"Et prÃ©sents du"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_au = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
 
-        self.check_presents.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour saisir une période de présence")))
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de début de période")))
-        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de période")))
+        self.check_presents.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour saisir une pÃ©riode de prÃ©sence")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de dÃ©but de pÃ©riode")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de pÃ©riode")))
 
         # Date d'inscription
         self.check_inscription = wx.CheckBox(self, -1, _(u"Et inscrits entre le"))
@@ -661,17 +661,17 @@ class CTRL_Page_inscrits(wx.Panel):
         self.label_au_inscription = wx.StaticText(self, -1, _(u" et le"))
         self.ctrl_date_fin_inscription = CTRL_Saisie_date.Date2(self)
 
-        self.check_inscription.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour sélectionner les individus suivant leur date d'inscription à l'activité")))
-        self.ctrl_date_debut_inscription.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de début d'inscription")))
+        self.check_inscription.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour sÃ©lectionner les individus suivant leur date d'inscription Ã  l'activitÃ©")))
+        self.ctrl_date_debut_inscription.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de dÃ©but d'inscription")))
         self.ctrl_date_fin_inscription.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin d'inscription")))
 
         # Date de naissance
-        self.check_naissance = wx.CheckBox(self, -1, _(u"Et nés entre le"))
+        self.check_naissance = wx.CheckBox(self, -1, _(u"Et nÃ©s entre le"))
         self.ctrl_date_debut_naissance = CTRL_Saisie_date.Date2(self)
         self.label_au_naissance = wx.StaticText(self, -1, _(u" et le"))
         self.ctrl_date_fin_naissance = CTRL_Saisie_date.Date2(self)
 
-        self.check_naissance.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour sélectionner les individus suivant leur date de naissance")))
+        self.check_naissance.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour sÃ©lectionner les individus suivant leur date de naissance")))
         self.ctrl_date_debut_naissance.SetToolTip(wx.ToolTip(_(u"Saisissez ici une date minimale")))
         self.ctrl_date_fin_naissance.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date maximale")))
 
@@ -795,22 +795,22 @@ class CTRL_Page_inscrits(wx.Panel):
         if self.ctrl_activites.Validation() == False :
             return False
         
-        # Les présents
+        # Les prÃ©sents
         if self.check_presents.GetValue() == True :
             if self.ctrl_date_debut.GetDate() == None or self.ctrl_date_debut.Validation() == False :
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucune date de début de période !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucune date de dÃ©but de pÃ©riode !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
             
             if self.ctrl_date_fin.GetDate() == None or self.ctrl_date_fin.Validation() == False :
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucune date de fin de période !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucune date de fin de pÃ©riode !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
 
             if self.ctrl_date_debut.GetDate() > self.ctrl_date_fin.GetDate() :
-                dlg = wx.MessageDialog(self, _(u"La date de début est supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La date de dÃ©but est supÃ©rieure Ã  la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -818,7 +818,7 @@ class CTRL_Page_inscrits(wx.Panel):
         # Date d'inscription
         if self.check_inscription.GetValue() == True:
             if self.ctrl_date_debut_inscription.GetDate() == None or self.ctrl_date_debut_inscription.Validation() == False:
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucune date de début d'inscription !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucune date de dÃ©but d'inscription !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -830,7 +830,7 @@ class CTRL_Page_inscrits(wx.Panel):
                 return False
 
             if self.ctrl_date_debut_inscription.GetDate() > self.ctrl_date_fin_inscription.GetDate():
-                dlg = wx.MessageDialog(self, _(u"La date de début est supérieure à la date de fin d'inscription!"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La date de dÃ©but est supÃ©rieure Ã  la date de fin d'inscription!"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -850,7 +850,7 @@ class CTRL_Page_inscrits(wx.Panel):
                 return False
 
             if self.ctrl_date_debut_naissance.GetDate() > self.ctrl_date_fin_naissance.GetDate():
-                dlg = wx.MessageDialog(self, _(u"La date de minimale est supérieure à la date maximale de naissance!"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La date de minimale est supÃ©rieure Ã  la date maximale de naissance!"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -924,7 +924,7 @@ class CTRL_Page_cotisations(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
 
         # Cotisations
-        self.check_cotisations = wx.CheckBox(self, -1, _(u"Uniquement si au moins une des cotisations cochées est à jour :"))
+        self.check_cotisations = wx.CheckBox(self, -1, _(u"Uniquement si au moins une des cotisations cochÃ©es est Ã  jour :"))
         self.ctrl_cotisations = CTRL_Cotisations(self)
         self.ctrl_cotisations.SetMinSize((150, 50))
 
@@ -1002,7 +1002,7 @@ class CTRL_Page_vide(wx.Panel):
         return None
 
     def Validation(self):
-        dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun champ à filtrer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun champ Ã  filtrer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
         dlg.ShowModal()
         dlg.Destroy()
         return False
@@ -1073,7 +1073,7 @@ class CTRL_Page(wx.Panel):
         elif typeDonnee == "cotisations" :
             self.ctrl_contenu = CTRL_Page_cotisations(self)
         else :
-            self.ctrl_contenu = CTRL_Page_vide(self, texte=_(u"Veuillez sélectionner un champ disponible dans la liste !"))
+            self.ctrl_contenu = CTRL_Page_vide(self, texte=_(u"Veuillez sÃ©lectionner un champ disponible dans la liste !"))
 
         grid_sizer = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
         grid_sizer.Add(self.ctrl_titre, 1, wx.ALL|wx.EXPAND, 5)
@@ -1117,7 +1117,7 @@ class CTRL_Filtres_archive(wx.Treebook):
         from Utils import UTILS_Linux
         UTILS_Linux.AdaptePolice(self)
 
-        # Création de l'ImageList
+        # CrÃ©ation de l'ImageList
         liste_images = [
             ("colonnes", "Tableaux.png"),
             ("texte", "Texte_ligne.png"),
@@ -1146,12 +1146,12 @@ class CTRL_Filtres_archive(wx.Treebook):
         # Remplissage
         index = 0
         
-        # Création de la page COLONNES
-        panel = CTRL_Page_vide(self, texte=_(u"Veuillez sélectionner un champ dans la liste !"))
+        # CrÃ©ation de la page COLONNES
+        panel = CTRL_Page_vide(self, texte=_(u"Veuillez sÃ©lectionner un champ dans la liste !"))
         self.AddPage(panel, _(u"Champs disponibles"), imageId=self.dictImages["colonnes"]["ID"])
         index += 1
         
-        # Création des pages CHAMPS
+        # CrÃ©ation des pages CHAMPS
         if self.ctrl_listview != None :
             for colonne in self.ctrl_listview.listeColonnes :
                 code = colonne.valueGetter
@@ -1165,8 +1165,8 @@ class CTRL_Filtres_archive(wx.Treebook):
 ##        for type in self.listeTypes :
 ##            if len(self.dictQuestions[type]) > 0 :
 ##                
-##                # Création de la page TYPE (famille ou individu)
-##                panel = CTRL_Page_vide(self, texte=_(u"Veuillez sélectionner une question dans la liste !"))
+##                # CrÃ©ation de la page TYPE (famille ou individu)
+##                panel = CTRL_Page_vide(self, texte=_(u"Veuillez sÃ©lectionner une question dans la liste !"))
 ##                if type == "famille" :
 ##                    label = _(u"Questions familiales")
 ##                else :
@@ -1175,7 +1175,7 @@ class CTRL_Filtres_archive(wx.Treebook):
 ##                indexType = int(index)
 ##                index += 1
 ##                
-##                # Création des pages QUESTIONS
+##                # CrÃ©ation des pages QUESTIONS
 ##                for dictQuestion in self.dictQuestions[type] :
 ##                    IDquestion = dictQuestion["IDquestion"]
 ##                    titre = dictQuestion["label"]
@@ -1269,15 +1269,15 @@ class Dialog_archive(wx.Dialog):
         UTILS_Aide.Aide("")
 
     def OnBoutonOk(self, event):
-        # Vérification des données saisies
+        # VÃ©rification des donnÃ©es saisies
         if self.ctrl_filtres.Validation() == False :
             return
         
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
     
     def GetValeur(self):
-        # Récupération des valeurs
+        # RÃ©cupÃ©ration des valeurs
         return self.ctrl_filtres.GetValeur() 
     
     def SetValeur(self, choix="", criteres=""):
@@ -1307,7 +1307,7 @@ class CTRL_Champs(wx.TreeCtrl):
         from Utils import UTILS_Linux
         UTILS_Linux.AdaptePolice(self)
                 
-        # Création de l'ImageList
+        # CrÃ©ation de l'ImageList
         il = wx.ImageList(16, 16)
         self.dictImages = {}
         
@@ -1328,12 +1328,12 @@ class CTRL_Champs(wx.TreeCtrl):
             self.dictImages[typeDonnee] = self.il.Add(wx.Bitmap(Chemins.GetStaticPath("Images/32x32/%s" % image), wx.BITMAP_TYPE_ANY))
         self.AssignImageList(self.il)
 
-        # Création de la racine
+        # CrÃ©ation de la racine
         self.root = self.AddRoot("Racine")
 
-        # Récupération des champs disponibles
+        # RÃ©cupÃ©ration des champs disponibles
         self.listeCategories = [
-            ("speciaux", _(u"Filtres spéciaux")),
+            ("speciaux", _(u"Filtres spÃ©ciaux")),
             ("colonnes", _(u"Filtres de colonnes")),
             ]
             
@@ -1341,9 +1341,9 @@ class CTRL_Champs(wx.TreeCtrl):
         for codeCategorie, labelCategorie in self.listeCategories :
             self.dictChamps[codeCategorie] = []
         
-        # -------- Champs spéciaux -----------
+        # -------- Champs spÃ©ciaux -----------
         
-        # Champ Inscrits/Présents
+        # Champ Inscrits/PrÃ©sents
         code = None
         if self.ctrl_listview != None :
             for colonne in self.ctrl_listview.listeColonnes :
@@ -1354,7 +1354,7 @@ class CTRL_Champs(wx.TreeCtrl):
                     code = "individu"
                     break
         if code != None :
-            titre = _(u"Inscrits/Présents")
+            titre = _(u"Inscrits/PrÃ©sents")
             self.dictChamps["speciaux"].append({"code" : code, "typeDonnee" : "inscrits", "titre" : titre})
 
         # Champ Cotisations
@@ -1390,12 +1390,12 @@ class CTRL_Champs(wx.TreeCtrl):
         for codeCategorie, labelCategorie in self.listeCategories :
             if len(self.dictChamps[codeCategorie]) > 0 :
                 
-                # Création de la branche Catégorie
+                # CrÃ©ation de la branche CatÃ©gorie
                 categorie = self.AppendItem(self.root, labelCategorie)
                 self.SetItemImage(categorie, self.dictImages["categorie"], which=wx.TreeItemIcon_Normal)
                 self.SetItemBold(categorie, True)
                 
-                # Création des branches champs
+                # CrÃ©ation des branches champs
                 for dictChamp in self.dictChamps[codeCategorie] :
                     item = self.AppendItem(categorie, dictChamp["titre"])
                     if 'phoenix' in wx.PlatformInfo:
@@ -1446,7 +1446,7 @@ class CTRL_Filtres(wx.Panel):
         
         self.listeTypesDonnees = ["vide", "texte", "bool", "entier", "montant", "date", "dateheure", "inscrits", "cotisations"]
         
-        # Création des pages
+        # CrÃ©ation des pages
         sizer = wx.BoxSizer(wx.VERTICAL)
         self.listePages = []
         for typeDonnee in self.listeTypesDonnees :
@@ -1552,11 +1552,11 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("")
 
     def OnBoutonOk(self, event):
-        # Vérification des données saisies
+        # VÃ©rification des donnÃ©es saisies
         if self.ctrl_filtres.Validation() == False :
             return
         
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
     
     def OnChoixChamp(self, event):
@@ -1572,7 +1572,7 @@ class Dialog(wx.Dialog):
         self.ctrl_filtres.SetSelection(code=code, typeDonnee=typeDonnee, titre=titre)
         
     def GetValeur(self):
-        # Récupération des valeurs
+        # RÃ©cupÃ©ration des valeurs
         return self.ctrl_filtres.GetValeur() 
     
     def SetValeur(self, choix="", criteres=""):

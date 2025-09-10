@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -21,8 +21,8 @@ from Ctrl import CTRL_Image_mode
 
 
 LISTE_METHODES_ARRONDI = [
-    (_(u"Arrondi au centime supérieur"), "centimesup"),
-    (_(u"Arrondi au centime inférieur"), "centimeinf"),
+    (_(u"Arrondi au centime supÃ©rieur"), "centimesup"),
+    (_(u"Arrondi au centime infÃ©rieur"), "centimeinf"),
     ]
 
 
@@ -32,8 +32,8 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.IDmode = IDmode
         
-        # Généralités
-        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralites"))
+        # GÃ©nÃ©ralitÃ©s
+        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"GÃ©nÃ©ralites"))
         self.label_label = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_label = wx.TextCtrl(self, -1, u"")
         self.label_image = wx.StaticText(self, -1, _(u"Image :"))
@@ -49,12 +49,12 @@ class Dialog(wx.Dialog):
         # Options
         self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
         
-        # Numero de pièce
-        self.label_numero = wx.StaticText(self, -1, _(u"N° Pièce :"))
+        # Numero de piÃ¨ce
+        self.label_numero = wx.StaticText(self, -1, _(u"NÂ° PiÃ¨ce :"))
         self.radio_numero_aucun = wx.RadioButton(self, -1, _(u"Aucun"), style=wx.RB_GROUP)
         self.radio_numero_alpha = wx.RadioButton(self, -1, _(u"Alphanumerique"))
-        self.radio_numero_numerique = wx.RadioButton(self, -1, _(u"Numérique"))
-        self.ctrl_check_caract = wx.CheckBox(self, -1, _(u"Nbre caractères max :"))
+        self.radio_numero_numerique = wx.RadioButton(self, -1, _(u"NumÃ©rique"))
+        self.ctrl_check_caract = wx.CheckBox(self, -1, _(u"Nbre caractÃ¨res max :"))
         self.ctrl_nbre_caract = wx.SpinCtrl(self, -1, u"", min=0, max=100)
         
         # Frais de gestion
@@ -108,11 +108,11 @@ class Dialog(wx.Dialog):
         # Importation
         if self.IDmode != None :
             self.Importation()
-            self.SetTitle(_(u"Modification d'un mode de règlement"))
+            self.SetTitle(_(u"Modification d'un mode de rÃ¨glement"))
         else:
-            self.SetTitle(_(u"Création d'un mode de règlement"))
+            self.SetTitle(_(u"CrÃ©ation d'un mode de rÃ¨glement"))
             
-        # Initialisation des contrôles
+        # Initialisation des contrÃ´les
         self.OnRadioNumero(None)
         self.OnRadioFrais(None)
         
@@ -124,27 +124,27 @@ class Dialog(wx.Dialog):
         self.ctrl_frais_fixe.SetMinSize((50, -1))
         self.ctrl_nbre_caract.SetMinSize((50, -1))
         self.ctrl_frais_prorata.SetMinSize((50, -1))
-        self.ctrl_label.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom du mode de règlement")))
-        self.bouton_ajouter_image.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour importer une image pour ce mode de règlement")))
+        self.ctrl_label.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom du mode de rÃ¨glement")))
+        self.bouton_ajouter_image.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour importer une image pour ce mode de rÃ¨glement")))
         self.bouton_supprimer_image.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'image active")))
-        self.radio_numero_aucun.SetToolTip(wx.ToolTip(_(u"Cochez ici si le règlement de nécessite aucun numéro de pièce")))
-        self.radio_numero_alpha.SetToolTip(wx.ToolTip(_(u"Cochez ici si le numéro peut contenir des lettres et des chiffres")))
-        self.radio_numero_numerique.SetToolTip(wx.ToolTip(_(u"Cochez ici si le numéro ne peut contenir que des chiffres")))
-        self.ctrl_check_caract.SetToolTip(wx.ToolTip(_(u"Cochez cette case si le numéro a un nombre maximal de chiffres")))
-        self.ctrl_nbre_caract.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nombre de chiffres du numéro")))
-        self.radio_frais_aucun.SetToolTip(wx.ToolTip(_(u"Cochez ici si aucun frais de gestion n'est applicable pour ce mode de règlement")))
+        self.radio_numero_aucun.SetToolTip(wx.ToolTip(_(u"Cochez ici si le rÃ¨glement de nÃ©cessite aucun numÃ©ro de piÃ¨ce")))
+        self.radio_numero_alpha.SetToolTip(wx.ToolTip(_(u"Cochez ici si le numÃ©ro peut contenir des lettres et des chiffres")))
+        self.radio_numero_numerique.SetToolTip(wx.ToolTip(_(u"Cochez ici si le numÃ©ro ne peut contenir que des chiffres")))
+        self.ctrl_check_caract.SetToolTip(wx.ToolTip(_(u"Cochez cette case si le numÃ©ro a un nombre maximal de chiffres")))
+        self.ctrl_nbre_caract.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nombre de chiffres du numÃ©ro")))
+        self.radio_frais_aucun.SetToolTip(wx.ToolTip(_(u"Cochez ici si aucun frais de gestion n'est applicable pour ce mode de rÃ¨glement")))
         self.radio_frais_libre.SetToolTip(wx.ToolTip(_(u"Cochez ici si des frais de gestion d'un montant variable est applicable")))
         self.radio_frais_fixe.SetToolTip(wx.ToolTip(_(u"Cochez ici si des frais d'un montant fixe sont applicables")))
         self.ctrl_frais_fixe.SetToolTip(wx.ToolTip(_(u"Saisissez le montant fixe des frais de gestion")))
         self.radio_frais_prorata.SetToolTip(wx.ToolTip(_(u"Cochez ici si des frais de gestion d'un montant au prorata est applicable")))
-        self.ctrl_frais_prorata.SetToolTip(wx.ToolTip(_(u"Saisissez ici le pourcentage du montant du règlement")))
-        self.ctrl_frais_arrondi.SetToolTip(wx.ToolTip(_(u"Selectionnez une méthode de calcul de l'arrondi")))
-        self.ctrl_frais_label.SetToolTip(wx.ToolTip(_(u"Vous avez ici la possibilité de modifier le label de la prestation qui sera créée pour les frais de gestion")))
-        self.ctrl_type_comptable.SetToolTip(wx.ToolTip(_(u"Sélectionnez le type comptable ('Caisse' pour les espèces et 'Banque' pour les autres)")))
-        self.ctrl_code_comptable.SetToolTip(wx.ToolTip(_(u"Saisissez un code comptable pour ce mode de règlement. Utile uniquement pour l'export des écritures comptables.")))
-##        self.bouton_ajouter_emetteur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un émetteur")))
-##        self.bouton_modifier_emetteur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'émetteur selectionné dans la liste")))
-##        self.bouton_supprimer_emetteur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'émetteur selectionné dans la liste")))
+        self.ctrl_frais_prorata.SetToolTip(wx.ToolTip(_(u"Saisissez ici le pourcentage du montant du rÃ¨glement")))
+        self.ctrl_frais_arrondi.SetToolTip(wx.ToolTip(_(u"Selectionnez une mÃ©thode de calcul de l'arrondi")))
+        self.ctrl_frais_label.SetToolTip(wx.ToolTip(_(u"Vous avez ici la possibilitÃ© de modifier le label de la prestation qui sera crÃ©Ã©e pour les frais de gestion")))
+        self.ctrl_type_comptable.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le type comptable ('Caisse' pour les espÃ¨ces et 'Banque' pour les autres)")))
+        self.ctrl_code_comptable.SetToolTip(wx.ToolTip(_(u"Saisissez un code comptable pour ce mode de rÃ¨glement. Utile uniquement pour l'export des Ã©critures comptables.")))
+##        self.bouton_ajouter_emetteur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un Ã©metteur")))
+##        self.bouton_modifier_emetteur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'Ã©metteur selectionnÃ© dans la liste")))
+##        self.bouton_supprimer_emetteur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'Ã©metteur selectionnÃ© dans la liste")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider la saisie")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler la saisie")))
@@ -310,7 +310,7 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Modesderglements")
 
     def OnBoutonOk(self, event): 
-        # Récupération et vérification des données saisies
+        # RÃ©cupÃ©ration et vÃ©rification des donnÃ©es saisies
         label = self.ctrl_label.GetValue()
         if label == None :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un label !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
@@ -319,7 +319,7 @@ class Dialog(wx.Dialog):
             self.ctrl_label.SetFocus()
             return
         
-        # Numéro de pièce
+        # NumÃ©ro de piÃ¨ce
         numero_piece = None
         nbre_chiffres = None
         if self.radio_numero_alpha.GetValue() == True :
@@ -329,7 +329,7 @@ class Dialog(wx.Dialog):
             if self.ctrl_check_caract.GetValue() == True :
                 nbre_chiffres = self.ctrl_nbre_caract.GetValue()
                 if nbre_chiffres == 0 :
-                    dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné l'option 'Nbre limité de caractères' sans saisir de chiffre !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Vous avez sÃ©lectionnÃ© l'option 'Nbre limitÃ© de caractÃ¨res' sans saisir de chiffre !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     self.ctrl_nbre_caract.SetFocus()
@@ -412,11 +412,11 @@ class Dialog(wx.Dialog):
         self.ctrl_image.IDkey = self.IDmode
         self.ctrl_image.Sauvegarder() 
         
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
         
     def Importation(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         DB = GestionDB.DB()
         req = """SELECT label, image, 
         numero_piece, nbre_chiffres, 
@@ -435,7 +435,7 @@ class Dialog(wx.Dialog):
         
         # Image
         
-        # Numéro de pièce
+        # NumÃ©ro de piÃ¨ce
         if numero_piece == "ALPHA" :
             self.radio_numero_alpha.SetValue(True)
         if numero_piece == "NUM" :

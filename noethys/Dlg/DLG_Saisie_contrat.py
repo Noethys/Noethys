@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -57,7 +57,7 @@ class CTRL_Tarif(CTRL_Ultrachoice.CTRL):
 
         DB = GestionDB.DB()
         
-        # Recherche des catégories de tarifs
+        # Recherche des catÃ©gories de tarifs
         dictCategoriesTarifs = {}
         req = """SELECT IDcategorie_tarif, nom
         FROM categories_tarifs;"""
@@ -109,7 +109,7 @@ class CTRL_Tarif(CTRL_Ultrachoice.CTRL):
             nom = dictTarif["nomTarif"]
             date_debut = dictTarif["date_debut"]
             date_fin = dictTarif["date_fin"]
-            if date_debut == None and date_fin == None : label = _(u"%s (Sans période de validité)") % nom
+            if date_debut == None and date_fin == None : label = _(u"%s (Sans pÃ©riode de validitÃ©)") % nom
             if date_debut == None and date_fin != None : label = _(u"%s (Jusqu'au %s)") % (nom, UTILS_Dates.DateDDEnFr(date_fin))
             if date_debut != None and date_fin == None : label = _(u"%s (A partir du %s)") % (nom, UTILS_Dates.DateDDEnFr(date_debut))
             if date_debut != None and date_fin != None : label = _(u"%s (Du %s au %s)") % (nom, UTILS_Dates.DateDDEnFr(date_debut), UTILS_Dates.DateDDEnFr(date_fin))
@@ -151,7 +151,7 @@ class Dialog(wx.Dialog):
         self.listePeriodesInitiale = []
         self.listeSuppressionConso = []
         
-        # Récupération de l'activité
+        # RÃ©cupÃ©ration de l'activitÃ©
         if mode_modele == True :
             DB = GestionDB.DB()
             req = """SELECT IDactivite, nom
@@ -174,10 +174,10 @@ class Dialog(wx.Dialog):
             DB.Close()
             self.IDactivite, self.nomActivite, self.IDcompte_payeur, self.IDfamille, self.IDcategorie_tarif, self.IDgroupe, self.nomGroupe = listeDonnees[0]
         
-        # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Généralités"))
+        # GÃ©nÃ©ralitÃ©s
+        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"GÃ©nÃ©ralitÃ©s"))
         
-        self.label_nom = wx.StaticText(self, wx.ID_ANY, _(u"Nom du modèle :"))
+        self.label_nom = wx.StaticText(self, wx.ID_ANY, _(u"Nom du modÃ¨le :"))
         self.ctrl_nom = wx.TextCtrl(self, wx.ID_ANY, u"")
 
         self.label_nom.Show(self.mode_modele)
@@ -194,8 +194,8 @@ class Dialog(wx.Dialog):
         self.label_tarif = wx.StaticText(self, wx.ID_ANY, _(u"Tarif de base :"))
         self.ctrl_tarif = CTRL_Tarif(self, IDactivite=self.IDactivite, IDcategorie_tarif=self.IDcategorie_tarif)
 
-        # Périodes
-        self.box_periodes_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Périodes de facturation"))
+        # PÃ©riodes
+        self.box_periodes_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"PÃ©riodes de facturation"))
 
         self.listviewAvecFooter = OL_Contrats_periodes.ListviewAvecFooter(self, kwargs={"IDactivite" : self.IDactivite}) 
         self.ctrl_periodes = self.listviewAvecFooter.GetListview()
@@ -208,7 +208,7 @@ class Dialog(wx.Dialog):
 
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_consommations = CTRL_Bouton_image.CTRL(self, texte=_(u"Générer des consommations"), cheminImage="Images/32x32/Magique.png")
+        self.bouton_consommations = CTRL_Bouton_image.CTRL(self, texte=_(u"GÃ©nÃ©rer des consommations"), cheminImage="Images/32x32/Magique.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
@@ -225,49 +225,49 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonConsommations, self.bouton_consommations)
 
-        # Init contrôles
+        # Init contrÃ´les
         if self.mode_modele == True :
-            # Modèle de contrat
+            # ModÃ¨le de contrat
             if self.IDmodele == None :
-                self.SetTitle(_(u"Saisie d'un modèle de contrat pour l'activité '%s'") % self.nomActivite)
+                self.SetTitle(_(u"Saisie d'un modÃ¨le de contrat pour l'activitÃ© '%s'") % self.nomActivite)
             else :
-                self.SetTitle(_(u"Modification d'un modèle de contrat pour l'activité '%s'") % self.nomActivite)
+                self.SetTitle(_(u"Modification d'un modÃ¨le de contrat pour l'activitÃ© '%s'") % self.nomActivite)
                 self.Importation_modele() 
         
         else :
             # Contrat
             if self.IDcontrat == None :
-                self.SetTitle(_(u"Saisie d'un contrat pour l'activité '%s'") % self.nomActivite)
+                self.SetTitle(_(u"Saisie d'un contrat pour l'activitÃ© '%s'") % self.nomActivite)
                 if copie != None :
                     self.Importation(IDcontrat=copie, mode_copie=True, copie_conso=copie_conso) 
                 if self.IDmodele != None :
                     self.Importation_modele() 
             else :
-                self.SetTitle(_(u"Modification d'un contrat pour l'activité '%s'") % self.nomActivite)
+                self.SetTitle(_(u"Modification d'un contrat pour l'activitÃ© '%s'") % self.nomActivite)
                 self.Importation(IDcontrat=self.IDcontrat) 
         
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour ce modèle de contrat")))
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début de contrat")))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour ce modÃ¨le de contrat")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de dÃ©but de contrat")))
         self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de contrat")))
         self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez des observations sur ce contrat")))
-        self.ctrl_tarif.SetToolTip(wx.ToolTip(_(u"Sélectionnez un tarif de base dans cette liste des tarifs de type 'forfait crédit' disponibles")))
-        self.bouton_assistant.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour générer automatiquement les périodes")))
-        self.bouton_ajouter_periode.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une période")))
-        self.bouton_modifier_periode.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la période sélectionnée")))
-        self.bouton_modifier_montants.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le montant de toutes les prestations non facturées")))
-        self.bouton_supprimer_periode.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la période sélectionnée")))
+        self.ctrl_tarif.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un tarif de base dans cette liste des tarifs de type 'forfait crÃ©dit' disponibles")))
+        self.bouton_assistant.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour gÃ©nÃ¨rer automatiquement les pï¿½riodes")))
+        self.bouton_ajouter_periode.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une pÃ©riode")))
+        self.bouton_modifier_periode.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la pÃ©riode sÃ©lectionnÃ©e")))
+        self.bouton_modifier_montants.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le montant de toutes les prestations non facturï¿½es")))
+        self.bouton_supprimer_periode.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la pÃ©riode sÃ©lectionnÃ©e")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
-        self.bouton_consommations.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour générer automatiquement des consommations")))
+        self.bouton_consommations.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour gÃ©nÃ©rer automatiquement des consommations")))
         self.SetMinSize((800, 650))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(3, 1, 10, 10)
         
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         box_generalites = wx.StaticBoxSizer(self.box_generalites_staticbox, wx.VERTICAL)
         grid_sizer_generalites = wx.FlexGridSizer(4, 2, 10, 10)
         grid_sizer_generalites.Add(self.label_nom, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
@@ -286,7 +286,7 @@ class Dialog(wx.Dialog):
         box_generalites.Add(grid_sizer_generalites, 1, wx.ALL | wx.EXPAND, 10)
         grid_sizer_base.Add(box_generalites, 1, wx.LEFT | wx.RIGHT | wx.TOP | wx.EXPAND, 10)
         
-        # Périodes
+        # PÃ©riodes
         box_periodes = wx.StaticBoxSizer(self.box_periodes_staticbox, wx.VERTICAL)
         grid_sizer_periodes = wx.FlexGridSizer(1, 2, 5, 5)
         grid_sizer_periodes.Add(self.listviewAvecFooter, 1, wx.EXPAND, 0)
@@ -364,7 +364,7 @@ class Dialog(wx.Dialog):
         self.ctrl_periodes.SetDonnees(listePeriodes)
         
     def Importation(self, IDcontrat=None, mode_copie=False, copie_conso=True):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         DB = GestionDB.DB()
         
         # Importation des contrats
@@ -382,7 +382,7 @@ class Dialog(wx.Dialog):
         self.ctrl_observations.SetValue(observations)
         self.ctrl_tarif.SetID(IDtarif)
 
-        # Importation des consommations liées au contrat
+        # Importation des consommations liÃ©es au contrat
         req = """SELECT IDconso, consommations.IDindividu, IDinscription, consommations.IDactivite, consommations.date, IDunite, IDgroupe, heure_debut, heure_fin, consommations.etat, verrouillage, date_saisie, IDutilisateur, quantite, consommations.IDcategorie_tarif, consommations.IDcompte_payeur, consommations.IDprestation
         FROM consommations
         LEFT JOIN prestations ON prestations.IDprestation = consommations.IDprestation 
@@ -404,7 +404,7 @@ class Dialog(wx.Dialog):
                 dictTemp["etat"] = "reservation"
             dictConso[IDprestation].append(dictTemp)
 
-        # Importation des périodes de contrat
+        # Importation des pÃ©riodes de contrat
         req = """SELECT prestations.IDprestation, forfait_date_debut, forfait_date_fin, label, montant, prestations.date,
         prestations.IDfacture, factures.IDprefixe, factures_prefixes.prefixe, factures.numero,
         COUNT(consommations.IDconso)
@@ -452,10 +452,10 @@ class Dialog(wx.Dialog):
         return self.IDmodele
     
     def Sauvegarde(self):
-        """ Sauvegarde des données """
+        """ Sauvegarde des donnÃ©es """
         nom = self.ctrl_nom.GetValue()
         if self.mode_modele == True and nom == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner le nom du modèle !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner le nom du modÃ¨le !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus() 
@@ -463,7 +463,7 @@ class Dialog(wx.Dialog):
             
         date_debut = self.ctrl_date_debut.GetDate() 
         if date_debut == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner la date de début !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner la date de dÃ©but !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus() 
@@ -478,14 +478,14 @@ class Dialog(wx.Dialog):
             return False
 
         if date_fin < date_debut :
-            dlg = wx.MessageDialog(self, _(u"La date de début ne doit pas être supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de dÃ©but ne doit pas Ãªtre supÃ©rieure Ã  la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         IDtarif = self.ctrl_tarif.GetID()
         if IDtarif == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un tarif dans la liste proposée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un tarif dans la liste proposÃ©e !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -495,25 +495,25 @@ class Dialog(wx.Dialog):
         
         listePeriodes = self.ctrl_periodes.GetDonnees() 
         if len(listePeriodes) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir au moins une période !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir au moins une pÃ©riode !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
-        # Vérifie que les périodes sont bien dans la période de validité du contrat
+        # VÃ©rifie que les pÃ©riodes sont bien dans la pÃ©riode de validitÃ© du contrat
         for dictPeriode in listePeriodes :
             if dictPeriode["date_debut"] < date_debut :
-                dlg = wx.MessageDialog(self, _(u"La période '%s' comporte une date de début antérieure à la date de début du contrat !") % dictPeriode["label_prestation"], _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La pÃ©riode '%s' comporte une date de dÃ©but antÃ©rieure Ã  la date de dÃ©but du contrat !") % dictPeriode["label_prestation"], _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
             if dictPeriode["date_fin"] > date_fin :
-                dlg = wx.MessageDialog(self, _(u"La période '%s' comporte une date de fin supérieure à la date de fin du contrat !") % dictPeriode["label_prestation"], _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La pÃ©riode '%s' comporte une date de fin supÃ©rieure Ã  la date de fin du contrat !") % dictPeriode["label_prestation"], _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
             
-        # Vérifie que les consommations sont bien enregistrables
+        # VÃ©rifie que les consommations sont bien enregistrables
         if self.mode_modele == False :
             if self.VerifieConsommations(listePeriodes) == False :
                 return False
@@ -522,7 +522,7 @@ class Dialog(wx.Dialog):
         # ------------- SAUVEGARDE -------------------------------------------------------------------------------------------------------------------
 
         if self.mode_modele == True :
-            # Sauvegarde du modèle de contrat
+            # Sauvegarde du modÃ¨le de contrat
             donneesStr = cPickle.dumps(listePeriodes)
 
             DB = GestionDB.DB()
@@ -539,7 +539,7 @@ class Dialog(wx.Dialog):
             else :
                 DB.ReqMAJ("modeles_contrats", listeDonnees, "IDmodele", self.IDmodele)
             
-            # Sauvegarde des données BLOB
+            # Sauvegarde des donnÃ©es BLOB
             DB.MAJimage(table="modeles_contrats", key="IDmodele", IDkey=self.IDmodele, blobImage=donneesStr, nomChampBlob="donnees")
             
             DB.Close() 
@@ -563,7 +563,7 @@ class Dialog(wx.Dialog):
             else :
                 DB.ReqMAJ("contrats", listeDonnees, "IDcontrat", self.IDcontrat)
                 
-            # Sauvegarde des périodes du contrat
+            # Sauvegarde des pÃ©riodes du contrat
             listeID = []
             index = 0
             for dictPeriode in listePeriodes :
@@ -595,18 +595,18 @@ class Dialog(wx.Dialog):
                 listePeriodes[index]["IDprestation"] = IDprestation
                 index += 1
             
-            # Suppression des périodes supprimées
+            # Suppression des pÃ©riodes supprimÃ©es
             for dictPeriode in self.listePeriodesInitiale :
                 if dictPeriode["IDprestation"] not in listeID and dictPeriode["IDprestation"] != None :
                     DB.ReqDEL("prestations", "IDprestation", dictPeriode["IDprestation"])
                     DB.ReqMAJ("consommations", [("IDprestation", None),], "IDprestation", dictPeriode["IDprestation"])
 
-            # Suppression des conso supprimées
+            # Suppression des conso supprimÃ©es
             for IDconso in self.listeSuppressionConso :
                 if IDconso != None :
                     DB.ReqDEL("consommations", "IDconso", IDconso)
 
-            # Saisie des consommations générées
+            # Saisie des consommations gÃ©nÃ©rÃ©es
             listeAjouts = []
             for dictPeriode in listePeriodes :
                 listeConso = dictPeriode["listeConso"]
@@ -656,7 +656,7 @@ class Dialog(wx.Dialog):
         return True
 
     def VerifieConsommations(self, listePeriodes=[]):
-        # Récupération des unités
+        # RÃ©cupÃ©ration des unitÃ©s
         DB = GestionDB.DB()
         req = """SELECT IDunite, nom, abrege, type, heure_debut, heure_fin
         FROM unites
@@ -668,7 +668,7 @@ class Dialog(wx.Dialog):
         for IDunite, nom, abrege, type, heure_debut, heure_fin in listeDonnees :
             dictUnites[IDunite] = {"nom":nom, "abrege":abrege, "type":type, "heure_debut":heure_debut, "heure_fin":heure_fin, "unites_incompatibles" : []}
 
-        # Récupère les incompatibilités entre unités
+        # RÃ©cupÃ¨re les incompatibilitÃ©s entre unitÃ©s
         req = """SELECT IDunite_incompat, IDunite, IDunite_incompatible
         FROM unites_incompat;"""
         DB.ExecuterReq(req)
@@ -677,7 +677,7 @@ class Dialog(wx.Dialog):
             if IDunite in dictUnites : dictUnites[IDunite]["unites_incompatibles"].append(IDunite_incompatible)
             if IDunite_incompatible in dictUnites : dictUnites[IDunite_incompatible]["unites_incompatibles"].append(IDunite)
         
-        # Récupération des ouvertures des unités
+        # RÃ©cupÃ©ration des ouvertures des unitÃ©s
         req = """SELECT IDouverture, IDunite, IDgroupe, date
         FROM ouvertures 
         WHERE IDactivite=%d
@@ -689,7 +689,7 @@ class Dialog(wx.Dialog):
             date = UTILS_Dates.DateEngEnDateDD(date)
             dictOuvertures[(date, IDunite, IDgroupe)] = IDouverture
 
-        # Récupération des consommations
+        # RÃ©cupÃ©ration des consommations
         req = """SELECT IDconso, date, IDunite, heure_debut, heure_fin, etat
         FROM consommations 
         WHERE IDactivite=%d AND IDindividu=%d
@@ -713,35 +713,35 @@ class Dialog(wx.Dialog):
                     dateFr = UTILS_Dates.DateDDEnFr(dictConso["date"])
                     valide = True
                     
-                    # Vérifie si unité ouverte
+                    # VÃ©rifie si unitÃ© ouverte
                     if ((dictConso["date"], dictConso["IDunite"], self.IDgroupe) in dictOuvertures) == False :
-                        listeAnomalies.append(_(u"%s : Unité %s fermée pour le groupe %s") % (dateFr, dictUnites[dictConso["IDunite"]]["nom"], self.nomGroupe))
+                        listeAnomalies.append(_(u"%s : UnitÃ© %s fermÃ©e pour le groupe %s") % (dateFr, dictUnites[dictConso["IDunite"]]["nom"], self.nomGroupe))
                         valide = False
                     
-                    # Recherche si pas d'incompatibilités avec les conso déjà saisies
+                    # Recherche si pas d'incompatibilitÃ©s avec les conso dÃ©jÃ  saisies
                     if dictConso["date"] in dictConsommations :
                         for dictConsoTemp in dictConsommations[dictConso["date"]] :
                             nomUnite1 = dictUnites[dictConso["IDunite"]]["nom"]
                             nomUnite2 = dictUnites[dictConsoTemp["IDunite"]]["nom"]
                             
                             if self.VerifieCompatibilitesUnites(dictUnites, dictConsoTemp["IDunite"], dictConso["IDunite"]) == False :
-                                listeAnomalies.append(_(u"%s : Unité %s incompatible avec unité %s déjà présente") % (dateFr, nomUnite1, nomUnite2))
+                                listeAnomalies.append(_(u"%s : UnitÃ© %s incompatible avec unitÃ© %s dÃ©jÃ  prÃ©sente") % (dateFr, nomUnite1, nomUnite2))
                                 valide = False
                                 
                             if dictConso["IDunite"] == dictConsoTemp["IDunite"] :
                                 if dictUnites[dictConso["IDunite"]]["type"] == "Multihoraire" :
                                     if dictConso["heure_fin"] > dictConsoTemp["heure_debut"] and dictConso["heure_debut"] < dictConsoTemp["heure_fin"] :
-                                        listeAnomalies.append(_(u"%s : L'unité multihoraires %s chevauche une consommation d'une unité identique") % (dateFr, nomUnite1))
+                                        listeAnomalies.append(_(u"%s : L'unitÃ© multihoraires %s chevauche une consommation d'une unitÃ© identique") % (dateFr, nomUnite1))
                                         valide = False
                                 else :
-                                    listeAnomalies.append(_(u"%s : Unité %s déjà présente") % (dateFr, nomUnite1))
+                                    listeAnomalies.append(_(u"%s : UnitÃ© %s dÃ©jÃ  prÃ©sente") % (dateFr, nomUnite1))
                                     valide = False
                     
         # Signalement des anomalies
         if len(listeAnomalies) :
-            message1 = _(u"Validation du contrat impossible.\n\nLes %d anomalies suivantes ont été trouvées :") % len(listeAnomalies)
+            message1 = _(u"Validation du contrat impossible.\n\nLes %d anomalies suivantes ont Ã©tÃ© trouvÃ©es :") % len(listeAnomalies)
             message2 = u"\n".join(listeAnomalies)
-            dlg = dialogs.MultiMessageDialog(self, message1, caption = _(u"Génération des consommations"), msg2=message2, style = wx.ICON_EXCLAMATION | wx.YES|wx.YES_DEFAULT, btnLabels={wx.ID_YES : _(u"Ok")})
+            dlg = dialogs.MultiMessageDialog(self, message1, caption = _(u"GÃ©nÃ©ration des consommations"), msg2=message2, style = wx.ICON_EXCLAMATION | wx.YES|wx.YES_DEFAULT, btnLabels={wx.ID_YES : _(u"Ok")})
             reponse = dlg.ShowModal() 
             dlg.Destroy() 
             return False
@@ -751,7 +751,7 @@ class Dialog(wx.Dialog):
 ##    def VerifieOuverturesConso(self, listePeriodes=[]):
 ##        DB = GestionDB.DB()
 ##        
-##        # Récupération des ouvertures
+##        # RÃ©cupÃ©ration des ouvertures
 ##        req = """SELECT IDouverture, IDunite, IDgroupe, date
 ##        FROM ouvertures 
 ##        WHERE IDactivite=%d
@@ -763,7 +763,7 @@ class Dialog(wx.Dialog):
 ##            date = UTILS_Dates.DateEngEnDateDD(date)
 ##            dictOuvertures[(date, IDunite, IDgroupe)] = IDouverture
 ##        
-##        # Récupération des unités
+##        # RÃ©cupÃ©ration des unitÃ©s
 ##        req = """SELECT IDunite, nom 
 ##        FROM unites; """
 ##        DB.ExecuterReq(req)
@@ -777,13 +777,13 @@ class Dialog(wx.Dialog):
 ##        for dictPeriode in listePeriodes :
 ##            for dictConso in dictPeriode["listeConso"] :
 ##                if dictOuvertures.has_key((dictConso["date"], dictConso["IDunite"], self.IDgroupe)) == False :
-##                    listeAnomalies.append(_(u"%s : Unité %s fermée pour le groupe %s") % (UTILS_Dates.DateDDEnFr(dictConso["date"]), dictUnites[dictConso["IDunite"]]["nom"], self.nomGroupe))
+##                    listeAnomalies.append(_(u"%s : UnitÃ© %s fermÃ©e pour le groupe %s") % (UTILS_Dates.DateDDEnFr(dictConso["date"]), dictUnites[dictConso["IDunite"]]["nom"], self.nomGroupe))
 ##
 ##        # Signalement des anomalies
 ##        if len(listeAnomalies) :
-##            message1 = _(u"Impossible de créer ce contrat : Les %d anomalies suivantes ont été trouvées :") % len(listeAnomalies)
+##            message1 = _(u"Impossible de crÃ©er ce contrat : Les %d anomalies suivantes ont Ã©tÃ© trouvÃ©es :") % len(listeAnomalies)
 ##            message2 = u"\n".join(listeAnomalies)
-##            dlg = dialogs.MultiMessageDialog(self, message1, caption = _(u"Génération de consommations"), msg2=message2, style = wx.ICON_EXCLAMATION | wx.YES|wx.YES_DEFAULT, btnLabels={wx.ID_YES : _(u"Ok")})
+##            dlg = dialogs.MultiMessageDialog(self, message1, caption = _(u"GÃ©nÃ©ration de consommations"), msg2=message2, style = wx.ICON_EXCLAMATION | wx.YES|wx.YES_DEFAULT, btnLabels={wx.ID_YES : _(u"Ok")})
 ##            reponse = dlg.ShowModal() 
 ##            dlg.Destroy() 
 ##            return False
@@ -796,9 +796,9 @@ class Dialog_selection_activite(wx.Dialog):
     def __init__(self, parent):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
-        self.SetTitle(_(u"Sélection d'une activité"))
+        self.SetTitle(_(u"SÃ©lection d'une activitÃ©"))
         
-        self.label_intro = wx.StaticText(self, wx.ID_ANY, _(u"Sélectionnez l'activité pour laquelle vous souhaitez créer un modèle de contrat puis cliquez sur OK :"))
+        self.label_intro = wx.StaticText(self, wx.ID_ANY, _(u"SÃ©lectionnez l'activitÃ© pour laquelle vous souhaitez crÃ©er un modÃ¨le de contrat puis cliquez sur OK :"))
         self.ctrl_activites = OL_Activites.ListView(self, modificationAutorisee=False, id=-1, style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
         self.ctrl_activites.SetMinSize((150, 50))
         self.ctrl_activites.MAJ() 
@@ -852,7 +852,7 @@ class Dialog_selection_activite(wx.Dialog):
 
     def OnBoutonOk(self, event):  
         if len(self.ctrl_activites.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une activité dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une activitÃ© dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -22,29 +22,29 @@ from Utils import UTILS_Config
 
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent, provisoire=False, titre=_(u"Aperçu d'une attestation fiscale"), intro=_(u"Vous pouvez ici créer un aperçu PDF du document sélectionné.")):
+    def __init__(self, parent, provisoire=False, titre=_(u"AperÃ§u d'une attestation fiscale"), intro=_(u"Vous pouvez ici crÃ©er un aperÃ§u PDF du document sÃ©lectionnÃ©.")):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE)
         self.parent = parent
         
         # Bandeau
         if provisoire == True :
-            intro += _(u" <FONT COLOR = '#FF0000'>Attention, il ne s'agit que d'un document provisoire avant génération !</FONT>")
+            intro += _(u" <FONT COLOR = '#FF0000'>Attention, il ne s'agit que d'un document provisoire avant gÃ©nÃ©ration !</FONT>")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Apercu.png")
         
-        # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
+        # ParamÃ¨tres
+        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"ParamÃ¨tres"))
         
-        self.label_modele = wx.StaticText(self, -1, _(u"Modèle :"))
+        self.label_modele = wx.StaticText(self, -1, _(u"ModÃ¨le :"))
         self.ctrl_modele = CTRL_Choix_modele.CTRL_Choice(self, categorie="attestation_fiscale")
         self.ctrl_modele.SetMinSize((260, -1))
         
-##        self.check_coupons = wx.CheckBox(self, -1, _(u"Insérer les coupons-réponses"))
-##        self.check_codesbarres = wx.CheckBox(self, -1, _(u"Insérer les codes-barres"))
+##        self.check_coupons = wx.CheckBox(self, -1, _(u"InsÃ©rer les coupons-rÃ©ponses"))
+##        self.check_codesbarres = wx.CheckBox(self, -1, _(u"InsÃ©rer les codes-barres"))
         
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"AperÃ§u"), cheminImage="Images/32x32/Apercu.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
@@ -54,15 +54,15 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
-        # Init contrôles
+        # Init contrÃ´les
 ##        self.check_coupons.SetValue(UTILS_Config.GetParametre("impression_rappels_coupon", defaut=1))
 ##        self.check_codesbarres.SetValue(UTILS_Config.GetParametre("impression_rappels_codeBarre", defaut=1))
 
 
     def __set_properties(self):
-        self.ctrl_modele.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici le modèle de document")))
-##        self.check_coupons.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour insérer les coupons-réponses")))
-##        self.check_codesbarres.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour insérer les codes-barres")))
+        self.ctrl_modele.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici le modÃ¨le de document")))
+##        self.check_coupons.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour insÃ©rer les coupons-rÃ©ponses")))
+##        self.check_codesbarres.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour insÃ©rer les codes-barres")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -71,7 +71,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
         
-        # Paramètres
+        # ParamÃ¨tres
         box_parametres = wx.StaticBoxSizer(self.box_parametres_staticbox, wx.VERTICAL)
         
         grid_sizer_haut = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
@@ -109,13 +109,13 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
 
     def GetParametres(self):
-        """ Retourne les paramètres sélectionnés """
+        """ Retourne les paramÃ¨tres sÃ©lectionnÃ©s """
         dictParametres = {} 
         
-        # Modèle
+        # ModÃ¨le
         dictParametres["IDmodele"] = self.ctrl_modele.GetID() 
         if dictParametres["IDmodele"] == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un modèle !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un modÃ¨le !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False

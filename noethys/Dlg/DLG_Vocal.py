@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -44,28 +44,28 @@ class MyHtml(html.HtmlWindow):
         <CENTER>
             <IMG SRC="Static/Images/32x32/Telecharger.png">
             <BR><BR>
-            <B>TÈlÈchargement de la voix franÁaise</B>
+            <B>T√©l√©chargement de la voix fran√ßaise</B>
             <BR><BR>
-            Vous pouvez tÈlÈcharger gratuitement la voix franÁaise "Virginie" en cliquant sur le lien suivant :
+            Vous pouvez t√©l√©charger gratuitement la voix fran√ßaise "Virginie" en cliquant sur le lien suivant :
             <BR>
-            <A HREF="http://www4.ac-nancy-metz.fr/tice57/spip.php?article139">Page de tÈlÈchargement</A>.
+            <A HREF="http://www4.ac-nancy-metz.fr/tice57/spip.php?article139">Page de t√©l√©chargement</A>.
             <BR><BR>
-            <I>(Le fichier ‡ tÈlÈcharger "Voix de Virginie" se trouve en bas de la page).</I>
+            <I>(Le fichier √† t√©l√©charger "Voix de Virginie" se trouve en bas de la page).</I>
         </CENTER>
         <BR><BR>
         Pour installer le fichier :
         <UL>
-        <LI>DÈzippez ce fichier</LI>
+        <LI>D√©zippez ce fichier</LI>
         <LI>Lancez l'installation en cliquant sur "Virginie.exe"</LI>
-        <LI>Utilisez la procÈdure d'installation standard.</LI>
+        <LI>Utilisez la proc√©dure d'installation standard.</LI>
         </UL>
         <BR><BR>
-        Vous pouvez maintenant revenir dans le paramÈtrage de la synthËse vocale de Noethys pour dÈfinir la voix Virginie comme voix par dÈfaut.       
+        Vous pouvez maintenant revenir dans le param√©trage de la synth√®se vocale de Noethys pour d√©finir la voix Virginie comme voix par d√©faut.       
         
         </FONT>
         """
         from Dlg import DLG_Message_html
-        dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"TÈlÈcharger la voix franÁaise"), size=(360, 500))
+        dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"T√©l√©charger la voix fran√ßaise"), size=(360, 500))
         dlg.ShowModal()
         dlg.Destroy()
         
@@ -100,7 +100,7 @@ class CTRL_Voix(wx.Choice):
         self.MAJ() 
         
     def MAJ(self):
-        # RÈcupÈration de la liste des voix
+        # R√©cup√©ration de la liste des voix
         listeVoix = self.vocal.GetListeVoix()
         # Remplissage
         listeItems = []
@@ -111,7 +111,7 @@ class CTRL_Voix(wx.Choice):
             self.dictDonnees[index] = voix.id
             index += 1
         self.SetItems(listeItems)
-        # SÈlectionne la voix par dÈfaut
+        # S√©lectionne la voix par d√©faut
         voixActuelle = self.vocal.GetVoixActuelle()
         if voixActuelle in list(self.dictDonnees.values()) :
             self.SetID(voixActuelle)
@@ -141,13 +141,13 @@ class Dialog(wx.Dialog):
         self.vocal = UTILS_Vocal.Vocal() 
         
         # Bandeau
-        intro = _(u"Vous pouvez paramÈtrer et tester ici la synthËse vocale utilisÈe par Noethys. Attention, si ce n'est pas dÈj‡ fait, tÈlÈchargez dËs ‡ prÈsent la voix franÁaise ci-dessous !")
-        titre = _(u"SynthËse vocale")
+        intro = _(u"Vous pouvez param√©trer et tester ici la synth√®se vocale utilis√©e par Noethys. Attention, si ce n'est pas d√©j√† fait, t√©l√©chargez d√®s √† pr√©sent la voix fran√ßaise ci-dessous !")
+        titre = _(u"Synth√®se vocale")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Vocal.png")
         
-        # ParamËtres
-        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"ParamËtres de la voix"))
+        # Param√®tres
+        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"Param√®tres de la voix"))
         self.label_voix = wx.StaticText(self, -1, _(u"Voix actuelle :"))
         self.ctrl_voix = CTRL_Voix(self, vocal=self.vocal)
         
@@ -190,11 +190,11 @@ class Dialog(wx.Dialog):
             
 
     def __set_properties(self):
-        self.ctrl_voix.SetToolTip(wx.ToolTip(_(u"SÈlectionnez une voix dans la liste")))
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une correction phonique. Exemple : CrÈez une correction 'KÈvin'->'KÈvine' pour que le moteur vocal lise correctement le son 'in'.")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la correction sÈlectionnÈe")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la correction sÈlectionnÈe")))
-        self.ctrl_test.SetToolTip(wx.ToolTip(_(u"Tapez un texte ‡ lire")))
+        self.ctrl_voix.SetToolTip(wx.ToolTip(_(u"S√©lectionnez une voix dans la liste")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une correction phonique. Exemple : Cr√©ez une correction 'K√©vin'->'K√©vine' pour que le moteur vocal lise correctement le son 'in'.")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la correction s√©lectionn√©e")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la correction s√©lectionn√©e")))
+        self.ctrl_test.SetToolTip(wx.ToolTip(_(u"Tapez un texte √† lire")))
         self.bouton_test.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lire le texte saisi")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
@@ -204,7 +204,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
         
-        # ParamËtres
+        # Param√®tres
         box_parametres = wx.StaticBoxSizer(self.box_parametres_staticbox, wx.VERTICAL)
         grid_sizer_parametres = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
         grid_sizer_parametres.Add(self.label_voix, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -265,8 +265,8 @@ class Dialog(wx.Dialog):
         if self.vocal.VerifieSiVirginieInstallee() == False :
             texte = u"""
             <FONT SIZE=-1>
-            Aucune voix franÁaise n'est installÈe sur votre ordinateur. 
-            <A HREF="x">Cliquez ici pour tÈlÈcharger</A> et installer la voix franÁaise "Virginie" sur votre ordinateur.
+            Aucune voix fran√ßaise n'est install√©e sur votre ordinateur. 
+            <A HREF="x">Cliquez ici pour t√©l√©charger</A> et installer la voix fran√ßaise "Virginie" sur votre ordinateur.
             </FONT>
             """
             self.ctrl_avertissement.SetTexte(texte)
@@ -275,7 +275,7 @@ class Dialog(wx.Dialog):
             if self.vocal.VerifieSiVirginieDefaut() == False :
                 texte = u"""
                 <FONT SIZE=-1>
-                La voix franÁaise Virginie est bien installÈe sur votre ordinateur. Veuillez maintenant la sÈlectionner ci-dessus pour l'activer dans Noethys !
+                La voix fran√ßaise Virginie est bien install√©e sur votre ordinateur. Veuillez maintenant la s√©lectionner ci-dessus pour l'activer dans Noethys !
                 </FONT>
                 """
                 self.ctrl_avertissement.SetTexte(texte)
@@ -303,7 +303,7 @@ class Dialog(wx.Dialog):
         """ Test vocal """
         texte = self.ctrl_test.GetValue()
         if len(texte) == 0 :
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucun texte ‡ lire !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucun texte √† lire !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_test.SetFocus() 

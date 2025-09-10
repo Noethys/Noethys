@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -28,7 +28,7 @@ class CTRL_Unite_remplissage(wx.Panel):
         self.SetSize((55, -1))
         self.SetMinSize((55, -1))
                 
-        # Contrôle
+        # ContrÃ´le
         self.ctrl = wx.StaticText(self, -1, u"XXX")
         
         # Layout
@@ -72,14 +72,14 @@ class CTRL(HTL.HyperTreeList):
         self.SetAGWWindowStyleFlag(TR_COLUMN_LINES |  wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT | HTL.TR_NO_HEADER)
                     
     def MAJ(self, date=None):
-        """ Met à jour (redessine) tout le contrôle """
+        """ Met Ã  jour (redessine) tout le contrÃ´le """
         if date != None :
             self.date = date
         self.Freeze()
         self.DeleteAllItems()
         for numColonne in range(self.GetColumnCount()-1, -1, -1) :
             self.RemoveColumn(numColonne)
-        # Création de la racine
+        # CrÃ©ation de la racine
         self.Remplissage()
         self.Thaw() 
 
@@ -102,7 +102,7 @@ class CTRL(HTL.HyperTreeList):
             listeGroupes.append((dictGroupe["ordre"], IDgroupe))
         listeGroupes.sort()
         
-        # Récupération des groupes par activité
+        # RÃ©cupÃ©ration des groupes par activitÃ©
         self.dictGroupeTmp = {}
         for ordre, IDgroupe in listeGroupes :
             dictGroupe = self.dictGroupes[IDgroupe]
@@ -116,7 +116,7 @@ class CTRL(HTL.HyperTreeList):
             if (IDactivite in self.dictGroupeTmp) == False :
                 self.dictGroupeTmp[IDactivite] = [(0, _(u"Groupe unique")),]
         
-        # Récupération des unités de remplissage
+        # RÃ©cupÃ©ration des unitÃ©s de remplissage
         self.dictUnitesRemplissageTemp = {}
         for IDunite_remplissage, dictUniteRemplissage in self.dictRemplissage.items() :
             if "IDactivite" in dictUniteRemplissage :
@@ -128,7 +128,7 @@ class CTRL(HTL.HyperTreeList):
                 self.dictUnitesRemplissageTemp[IDactivite].append((ordre, IDunite_remplissage, abrege))
                 self.dictUnitesRemplissageTemp[IDactivite].sort()
             
-        # Préparation des colonnes
+        # PrÃ©paration des colonnes
         listeColonnes = [
             ( _(u"Groupe"), 150, wx.ALIGN_LEFT),
             ]
@@ -147,7 +147,7 @@ class CTRL(HTL.HyperTreeList):
         for x in range(0, max(listeNbreUnites)):
             listeColonnes.append((u"", 50, wx.ALIGN_CENTER))
             
-        # Création des colonnes
+        # CrÃ©ation des colonnes
         numColonne = 0
         for label, largeur, alignement in listeColonnes :
             self.AddColumn(label)
@@ -155,13 +155,13 @@ class CTRL(HTL.HyperTreeList):
             self.SetColumnAlignment(numColonne, alignement)
             numColonne += 1
         
-        # Création de la racine
+        # CrÃ©ation de la racine
         self.root = self.AddRoot(_(u"Racine"))
         
-        # Création des branches
+        # CrÃ©ation des branches
         for IDactivite in self.listeActivites :
             
-            # Label activité
+            # Label activitÃ©
             label = self.dictActivites[IDactivite]["nom"] if IDactivite in self.dictActivites else u"?"
             activite = self.AppendItem(self.root, label)
             self.dictBranches["activites"][IDactivite] = activite
@@ -202,7 +202,7 @@ class CTRL(HTL.HyperTreeList):
         self.MAJ_contenu() 
 
     def MAJ_donnees(self):
-        """ Récupère les données """
+        """ RÃ©cupÃ¨re les donnÃ©es """
         self.dictGroupes = self.grille.dictGroupes
         self.dictActivites = self.grille.dictActivites
         self.listeActivites = self.grille.listeActivites
@@ -222,7 +222,7 @@ class CTRL(HTL.HyperTreeList):
             for IDgroupe, nomGroupe in self.dictGroupeTmp[IDactivite] :
                 groupe = self.dictBranches["groupes"][IDgroupe]
                 
-                # Nbre d'unités
+                # Nbre d'unitÃ©s
                 indexColonne = 1
                 if IDactivite in self.dictListeUnites:
                     for dictUnite in self.dictListeUnites[IDactivite] :
@@ -240,7 +240,7 @@ class CTRL(HTL.HyperTreeList):
                             self.SetItemText(groupe, "", indexColonne)
                         indexColonne += 1
                     
-                # Total par unité de remplissage
+                # Total par unitÃ© de remplissage
                 if IDactivite in self.dictUnitesRemplissageTemp : 
                     for ordre, IDunite_remplissage, nomUniteRemplissage in self.dictUnitesRemplissageTemp[IDactivite] :
                         nbre = 0

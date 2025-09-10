@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -27,7 +27,7 @@ from Utils import UTILS_Dates
 import GestionDB
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 def DateEngFr(textDate):
@@ -35,9 +35,9 @@ def DateEngFr(textDate):
     return text
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -160,7 +160,7 @@ class Track(object):
         else:
             self.inclus = True
         
-        # Récupération du nom des titulaires
+        # RÃ©cupÃ©ration du nom des titulaires
         self.nomTitulaires = _(" ")
         try :
             self.nomTitulaires = self.parent.dict_titulaires[self.IDfamille]["titulairesSansCivilite"]
@@ -176,10 +176,10 @@ class Dialog(wx.Dialog):
         self.IDdepot = IDdepot
         
         # Reglements
-        self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
-        self.label_nom = wx.StaticText(self, -1, _(u"Nom du dépôt :"))
+        self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, _(u"ParamÃ¨tres"))
+        self.label_nom = wx.StaticText(self, -1, _(u"Nom du dÃ©pÃ´t :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"", size=(300, -1))
-        self.label_date = wx.StaticText(self, -1, _(u"Date du dépôt :"))
+        self.label_date = wx.StaticText(self, -1, _(u"Date du dÃ©pÃ´t :"))
         self.ctrl_date = CTRL_Saisie_date.Date2(self)
         self.label_verrouillage = wx.StaticText(self, -1, _(u"Verrouillage :"))
         self.ctrl_verrouillage = wx.CheckBox(self, -1, u"")
@@ -191,17 +191,17 @@ class Dialog(wx.Dialog):
         self.ctrl_observations = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
         
         # Reglements
-        self.staticbox_reglements_staticbox = wx.StaticBox(self, -1, _(u"Règlements"))
+        self.staticbox_reglements_staticbox = wx.StaticBox(self, -1, _(u"RÃ¨glements"))
         self.listviewAvecFooter = OL_Reglements_depots.ListviewAvecFooter(self, kwargs={"inclus" : True, "selectionPossible" : False}) 
         self.ctrl_reglements = self.listviewAvecFooter.GetListview()
         
         self.ctrl_infos = CTRL_Infos(self, hauteur=32, couleurFond="#F0FBED" , style=wx.html.HW_NO_SELECTION | wx.html.HW_SCROLLBAR_NEVER | wx.SUNKEN_BORDER)
-        self.bouton_ajouter = CTRL_Bouton_image.CTRL(self, texte=_(u"Ajouter ou retirer des règlements"), cheminImage="Images/32x32/Reglement_ajouter.png")
+        self.bouton_ajouter = CTRL_Bouton_image.CTRL(self, texte=_(u"Ajouter ou retirer des rÃ¨glements"), cheminImage="Images/32x32/Reglement_ajouter.png")
         
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_imprimer = CTRL_Bouton_image.CTRL(self, texte=_(u"Outils"), cheminImage="Images/32x32/Configuration.png")
-        self.bouton_avis_depots = CTRL_Bouton_image.CTRL(self, texte=_(u"Envoyer les avis de dépôt"), cheminImage="Images/32x32/Emails_exp.png")
+        self.bouton_avis_depots = CTRL_Bouton_image.CTRL(self, texte=_(u"Envoyer les avis de dÃ©pÃ´t"), cheminImage="Images/32x32/Emails_exp.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
@@ -216,34 +216,34 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckVerrouillage, self.ctrl_verrouillage)
 
-        # Périodes de gestion
+        # PÃ©riodes de gestion
         self.gestion = UTILS_Gestion.Gestion(None)
 
         # Importation lors d'une modification
         if self.IDdepot != None :
-            self.SetTitle(_(u"Modification d'un dépôt"))
+            self.SetTitle(_(u"Modification d'un dÃ©pÃ´t"))
             self.Importation() 
             self.OnCheckVerrouillage(None)
         else:
-            self.SetTitle(_(u"Saisie d'un dépôt"))
+            self.SetTitle(_(u"Saisie d'un dÃ©pÃ´t"))
             self.ctrl_date.SetDate(datetime.date.today())
         
-        # Importation des règlements
+        # Importation des rÃ¨glements
         self.tracks = self.GetTracks()
         self.ctrl_reglements.MAJ(tracks=self.tracks) 
         self.MAJinfos() 
 
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici un nom (Ex : 'Chèques - Février 2012'...")))
-        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Saisissez la date de dépôt")))
-        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste des règlements du dépôt")))
-        self.bouton_avis_depots.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer par Email des avis de dépôts")))
-        self.ctrl_verrouillage.SetToolTip(wx.ToolTip(_(u"Cochez cette case si le dépôt doit être verrouillé. Dans ce cas, il devient impossible de modifier la liste des règlements qui le contient !")))
-        self.ctrl_code_compta.SetToolTip(wx.ToolTip(_(u"Saisissez le code comptable de ce dépôt. Utile uniquement pour l'export des écritures comptables vers des logiciels de compta.")))
-        self.ctrl_compte.SetToolTip(wx.ToolTip(_(u"Sélectionnez le compte bancaire d'encaissement")))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici un nom (Ex : 'ChÃ¨ques - FÃ©vrier 2012'...")))
+        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Saisissez la date de dÃ©pÃ´t")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste des rÃ¨glements du dÃ©pÃ´t")))
+        self.bouton_avis_depots.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer par Email des avis de dÃ©pÃ´ts")))
+        self.ctrl_verrouillage.SetToolTip(wx.ToolTip(_(u"Cochez cette case si le dÃ©pÃ´t doit Ãªtre verrouillÃ©. Dans ce cas, il devient impossible de modifier la liste des rÃ¨glements qui le contient !")))
+        self.ctrl_code_compta.SetToolTip(wx.ToolTip(_(u"Saisissez le code comptable de ce dÃ©pÃ´t. Utile uniquement pour l'export des Ã©critures comptables vers des logiciels de compta.")))
+        self.ctrl_compte.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le compte bancaire d'encaissement")))
         self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"[Optionnel] Saisissez des commentaires")))
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter ou retirer des règlements de ce dépôt")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter ou retirer des rÃ¨glements de ce dÃ©pÃ´t")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -315,7 +315,7 @@ class Dialog(wx.Dialog):
         self.CenterOnScreen() 
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         if self.IDdepot == None : 
             IDdepot = 0
         else:
@@ -359,7 +359,7 @@ class Dialog(wx.Dialog):
 
 
     def Importation(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         DB = GestionDB.DB()
         req = """SELECT IDdepot, date, nom, verrouillage, IDcompte, observations, code_compta
         FROM depots 
@@ -388,7 +388,7 @@ class Dialog(wx.Dialog):
         if code_compta != None :
             self.ctrl_code_compta.SetValue(code_compta)
 
-        # Vérifie que le dépôt n'est pas dans une période de gestion verrouillée
+        # VÃ©rifie que le dÃ©pÃ´t n'est pas dans une pÃ©riode de gestion verrouillÃ©e
         if self.gestion.Verification("depots", date) == False:
             self.ctrl_verrouillage.Enable(False)
             self.bouton_ajouter.Enable(False)
@@ -396,15 +396,15 @@ class Dialog(wx.Dialog):
             self.ctrl_nom.Enable(False)
 
     def OnBoutonAjouter(self, event): 
-        # Vérifier si compte sélectionné
+        # VÃ©rifier si compte sÃ©lectionnÃ©
         IDcompte = self.ctrl_compte.GetID()
         if IDcompte == 0 or IDcompte == None : 
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un compte bancaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un compte bancaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_compte.SetFocus()
             return False
-        # Ouverture DLG Sélection réglements
+        # Ouverture DLG SÃ©lection rÃ©glements
         dlg = DLG_Saisie_depot_ajouter.Dialog(self, tracks=self.tracks, IDcompte=IDcompte)      
         if dlg.ShowModal() == wx.ID_OK:
             self.tracks = dlg.GetTracks()
@@ -423,7 +423,7 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Gestiondesdpts")
 
     def OnBoutonAnnuler(self, event): 
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment annuler ?\n\nLes éventuelles modifications effectuées seront perdues..."), _(u"Annulation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment annuler ?\n\nLes Ã©ventuelles modifications effectuÃ©es seront perdues..."), _(u"Annulation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -431,17 +431,17 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
         
     def OnBoutonOk(self, event): 
-        # Sauvegarde des paramètres
+        # Sauvegarde des paramÃ¨tres
         etat = self.Sauvegarde_depot() 
         if etat == False :
             return
-        # Sauvegarde des règlements
+        # Sauvegarde des rÃ¨glements
         self.Sauvegarde_reglements()
         
-        # Envoi par Email des avis de dépôt
+        # Envoi par Email des avis de dÃ©pÃ´t
         nbreAvisDepots = self.GetNbreAvisDepots()
         if nbreAvisDepots > 0 :
-            dlg = wx.MessageDialog(None, _(u"Il y a %d avis de dépôt à envoyer par Email !\n\nSouhaitez-vous le faire maintenant ?") % nbreAvisDepots, _(u"Avis de dépôt"), wx.YES_NO|wx.YES_DEFAULT|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(None, _(u"Il y a %d avis de dÃ©pÃ´t Ã  envoyer par Email !\n\nSouhaitez-vous le faire maintenant ?") % nbreAvisDepots, _(u"Avis de dÃ©pÃ´t"), wx.YES_NO|wx.YES_DEFAULT|wx.ICON_QUESTION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse == wx.ID_YES :
@@ -454,7 +454,7 @@ class Dialog(wx.Dialog):
         # Nom
         nom = self.ctrl_nom.GetValue() 
         if nom == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom. Exemple : 'Chèques - Juillet 2010'... !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom. Exemple : 'ChÃ¨ques - Juillet 2010'... !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
@@ -463,7 +463,7 @@ class Dialog(wx.Dialog):
         # Date
         date = self.ctrl_date.GetDate()
         if date == None :
-            dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas vouloir saisir de date de dépôt ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Etes-vous sÃ»r de ne pas vouloir saisir de date de dÃ©pÃ´t ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse !=  wx.ID_YES :
@@ -480,7 +480,7 @@ class Dialog(wx.Dialog):
         IDcompte = self.ctrl_compte.GetID()
         if IDcompte == 0 : 
             IDcompte = None
-            dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas vouloir sélectionner de compte bancaire pour ce dépôt ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Etes-vous sÃ»r de ne pas vouloir sÃ©lectionner de compte bancaire pour ce dÃ©pÃ´t ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse !=  wx.ID_YES :
@@ -529,8 +529,8 @@ class Dialog(wx.Dialog):
         return self.IDdepot
     
     def MAJinfos(self):
-        """ Créé le texte infos avec les stats du dépôt """
-        # Récupération des chiffres
+        """ CrÃ©Ã© le texte infos avec les stats du dÃ©pÃ´t """
+        # RÃ©cupÃ©ration des chiffres
         nbreTotal = 0
         montantTotal = 0.0
         dictDetails = {}
@@ -540,13 +540,13 @@ class Dialog(wx.Dialog):
                 nbreTotal += 1
                 # Nbre total
                 montantTotal += track.montant
-                # Détail
+                # DÃ©tail
                 if (track.IDmode in dictDetails) == False :
                     dictDetails[track.IDmode] = { "label" : track.nom_mode, "nbre" : 0, "montant" : 0.0}
                 dictDetails[track.IDmode]["nbre"] += 1
                 dictDetails[track.IDmode]["montant"] += track.montant
-        # Création du texte
-        texte = _(u"<B>%d règlements (%.2f %s) : </B>") % (nbreTotal, montantTotal, SYMBOLE)
+        # CrÃ©ation du texte
+        texte = _(u"<B>%d rÃ¨glements (%.2f %s) : </B>") % (nbreTotal, montantTotal, SYMBOLE)
         for IDmode, dictDetail in dictDetails.items() :
             texteDetail = u"%d %s (%.2f %s), " % (dictDetail["nbre"], dictDetail["label"], dictDetail["montant"], SYMBOLE)
             texte += texteDetail
@@ -556,7 +556,7 @@ class Dialog(wx.Dialog):
             texte = texte[:-7] + u"</B>"
         self.ctrl_infos.SetLabel(texte)
         # Label de staticbox
-        self.staticbox_reglements_staticbox.SetLabel(self.ctrl_reglements.GetLabelListe(_(u"règlements")))
+        self.staticbox_reglements_staticbox.SetLabel(self.ctrl_reglements.GetLabelListe(_(u"rÃ¨glements")))
     
     def OnBoutonImprimer(self, event):
         self.ctrl_reglements.OnContextMenu(None)
@@ -570,11 +570,11 @@ class Dialog(wx.Dialog):
         listeParametres = []
 
         nom = self.ctrl_nom.GetValue()
-        listeParametres.append(_(u"Nom du dépôt : %s") % nom)
+        listeParametres.append(_(u"Nom du dÃ©pÃ´t : %s") % nom)
         
         date = self.ctrl_date.GetDate() 
         if date == None : 
-            date = _(u"Non spécifiée")
+            date = _(u"Non spÃ©cifiÃ©e")
         else :
             date = DateEngFr(str(date))
         listeParametres.append(_(u"Date : %s") % date)
@@ -589,9 +589,9 @@ class Dialog(wx.Dialog):
         listeParametres.append(_(u"Compte : %s %s") % (nomCompte, numCompte))
 
         if self.ctrl_verrouillage.GetValue() == True :
-            listeParametres.append(_(u"Dépôt verrouillé"))
+            listeParametres.append(_(u"DÃ©pÃ´t verrouillÃ©"))
         else :
-            listeParametres.append(_(u"Dépôt déverrouillé"))
+            listeParametres.append(_(u"DÃ©pÃ´t dÃ©verrouillÃ©"))
         
         labelParametres = " | ".join(listeParametres)
         return labelParametres
@@ -607,7 +607,7 @@ class Dialog(wx.Dialog):
         self.EnvoyerAvisDepots() 
     
     def EnvoyerAvisDepots(self):
-        """ Envoi des avis de dépôt par Email aux familles """                        
+        """ Envoi des avis de dÃ©pÃ´t par Email aux familles """                        
         # Recherche des adresses des individus
         DB = GestionDB.DB()
         req = """SELECT individus.IDindividu, mail, travail_mail
@@ -622,7 +622,7 @@ class Dialog(wx.Dialog):
         # Recherche des titulaires
         dictTitulaires = UTILS_Titulaires.GetTitulaires() 
         
-        # Recherche les familles abonnées à ce service
+        # Recherche les familles abonnÃ©es Ã  ce service
         listeDonnees = []
         for track in self.tracks :
             if track.email_depots != None and track.inclus == True :
@@ -639,7 +639,7 @@ class Dialog(wx.Dialog):
                 # Noms des titulaires de la famille
                 nomTitulaires = dictTitulaires[track.IDfamille]["titulairesSansCivilite"]
                 
-                # Champs sur le règlement
+                # Champs sur le rÃ¨glement
                 dictChamps = {
                     "{ID_REGLEMENT}" : str(track.IDreglement),
                     "{DATE_REGLEMENT}" : DateEngFr(str(track.date)),
@@ -675,7 +675,7 @@ class Dialog(wx.Dialog):
         listeSucces = dlg.listeSucces
         dlg.Destroy()
         
-        # Mémorisation des avis envoyés avec succès
+        # MÃ©morisation des avis envoyÃ©s avec succÃ¨s
         DB = GestionDB.DB()
         listeIDreglements = []
         for track in listeSucces :

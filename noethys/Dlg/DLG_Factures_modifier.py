@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -26,8 +26,8 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = _(u"Sélectionnez une ou plusieurs caractéristiques à modifier. Cliquez sur Ok pour appliquer les modifications aux factures sélectionnées.")
-        titre = _(u"Modification des caractéristiques des factures")
+        intro = _(u"SÃ©lectionnez une ou plusieurs caractÃ©ristiques Ã  modifier. Cliquez sur Ok pour appliquer les modifications aux factures sÃ©lectionnÃ©es.")
+        titre = _(u"Modification des caractÃ©ristiques des factures")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Facture.png")
         
@@ -36,10 +36,10 @@ class Dialog(wx.Dialog):
         self.ctrl_lot = CTRL_Lot_factures(self)
         self.ctrl_lot.SetMinSize((250, -1))
 
-        self.check_emission = wx.CheckBox(self, -1, _(u"Date d'émission :"))
+        self.check_emission = wx.CheckBox(self, -1, _(u"Date d'Ã©mission :"))
         self.ctrl_emission = CTRL_Saisie_date.Date2(self)
 
-        self.check_echeance = wx.CheckBox(self, -1, _(u"Date d'échéance :"))
+        self.check_echeance = wx.CheckBox(self, -1, _(u"Date d'Ã©chÃ©ance :"))
         self.ctrl_echeance = CTRL_Saisie_date.Date2(self)
 
         self.check_mention1 = wx.CheckBox(self, -1, _(u"Mention 1 :"))
@@ -69,22 +69,22 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.OnCheck(None)
         
 
     def __set_properties(self):
-        self.check_lot.SetToolTip(wx.ToolTip(_(u"Cochez pour modifier cette caractéristique")))
-        self.ctrl_lot.SetToolTip(wx.ToolTip(_(u"Sélectionnez un lot de factures dans la liste")))
-        self.check_emission.SetToolTip(wx.ToolTip(_(u"Cochez pour modifier cette caractéristique")))
-        self.ctrl_emission.SetToolTip(wx.ToolTip(_(u"Sélectionnez une date d'émission")))
-        self.check_echeance.SetToolTip(wx.ToolTip(_(u"Cochez pour modifier cette caractéristique")))
-        self.ctrl_echeance.SetToolTip(wx.ToolTip(_(u"Sélectionnez une date d'échéance")))
-        self.check_mention1.SetToolTip(wx.ToolTip(_(u"Cochez pour modifier cette caractéristique")))
+        self.check_lot.SetToolTip(wx.ToolTip(_(u"Cochez pour modifier cette caractÃ©ristique")))
+        self.ctrl_lot.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un lot de factures dans la liste")))
+        self.check_emission.SetToolTip(wx.ToolTip(_(u"Cochez pour modifier cette caractÃ©ristique")))
+        self.ctrl_emission.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une date d'Ã©mission")))
+        self.check_echeance.SetToolTip(wx.ToolTip(_(u"Cochez pour modifier cette caractÃ©ristique")))
+        self.ctrl_echeance.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une date d'Ã©chÃ©ance")))
+        self.check_mention1.SetToolTip(wx.ToolTip(_(u"Cochez pour modifier cette caractÃ©ristique")))
         self.ctrl_mention1.SetToolTip(wx.ToolTip(_(u"Saisissez une mention")))
-        self.check_mention2.SetToolTip(wx.ToolTip(_(u"Cochez pour modifier cette caractéristique")))
+        self.check_mention2.SetToolTip(wx.ToolTip(_(u"Cochez pour modifier cette caractÃ©ristique")))
         self.ctrl_mention2.SetToolTip(wx.ToolTip(_(u"Saisissez une mention")))
-        self.check_mention3.SetToolTip(wx.ToolTip(_(u"Cochez pour modifier cette caractéristique")))
+        self.check_mention3.SetToolTip(wx.ToolTip(_(u"Cochez pour modifier cette caractÃ©ristique")))
         self.ctrl_mention3.SetToolTip(wx.ToolTip(_(u"Saisissez une mention")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
@@ -180,27 +180,27 @@ class Dialog(wx.Dialog):
         if self.check_lot.GetValue() == True:
             IDlot = self.ctrl_lot.GetID()
             if IDlot == None:
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun lot dans la liste proposée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun lot dans la liste proposÃ©e !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
             dict_valeurs["IDlot"] = IDlot
 
-        # Date d'émission
+        # Date d'Ã©mission
         if self.check_emission.GetValue() == True:
             date_emission = self.ctrl_emission.GetDate()
             if date_emission == None:
-                dlg = wx.MessageDialog(self, _(u"La date d'émission saisie n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La date d'Ã©mission saisie n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
             dict_valeurs["date_emission"] = date_emission
 
-        # Date d'échéance
+        # Date d'Ã©chÃ©ance
         if self.check_echeance.GetValue() == True:
             date_echeance = self.ctrl_echeance.GetDate()
             if date_echeance == None:
-                dlg = wx.MessageDialog(self, _(u"La date d'échéance saisie n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La date d'Ã©chÃ©ance saisie n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -215,7 +215,7 @@ class Dialog(wx.Dialog):
             dict_valeurs["mention3"] = self.ctrl_mention3.GetValue()
 
         if len(dict_valeurs) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez choisir au moins une caractéristique à modifier !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez choisir au moins une caractÃ©ristique Ã  modifier !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False

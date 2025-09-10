@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -23,21 +23,21 @@ from Ctrl import CTRL_Bandeau
 from Utils import UTILS_Fichiers
 from Utils import UTILS_Dates
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"§")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"‚Ç¨")
 
 from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 
 def GetValeursListview(listview=None, format="texte"):
-    """ RÈcupËre les valeurs affichÈes sous forme de liste """
+    """ R√©cup√®re les valeurs affich√©es sous forme de liste """
     """ format = "texte" ou "original" """
-    # RÈcupËre les labels de colonnes
+    # R√©cup√®re les labels de colonnes
     listeColonnes = []
     for colonne in listview.columns :
         listeColonnes.append((colonne.title, colonne.align, colonne.width, colonne.valueGetter))
     
-    # RÈcupËre les valeurs
+    # R√©cup√®re les valeurs
     listeValeurs = []
     listeObjects = listview.innerList # listview.GetFilteredObjects()
     for object in listeObjects :
@@ -54,13 +54,13 @@ def GetValeursListview(listview=None, format="texte"):
 
 
 def GetValeursGrid(grid=None):
-    """ RÈcupËre les valeurs affichÈes sous forme de liste """
-    # RÈcupËre les labels de colonnes
+    """ R√©cup√®re les valeurs affich√©es sous forme de liste """
+    # R√©cup√®re les labels de colonnes
     listeColonnes = [("titre_ligne", None, grid.GetColLabelSize(), "titre_ligne"),]
     for numCol in range(0, grid.GetNumberCols()):
         listeColonnes.append((grid.GetColLabelValue(numCol), None, grid.GetColSize(numCol), grid.GetColLabelValue(numCol)))
                 
-    # RÈcupËre les valeurs
+    # R√©cup√®re les valeurs
     listeValeurs = []
     for numLigne in range(0, grid.GetNumberRows()) :
         labelLigne = grid.GetRowLabelValue(numLigne)
@@ -78,12 +78,12 @@ def GetValeursGrid(grid=None):
 def ExportTexte(listview=None, grid=None, titre=u"", listeColonnes=None, listeValeurs=None, autoriseSelections=True):
     """ Export de la liste au format texte """
     if (listview != None and len(listview.donnees) == 0) or (grid != None and (grid.GetNumberRows() == 0 or grid.GetNumberCols() == 0)):
-        dlg = wx.MessageDialog(None, _(u"Il n'y a aucune donnÈe dans la liste !"), "Erreur", wx.OK | wx.ICON_ERROR)
+        dlg = wx.MessageDialog(None, _(u"Il n'y a aucune donn√©e dans la liste !"), "Erreur", wx.OK | wx.ICON_ERROR)
         dlg.ShowModal()
         dlg.Destroy()
         return
 
-    # RÈcupÈration des valeurs
+    # R√©cup√©ration des valeurs
     if listview != None and listeColonnes == None and listeValeurs == None :
         listeColonnes, listeValeurs = GetValeursListview(listview, format="texte")
         
@@ -101,14 +101,14 @@ def ExportTexte(listview=None, grid=None, titre=u"", listeColonnes=None, listeVa
             dlg.Destroy()
             return False
     
-    # Demande ‡ l'utilisateur le nom de fichier et le rÈpertoire de destination
+    # Demande √† l'utilisateur le nom de fichier et le r√©pertoire de destination
     nomFichier = "ExportTexte_%s.txt" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     wildcard = "Fichier texte (*.txt)|*.txt|" \
                     "All files (*.*)|*.*"
     sp = wx.StandardPaths.Get()
     cheminDefaut = sp.GetDocumentsDir()
     dlg = wx.FileDialog(
-        None, message = _(u"Veuillez sÈlectionner le rÈpertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, 
+        None, message = _(u"Veuillez s√©lectionner le r√©pertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, 
         defaultFile = nomFichier, 
         wildcard = wildcard, 
         style = wx.FD_SAVE
@@ -121,16 +121,16 @@ def ExportTexte(listview=None, grid=None, titre=u"", listeColonnes=None, listeVa
         dlg.Destroy()
         return
     
-    # Le fichier de destination existe dÈj‡ :
+    # Le fichier de destination existe d√©j√† :
     if os.path.isfile(cheminFichier) == True :
-        dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe dÈj‡. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe d√©j√†. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
         if dlg.ShowModal() == wx.ID_NO :
             dlg.Destroy()
             return False
         else:
             dlg.Destroy()
 
-    # CrÈation du fichier texte
+    # Cr√©ation du fichier texte
     texte = ""
     separateur = ";"
     for labelCol, alignement, largeur, code in listeColonnes :
@@ -150,18 +150,18 @@ def ExportTexte(listview=None, grid=None, titre=u"", listeColonnes=None, listeVa
                 texte += u"%s%s" % (valeur, separateur)
             texte = texte[:-1] + "\n"
     
-    # Elimination du dernier saut ‡ la ligne
+    # Elimination du dernier saut √† la ligne
     texte = texte[:-1]
 
-    # CrÈation du fichier texte
+    # Cr√©ation du fichier texte
     f = open(cheminFichier, "w")
     if six.PY2:
         texte = texte.encode("utf8")
     f.write(texte)
     f.close()
     
-    # Confirmation de crÈation du fichier et demande d'ouverture directe dans Excel
-    txtMessage = _(u"Le fichier Texte a ÈtÈ crÈÈ avec succËs. Souhaitez-vous l'ouvrir dËs maintenant ?")
+    # Confirmation de cr√©ation du fichier et demande d'ouverture directe dans Excel
+    txtMessage = _(u"Le fichier Texte a √©t√© cr√©√© avec succ√®s. Souhaitez-vous l'ouvrir d√®s maintenant ?")
     dlgConfirm = wx.MessageDialog(None, txtMessage, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
     reponse = dlgConfirm.ShowModal()
     dlgConfirm.Destroy()
@@ -176,17 +176,17 @@ def ExportTexte(listview=None, grid=None, titre=u"", listeColonnes=None, listeVa
 
 def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None, listeValeurs=None, autoriseSelections=True):
     """ Export de la liste au format Excel """
-    # Plus de sÈlection pour Èviter les bugs !!!!
+    # Plus de s√©lection pour √©viter les bugs !!!!
     autoriseSelections = False 
     
-    # VÈrifie si donnÈes bien prÈsentes
+    # V√©rifie si donn√©es bien pr√©sentes
     if (listview != None and len(listview.donnees) == 0) or (grid != None and (grid.GetNumberRows() == 0 or grid.GetNumberCols() == 0)):
-        dlg = wx.MessageDialog(None, _(u"Il n'y a aucune donnÈe dans la liste !"), "Erreur", wx.OK | wx.ICON_ERROR)
+        dlg = wx.MessageDialog(None, _(u"Il n'y a aucune donn√©e dans la liste !"), "Erreur", wx.OK | wx.ICON_ERROR)
         dlg.ShowModal()
         dlg.Destroy()
         return
         
-    # RÈcupÈration des valeurs
+    # R√©cup√©ration des valeurs
     if listview != None and listeColonnes == None and listeValeurs == None :
         listeColonnes, listeValeurs = GetValeursListview(listview, format="original")
         
@@ -215,19 +215,19 @@ def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None,
     else :
         return
 
-    # DÈfinit le nom et le chemin du fichier
+    # D√©finit le nom et le chemin du fichier
     nomFichier = "ExportExcel_%s.xlsx" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
 
     # Mode Enregistrer
     if mode == "enregistrer" :
 
-        # Demande ‡ l'utilisateur le nom de fichier et le rÈpertoire de destination
+        # Demande √† l'utilisateur le nom de fichier et le r√©pertoire de destination
         wildcard = "Fichier Excel (*.xlsx)|*.xlsx|" \
                         "All files (*.*)|*.*"
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
         dlg = wx.FileDialog(
-            None, message = _(u"Veuillez sÈlectionner le rÈpertoire de destination et le nom du fichier"), defaultDir=cheminDefaut,
+            None, message = _(u"Veuillez s√©lectionner le r√©pertoire de destination et le nom du fichier"), defaultDir=cheminDefaut,
             defaultFile = nomFichier,
             wildcard = wildcard,
             style = wx.FD_SAVE
@@ -240,9 +240,9 @@ def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None,
             dlg.Destroy()
             return
 
-        # Le fichier de destination existe dÈj‡ :
+        # Le fichier de destination existe d√©j√† :
         if os.path.isfile(cheminFichier) == True :
-            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe dÈj‡. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe d√©j√†. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
             if dlg.ShowModal() == wx.ID_NO :
                 return False
                 dlg.Destroy()
@@ -264,7 +264,7 @@ def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None,
     format_date = classeur.add_format({'num_format': 'dd/mm/yyyy'})
     format_heure = classeur.add_format({'num_format': '[hh]:mm'})
 
-    # CrÈation des labels de colonnes
+    # Cr√©ation des labels de colonnes
     x = 0
     y = 0
     for labelCol, alignement, largeur, nomChamp in listeColonnes :
@@ -279,9 +279,9 @@ def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None,
 
     # -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    # CrÈation des lignes
+    # Cr√©ation des lignes
     def RechercheFormatFromChaine(valeur):
-        """ Recherche le type de la chaÓne """
+        """ Recherche le type de la cha√Æne """
         if valeur.endswith(SYMBOLE) :
             # Si c'est un montant en euros
             try :
@@ -335,7 +335,7 @@ def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None,
     # -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     def RechercheFormat(valeur):
-        """ Recherche le type de la donnÈe """
+        """ Recherche le type de la donn√©e """
         if type(valeur) == decimal.Decimal :
             valeur = float(valeur)
             return (valeur, format_money)
@@ -409,14 +409,14 @@ def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None,
     try :
         classeur.close()
     except :
-        dlg = wx.MessageDialog(None, _(u"Il est impossible d'enregistrer le fichier Excel. Veuillez vÈrifier que ce fichier n'est pas dÈj‡ ouvert en arriËre-plan."), "Erreur", wx.OK | wx.ICON_ERROR)
+        dlg = wx.MessageDialog(None, _(u"Il est impossible d'enregistrer le fichier Excel. Veuillez v√©rifier que ce fichier n'est pas d√©j√† ouvert en arri√®re-plan."), "Erreur", wx.OK | wx.ICON_ERROR)
         dlg.ShowModal()
         dlg.Destroy()
         return
 
-    # Confirmation de crÈation du fichier et demande d'ouverture directe dans Excel
+    # Confirmation de cr√©ation du fichier et demande d'ouverture directe dans Excel
     if mode == "enregistrer" :
-        txtMessage = _(u"Le fichier Excel a ÈtÈ crÈÈ avec succËs. Souhaitez-vous l'ouvrir dËs maintenant ?")
+        txtMessage = _(u"Le fichier Excel a √©t√© cr√©√© avec succ√®s. Souhaitez-vous l'ouvrir d√®s maintenant ?")
         dlgConfirm = wx.MessageDialog(None, txtMessage, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
         reponse = dlgConfirm.ShowModal()
         dlgConfirm.Destroy()
@@ -443,7 +443,7 @@ class DLG_Choix_action(wx.Dialog):
         self.parent = parent
 
         # Bandeau
-        intro = _(u"SÈlectionnez l'action ‡ effectuer. Vous pouvez enregistrer le fichier gÈnÈrÈ dans le rÈpertoire souhaitÈ ou l'envoyer par email.")
+        intro = _(u"S√©lectionnez l'action √† effectuer. Vous pouvez enregistrer le fichier g√©n√©r√© dans le r√©pertoire souhait√© ou l'envoyer par email.")
         titre = _(u"Exporter vers Excel")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Excel.png")
 
@@ -543,7 +543,7 @@ class ListView(FastObjectListView):
 
 
     def MAJ(self, ID=None):
-        # CrÈation de donnÈes exemples
+        # Cr√©ation de donn√©es exemples
         dictDonnees = {
             "ID" : 1,
             "texte" : u"Texte unicode",

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -50,8 +50,8 @@ class Panel(wx.Panel):
         self.image_fleche2 = wx.StaticBitmap(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_droite.png"), wx.BITMAP_TYPE_ANY))
         self.image_fleche3 = wx.StaticBitmap(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_droite.png"), wx.BITMAP_TYPE_ANY))
         
-        self.bouton_helios = CTRL_Bouton_image.CTRL(self, texte=_(u"Exporter vers\nTrésor Public"), tailleImage=(32, 32), margesImage=(4, 0, 0, 0), margesTexte=(-5, 1), cheminImage="Images/32x32/Helios.png")
-        self.bouton_prelevements = CTRL_Bouton_image.CTRL(self, texte=_(u"Prélèvement\nautomatique"), tailleImage=(32, 32), margesImage=(4, 0, 0, 0), margesTexte=(-5, 1), cheminImage="Images/32x32/Prelevement.png")
+        self.bouton_helios = CTRL_Bouton_image.CTRL(self, texte=_(u"Exporter vers\nTrÃ©sor Public"), tailleImage=(32, 32), margesImage=(4, 0, 0, 0), margesTexte=(-5, 1), cheminImage="Images/32x32/Helios.png")
+        self.bouton_prelevements = CTRL_Bouton_image.CTRL(self, texte=_(u"PrÃ©lÃ¨vement\nautomatique"), tailleImage=(32, 32), margesImage=(4, 0, 0, 0), margesTexte=(-5, 1), cheminImage="Images/32x32/Prelevement.png")
         self.bouton_email = CTRL_Bouton_image.CTRL(self, texte=_(u"Transmettre\npar Email"), tailleImage=(32, 32), margesImage=(4, 4, 0, 0), margesTexte=(-5, 1), cheminImage="Images/32x32/Emails_exp.png")
         self.bouton_imprimer = CTRL_Bouton_image.CTRL(self, texte=_(u"Imprimer"), tailleImage=(32, 32), margesImage=(4, 0, 0, 0), margesTexte=(-5, 1), cheminImage="Images/32x32/Imprimante.png")
         
@@ -71,17 +71,17 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonImprimer, self.bouton_imprimer)
 
     def __set_properties(self):
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu de la facture sélectionnée")))
-        self.bouton_email_facture.SetToolTip(wx.ToolTip(_(u"Cliquez ici envoyer la facture sélectionnée par Email")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la facture sélectionnée ou les factures cochées")))
-        self.bouton_apercu_liste.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperÃ§u de la facture sÃ©lectionnÃ©e")))
+        self.bouton_email_facture.SetToolTip(wx.ToolTip(_(u"Cliquez ici envoyer la facture sÃ©lectionnÃ©e par Email")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la facture sÃ©lectionnÃ©e ou les factures cochÃ©es")))
+        self.bouton_apercu_liste.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperÃ§u avant impression de la liste")))
         self.bouton_imprimer_liste.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
         self.bouton_export_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format texte")))
         self.bouton_export_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
-        self.bouton_prelevements.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des prélèvements automatiques")))
-        self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à l'envoi des factures par Email")))
-        self.bouton_helios.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à l'export HELIOS des factures")))
-        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer les factures générées")))
+        self.bouton_prelevements.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la gestion des prÃ©lÃ¨vements automatiques")))
+        self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  l'envoi des factures par Email")))
+        self.bouton_helios.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  l'export HELIOS des factures")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer les factures gÃ©nÃ©rÃ©es")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
@@ -160,7 +160,7 @@ class Panel(wx.Panel):
         self.ctrl_factures.ExportExcel()
 
     def GetFiltreNumerosFactures(self):
-        """ Retourne un filtre par numéro de factures générées """
+        """ Retourne un filtre par numÃ©ro de factures gÃ©nÃ©rÃ©es """
         listeNumeros = []
         filtre_prefixe = None
         for track in self.ctrl_factures.GetTracksTous() :
@@ -171,12 +171,12 @@ class Panel(wx.Panel):
         return filtre_numeros, filtre_prefixe
         
     def OnBoutonPrelevements(self, event): 
-        """ Gestion des prélèvements """
+        """ Gestion des prÃ©lÃ¨vements """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("facturation_prelevements", "consulter") == False : return
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("facturation_prelevements", "creer") == False : return
         
         # Demande d'application automatique de filtres
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous utiliser l'assistant de préparation des lots de prélèvements automatiques (Conseillé) ?\n\nSinon, le gestionnaire des prélèvements sera simplement ouvert."), _(u"Prélèvement automatique"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous utiliser l'assistant de prÃ©paration des lots de prÃ©lÃ¨vements automatiques (ConseillÃ©) ?\n\nSinon, le gestionnaire des prÃ©lÃ¨vements sera simplement ouvert."), _(u"PrÃ©lÃ¨vement automatique"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse == wx.ID_CANCEL :
@@ -201,7 +201,7 @@ class Panel(wx.Panel):
         """ Export vers Helios """ 
         from Utils import UTILS_Pes
 
-        # Obsolète, donc PES imposé
+        # ObsolÃ¨te, donc PES imposÃ©
         choix = "pes" #UTILS_Pes.DemanderChoix(self)
         
         if choix == "rolmre" :
@@ -225,7 +225,7 @@ class Panel(wx.Panel):
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("facturation_helios", "creer") == False : return
             
             # Demande d'application automatique de filtres
-            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous utiliser l'assistant de préparation des bordereaux (Conseillé) ?\n\nSinon, le gestionnaire des bordereaux sera simplement ouvert."), _(u"Trésor public"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous utiliser l'assistant de prÃ©paration des bordereaux (ConseillÃ©) ?\n\nSinon, le gestionnaire des bordereaux sera simplement ouvert."), _(u"TrÃ©sor public"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse == wx.ID_CANCEL :
@@ -254,7 +254,7 @@ class Panel(wx.Panel):
         if filtre_prefixe != None :
             filtres.append(filtre_prefixe)
         # Demande d'application automatique de filtres
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous que Noethys sélectionne automatiquement les factures dont les familles souhaitent recevoir leurs factures par Email ?\n\n(Si non, notez que vous pouvez toujours effectuer cette sélection ultérieurement avec les filtres de sélection)"), _(u"Application automatique de filtres"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous que Noethys sÃ©lectionne automatiquement les factures dont les familles souhaitent recevoir leurs factures par Email ?\n\n(Si non, notez que vous pouvez toujours effectuer cette sÃ©lection ultÃ©rieurement avec les filtres de sÃ©lection)"), _(u"Application automatique de filtres"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse == wx.ID_CANCEL :
@@ -276,7 +276,7 @@ class Panel(wx.Panel):
         if filtre_prefixe != None :
             filtres.append(filtre_prefixe)
         # Demande d'application automatique de filtres
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous que Noethys sélectionne automatiquement les factures dont les familles ne souhaitent pas recevoir leurs factures par Email ?\n\n(Si non, notez que vous pouvez toujours effectuer cette sélection ultérieurement avec les filtres de sélection)"), _(u"Application automatique de filtres"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous que Noethys sÃ©lectionne automatiquement les factures dont les familles ne souhaitent pas recevoir leurs factures par Email ?\n\n(Si non, notez que vous pouvez toujours effectuer cette sÃ©lection ultÃ©rieurement avec les filtres de sÃ©lection)"), _(u"Application automatique de filtres"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse == wx.ID_CANCEL :
@@ -294,7 +294,7 @@ class Panel(wx.Panel):
             IDfacture_min = min(self.parent.listeFacturesGenerees)
             IDfacture_max = max(self.parent.listeFacturesGenerees)
             self.ctrl_factures.SetFiltres([{"type" : "IDfacture_intervalle", "IDfacture_min" : IDfacture_min, "IDfacture_max" : IDfacture_max},])
-            self.box_factures_staticbox.SetLabel(_(u"%d factures générées") % len(self.parent.listeFacturesGenerees))
+            self.box_factures_staticbox.SetLabel(_(u"%d factures gÃ©nÃ©rÃ©es") % len(self.parent.listeFacturesGenerees))
         self.ctrl_factures.MAJ() 
         self.ctrl_factures.DefilePremier()
         

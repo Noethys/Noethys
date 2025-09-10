@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -71,18 +71,18 @@ class Dialog(wx.Dialog):
         self.parent = parent
 
         # Bandeau
-        intro = _(u"Vous pouvez ici saisir les menus de votre restaurateur. Sélectionnez un restaurateur et un mois puis double-cliquez sur une case pour saisir un menu. Vous pouvez paramétrer un restaurateur en cliquant sur le bouton 'Gestion des restaurateurs' à droite de la liste déroulante. N'oubliez pas de paramétrer également les catégories de repas depuis le menu Paramétrage > Restauration.")
+        intro = _(u"Vous pouvez ici saisir les menus de votre restaurateur. SÃ©lectionnez un restaurateur et un mois puis double-cliquez sur une case pour saisir un menu. Vous pouvez paramÃ©trer un restaurateur en cliquant sur le bouton 'Gestion des restaurateurs' Ã  droite de la liste dÃ©roulante. N'oubliez pas de paramÃ©trer Ã©galement les catÃ©gories de repas depuis le menu ParamÃ©trage > Restauration.")
         titre = _(u"Gestion des menus")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Menu.png")
 
-        # Selection période
-        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"Période"))
+        # Selection pÃ©riode
+        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"PÃ©riode"))
         self.label_mois = wx.StaticText(self, -1, _(u"Mois :"))
-        self.ctrl_mois = wx.Choice(self, -1, choices=[_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre")])
+        self.ctrl_mois = wx.Choice(self, -1, choices=[_(u"Janvier"), _(u"FÃ©vrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"AoÃ»t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"DÃ©cembre")])
         self.spin_mois = wx.SpinButton(self, -1, size=(18, 20),  style=wx.SP_VERTICAL)
         self.spin_mois.SetRange(-1, 1)
-        self.label_annee = wx.StaticText(self, -1, _(u"Année :"))
+        self.label_annee = wx.StaticText(self, -1, _(u"AnnÃ©e :"))
         self.ctrl_annee = wx.SpinCtrl(self, -1, "", min=1977, max=2999)
         dateDuJour = datetime.date.today()
         self.ctrl_annee.SetValue(dateDuJour.year)
@@ -99,7 +99,7 @@ class Dialog(wx.Dialog):
         self.ctrl_menus = CTRL_Menus.CTRL(self)
         self.ctrl_menus.SetMinSize((100, 380))
 
-        # Légende
+        # LÃ©gende
         self.listeLegende = [
             {"label": _(u"Cases avec contenu"), "couleur": CTRL_Menus.COULEUR_CASES_OUVERTES, "ctrl_label": None, "ctrl_img": None},
             {"label": _(u"Cases vides"), "couleur": CTRL_Menus.COULEUR_CASES_FERMEES, "ctrl_label": None, "ctrl_img": None},
@@ -139,10 +139,10 @@ class Dialog(wx.Dialog):
         self.MAJ()
 
     def __set_properties(self):
-        self.ctrl_mois.SetToolTip(wx.ToolTip(_(u"Sélectionnez un mois")))
+        self.ctrl_mois.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un mois")))
         self.ctrl_annee.SetMinSize((70, -1))
-        self.ctrl_annee.SetToolTip(wx.ToolTip(_(u"Sélectionnez une année")))
-        self.bouton_restaurateur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des restaurateurs")))
+        self.ctrl_annee.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une annÃ©e")))
+        self.bouton_restaurateur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la gestion des restaurateurs")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la commande au format PDF")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
@@ -183,7 +183,7 @@ class Dialog(wx.Dialog):
         grid_sizer_menus = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
         grid_sizer_menus.Add(self.ctrl_menus, 1, wx.EXPAND, 0)
 
-        # Légende
+        # LÃ©gende
         grid_sizer_legende = wx.FlexGridSizer(rows=1, cols=len(self.listeLegende)*3 + 3, vgap=4, hgap=4)
 
         grid_sizer_legende.Add(self.image_info, 0, wx.ALIGN_CENTER_VERTICAL, 0)
@@ -261,12 +261,12 @@ class Dialog(wx.Dialog):
 
     def Imprimer(self, event=None):
         if self.ctrl_restaurateur.GetID() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner un restaurateur dans la liste !"), _(u"Avertissement"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sÃ©lectionner un restaurateur dans la liste !"), _(u"Avertissement"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
-        # Récupération des dates extrêmes affichées
+        # RÃ©cupÃ©ration des dates extrÃªmes affichÃ©es
         annee = self.ctrl_annee.GetValue()
         mois = self.ctrl_mois.GetSelection()+1
         tmp, nbreJours = calendar.monthrange(annee, mois)
@@ -274,7 +274,7 @@ class Dialog(wx.Dialog):
         date_max = datetime.date(annee, mois, nbreJours)
         periode = (date_min, date_max)
 
-        # Ouvre la fenêtre des options
+        # Ouvre la fenÃªtre des options
         from Dlg import DLG_Options_impression_menu
         dlg = DLG_Options_impression_menu.Dialog(self, periode=periode, IDrestaurateur=self.ctrl_restaurateur.GetID())
         if dlg.ShowModal() == wx.ID_OK:

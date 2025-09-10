@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -28,23 +28,23 @@ from Ctrl import CTRL_Assistant_sorties
 
 
 LISTE_ASSISTANTS = [
-    {"code": "nouveau", "image": "Generation.png", "nom": _(u"CrÈer une nouvelle activitÈ"),
-     "description": _(u"Personnalisez votre nouvelle activitÈ de A ‡ Z")},
+    {"code": "nouveau", "image": "Generation.png", "nom": _(u"Cr√©er une nouvelle activit√©"),
+     "description": _(u"Personnalisez votre nouvelle activit√© de A √† Z")},
 
-    {"code": "annuelle", "image": "Basket.png", "nom": _(u"Une activitÈ culturelle ou sportive annuelle"),
-     "description": _(u"Assistant pour crÈer une activitÈ annuelle : club de gym, danse, couture, etc...")},
+    {"code": "annuelle", "image": "Basket.png", "nom": _(u"Une activit√© culturelle ou sportive annuelle"),
+     "description": _(u"Assistant pour cr√©er une activit√© annuelle : club de gym, danse, couture, etc...")},
 
-    {"code": "sejour", "image": "Camping.png", "nom": _(u"Un sÈjour"),
-     "description": _(u"Assistant pour crÈer un sÈjour, un camp, un mini-camp...")},
+    {"code": "sejour", "image": "Camping.png", "nom": _(u"Un s√©jour"),
+     "description": _(u"Assistant pour cr√©er un s√©jour, un camp, un mini-camp...")},
 
     {"code": "stage", "image": "Guitare.png", "nom": _(u"Un stage"),
-     "description": _(u"Assistant pour crÈer un stage de thÈ‚tre, de danse, de guitare, etc...")},
+     "description": _(u"Assistant pour cr√©er un stage de th√©√¢tre, de danse, de guitare, etc...")},
 
     {"code": "cantine", "image": "Repas.png", "nom": _(u"Une cantine"),
-     "description": _(u"Assistant pour crÈer une cantine avec un ou plusieurs services")},
+     "description": _(u"Assistant pour cr√©er une cantine avec un ou plusieurs services")},
 
     {"code": "sorties", "image": "Bus.png", "nom": _(u"Des sorties familiales"),
-     "description": _(u"Assistant pour crÈer une activitÈ de gestion de sorties familiales...")},
+     "description": _(u"Assistant pour cr√©er une activit√© de gestion de sorties familiales...")},
 
 ]
 
@@ -67,20 +67,20 @@ class FirstColumnRenderer(object):
     def DrawSubItem(self, dc, rect, line, highlighted, enabled):
         # Icone
         bmpWidth, bmpHeight = self.icon.GetWidth(), self.icon.GetHeight()
-        dc.DrawBitmap(self.icon, rect.x+8, rect.y+(rect.height-bmpHeight)/2)
+        dc.DrawBitmap(self.icon, int(rect.x+8), int(rect.y+(rect.height-bmpHeight)/2))
 
         # Titre
         dc.SetFont(self.normalFont)
         textWidth, textHeight = dc.GetTextExtent(self.text)
         dc.SetTextForeground(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNTEXT))
-        dc.DrawText(self.text, rect.x+bmpWidth+18, rect.y+(rect.height - textHeight)/4)
+        dc.DrawText(self.text, int(rect.x+bmpWidth+18), int(rect.y+(rect.height - textHeight)/4))
 
         # Description
         if self.description:
             dc.SetFont(self.smallerFont)
             textWidth, textHeight = dc.GetTextExtent(self.description)
             dc.SetTextForeground(self.greyColour)
-            dc.DrawText(self.description, rect.x+bmpWidth+18, rect.y+3*(rect.height - textHeight)/4)
+            dc.DrawText(self.description, int(rect.x+bmpWidth+18), int(rect.y+3*(rect.height - textHeight)/4))
         
 
     def GetLineHeight(self):
@@ -119,7 +119,7 @@ class CTRL(ULC.UltimateListCtrl):
         self.Remplissage()
 
     def Remplissage(self):
-        """ Remplissage du contrÙle """
+        """ Remplissage du contr√¥le """
         self.ClearAll()
         self.InsertColumn(0, "Column 1") 
 

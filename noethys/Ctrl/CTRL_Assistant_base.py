@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -57,7 +57,7 @@ class CTRL(object):
 
     def Validation(self):
         if self.obligatoire == True and self.GetValeur() in (None, "", 0) :
-            dlg = wx.MessageDialog(self, _(u"Merci de répondre à la question suivante :\n\n%s") % self.titre, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Merci de rÃ©pondre Ã  la question suivante :\n\n%s") % self.titre, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.SetFocus()
@@ -375,7 +375,7 @@ class Page(scrolled.ScrolledPanel):
         # Spacer
         self.sizer.Add((5, 10), 0, 0, 0)
 
-        # Initialisation des barres de défilement
+        # Initialisation des barres de dÃ©filement
         self.SetupScrolling()
 
     def Ajouter_question(self, code=None, titre=None, commentaire=None, ctrl=None, *args, **kwds):
@@ -407,7 +407,7 @@ class Page(scrolled.ScrolledPanel):
         # Spacer
         self.sizer.Add((5, 10), 0, 0, 0)
 
-        # Initialisation des barres de défilement
+        # Initialisation des barres de dÃ©filement
         self.SetupScrolling()
 
     def MAJ(self):
@@ -455,9 +455,9 @@ class Page(scrolled.ScrolledPanel):
 class Page_exemple(Page):
     def __init__(self, parent):
         Page.__init__(self, parent)
-        self.Ajouter_question(code="nom", titre=_(u"Quel est le nom du séjour ?"), commentaire=_(u"Exemple : 'Séjour neige - Février 2018'"), ctrl=CTRL_Texte)
-        self.Ajouter_question(code="groupes", titre=_(u"Le séjour est-il constitué de groupes d'âge ?"), commentaire=_(u"Commentaire"), ctrl=CTRL_Oui_non)
-        self.Ajouter_question(code="date_debut", titre=_(u"Quelle est la date de début du séjour ?"), commentaire=None, ctrl=CTRL_Date)
+        self.Ajouter_question(code="nom", titre=_(u"Quel est le nom du sÃ©jour ?"), commentaire=_(u"Exemple : 'SÃ©jour neige - FÃ©vrier 2018'"), ctrl=CTRL_Texte)
+        self.Ajouter_question(code="groupes", titre=_(u"Le sÃ©jour est-il constituÃ© de groupes d'Ã¢ge ?"), commentaire=_(u"Commentaire"), ctrl=CTRL_Oui_non)
+        self.Ajouter_question(code="date_debut", titre=_(u"Quelle est la date de dÃ©but du sÃ©jour ?"), commentaire=None, ctrl=CTRL_Date)
         self.Ajouter_rubrique(titre=_(u"Inscriptions"))
         self.Ajouter_question(code="nbre_inscrits_max", titre=_(u"Quel est le nombre maximal d'inscrits ?"), commentaire=_(u"S'il n'y aucune limite, laissez sur 0"), ctrl=CTRL_Nombre)
         self.Ajouter_question(ctrl=CTRL_Html, texte=_(u"Ceci est un texte HTML"), size=(-1, 50))
@@ -465,7 +465,7 @@ class Page_exemple(Page):
 
     def MAJ(self):
         dict_valeurs = {
-            "nom" : _(u"Séjour aventure - Juillet 2018"),
+            "nom" : _(u"SÃ©jour aventure - Juillet 2018"),
             }
         self.SetValeurs(dict_valeurs)
 
@@ -492,15 +492,15 @@ class Page_responsable(Page):
             self.parent.dict_valeurs["responsable_nom"] = listeDonnees[0][1]
             self.parent.dict_valeurs["responsable_fonction"] = listeDonnees[0][2]
 
-        self.Ajouter_rubrique(titre=_(u"Le responsable du séjour"))
-        self.Ajouter_question(code="responsable_nom", titre=_(u"Quel est le nom complet du responsable de l'activité (Prénom et nom) ?"), commentaire=_(u"Exemple : 'Jean-Louis DUPOND'"), ctrl=CTRL_Texte, obligatoire=False)
+        self.Ajouter_rubrique(titre=_(u"Le responsable du sÃ©jour"))
+        self.Ajouter_question(code="responsable_nom", titre=_(u"Quel est le nom complet du responsable de l'activitÃ© (PrÃ©nom et nom) ?"), commentaire=_(u"Exemple : 'Jean-Louis DUPOND'"), ctrl=CTRL_Texte, obligatoire=False)
         self.Ajouter_question(code="responsable_fonction", titre=_(u"Quelle est sa fonction ?"), commentaire=_(u"Exemple : 'Directeur'"), ctrl=CTRL_Texte, obligatoire=False)
         self.Ajouter_question(code="responsable_sexe", titre=_(u"Homme ou femme ?"), choix=[("H", _(u"Homme")), ("F", _(u"Femme"))], ctrl=CTRL_Radio, obligatoire=False)
 
         texte = _(u"""<IMG SRC="%s">
-        Le nom de responsable est utilisé par Noethys comme signataire de certains documents (attestations, reçus...).
-        Indiquez par exemple la directrice, la secrétaire, le Maire, etc... Noethys récupère par défaut le nom de responsable
-        de la dernière activité saisie.
+        Le nom de responsable est utilisÃ© par Noethys comme signataire de certains documents (attestations, reÃ§us...).
+        Indiquez par exemple la directrice, la secrÃ©taire, le Maire, etc... Noethys rÃ©cupÃ¨re par dÃ©faut le nom de responsable
+        de la derniÃ¨re activitÃ© saisie.
         """) % Chemins.GetStaticPath("Images/16x16/Astuce.png")
         self.Ajouter_question(ctrl=CTRL_Html, texte=texte, size=(-1, 50))
 
@@ -512,9 +512,9 @@ class Page_renseignements(Page):
     def __init__(self, parent):
         Page.__init__(self, parent)
         self.Ajouter_rubrique(titre=_(u"Renseignements"))
-        self.Ajouter_question(code="pieces", titre=_(u"Quelles sont les pièces à fournir par l'individu inscrit ?"), commentaire=_(u"Si la pièce souhaitée n'apparaît pas, vous devez d'abord la paramétrer dans le menu Paramétrage."), ctrl=CTRL_Pieces)
-        self.Ajouter_question(code="cotisations", titre=_(u"Si l'individu doit être à jour de l'une des cotisations suivantes, cochez-les ci-dessous :"), commentaire=_(u"Si la cotisation souhaitée n'apparaît pas, vous devez d'abord la paramétrer dans le menu Paramétrage."), ctrl=CTRL_Cotisations)
-        self.Ajouter_question(code="renseignements", titre=_(u"Quels renseignements doivent être fournis par l'individu inscrit ?"), commentaire=None, ctrl=CTRL_Renseignements)
+        self.Ajouter_question(code="pieces", titre=_(u"Quelles sont les piÃ¨ces Ã  fournir par l'individu inscrit ?"), commentaire=_(u"Si la piÃ¨ce souhaitÃ©e n'apparaÃ®t pas, vous devez d'abord la paramÃ©trer dans le menu ParamÃ©trage."), ctrl=CTRL_Pieces)
+        self.Ajouter_question(code="cotisations", titre=_(u"Si l'individu doit Ãªtre Ã  jour de l'une des cotisations suivantes, cochez-les ci-dessous :"), commentaire=_(u"Si la cotisation souhaitÃ©e n'apparaÃ®t pas, vous devez d'abord la paramÃ©trer dans le menu ParamÃ©trage."), ctrl=CTRL_Cotisations)
+        self.Ajouter_question(code="renseignements", titre=_(u"Quels renseignements doivent Ãªtre fournis par l'individu inscrit ?"), commentaire=None, ctrl=CTRL_Renseignements)
 
     def Suite(self):
         pass
@@ -525,7 +525,7 @@ class Page_recopier_tarifs(Page):
         Page.__init__(self, parent)
         self.Ajouter_rubrique(titre=_(u"Tarifs"))
         liste_choix = self.parent.dict_valeurs["activites_ressemblantes"]
-        self.Ajouter_question(code="recopier_tarifs", titre=_(u"Souhaitez-vous recopier la tarification d'une activité existante ?"), commentaire=_(u"Sélectionnez une activité du même type dans la liste déroulante, sa tarification sera récupérée pour votre nouvelle activité."), choix=liste_choix, ctrl=CTRL_Choix, defaut=None)
+        self.Ajouter_question(code="recopier_tarifs", titre=_(u"Souhaitez-vous recopier la tarification d'une activitÃ© existante ?"), commentaire=_(u"SÃ©lectionnez une activitÃ© du mÃªme type dans la liste dÃ©roulante, sa tarification sera rÃ©cupÃ©rÃ©e pour votre nouvelle activitÃ©."), choix=liste_choix, ctrl=CTRL_Choix, defaut=None)
 
     def Suite(self):
         pass
@@ -540,8 +540,8 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.dict_valeurs = {}
 
-        intro = _(u"Cette fonctionnalité vous permet de bénéficier d'un paramétrage semi-automatisé d'une activité d'un type donné. Vous n'avez qu'à simplement répondre au questionnaire proposé pour générer facilement votre nouvelle activité.")
-        titre = _(u"Assistant de paramétrage d'une activité")
+        intro = _(u"Cette fonctionnalitÃ© vous permet de bÃ©nÃ©ficier d'un paramÃ©trage semi-automatisÃ© d'une activitÃ© d'un type donnÃ©. Vous n'avez qu'Ã  simplement rÃ©pondre au questionnaire proposÃ© pour gÃ©nÃ©rer facilement votre nouvelle activitÃ©.")
+        titre = _(u"Assistant de paramÃ©trage d'une activitÃ©")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Activite.png")
 
@@ -552,7 +552,7 @@ class Dialog(wx.Dialog):
         # Bas de page
         self.static_line = wx.StaticLine(self, -1)
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        #self.bouton_options = CTRL_Bouton_image.CTRL(self, texte=_(u"Paramètres avancés"), cheminImage="Images/32x32/Configuration2.png")
+        #self.bouton_options = CTRL_Bouton_image.CTRL(self, texte=_(u"ParamÃ¨tres avancÃ©s"), cheminImage="Images/32x32/Configuration2.png")
         self.bouton_retour = CTRL_Bouton_image.CTRL(self, texte=_(u"Retour"), cheminImage="Images/32x32/Fleche_gauche.png")
         self.bouton_suite = CTRL_Bouton_image.CTRL(self, texte=_(u"Suite"), cheminImage="Images/32x32/Fleche_droite.png", margesImage=(0, 0, 4, 0), positionImage=wx.RIGHT)
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
@@ -571,9 +571,9 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        #self.bouton_options.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux paramètres avancés")))
-        self.bouton_retour.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour revenir à la page précédente")))
-        self.bouton_suite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour passer à l'étape suivante")))
+        #self.bouton_options.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der aux paramÃ¨tres avancÃ©s")))
+        self.bouton_retour.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour revenir Ã  la page prÃ©cÃ©dente")))
+        self.bouton_suite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour passer Ã  l'Ã©tape suivante")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez pour annuler")))
         self.SetMinSize((840, 710))
 
@@ -638,14 +638,14 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Paramtreruneactivit")
 
     def Onbouton_retour(self, event):
-        # Mémorise les valeurs de la page active
+        # MÃ©morise les valeurs de la page active
         self.page_active.Memorise_valeurs()
 
         # Supprime l'historique
         self.liste_pages.pop(-1)
         page_precedente = self.liste_pages[-1]
 
-        # Affiche la page précédente
+        # Affiche la page prÃ©cÃ©dente
         self.Afficher_page(ctrl=page_precedente)
 
     def Onbouton_suite(self, event):
@@ -669,7 +669,7 @@ class Dialog(wx.Dialog):
         return self.dict_valeurs["IDactivite"]
 
     def Sauvegarde_standard(self, DB=None):
-        """ Sauvegarde des données """
+        """ Sauvegarde des donnÃ©es """
         nom = self.dict_valeurs["nom"]
         abrege = CreationAbrege(self.dict_valeurs["nom"])
         if "date_debut" in self.dict_valeurs:
@@ -701,13 +701,13 @@ class Dialog(wx.Dialog):
         IDactivite = DB.ReqInsert("activites", listeDonnees)
         self.dict_valeurs["IDactivite"] = IDactivite
 
-        # Groupes d'activités
+        # Groupes d'activitÃ©s
         if "groupes_activites" in self.dict_valeurs:
             for IDtype_groupe_activite in self.dict_valeurs["groupes_activites"]:
                 listeDonnees = [("IDtype_groupe_activite", IDtype_groupe_activite), ("IDactivite", IDactivite)]
                 DB.ReqInsert("groupes_activites", listeDonnees)
 
-        # Agrément
+        # AgrÃ©ment
         if "num_agrement" in self.dict_valeurs and self.dict_valeurs["num_agrement"] != "" :
             listeDonnees = [
                 ("IDactivite", IDactivite),
@@ -717,7 +717,7 @@ class Dialog(wx.Dialog):
                 ]
             DB.ReqInsert("agrements", listeDonnees)
 
-        # Responsable d'activité
+        # Responsable d'activitÃ©
         if "responsable_nom" in self.dict_valeurs and self.dict_valeurs["responsable_nom"] != "" :
             listeDonnees = [
                 ("IDactivite", IDactivite),
@@ -755,7 +755,7 @@ class Dialog(wx.Dialog):
 
         self.dict_valeurs["listeIDgroupe"] = listeIDgroupe
 
-        # Pièces
+        # PiÃ¨ces
         if "pieces" in self.dict_valeurs:
             for IDtype_piece in self.dict_valeurs["pieces"] :
                 listeDonnees = [("IDactivite", IDactivite), ("IDtype_piece", IDtype_piece)]
@@ -832,7 +832,7 @@ class Dialog(wx.Dialog):
                 for dict_combi in track_tarif.combi_tarifs :
                     listeDonnees = [("IDtarif", track_tarif.IDtarif), ("type", dict_combi["type"])]
                     IDcombi_tarif = DB.ReqInsert("combi_tarifs", listeDonnees)
-                    # Sauvegarde des unités de combinaisons
+                    # Sauvegarde des unitÃ©s de combinaisons
                     for IDunite in dict_combi["unites"]:
                         listeDonnees = [("IDcombi_tarif", IDcombi_tarif), ("IDtarif", track_tarif.IDtarif),("IDunite", IDunite)]
                         DB.ReqInsert("combi_tarifs_unites", listeDonnees)

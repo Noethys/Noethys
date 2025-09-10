@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -33,9 +33,9 @@ def DateEngFr(textDate):
     return text
 
 def DateComplete(dateDD):
-    u""" Transforme une date DD en date complËte : Ex : lundi 15 janvier 2008 u"""
+    u""" Transforme une date DD en date compl√®te : Ex : lundi 15 janvier 2008 u"""
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"fÈvrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"ao˚t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÈcembre"))
+    listeMois = (_(u"janvier"), _(u"f√©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"ao√ªt"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"d√©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -107,14 +107,14 @@ class Choix_donateur(wx.Choice):
                 self.dictDonnees[index] = IDindividu
                 index += 1
                 
-        # Remplissage du contrÙle
+        # Remplissage du contr√¥le
         self.SetItems(self.listeNoms)
         
         if len(self.listeNoms) > 0 :
             self.Select(0)
     
     def GetAdresse(self):
-        """ Permet d'obtenir l'adresse de l'item sÈlectionnÈ dans la liste """
+        """ Permet d'obtenir l'adresse de l'item s√©lectionn√© dans la liste """
         index = self.GetSelection()
         if index == -1 : return u""
         if (index in self.dictDonnees) == False : return u""
@@ -123,7 +123,7 @@ class Choix_donateur(wx.Choice):
         adresseComplete = self.dictAdresses[IDindividu]["adresseComplete"]
         
         if adresse_auto != None :
-            # Recherche une adresse liÈe
+            # Recherche une adresse li√©e
             for IDindividuTmp, dictAdresse in self.dictAdresses.items() :
                 if IDindividuTmp == adresse_auto :
                     return dictAdresse["adresseComplete"]
@@ -190,7 +190,7 @@ class CTRL_Mode(wx.Choice):
         return self.dictDonnees[index]["ID"]
     
     def GetInfosMode(self):
-        """ RÈcupËre les infos sur le mode sÈlectionnÈ """
+        """ R√©cup√®re les infos sur le mode s√©lectionn√© """
         index = self.GetSelection()
         if index == -1 : return None
         return self.dictDonnees[index]
@@ -214,8 +214,8 @@ class Dialog(wx.Dialog):
         self.montant = 0.00
         self.totalVentilation = 0.00
         
-        # BÈnÈficiaire
-        self.staticbox_beneficiaire_staticbox = wx.StaticBox(self, -1, _(u"BÈnÈficiaire"))
+        # B√©n√©ficiaire
+        self.staticbox_beneficiaire_staticbox = wx.StaticBox(self, -1, _(u"B√©n√©ficiaire"))
         self.label_nom_beneficiaire = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom_beneficiaire = wx.TextCtrl(self, -1, u"")
         self.label_adresse_beneficiaire = wx.StaticText(self, -1, _(u"Adresse :"))
@@ -245,22 +245,22 @@ class Dialog(wx.Dialog):
         self.radio_mode_autre = wx.RadioButton(self, -1, _(u"Autre :"))
         self.ctrl_mode_autre = wx.TextCtrl(self, -1, u"")
         
-        # MÈmorisation des paramËtres de l'organisme bÈnÈficiaire
-        self.ctrl_memoriser_organisme = wx.CheckBox(self, -1, _(u"MÈmoriser l'organisme bÈnÈficiaire"))
+        # M√©morisation des param√®tres de l'organisme b√©n√©ficiaire
+        self.ctrl_memoriser_organisme = wx.CheckBox(self, -1, _(u"M√©moriser l'organisme b√©n√©ficiaire"))
         font = self.GetFont() 
         font.SetPointSize(7)
         self.ctrl_memoriser_organisme.SetFont(font)
         self.ctrl_memoriser_organisme.SetValue(True) 
         
-        # Date Èdition
-        self.label_date_edition = wx.StaticText(self, -1, _(u"Date d'Èdition :"))
+        # Date √©dition
+        self.label_date_edition = wx.StaticText(self, -1, _(u"Date d'√©dition :"))
         self.ctrl_date_edition = CTRL_Saisie_date.Date2(self)
         self.ctrl_date_edition.SetDate(datetime.date.today())
         
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_email = CTRL_Bouton_image.CTRL(self, texte=_(u"Envoyer par Email"), cheminImage="Images/32x32/Emails_exp.png")
-        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"AperÁu"), cheminImage="Images/32x32/Apercu.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aper√ßu"), cheminImage="Images/32x32/Apercu.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
@@ -275,26 +275,26 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonEmail, self.bouton_email)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         
-        # Init ContrÙles
+        # Init Contr√¥les
         if self.IDcotisation != None :
             self.Importation() 
         self.OnRadioNom(None)
         self.OnRadioMode(None)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Edition d'un reÁu Dons aux Oeuvres"))
-        self.ctrl_memoriser_organisme.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour ne pas avoir ‡ re-saisir les donnÈes sur l'organisme la prochaine fois !")))
+        self.SetTitle(_(u"Edition d'un re√ßu Dons aux Oeuvres"))
+        self.ctrl_memoriser_organisme.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour ne pas avoir √† re-saisir les donn√©es sur l'organisme la prochaine fois !")))
         self.ctrl_nom_beneficiaire.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom de l'organisme")))
         self.ctrl_adresse_beneficiaire.SetToolTip(wx.ToolTip(_(u"Saisissez ici l'adresse de l'organisme")))
         self.ctrl_objet.SetToolTip(wx.ToolTip(_(u"Saisissez ici l'objet de l'organisme")))
         self.ctrl_type.SetToolTip(wx.ToolTip(_(u"Saisissez ici le type d'oeuvre dont il s'agit")))
-        self.ctrl_nom_auto.SetToolTip(wx.ToolTip(_(u"SÈlectionnez un destinataire")))
+        self.ctrl_nom_auto.SetToolTip(wx.ToolTip(_(u"S√©lectionnez un destinataire")))
         self.ctrl_nom_autre.SetToolTip(wx.ToolTip(_(u"Saisissez un nom de destinataire")))
         self.ctr_adresse_donateur.SetToolTip(wx.ToolTip(_(u"Saisissez ici l'adresse du destinataire")))
         self.ctrl_date_versement.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date du versement")))
-        self.ctrl_mode_auto.SetToolTip(wx.ToolTip(_(u"SÈlectionnez ici le mode de versement")))
+        self.ctrl_mode_auto.SetToolTip(wx.ToolTip(_(u"S√©lectionnez ici le mode de versement")))
         self.ctrl_mode_autre.SetToolTip(wx.ToolTip(_(u"Saisissez ici un autre mode de versement")))
-        self.ctrl_date_edition.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date d'Èdition du document")))
+        self.ctrl_date_edition.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date d'√©dition du document")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer ce document par Email")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
@@ -416,21 +416,21 @@ class Dialog(wx.Dialog):
     def CreationPDF(self, nomDoc=FonctionsPerso.GenerationNomDoc("RECUDONAUXOEUVRES", "pdf"), afficherDoc=True):
         dictChampsFusion = {}
 
-        # VÈrifie que la cotisation a ÈtÈ payÈe
+        # V√©rifie que la cotisation a √©t√© pay√©e
         if self.totalVentilation < self.montant :
-            dlg = wx.MessageDialog(self, _(u"Cette cotisation n'a pas ÈtÈ rÈglÈe en intÈgralitÈ.\n\nSouhaitez-vous quand mÍme l'Èditer ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cette cotisation n'a pas √©t√© r√©gl√©e en int√©gralit√©.\n\nSouhaitez-vous quand m√™me l'√©diter ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse !=  wx.ID_YES :
                 return False
         
-        # RÈcupÈration des donnÈes sur l'organisme
+        # R√©cup√©ration des donn√©es sur l'organisme
         nom_organisme = self.ctrl_nom_beneficiaire.GetValue() 
         adresse_organisme = self.ctrl_adresse_beneficiaire.GetValue()
         objet_organisme = self.ctrl_objet.GetValue() 
         type_organisme = self.ctrl_type.GetValue() 
         
-        # MÈmorisation des donnÈes ORGANISME
+        # M√©morisation des donn√©es ORGANISME
         if self.ctrl_memoriser_organisme.GetValue() == True :
             UTILS_Parametres.Parametres(mode="set", categorie="don_oeuvres", nom="nom_organisme", valeur=nom_organisme)
             UTILS_Parametres.Parametres(mode="set", categorie="don_oeuvres", nom="adresse_organisme", valeur=adresse_organisme)
@@ -453,13 +453,13 @@ class Dialog(wx.Dialog):
         else:
             mode = self.ctrl_mode_autre.GetValue() 
         
-        # Date Èdition
+        # Date √©dition
         date_edition = self.ctrl_date_edition.GetDate(FR=True) 
         if date_edition == u"  /  /    " or date_edition ==  None : 
             date_edition = u""
         
         # Montant
-        montant_chiffres = u"%.2f §" % self.montant
+        montant_chiffres = u"%.2f ‚Ç¨" % self.montant
         montant_lettres = UTILS_Conversion.trad(self.montant)
         
         dictDonnees = {
@@ -486,7 +486,7 @@ class Dialog(wx.Dialog):
         dictChampsFusion["{MONTANT_CHIFFRES}"] = montant_chiffres
         dictChampsFusion["{MONTANT_LETTRES}"] = montant_lettres
 
-        # Lancement de l'Èdition du PDF
+        # Lancement de l'√©dition du PDF
         Impression(dictDonnees, nomDoc=nomDoc, afficherDoc=afficherDoc)
         
         return dictChampsFusion
@@ -495,7 +495,7 @@ class Dialog(wx.Dialog):
 
     def Importation(self):
         """ Importation des donnees de la base """
-        # RÈcupÈration des paramËtres ORGANISME
+        # R√©cup√©ration des param√®tres ORGANISME
         nom_organisme = UTILS_Parametres.Parametres(mode="get", categorie="don_oeuvres", nom="nom_organisme", valeur=u"")
         adresse_organisme = UTILS_Parametres.Parametres(mode="get", categorie="don_oeuvres", nom="adresse_organisme", valeur=u"")
         objet_organisme = UTILS_Parametres.Parametres(mode="get", categorie="don_oeuvres", nom="objet_organisme", valeur=u"")
@@ -534,7 +534,7 @@ class Dialog(wx.Dialog):
             self.montant = 0.00
         else:
             
-            # Importation des donnÈes de la prestation
+            # Importation des donn√©es de la prestation
             req = """SELECT
             IDcompte_payeur, label, montant
             FROM prestations 
@@ -554,7 +554,7 @@ class Dialog(wx.Dialog):
             if montant != None :
                 self.montant = float(montant)
             
-            # Importation des donnÈes sur le (ou les) rËglement
+            # Importation des donn√©es sur le (ou les) r√®glement
             req = """SELECT
             reglements.IDreglement, reglements.date, reglements.IDmode, reglements.montant,
             ventilation.montant
@@ -587,7 +587,7 @@ class Dialog(wx.Dialog):
 
 class Impression():
     def __init__(self, dictDonnees={}, nomDoc=FonctionsPerso.GenerationNomDoc("RECUDONAUXOEUVRES", "pdf") , afficherDoc=True):
-        """ Imprime un reÁu Dons aux Oeuvres """
+        """ Imprime un re√ßu Dons aux Oeuvres """
         
         from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
         from reportlab.rl_config import defaultPageSize
@@ -610,15 +610,15 @@ class Impression():
         largeursColonnes = ( (300,150) )
         
         txt1 = Paragraph(u"""
-        <para align=center fontSize=16><b>ReÁu Dons Aux Oeuvres</b></para>
+        <para align=center fontSize=16><b>Re√ßu Dons Aux Oeuvres</b></para>
         """, styleSheet['BodyText'])
         
         txt2 = Paragraph(u"""
-        <para align=center fontSize=8>NumÈro d'ordre du reÁu</para>
+        <para align=center fontSize=8>Num√©ro d'ordre du re√ßu</para>
         """, styleSheet['BodyText'])
         
         txt3 = Paragraph(u"""
-        <para align=center fontSize=9>(Article 200-5 du Code GÈnÈral des ImpÙts)</para>
+        <para align=center fontSize=9>(Article 200-5 du Code G√©n√©ral des Imp√¥ts)</para>
         """, styleSheet['BodyText'])
         
         txt4 = Paragraph(u"""
@@ -647,12 +647,12 @@ class Impression():
         
         # Texte du tableau
         txt10 = Paragraph(u"""
-        <para align=center><b>BÈnÈficiaire des versements</b></para>
+        <para align=center><b>B√©n√©ficiaire des versements</b></para>
         """, styleSheet['BodyText'])
         
         txt20 = Paragraph(u"""
         <br/>
-        Nom ou dÈnomination : %s<br/>
+        Nom ou d√©nomination : %s<br/>
         <br/>
         Adresse : %s<br/>
         <br/>
@@ -683,7 +683,7 @@ class Impression():
         
         txt60 = Paragraph(u"""
         <br/>
-        Le bÈnÈficiaire reconnaÓt avoir reÁu au titre des versements ouvrant droit ‡ rÈduction d'impÙt la somme de : <br/>
+        Le b√©n√©ficiaire reconna√Æt avoir re√ßu au titre des versements ouvrant droit √† r√©duction d'imp√¥t la somme de : <br/>
         <br/>
         """, styleSheet['BodyText'])
         
@@ -760,7 +760,7 @@ class Impression():
         except Exception as err :
             print("Erreur dans ouverture PDF :", err)
             if "Permission denied" in err :
-                dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas crÈer le PDF.\n\nVeuillez vÈrifier qu'un autre PDF n'est pas dÈj‡ ouvert en arriËre-plan..."), _(u"Erreur d'Èdition"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas cr√©er le PDF.\n\nVeuillez v√©rifier qu'un autre PDF n'est pas d√©j√† ouvert en arri√®re-plan..."), _(u"Erreur d'√©dition"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -23,7 +23,7 @@ from Data import DATA_Civilites as Civilites
 DICT_CIVILITES = Civilites.GetDictCivilites()
 from Utils import UTILS_Utilisateurs
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 DICT_INFOS_INDIVIDUS = {}
 
@@ -40,42 +40,42 @@ LISTE_CHAMPS = [
     {"label": _(u"Famille"), "code": "noms_titulaires", "champ": "inscriptions.IDfamille", "typeDonnee": "texte", "align": "left", "largeur": 180, "stringConverter": None, "actif": True, "afficher": True},
 
     # {"label":_(u"Groupe"), "code":"nomGroupe", "champ":"groupes.nom", "typeDonnee":"texte", "align":"left", "largeur":85, "stringConverter":None, "actif":True, "afficher":True},
-    # {"label":_(u"Catégorie"), "code":"nomCategorie", "champ":"categories_tarifs.nom", "typeDonnee":"texte", "align":"left", "largeur":95, "stringConverter":None, "actif":True, "afficher":True},
+    # {"label":_(u"CatÃ©gorie"), "code":"nomCategorie", "champ":"categories_tarifs.nom", "typeDonnee":"texte", "align":"left", "largeur":95, "stringConverter":None, "actif":True, "afficher":True},
     # {"label":_(u"Date inscrip."), "code":"dateInscription", "champ":"inscriptions.date_inscription", "typeDonnee":"date", "align":"left", "largeur":75, "stringConverter":"date", "actif":True, "afficher":False},
     
-    {"label":_(u"Facturé"), "code":"totalFacture", "champ":None, "typeDonnee":"montant", "align":"right", "largeur":65, "stringConverter":"montant", "actif":True, "afficher":True},
-    {"label":_(u"Réglé"), "code":"totalRegle", "champ":None, "typeDonnee":"montant", "align":"right", "largeur":65, "stringConverter":"montant", "actif":True, "afficher":True},
+    {"label":_(u"FacturÃ©"), "code":"totalFacture", "champ":None, "typeDonnee":"montant", "align":"right", "largeur":65, "stringConverter":"montant", "actif":True, "afficher":True},
+    {"label":_(u"RÃ©glÃ©"), "code":"totalRegle", "champ":None, "typeDonnee":"montant", "align":"right", "largeur":65, "stringConverter":"montant", "actif":True, "afficher":True},
     {"label":_(u"Solde"), "code":"totalSolde", "champ":None, "typeDonnee":"montant", "align":"right", "largeur":95, "stringConverter":"solde", "imageGetter":"ventilation", "actif":True, "afficher":True},
 
     {"label":_(u"IDcivilite"), "code":"IDcivilite", "champ":"IDcivilite", "typeDonnee":"entier", "align":"left", "largeur":65, "stringConverter":None, "actif":False, "afficher":False},
     {"label":_(u"Nom"), "code":"nomIndividu", "champ":"individus.nom", "typeDonnee":"texte", "align":"left", "largeur":65, "stringConverter":None, "actif":True, "afficher":False},
-    {"label":_(u"Prénom"), "code":"prenomIndividu", "champ":"prenom", "typeDonnee":"texte", "align":"left", "largeur":65, "stringConverter":None, "actif":True, "afficher":False},
+    {"label":_(u"PrÃ©nom"), "code":"prenomIndividu", "champ":"prenom", "typeDonnee":"texte", "align":"left", "largeur":65, "stringConverter":None, "actif":True, "afficher":False},
     
     {"label":_(u"Rue"), "code":"rue_resid", "champ":"rue_resid", "typeDonnee":"texte", "align":"left", "largeur":125, "stringConverter":None, "actif":True, "afficher":True},
     {"label":_(u"CP"), "code":"cp_resid", "champ":"cp_resid", "typeDonnee":"texte", "align":"left", "largeur":45, "stringConverter":None, "actif":True, "afficher":True},
     {"label":_(u"Ville"), "code":"ville_resid", "champ":"ville_resid", "typeDonnee":"texte", "align":"left", "largeur":110, "stringConverter":None, "actif":True, "afficher":True},
     
-    {"label":_(u"Num. Sécu."), "code":"num_secu", "champ":"num_secu", "typeDonnee":"texte", "align":"left", "largeur":90, "stringConverter":None, "actif":True, "afficher":False},
+    {"label":_(u"Num. SÃ©cu."), "code":"num_secu", "champ":"num_secu", "typeDonnee":"texte", "align":"left", "largeur":90, "stringConverter":None, "actif":True, "afficher":False},
     {"label":_(u"Date naiss."), "code":"date_naiss", "champ":"date_naiss", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":"date", "actif":True, "afficher":True},
     {"label":_(u"Age"), "code":"age", "champ":None, "typeDonnee":"entier", "align":"left", "largeur":45, "stringConverter":"age", "actif":True, "afficher":True},
     {"label":_(u"CP naiss."), "code":"cp_naiss", "champ":"cp_naiss", "typeDonnee":"texte", "align":"left", "largeur":45, "stringConverter":None, "actif":True, "afficher":False},
     {"label":_(u"Ville naiss."), "code":"ville_naiss", "champ":"ville_naiss", "typeDonnee":"texte", "align":"left", "largeur":85, "stringConverter":None, "actif":True, "afficher":True},
     {"label":_(u"adresse_auto"), "code":"adresse_auto", "champ":"adresse_auto", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":False, "afficher":False},
-    {"label":_(u"Catégorie socio."), "code":"categorie_socio", "champ":"categories_travail.nom", "typeDonnee":"texte", "align":"left", "largeur":95, "stringConverter":None, "actif":True, "afficher":True},
+    {"label":_(u"CatÃ©gorie socio."), "code":"categorie_socio", "champ":"categories_travail.nom", "typeDonnee":"texte", "align":"left", "largeur":95, "stringConverter":None, "actif":True, "afficher":True},
     
     {"label":_(u"Profession"), "code":"profession", "champ":"profession", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
     {"label":_(u"Employeur"), "code":"employeur", "champ":"employeur", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
-    {"label":_(u"Tél pro."), "code":"travail_tel", "champ":"travail_tel", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
+    {"label":_(u"TÃ©l pro."), "code":"travail_tel", "champ":"travail_tel", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
     {"label":_(u"Fax pro."), "code":"travail_fax", "champ":"travail_fax", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
     {"label":_(u"Email pro."), "code":"travail_mail", "champ":"travail_mail", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
-    {"label":_(u"Tél dom."), "code":"tel_domicile", "champ":"tel_domicile", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
-    {"label":_(u"Tél mobile"), "code":"tel_mobile", "champ":"tel_mobile", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
+    {"label":_(u"TÃ©l dom."), "code":"tel_domicile", "champ":"tel_domicile", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
+    {"label":_(u"TÃ©l mobile"), "code":"tel_mobile", "champ":"tel_mobile", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
     {"label":_(u"Fax dom."), "code":"tel_fax", "champ":"tel_fax", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
     {"label":_(u"Email"), "code":"mail", "champ":"mail", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
     
     {"label":_(u"Genre"), "code":"genre", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":45, "stringConverter":None, "actif":True, "afficher":False},
-    {"label":_(u"Civilité court"), "code":"civiliteLong", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":65, "stringConverter":None, "actif":True, "afficher":False},
-    {"label":_(u"Civilité long"), "code":"civiliteAbrege", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
+    {"label":_(u"CivilitÃ© court"), "code":"civiliteLong", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":65, "stringConverter":None, "actif":True, "afficher":False},
+    {"label":_(u"CivilitÃ© long"), "code":"civiliteAbrege", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
     {"label":_(u"nomImage"), "code":"nomImage", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":45, "stringConverter":None, "actif":False, "afficher":False},
     
     {"label":_(u"IDfamille"), "code":"IDfamille", "champ":"inscriptions.IDfamille", "typeDonnee":"entier", "align":"left", "largeur":45, "stringConverter":None, "actif":False, "afficher":False},
@@ -88,9 +88,9 @@ def DateEngFr(textDate):
     return text
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -150,7 +150,7 @@ class ListView(FastObjectListView):
 
         DB = GestionDB.DB()
 
-        # Condition Activités
+        # Condition ActivitÃ©s
         if len(self.listeActivites) == 0 : conditionActivites = "()"
         elif len(self.listeActivites) == 1 : conditionActivites = "(%d)" % self.listeActivites[0]
         else : conditionActivites = str(tuple(self.listeActivites))
@@ -160,12 +160,12 @@ class ListView(FastObjectListView):
         elif len(self.listeGroupes) == 1 : conditionGroupes = "(%d)" % self.listeGroupes[0]
         else : conditionGroupes = str(tuple(self.listeGroupes))
 
-        # Condition Catégories
+        # Condition CatÃ©gories
         if len(self.listeCategories) == 0 : conditionCategories = "()"
         elif len(self.listeCategories) == 1 : conditionCategories = "(%d)" % self.listeCategories[0]
         else : conditionCategories = str(tuple(self.listeCategories))
         
-        # Condition dates de présences
+        # Condition dates de prÃ©sences
         if self.presents != None :
             conditionPresents = "AND prestations.date>='%s' AND prestations.date <='%s'" % (self.presents[0], self.presents[1])
         else :
@@ -174,10 +174,10 @@ class ListView(FastObjectListView):
         # Infos sur tous les individus
         GetDictInfosIndividus()
         
-        # Récupération de la facturation
+        # RÃ©cupÃ©ration de la facturation
         dictFacturation = {}
 
-        # Récupère les prestations
+        # RÃ©cupÃ¨re les prestations
         req = """SELECT IDfamille, IDindividu, SUM(montant)
         FROM prestations
         WHERE IDactivite IN %s %s
@@ -190,7 +190,7 @@ class ListView(FastObjectListView):
                 dictFacturation[IDindividu] = {"prestations":0.0, "ventilation":0.0}
             dictFacturation[IDindividu]["prestations"] += total_prestations
             
-        # Récupère la ventilation
+        # RÃ©cupÃ¨re la ventilation
         req = """SELECT IDfamille, IDindividu, SUM(ventilation.montant)
         FROM ventilation
         LEFT JOIN prestations ON prestations.IDprestation = ventilation.IDprestation
@@ -203,7 +203,7 @@ class ListView(FastObjectListView):
             if (IDindividu in dictFacturation) == True :
                 dictFacturation[IDindividu]["ventilation"] = total_ventilation
 
-        # Récupération des données sur les individus
+        # RÃ©cupÃ©ration des donnÃ©es sur les individus
         listeChamps2 = []
         for dictChamp in LISTE_CHAMPS :
             champ = dictChamp["champ"]
@@ -240,7 +240,7 @@ class ListView(FastObjectListView):
                     dictTemp[code] = valeurs[index]
                     index += 1
                 
-            # Infos sur la civilité
+            # Infos sur la civilitÃ©
             dictTemp["genre"] = DICT_CIVILITES[dictTemp["IDcivilite"]]["sexe"]
             dictTemp["categorieCivilite"] = DICT_CIVILITES[dictTemp["IDcivilite"]]["categorie"]
             dictTemp["civiliteLong"]  = DICT_CIVILITES[dictTemp["IDcivilite"]]["civiliteLong"]
@@ -299,7 +299,7 @@ class ListView(FastObjectListView):
         return listeListeView
 
     def InitObjectListView(self):
-        # Création du imageList
+        # CrÃ©ation du imageList
         for categorie, civilites in Civilites.LISTE_CIVILITES :
             for IDcivilite, CiviliteLong, CiviliteAbrege, nomImage, genre in civilites :
                 indexImg = self.AddNamedImages(nomImage, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s" % nomImage), wx.BITMAP_TYPE_PNG))
@@ -349,10 +349,10 @@ class ListView(FastObjectListView):
         self.oddRowsBackColor = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
         self.evenRowsBackColor = "#FFFFFF" # Vert
         
-        # Champs à afficher : 
+        # Champs Ã  afficher : 
         selection_champs = ["IDindividu", "nomComplet", "noms_titulaires", "totalFacture", "totalRegle", "totalSolde"]
         
-        # Création des colonnes
+        # CrÃ©ation des colonnes
         listeColonnes = []
         for dictChamp in LISTE_CHAMPS :
             if dictChamp["code"] in selection_champs :
@@ -374,7 +374,7 @@ class ListView(FastObjectListView):
                     else : imageGetter = None
                 else:
                     imageGetter = None
-                # Création de la colonne
+                # CrÃ©ation de la colonne
                 colonne = ColumnDefn(dictChamp["label"], dictChamp["align"], dictChamp["largeur"], dictChamp["code"], typeDonnee=dictChamp["typeDonnee"], stringConverter=stringConverter, imageGetter=imageGetter)
                 listeColonnes.append(colonne)
         self.SetColumns(listeColonnes)
@@ -412,7 +412,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -440,7 +440,7 @@ class ListView(FastObjectListView):
     
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """        
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ouverture fiche famille
@@ -453,7 +453,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
         
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -488,7 +488,7 @@ class ListView(FastObjectListView):
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune fiche famille à ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune fiche famille Ã  ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -49,13 +49,13 @@ class Dialog(wx.Dialog):
         self.box_conditions_staticbox = wx.StaticBox(self, -1, _(u"Conditions"))
         self.ctrl_conditions = CTRL_Badgeage_conditions.Panel(self)
         
-        # Mémo des mots-clés
-        self.box_motscles_staticbox = wx.StaticBox(self, -1, _(u"Mots-clés disponibles pour les messages"))
+        # MÃ©mo des mots-clÃ©s
+        self.box_motscles_staticbox = wx.StaticBox(self, -1, _(u"Mots-clÃ©s disponibles pour les messages"))
         texte = u"""
         <FONT SIZE=-2>
-        {NOM} -> Nom, {PRENOM} -> Prénom, 
+        {NOM} -> Nom, {PRENOM} -> PrÃ©nom, 
         <BR>{DATE} -> Date, {HEURE} -> Heure, 
-        <BR>{FEMININ} -> Ajoute un 'e' si l'individu est de sexe féminin.
+        <BR>{FEMININ} -> Ajoute un 'e' si l'individu est de sexe fÃ©minin.
         </FONT>"""
         self.ctrl_motscles = MyHtml(self, texte=texte, hauteur=50)
         
@@ -90,7 +90,7 @@ class Dialog(wx.Dialog):
         box_conditions = wx.StaticBoxSizer(self.box_conditions_staticbox, wx.VERTICAL)
         box_conditions.Add(self.ctrl_conditions, 1, wx.EXPAND|wx.ALL, 10)
         
-        # Mots-clés
+        # Mots-clÃ©s
         box_motscles = wx.StaticBoxSizer(self.box_motscles_staticbox, wx.VERTICAL)
         box_motscles.Add(self.ctrl_motscles, 1, wx.EXPAND|wx.ALL, 10)
         
@@ -132,14 +132,14 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
 
     def OnBoutonOk(self, event): 
-        # Validation des données
+        # Validation des donnÃ©es
         if self.ctrl_conditions.Validation() == False :
             return False
         
         if self.ctrl_action.Validation() == False :
             return False
         
-        # Fermeture fenêtre
+        # Fermeture fenÃªtre
         self.EndModal(wx.ID_OK)
     
     def GetDonnees(self):

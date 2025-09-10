@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -39,7 +39,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
 
-        # Init contrôles
+        # Init contrÃ´les
         self.ctrl_categories.MAJ()
 
         if IDcategorie == None and len(liste_categories) == 0 :
@@ -52,8 +52,8 @@ class Dialog(wx.Dialog):
             wx.CallLater(10, self.ctrl_categories.SetFocus)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Sélection d'une catégorie de produits"))
-        self.ctrl_categories.SetToolTip(wx.ToolTip(_(u"Double-cliquez sur une ligne pour la sélectionner rapidement")))
+        self.SetTitle(_(u"SÃ©lection d'une catÃ©gorie de produits"))
+        self.ctrl_categories.SetToolTip(wx.ToolTip(_(u"Double-cliquez sur une ligne pour la sÃ©lectionner rapidement")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -93,23 +93,23 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Categoriesdeproduits")
 
     def OnBoutonOk(self, event=None):
-        # Vérification des données saisies
+        # VÃ©rification des donnÃ©es saisies
         if self.selection_obligatoire == True :
 
             if self.selection_multiple == False:
                 if self.ctrl_categories.GetID() == None :
-                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une catégorie !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une catÃ©gorie !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return
             else :
                 if len(self.ctrl_categories.GetListeCategories()) == 0 :
-                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins une catégorie !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins une catÃ©gorie !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return
 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def GetIDcategorie(self):

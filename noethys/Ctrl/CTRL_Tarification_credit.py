@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -26,9 +26,9 @@ def DateEngFr(textDate):
     return text
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -65,7 +65,7 @@ class ListBoxCombinaisons(wx.ListBox):
             self.Insert(label, self.GetCount(), IDcombi_tarif) 
     
     def ImportationUnites(self):
-        # Recherche des unités disponibles de l'activité
+        # Recherche des unitÃ©s disponibles de l'activitÃ©
         db = GestionDB.DB()
         req = """SELECT IDunite, ordre, nom, abrege, type, heure_debut, heure_fin, date_debut, date_fin
         FROM unites
@@ -93,7 +93,7 @@ class ListBoxCombinaisons(wx.ListBox):
         if len(listeCombinaisons) == 0 : return None
         for IDcombi_tarif, IDtarif, date in listeCombinaisons :
             self.listeAnciennesCombi.append(IDcombi_tarif)
-        # Importation des unités des combinaisons
+        # Importation des unitÃ©s des combinaisons
         db = GestionDB.DB()
         req = """SELECT IDcombi_tarif_unite, IDcombi_tarif, IDunite
         FROM combi_tarifs_unites
@@ -110,7 +110,7 @@ class ListBoxCombinaisons(wx.ListBox):
                 dictDonnees[IDcombi_tarif].append(dictTemp)
             else:
                 dictDonnees[IDcombi_tarif] = [dictTemp,]
-        # Création de la liste des données
+        # CrÃ©ation de la liste des donnÃ©es
         listeDonnees = []
         for IDcombi_tarif, IDtarif, quantite_max in listeCombinaisons :
             if IDcombi_tarif in dictDonnees :
@@ -135,22 +135,22 @@ class ListBoxCombinaisons(wx.ListBox):
                 DB.ReqMAJ("combi_tarifs", [("quantite_max", quantite_max),], "IDcombi_tarif", IDcombi_tarif)
                 listeIDcombi.append(IDcombi_tarif)
             
-            # Sauvegarde des unités de combi
+            # Sauvegarde des unitÃ©s de combi
             for IDcombi_tarif_unite, IDunite in listeUnites :
                 
-                # Nouvelles unités
+                # Nouvelles unitÃ©s
                 if IDcombi_tarif_unite == None :
                     listeDonnees = [ ("IDcombi_tarif", IDcombi_tarif ), ("IDtarif", self.IDtarif ), ("IDunite", IDunite ), ]
                     IDcombi_tarif_unite = DB.ReqInsert("combi_tarifs_unites", listeDonnees)
                 else:
                     listeIDunites.append(IDcombi_tarif_unite)
         
-        # Suppression des combi supprimées
+        # Suppression des combi supprimÃ©es
         for IDcombi_tarif in self.listeAnciennesCombi :
             if IDcombi_tarif not in listeIDcombi :
                 DB.ReqDEL("combi_tarifs", "IDcombi_tarif", IDcombi_tarif)
             
-        # Suppression des unités supprimées
+        # Suppression des unitÃ©s supprimÃ©es
         for IDcombi_tarif_unite in self.listeAnciennesUnites :
             if IDcombi_tarif_unite not in listeIDunites :
                 DB.ReqDEL("combi_tarifs_unites", "IDcombi_tarif_unite", IDcombi_tarif_unite)
@@ -169,21 +169,21 @@ class ListBoxCombinaisons(wx.ListBox):
     def Modifier(self):
         index = self.GetSelection()
         if index == -1 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune combinaison à modifier dans la liste !"), "Information", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune combinaison Ã  modifier dans la liste !"), "Information", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDcombi_tarif = self.GetClientData(index)
-        # Récupération des anciennes IDunites
+        # RÃ©cupÃ©ration des anciennes IDunites
         listeAnciennesIDunites = []
         IDcombi_tarifTmp, quantite_max, listeUnites = self.listeDonnees[index]
         for IDcombi_tarif_unite, IDunite in listeUnites :
             listeAnciennesIDunites.append(IDunite)
         listeAnciennesIDunites.sort()
-        # Fenêtre de saisie
+        # FenÃªtre de saisie
         listeIDunites, quantite_max = self.Saisie(listeAnciennesIDunites, quantite_max) 
         if listeIDunites == None : return
-        # Modification de la liste de données
+        # Modification de la liste de donnÃ©es
         listeValeurs = []
         listeTemp = []
         for IDunite in listeIDunites :
@@ -201,7 +201,7 @@ class ListBoxCombinaisons(wx.ListBox):
     def Supprimer(self):
         index = self.GetSelection()
         if index == -1 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune combinaison à supprimer dans la liste !"), "Information", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune combinaison Ã  supprimer dans la liste !"), "Information", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -214,7 +214,7 @@ class ListBoxCombinaisons(wx.ListBox):
         dlg.Destroy()
 
     def Saisie(self, listeAnciennesIDunites=None, ancienne_quantite_max=None):     
-        # Recherche des unités disponibles de l'activité
+        # Recherche des unitÃ©s disponibles de l'activitÃ©
         db = GestionDB.DB()
         req = """SELECT IDunite, nom, type, heure_debut, heure_fin, date_debut, date_fin
         FROM unites
@@ -224,7 +224,7 @@ class ListBoxCombinaisons(wx.ListBox):
         listeUnites = db.ResultatReq()
         db.Close()
         if len(listeUnites) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Il n'existe aucune unité pour cette activité !"), "Information", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'existe aucune unitÃ© pour cette activitÃ© !"), "Information", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return None, None
@@ -239,7 +239,7 @@ class ListBoxCombinaisons(wx.ListBox):
             listeItems.append(valeurs[1])
             index += 1
             
-        # Boîte de dialogue pour choisir les combinaisons
+        # BoÃ®te de dialogue pour choisir les combinaisons
         from Dlg import DLG_Saisie_combi_credit
         dlg = DLG_Saisie_combi_credit.Dialog(self, self.IDactivite, listeItems)
         dlg.SetQuantiteMax(ancienne_quantite_max)
@@ -249,12 +249,12 @@ class ListBoxCombinaisons(wx.ListBox):
             listeSelections = dlg.GetUnites()
             quantite_max = dlg.GetQuantiteMax()
             if len(listeSelections) == 0 :
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez coché aucune unité !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez cochÃ© aucune unitÃ© !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return None, None
 
-            # Vérifie que les unités sélectionnées sont compatibles entre elles
+            # VÃ©rifie que les unitÃ©s sÃ©lectionnÃ©es sont compatibles entre elles
             db = GestionDB.DB()
             req = """SELECT IDunite_incompat, IDunite, IDunite_incompatible
             FROM unites_incompat;"""
@@ -271,7 +271,7 @@ class ListBoxCombinaisons(wx.ListBox):
                         if IDunite1 != IDunite2 :
                             for IDunite_incompat, IDunite, IDunite_incompatible in listeIncompatibilites :
                                 if (IDunite == IDunite1 and IDunite_incompatible == IDunite2) or (IDunite == IDunite2 and IDunite_incompatible == IDunite1) :
-                                    dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas créer cette combinaison car les\nunités '%s' et '%s' sont incompatibles entre elles !") % (nomUnite1, nomUnite2), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                                    dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas crÃ©er cette combinaison car les\nunitÃ©s '%s' et '%s' sont incompatibles entre elles !") % (nomUnite1, nomUnite2), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
                                     dlg.ShowModal()
                                     dlg.Destroy()
                                     return None, None
@@ -280,28 +280,28 @@ class ListBoxCombinaisons(wx.ListBox):
             dlg.Destroy()
             return None, None
         
-        # Crée une liste des IDunités sélectionnés
+        # CrÃ©e une liste des IDunitÃ©s sÃ©lectionnÃ©s
         listeIDunites = []
         for selection in listeSelections :
             listeIDunites.append(listeUnites[selection][0])
         listeIDunites.sort()
 
-        # Si c'est une modification, vérifie qu'une modification a été faite
+        # Si c'est une modification, vÃ©rifie qu'une modification a Ã©tÃ© faite
         if listeAnciennesIDunites != None :
             if listeAnciennesIDunites == listeIDunites and ancienne_quantite_max == quantite_max :
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez effectué aucune modification !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez effectuÃ© aucune modification !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return None, None
         
-##        # Vérifie que la combinaison n'existe pas déjà
+##        # VÃ©rifie que la combinaison n'existe pas dÃ©jÃ 
 ##        for IDcombi_tarifTmp, quantite_maxTemp, listeUnites in self.listeDonnees :
 ##            listeUnitesTmp = []
 ##            for IDcombi_tarif_uniteTmp, IDuniteTmp in listeUnites :
 ##                listeUnitesTmp.append(IDuniteTmp)
 ##            listeUnitesTmp.sort()
 ##            if listeUnitesTmp == listeIDunites  :
-##                dlg = wx.MessageDialog(self, _(u"Cette combinaison existe déjà !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+##                dlg = wx.MessageDialog(self, _(u"Cette combinaison existe dÃ©jÃ  !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
 ##                dlg.ShowModal()
 ##                dlg.Destroy()
 ##                return None, None
@@ -321,7 +321,7 @@ class Panel(wx.Panel):
         self.nouveauTarif = nouveauTarif
         
         # Intro
-        self.label_intro = wx.StaticText(self, -1, _(u"Saisissez les unités associables au forfait :"))
+        self.label_intro = wx.StaticText(self, -1, _(u"Saisissez les unitÃ©s associables au forfait :"))
         
         # Combinaisons
         self.ctrl_combinaisons = ListBoxCombinaisons(self, IDactivite=IDactivite, IDtarif=IDtarif)
@@ -329,21 +329,21 @@ class Panel(wx.Panel):
         self.bouton_modifier_combi = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer_combi = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
         
-        # Durée
-        self.label_duree_forfait = wx.StaticText(self, -1, _(u"Durée par défaut :"))
+        # DurÃ©e
+        self.label_duree_forfait = wx.StaticText(self, -1, _(u"DurÃ©e par dÃ©faut :"))
         self.ctrl_duree_forfait = wx.CheckBox(self, -1, _(u""))
         self.label_jours = wx.StaticText(self, -1, _(u"Jours :"))
         self.spin_jours = wx.SpinCtrl(self, -1, "", min=0, max=500)
         self.label_mois = wx.StaticText(self, -1, _(u"Mois :"))
         self.spin_mois = wx.SpinCtrl(self, -1, "", min=0, max=500)
-        self.label_annees = wx.StaticText(self, -1, _(u"Années :"))
+        self.label_annees = wx.StaticText(self, -1, _(u"AnnÃ©es :"))
         self.spin_annees = wx.SpinCtrl(self, -1, "", min=0, max=500)
 
         # Blocage
         self.label_blocage_plafond = wx.StaticText(self, -1, _(u"Blocage plafond :"))
-        self.ctrl_blocage_plafond = wx.CheckBox(self, -1, _(u"Bloquer si la quantité maximale de consommations est atteinte"))
+        self.ctrl_blocage_plafond = wx.CheckBox(self, -1, _(u"Bloquer si la quantitÃ© maximale de consommations est atteinte"))
 
-        # Bénéficiaire
+        # BÃ©nÃ©ficiaire
         self.label_type_forfait = wx.StaticText(self, -1, _(u"Type de forfait :"))
         self.ctrl_beneficiaire_individu = wx.RadioButton(self, -1, _(u"Forfait individuel"), style = wx.RB_GROUP)
         self.ctrl_beneficiaire_famille = wx.RadioButton(self, -1, _(u"Forfait familial"))
@@ -351,7 +351,7 @@ class Panel(wx.Panel):
         # Date de facturation
         self.label_date_facturation = wx.StaticText(self, -1, _(u"Date de facturation :"))
         listeChoix = [
-            ("date_debut_forfait", _(u"Date de début du forfait")),
+            ("date_debut_forfait", _(u"Date de dÃ©but du forfait")),
             ("date_fin_forfait", _(u"Date de fin du forfait")),
             ("date_saisie", _(u"Date de la saisie du forfait")),
             ]
@@ -372,11 +372,11 @@ class Panel(wx.Panel):
         self.OnCheckDuree() 
 
     def __set_properties(self):
-        self.bouton_ajouter_combi.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une combinaison d'unités")))
-        self.bouton_modifier_combi.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la combinaison d'unités selectionnée dans la liste")))
-        self.bouton_supprimer_combi.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la combinaison d'unités selectionnée dans la liste")))
-        self.ctrl_duree_forfait.SetToolTip(wx.ToolTip(_(u"Vous pouvez définir une durée de validité à partir de la date de début de forfait saisie par l'utilisateur")))
-        self.ctrl_blocage_plafond.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour empêcher la saisie d'une consommation si la quantité maximale est atteinte")))
+        self.bouton_ajouter_combi.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une combinaison d'unitÃ©s")))
+        self.bouton_modifier_combi.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la combinaison d'unitÃ©s selectionnÃ©e dans la liste")))
+        self.bouton_supprimer_combi.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la combinaison d'unitÃ©s selectionnÃ©e dans la liste")))
+        self.ctrl_duree_forfait.SetToolTip(wx.ToolTip(_(u"Vous pouvez dÃ©finir une durÃ©e de validitÃ© Ã  partir de la date de dÃ©but de forfait saisie par l'utilisateur")))
+        self.ctrl_blocage_plafond.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour empÃªcher la saisie d'une consommation si la quantitÃ© maximale est atteinte")))
         self.spin_jours.SetMinSize((60, -1))
         self.spin_mois.SetMinSize((60, -1))
         self.spin_annees.SetMinSize((60, -1))
@@ -503,7 +503,7 @@ class Panel(wx.Panel):
         db.Close()
         if len(listeDonnees) == 0 : return
         forfait_duree, forfait_beneficiaire, date_facturation, options = listeDonnees[0]
-        # Remplissage des contrôles
+        # Remplissage des contrÃ´les
         self.SetDuree(forfait_duree)
         self.SetBeneficiaire(forfait_beneficiaire)
         self.SetDateFacturation(date_facturation)
@@ -521,7 +521,7 @@ class Panel(wx.Panel):
             mois = int(self.spin_mois.GetValue())
             annees = int(self.spin_annees.GetValue())
             if jours == 0 and mois == 0 and annees == 0 :
-                dlg = wx.MessageDialog(self, _(u"Vous avez coché une durée limitée. \nVous devez donc saisir un nombre de jours et/ou de mois et/ou d'années."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous avez cochÃ© une durÃ©e limitÃ©e. \nVous devez donc saisir un nombre de jours et/ou de mois et/ou d'annÃ©es."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.spin_jours.SetFocus()
@@ -536,7 +536,7 @@ class Panel(wx.Panel):
         # Sauvegarde des combinaisons
         self.ctrl_combinaisons.Sauvegarde() 
         
-        # Récupération des autres données
+        # RÃ©cupÃ©ration des autres donnÃ©es
         forfait_duree = self.GetDuree()
         forfait_beneficiaire = self.GetBeneficiaire()
         date_facturation = self.GetDateFacturation()

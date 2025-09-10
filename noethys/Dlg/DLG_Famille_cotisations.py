@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -48,10 +48,10 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonSupprimer, self.bouton_supprimer)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonImprimer, self.bouton_imprimer)
         
-        # Propriétés
+        # PropriÃ©tÃ©s
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir une cotisation")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la cotisation sélectionnée")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la cotisation sélectionnée")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la cotisation sÃ©lectionnÃ©e")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la cotisation sÃ©lectionnÃ©e")))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer un document")))
 
         # Layout
@@ -99,7 +99,7 @@ class Panel(wx.Panel):
             noSelection = False
             ID = self.ctrl_listview.Selection()[0].IDcotisation
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Imprimer cotisation
@@ -111,7 +111,7 @@ class Panel(wx.Panel):
         if noSelection == True : item.Enable(False)
 
         # Item Recu Dons aux oeuvres
-        item = wx.MenuItem(menuPop, 10, _(u"Editer un reçu Dons aux Oeuvres (PDF)"))
+        item = wx.MenuItem(menuPop, 10, _(u"Editer un reÃ§u Dons aux Oeuvres (PDF)"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -121,7 +121,7 @@ class Panel(wx.Panel):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 20, _(u"Aperçu avant impression de la liste"))
+        item = wx.MenuItem(menuPop, 20, _(u"AperÃ§u avant impression de la liste"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -160,7 +160,7 @@ class Panel(wx.Panel):
         self.Refresh()
                 
     def ValidationData(self):
-        """ Return True si les données sont valides et pretes à être sauvegardées """
+        """ Return True si les donnÃ©es sont valides et pretes Ã  Ãªtre sauvegardÃ©es """
         return True
     
     def Sauvegarde(self):

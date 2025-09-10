@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -32,13 +32,13 @@ def RecadreImg(img=None, taille_image=None):
 
 
 def ConvertirImagePNG(fichier="") :
-    # Chargement de l'image à convertir
+    # Chargement de l'image Ã  convertir
     image = Image.open(fichier)
     image.load() 
     profile = image.info.get("icc_profile")
     
     if profile != None :
-        # Créée une image sans icc_profile
+        # CrÃ©Ã©e une image sans icc_profile
         nouvelleImage = Image.new("RGBA", image.size)
         nouvelleImage.paste(image) 
         
@@ -54,9 +54,9 @@ def ConvertirImagePNG(fichier="") :
 
 
 def ConvertirToutesImagesPNG():
-    """ Convertit toutes les images PNG du répertoire Noethys """
+    """ Convertit toutes les images PNG du rÃ©pertoire Noethys """
     racine = Chemins.GetStaticPath("Images")
-    # Recherche les PNG présents
+    # Recherche les PNG prÃ©sents
     tree = os.walk(racine)
     listeFichiersPNG = []
     for repertoire, listeRepertoires, listeFichiers in tree :
@@ -98,7 +98,7 @@ def ConvertToRVB(couleur=None):
     return (r, v, b)
 
 def CreationCarreCouleur(largeur, hauteur, couleur=None, contour=False):
-    """ couleur peut être RGB ou HEXA """
+    """ couleur peut Ãªtre RGB ou HEXA """
     if 'phoenix' in wx.PlatformInfo:
         bmp = wx.Image(largeur, hauteur, True)
         # Dessin du contour
@@ -107,7 +107,7 @@ def CreationCarreCouleur(largeur, hauteur, couleur=None, contour=False):
         else :
             r, v, b = ConvertToRVB(couleur)
         bmp.SetRGB((0, 0, largeur, hauteur), r, v, b)
-        # Dessin du carré intérieur
+        # Dessin du carrÃ© intÃ©rieur
         r, v, b = ConvertToRVB(couleur)
         bmp.SetRGB((1, 1, largeur-2, hauteur-2), r, v, b)
     else :
@@ -118,7 +118,7 @@ def CreationCarreCouleur(largeur, hauteur, couleur=None, contour=False):
         else :
             r, v, b = ConvertToRVB(couleur)
         bmp.SetRGBRect((0, 0, largeur, hauteur), r, v, b)
-        # Dessin du carré intérieur
+        # Dessin du carrÃ© intÃ©rieur
         r, v, b = ConvertToRVB(couleur)
         bmp.SetRGBRect((1, 1, largeur-2, hauteur-2), r, v, b)
     return bmp.ConvertToBitmap()

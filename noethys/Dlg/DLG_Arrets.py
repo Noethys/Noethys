@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -20,12 +20,12 @@ import GestionDB
 
 
 DICT_CATEGORIES = {
-    "bus" : {"singulier":_(u"arrêt de bus"), "pluriel":_(u"arrêts de bus"), "image":"Bus"},
-    "car" : {"singulier":_(u"arrêt de cars"), "pluriel":_(u"arrêts de cars"), "image":"Car"},
-    "navette" : {"singulier":_(u"arrêt de navettes"), "pluriel":_(u"arrêts de navettes"), "image":"Navette"},
-    "bateau" : {"singulier":_(u"arrêt maritime"), "pluriel":_(u"arrêts maritimes"), "image":"Bateau"},
-    "metro" : {"singulier":_(u"arrêt de métros"), "pluriel":_(u"arrêts de métro"), "image":"Metro"},
-    "pedibus" : {"singulier":_(u"arrêt de pédibus"), "pluriel":_(u"arrêts de pédibus"), "image":"Pedibus"},
+    "bus" : {"singulier":_(u"arrÃªt de bus"), "pluriel":_(u"arrÃªts de bus"), "image":"Bus"},
+    "car" : {"singulier":_(u"arrÃªt de cars"), "pluriel":_(u"arrÃªts de cars"), "image":"Car"},
+    "navette" : {"singulier":_(u"arrÃªt de navettes"), "pluriel":_(u"arrÃªts de navettes"), "image":"Navette"},
+    "bateau" : {"singulier":_(u"arrÃªt maritime"), "pluriel":_(u"arrÃªts maritimes"), "image":"Bateau"},
+    "metro" : {"singulier":_(u"arrÃªt de mÃ©tros"), "pluriel":_(u"arrÃªts de mÃ©tro"), "image":"Metro"},
+    "pedibus" : {"singulier":_(u"arrÃªt de pÃ©dibus"), "pluriel":_(u"arrÃªts de pÃ©dibus"), "image":"Pedibus"},
     }
 
 
@@ -81,7 +81,7 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.categorie = categorie
         
-        # Recherche les caractéristiques de la catégorie
+        # Recherche les caractÃ©ristiques de la catÃ©gorie
         self.categorieSingulier = DICT_CATEGORIES[self.categorie]["singulier"]
         self.categoriePluriel = DICT_CATEGORIES[self.categorie]["pluriel"]
         self.nomImage = DICT_CATEGORIES[self.categorie]["image"]
@@ -98,8 +98,8 @@ class Dialog(wx.Dialog):
         self.ctrl_ligne = CTRL_Choix_ligne(self, self.categorie)
         self.bouton_gestion = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
         
-        # Arrêts
-        self.staticbox_arrets_staticbox = wx.StaticBox(self, -1, _(u"Arrêts"))
+        # ArrÃªts
+        self.staticbox_arrets_staticbox = wx.StaticBox(self, -1, _(u"ArrÃªts"))
         self.ctrl_arrets = OL_Arrets.ListView(self, id=-1, categorie=self.categorie, IDligne=0, categorieSingulier=self.categorieSingulier, categoriePluriel=self.categoriePluriel, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_ANY))
@@ -125,26 +125,26 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonFermer, self.bouton_fermer)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonGestion, self.bouton_gestion)
         
-        # Init contrôle
+        # Init contrÃ´le
         self.OnChoixLigne(None)
 
     def __set_properties(self):
-        self.ctrl_ligne.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici une ligne")))
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un nouvel arrêt")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'arrêt sélectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'arrêt sélectionné dans la liste")))
-        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter l'arrêt sélectionné dans la liste")))
-        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre l'arrêt sélectionné dans la liste")))
+        self.ctrl_ligne.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici une ligne")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er un nouvel arrÃªt")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'arrÃªt sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'arrÃªt sÃ©lectionnÃ© dans la liste")))
+        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter l'arrÃªt sÃ©lectionnÃ© dans la liste")))
+        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre l'arrÃªt sÃ©lectionnÃ© dans la liste")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
-        self.bouton_gestion.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des lignes")))
+        self.bouton_gestion.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la gestion des lignes")))
         self.SetMinSize((650, 700))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
         
-        # Catégorie
+        # CatÃ©gorie
         staticbox_ligne = wx.StaticBoxSizer(self.staticbox_ligne_staticbox, wx.VERTICAL)
         grid_sizer_ligne = wx.FlexGridSizer(rows=1, cols=3, vgap=5, hgap=5)
         grid_sizer_ligne.Add(self.label_ligne, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -154,7 +154,7 @@ class Dialog(wx.Dialog):
         staticbox_ligne.Add(grid_sizer_ligne, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(staticbox_ligne, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
-        # Modèles
+        # ModÃ¨les
         staticbox_arrets = wx.StaticBoxSizer(self.staticbox_arrets_staticbox, wx.VERTICAL)
         grid_sizer_arrets = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_arrets.Add(self.ctrl_arrets, 1, wx.EXPAND, 0)

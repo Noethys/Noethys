@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -87,7 +87,7 @@ class CTRL_Categorie(wx.Choice):
         self.SetItems(listeItems)
     
     def GetListeDonnees(self):
-        listeItems = [ _(u"<< Toutes les catégories >>"),]
+        listeItems = [ _(u"<< Toutes les catÃ©gories >>"),]
         self.dictDonnees = { 0 : {"ID":None}, }
         index = 1
         for IDcategorie, label in UTILS_Historique.CATEGORIES.items() :
@@ -205,7 +205,7 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = _(u"Vous pouvez ici consulter l'historique des actions effectuées dans Noethys.")
+        intro = _(u"Vous pouvez ici consulter l'historique des actions effectuÃ©es dans Noethys.")
         titre = _(u"Historique")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Historique.png")
         
@@ -223,7 +223,7 @@ class Dialog(wx.Dialog):
         self.ctrl_famille = CTRL_Famille(self)
         self.label_individu = wx.StaticText(self, -1, _(u"Individu :"))
         self.ctrl_individu = CTRL_Individu(self)
-        self.label_categorie = wx.StaticText(self, -1, _(u"Catégorie :"))
+        self.label_categorie = wx.StaticText(self, -1, _(u"CatÃ©gorie :"))
         self.ctrl_categorie = CTRL_Categorie(self)
         
         if IDutilisateur != None : 

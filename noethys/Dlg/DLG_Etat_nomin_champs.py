@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -56,9 +56,9 @@ class Dialog(wx.Dialog):
         self.listeSelections = listeSelections
         
         # Intro
-        self.label_intro = wx.StaticText(self, -1, _(u"Cochez les champs à insérer dans votre état :"))
+        self.label_intro = wx.StaticText(self, -1, _(u"Cochez les champs Ã  insÃ©rer dans votre Ã©tat :"))
         
-        # Données
+        # DonnÃ©es
         self.ctrl_donnees = OL_Etat_nomin_champs.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_donnees.SetParametres(dateMin=dateMin, dateMax=dateMax, listeActivites=listeActivites, listeSelections=listeSelections)
         self.ctrl_donnees.MAJ() 
@@ -69,7 +69,7 @@ class Dialog(wx.Dialog):
 
         self.hyper_select = Hyperlien(self, label=_(u"Tout cocher"), infobulle=_(u"Cliquez ici pour tout cocher"), URL="tout")
         self.label_separation = wx.StaticText(self, -1, u"|")
-        self.hyper_deselect = Hyperlien(self, label=_(u"Tout décocher"), infobulle=_(u"Cliquez ici pour tout décocher"), URL="rien")
+        self.hyper_deselect = Hyperlien(self, label=_(u"Tout dÃ©cocher"), infobulle=_(u"Cliquez ici pour tout dÃ©cocher"), URL="rien")
 
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
@@ -86,10 +86,10 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Sélection des champs"))
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un champ personnalisé")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le champ personnalisé sélectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le champ personnalisé sélectionné dans la iste")))
+        self.SetTitle(_(u"SÃ©lection des champs"))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un champ personnalisÃ©")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le champ personnalisÃ© sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le champ personnalisÃ© sÃ©lectionnÃ© dans la iste")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -161,7 +161,7 @@ class Dialog(wx.Dialog):
         self.ctrl_donnees.Supprimer(None)
     
     def GetCodesChamps(self):
-        """ Retourne les codes des champs cochés """
+        """ Retourne les codes des champs cochÃ©s """
         return self.ctrl_donnees.GetCodesCoches() 
     
     

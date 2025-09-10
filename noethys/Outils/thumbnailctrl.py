@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 
 # THUMBNAILCTRL Control wxPython IMPLEMENTATION
 # Python Code By:
@@ -1188,8 +1188,8 @@ class ScrolledThumbnail(wx.ScrolledWindow):
         self._tWidth = width 
         self._tHeight = height
         self._tBorder = border
-        self.SetScrollRate((self._tWidth + self._tBorder)/4,
-                           (self._tHeight + self._tBorder)/4)
+        self.SetScrollRate(int((self._tWidth + self._tBorder)/4),
+                           int((self._tHeight + self._tBorder)/4))
         self.SetSizeHints(self._tWidth + self._tBorder*2 + 16,
                           self._tHeight + self._tBorder*2 + 8)
 
@@ -1717,13 +1717,13 @@ class ScrolledThumbnail(wx.ScrolledWindow):
             factor = 1.5
             img = self._imageHandler.HighlightImage(img.ConvertToImage(), factor).ConvertToBitmap()
         
-        imgRect = wx.Rect(x + (self._tWidth - img.GetWidth())/2,
-                          y + (self._tHeight - img.GetHeight())/2,
-                          img.GetWidth(), img.GetHeight())
+        imgRect = wx.Rect(int(x + (self._tWidth - img.GetWidth())/2),
+                          int(y + (self._tHeight - img.GetHeight())/2),
+                          int(img.GetWidth()), int(img.GetHeight()))
 
         if not thumb._alpha:
             dc.Blit(imgRect.x+5, imgRect.y+5, imgRect.width, imgRect.height, self.shadow, 500-ww, 500-hh)        
-        dc.DrawBitmap(img, imgRect.x, imgRect.y, True)
+        dc.DrawBitmap(img, int(imgRect.x), int(imgRect.y), True)
 
         colour = self.GetSelectionColour()
         selected = self.IsSelected(index)
@@ -1755,14 +1755,14 @@ class ScrolledThumbnail(wx.ScrolledWindow):
             else:
                 ty = y + hh + (self._tHeight-hh)/2 + (self._tTextHeight - sh)/2 + 3
 
-            dc.DrawText(mycaption, tx, ty)
+            dc.DrawText(mycaption, int(tx), int(ty))
             
         # outline
         if self._tOutline != THUMB_OUTLINE_NONE and (self._tOutlineNotSelected or self.IsSelected(index)):
 
             dotrect = wx.Rect()
-            dotrect.x = x - 2
-            dotrect.y = y - 2
+            dotrect.x = int(x) - 2
+            dotrect.y = int(y) - 2
             dotrect.width = bmp.GetWidth() - self._tBorder + 4
             dotrect.height = bmp.GetHeight() - self._tBorder + 4
         
@@ -1850,7 +1850,7 @@ class ScrolledThumbnail(wx.ScrolledWindow):
             tw = self._tWidth + self._tBorder
             th = self._tHeight + self.GetCaptionHeight(row) + self._tBorder
             # visible?
-            if not paintRect.Intersects(wx.Rect(tx, ty, tw, th)):
+            if not paintRect.Intersects(wx.Rect(int(tx), int(ty), int(tw), int(th))):
                 continue
 
             if 'phoenix' in wx.PlatformInfo:
@@ -1859,9 +1859,9 @@ class ScrolledThumbnail(wx.ScrolledWindow):
                 thmb = wx.EmptyBitmap(tw, th)
 
             self.DrawThumbnail(thmb, self._items[ii], ii)
-            dc.DrawBitmap(thmb, tx, ty)
+            dc.DrawBitmap(thmb, int(tx), int(ty))
   
-        rect = wx.Rect(xwhite, self._tBorder/2,
+        rect = wx.Rect(int(xwhite), int(self._tBorder/2),
                        self._cols*(self._tWidth + self._tBorder),
                        self._rows*(self._tHeight + self._tBorder) + \
                        self.GetCaptionHeight(0, self._rows))

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -92,7 +92,7 @@ class ToolBar(wx.ToolBar):
         self.AddSeparator()
         self.AddLabelTool(ID_OUTIL_AUJOURDHUI, _(u"Aujourd'hui"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Jour.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Aujourd'hui"), "")
         self.AddLabelTool(ID_OUTIL_CHERCHER, _(u"Chercher"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Calendrier_zoom.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Chercher une date"), "")
-        self.AddLabelTool(ID_OUTIL_APERCU, _(u"Aperçu"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Apercu.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Aperçu avant impression"), "")
+        self.AddLabelTool(ID_OUTIL_APERCU, _(u"AperÃ§u"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Apercu.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"AperÃ§u avant impression"), "")
 
         # Binds
         self.Bind(wx.EVT_TOOL, self.OnAffichageJour, id=ID_OUTIL_JOUR)
@@ -174,8 +174,8 @@ class ToolBar(wx.ToolBar):
         self.parent.ctrl_planning.SetDate(newDate)
 
     def OnApercu(self, event):
-        """ Aperçu avant impression """
-        # Demande à l'utilisateur la mise en page
+        """ AperÃ§u avant impression """
+        # Demande Ã  l'utilisateur la mise en page
         reglages = self.parent.reglagesImpression
         
         data = wx.PrintData()
@@ -215,19 +215,19 @@ class ToolBar(wx.ToolBar):
         preview = wx.PrintPreview(rpt1, rpt2, data)
 ##        preview.SetZoom( 100 )
 ##        if preview.Ok():
-##            frame = wx.PreviewFrame(preview, None, _(u"Aperçu avant impression"), size=wx.Size( 700, 500 ) )
+##            frame = wx.PreviewFrame(preview, None, _(u"AperÃ§u avant impression"), size=wx.Size( 700, 500 ) )
 ##            frame.Initialize()
 ##            frame.Show( True )
         
 ##        from Utils import UTILS_Printer
-##        preview_window = UTILS_Printer.PreviewFrame(preview, None, _(u"Aperçu avant impression"), reglages["orientation"])
+##        preview_window = UTILS_Printer.PreviewFrame(preview, None, _(u"AperÃ§u avant impression"), reglages["orientation"])
 ##        preview_window.Initialize()
 ##        preview_window.MakeModal(False)
 ##        preview_window.Show(True)
         
         preview.SetZoom(100)
         frame = wx.GetApp().GetTopWindow() 
-        preview_window = wx.PreviewFrame(preview, None, _(u"Aperçu avant impression"))
+        preview_window = wx.PreviewFrame(preview, None, _(u"AperÃ§u avant impression"))
         preview_window.Initialize()
         preview_window.MakeModal(False)
         preview_window.SetPosition(frame.GetPosition())
@@ -241,7 +241,7 @@ class DLG_Recherche_date(wx.Dialog):
     def __init__(self, parent):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
-        # Contrôles
+        # ContrÃ´les
         if 'phoenix' in wx.PlatformInfo:
             self._date = wx.adv.DatePickerCtrl(self, style=wx.adv.DP_DROPDOWN | wx.adv.DP_SHOWCENTURY )
         else :
@@ -251,7 +251,7 @@ class DLG_Recherche_date(wx.Dialog):
         # Layout
         szAll = wx.BoxSizer( wx.VERTICAL )
         szDate = wx.BoxSizer( wx.HORIZONTAL )
-        szDate.Add( wx.StaticText( self, label=_(u"Sélectionnez une date :")), wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5 )
+        szDate.Add( wx.StaticText( self, label=_(u"SÃ©lectionnez une date :")), wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5 )
         szDate.Add( self._date, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5 )
         btSizer = wx.StdDialogButtonSizer()
         btSizer.Add( btOk, 0, wx.RIGHT, 5 )
@@ -268,7 +268,7 @@ class DLG_Recherche_date(wx.Dialog):
 # --------------------------------------------------------------------------------------------------------------------------
 
 class CTRL_Planning(wx.Panel):
-    """ Contrôle Scheduler """
+    """ ContrÃ´le Scheduler """
     def __init__(self, parent, IDindividu=None):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
@@ -277,10 +277,10 @@ class CTRL_Planning(wx.Panel):
         # Barre d'outils
         self.barre_outils = ToolBar(self)
         
-        # Insertion des vacances et jours fériés dans le schedule
+        # Insertion des vacances et jours fÃ©riÃ©s dans le schedule
         self.joursSpeciaux = UTILS_Schedule.JoursSpeciaux()
         
-        # Réglage de l'impression
+        # RÃ©glage de l'impression
         self.reglagesImpression = {
             "orientation" : wx.PORTRAIT,
             "papier" : wx.PAPER_A4,            
@@ -290,7 +290,7 @@ class CTRL_Planning(wx.Panel):
             "marge_droite" : 30,
             }
         
-        # Création du scheduler
+        # CrÃ©ation du scheduler
         self.ctrl_planning = wxScheduler.wxScheduler(self, joursSpeciaux=self.joursSpeciaux)
         self.ctrl_planning.SetResizable(True)
         self.ctrl_planning.SetShowWorkHour(False)
@@ -357,7 +357,7 @@ class CTRL_Planning(wx.Panel):
             self.Modifier(schedule=schedule)
     
     def Ajouter(self, date=None):
-        """ Création d'un transport """
+        """ CrÃ©ation d'un transport """
         datedt = ConvertDateWXenDT(date)
         dlg = DLG_Saisie_transport.Dialog(self, IDtransport=None, IDindividu=self.IDindividu)
         dlg.SetDateHeure(datedt)
@@ -369,7 +369,7 @@ class CTRL_Planning(wx.Panel):
         dlg.Destroy()
 
     def AjouterLot(self):
-        """ Création d'un lot de transports """
+        """ CrÃ©ation d'un lot de transports """
         dlg = DLG_Saisie_transport.Dialog_multiple(self, IDindividu=self.IDindividu)
         if dlg.ShowModal() == wx.ID_OK:
 ##            listeDictDonnees = dlg.GetListeDictDonnees()
@@ -417,8 +417,8 @@ class CTRL_Planning(wx.Panel):
         self.Importation()
         
     def Importation(self):
-        """ Importation des transports depuis la base de données """
-        # Récupération des champs de la table
+        """ Importation des transports depuis la base de donnÃ©es """
+        # RÃ©cupÃ©ration des champs de la table
         listeChamps = []
         for nom, type, info in DICT_TABLES["transports"] :
             listeChamps.append(nom)
@@ -432,7 +432,7 @@ class CTRL_Planning(wx.Panel):
         listeDonnees = DB.ResultatReq()
         DB.Close()
         
-        # Stockage des données sous forme de dictionnaires dans une liste
+        # Stockage des donnÃ©es sous forme de dictionnaires dans une liste
         listeTransports = []
         for donnees in listeDonnees :
             dictTemp = {}
@@ -442,17 +442,17 @@ class CTRL_Planning(wx.Panel):
                 index += 1
             listeTransports.append(dictTemp)
         
-        # Récupération des données tierces
+        # RÃ©cupÃ©ration des donnÃ©es tierces
         modLocalisation = UTILS_Transports.AnalyseLocalisation() 
         
-        # Création des schedules
+        # CrÃ©ation des schedules
         for dictTransport in listeTransports :
             dictTransport = self.AnalyseTransport(dictTransport, modLocalisation)
             self.CreationSchedule(dictTransport) 
     
     def AnalyseTransport(self, dictTransport={}, modLocalisation=None):
-        """ Analyse les données et les convertit en donnée texte pour le futur schedule """        
-        # catégorie
+        """ Analyse les donnÃ©es et les convertit en donnÃ©e texte pour le futur schedule """        
+        # catÃ©gorie
         categorie = dictTransport["categorie"]
         dictTransport["labelCategorie"] = DICT_CATEGORIES[categorie]["label"]
         
@@ -463,13 +463,13 @@ class CTRL_Planning(wx.Panel):
         depart_nom = modLocalisation.Analyse(dictTransport["depart_IDarret"], dictTransport["depart_IDlieu"], dictTransport["depart_localisation"])
         arrivee_nom = modLocalisation.Analyse(dictTransport["arrivee_IDarret"], dictTransport["arrivee_IDlieu"], dictTransport["arrivee_localisation"])
         
-        # Création du label du schedule
+        # CrÃ©ation du label du schedule
         dictTransport["label"] = u"%s > %s" % (depart_nom, arrivee_nom)
         
         return dictTransport
         
     def CreationSchedule(self, dictDonnees={}):
-        """ Création d'un schedule """
+        """ CrÃ©ation d'un schedule """
         schedule = wxScheduler.wxSchedule()
         schedule.IDtransport = dictDonnees["IDtransport"]
         self.RemplitSchedule(dictDonnees, schedule)
@@ -482,7 +482,7 @@ class CTRL_Planning(wx.Panel):
         # Icone
         schedule.icons = [wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s.png" % dictDonnees["image"]), wx.BITMAP_TYPE_ANY),]
         
-        # Date et heure de début
+        # Date et heure de dÃ©but
         schedule.start = ConvertDateDTenWX(date=dictDonnees["depart_date"], heure=dictDonnees["depart_heure"])
         
         # Date et heure de fin
@@ -508,7 +508,7 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = _(u"Vous pouvez consulter ici le planning complet des transports enregistrés pour un individu. Pour saisir un transport, double-cliquez sur le jour et l'heure souhaités dans ce planning. Double-cliquez sur un transport pour le modifier ou utilisez le bouton droit de la souris pour accéder au menu contextuel.")
+        intro = _(u"Vous pouvez consulter ici le planning complet des transports enregistrÃ©s pour un individu. Pour saisir un transport, double-cliquez sur le jour et l'heure souhaitÃ©s dans ce planning. Double-cliquez sur un transport pour le modifier ou utilisez le bouton droit de la souris pour accÃ©der au menu contextuel.")
         titre = _(u"Planning des transports")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Transport.png")

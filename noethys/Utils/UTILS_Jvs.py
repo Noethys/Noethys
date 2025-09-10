@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-21 Ivan LUCAS
@@ -23,10 +23,10 @@ import zipfile, calendar, datetime
 
 
 def GetXML(dictDonnees={}):
-    """ Génération du fichier PES Recette ORMC """
+    """ GÃ©nÃ©ration du fichier PES Recette ORMC """
     doc = Document()
 
-    # Génération du document XML
+    # GÃ©nÃ©ration du document XML
     racine = doc.createElement("n:PES_Aller")
     racine.setAttribute("xsi:schemaLocation", "http://www.minefi.gouv.fr/cp/helios/pes_v2/recette/r0/aller")
     racine.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
@@ -81,22 +81,22 @@ def GetXML(dictDonnees={}):
     # IdPost.setAttribute("V", dictDonnees["id_poste"][:7])
     # EnTetePES.appendChild(IdPost)
 
-    # SIRET de la collectivité facultatif
+    # SIRET de la collectivitÃ© facultatif
     IdColl = doc.createElement("IdColl")
     IdColl.setAttribute("V", dictDonnees["id_collectivite"][:14])
     EnTetePES.appendChild(IdColl)
 
-    # Code collectivité
+    # Code collectivitÃ©
     CodCol = doc.createElement("CodCol")
     CodCol.setAttribute("V", dictDonnees["code_collectivite"][:3])
     EnTetePES.appendChild(CodCol)
 
-    # Code budget de la collectivité
+    # Code budget de la collectivitÃ©
     CodBud = doc.createElement("CodBud")
     CodBud.setAttribute("V", dictDonnees["code_budget"][:10])
     EnTetePES.appendChild(CodBud)
 
-    # Nom de la collectivité
+    # Nom de la collectivitÃ©
     LibelleColBud = doc.createElement("LibelleColBud")
     LibelleColBud.setAttribute("V", dictDonnees["nom_collectivite"])
     EnTetePES.appendChild(LibelleColBud)
@@ -129,7 +129,7 @@ def GetXML(dictDonnees={}):
     Exer.setAttribute("V", dictDonnees["exercice"][:4])
     BlocBordereau.appendChild(Exer)
 
-    # Facultatif. Si non renseigné, le bordereau est créé dans le Brouillard
+    # Facultatif. Si non renseignÃ©, le bordereau est crÃ©Ã© dans le Brouillard
     if dictDonnees["id_bordereau"]:
         IdBord = doc.createElement("IdBord")
         IdBord.setAttribute("V", dictDonnees["id_bordereau"][:7])
@@ -140,7 +140,7 @@ def GetXML(dictDonnees={}):
     DteBordEm.setAttribute("V", dictDonnees["date_emission"])
     BlocBordereau.appendChild(DteBordEm)
 
-    # 01=valeur par défaut. 02 pour annulation-réduction
+    # 01=valeur par dÃ©faut. 02 pour annulation-rÃ©duction
     TypBord = doc.createElement("TypBord")
     TypBord.setAttribute("V", "01")
     BlocBordereau.appendChild(TypBord)
@@ -165,7 +165,7 @@ def GetXML(dictDonnees={}):
     
     for dictPiece in dictDonnees["pieces"] :
         
-        # Pièce
+        # PiÃ¨ce
         Piece = doc.createElement("Piece")
         Bordereau.appendChild(Piece)
     
@@ -176,12 +176,12 @@ def GetXML(dictDonnees={}):
         IdPce.setAttribute("V", dictPiece["id_piece"][:8])
         BlocPiece.appendChild(IdPce)
 
-        # 01=valeur par défaut. 02 pour annulation-réduction.
+        # 01=valeur par dÃ©faut. 02 pour annulation-rÃ©duction.
         TypPce = doc.createElement("TypPce")
         TypPce.setAttribute("V", "01")
         BlocPiece.appendChild(TypPce)
 
-        # 01=valeur par défaut. 06 pour annulation-réduction
+        # 01=valeur par dÃ©faut. 06 pour annulation-rÃ©duction
         NatPce = doc.createElement("NatPce")
         NatPce.setAttribute("V", "01")
         BlocPiece.appendChild(NatPce)
@@ -257,7 +257,7 @@ def GetXML(dictDonnees={}):
         # BlocPiece.appendChild(NomService)
 
 
-        # Ligne de pièce
+        # Ligne de piÃ¨ce
         LigneDePiece = doc.createElement("LigneDePiece")
         Piece.appendChild(LigneDePiece)
 
@@ -327,7 +327,7 @@ def GetXML(dictDonnees={}):
 
         num_ordre_ligne += 1
 
-        # Info prélèvement SEPA
+        # Info prÃ©lÃ¨vement SEPA
         if dictPiece["prelevement"] == 1 :
             
             InfoPrelevementSEPA = doc.createElement("InfoPrelevementSEPA")
@@ -521,7 +521,7 @@ def EnregistrerXML(doc=None, nomFichier=""):
     """ Enregistre le fichier XML """
     f = open(nomFichier, "w")
     try:
-        f.write(doc.toprettyxml(indent="  ", encoding="ISO-8859-1"))
+        f.write(doc.toprettyxml(indent="  ", encoding="UTF-8"))
     finally:
         f.close()
     
@@ -560,11 +560,11 @@ if __name__ == "__main__":
             "prelevement_rum" : "123",
             "prelevement_bic" : "TESTFR2B",
             "prelevement_iban" : "AB0030001007941234567890100",
-            "prelevement_titulaire" : _(u"DUPOND Gérard"),
+            "prelevement_titulaire" : _(u"DUPOND GÃ©rard"),
             "prelevement_libelle" : "prelevement_libelle",
             "titulaire_civilite" : "Mr.",
             "titulaire_nom" : _(u"DUPOND"),
-            "titulaire_prenom" : _(u"Gérard"),
+            "titulaire_prenom" : _(u"GÃ©rard"),
             "titulaire_rue" : _(u"10 rue des oiseaux"),
             "titulaire_cp" : u"29870",
             "titulaire_ville" : _(u"LANNILIS"),
@@ -579,5 +579,5 @@ if __name__ == "__main__":
         }
 
     doc = GetXML(dictDonnees) 
-    xml = doc.toprettyxml(indent="  ", encoding="ISO-8859-1")
+    xml = doc.toprettyxml(indent="  ", encoding="UTF-8")
     print(xml)

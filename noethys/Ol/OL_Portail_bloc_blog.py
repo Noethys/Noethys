@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -36,7 +36,7 @@ class Track(object):
         self.texte_xml = donnees["texte_xml"]
         self.texte_html = donnees["texte_html"]
 
-        # Période
+        # PÃ©riode
         if isinstance(self.date_debut, str) or isinstance(self.date_debut, six.text_type) :
             self.date_debut = datetime.datetime.strptime(self.date_debut, "%Y-%m-%d %H:%M:%S")
 
@@ -69,7 +69,7 @@ class ListView(FastObjectListView):
         self.MAJ()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeListeView = []
         index = 0
         for item in self.listeDonnees :
@@ -86,7 +86,7 @@ class ListView(FastObjectListView):
 
         def FormateDate(date):
             if date == None :
-                return _(u"Non définie")
+                return _(u"Non dÃ©finie")
             else :
                 return datetime.datetime.strftime(date, "%d/%m/%Y - %Hh%M")
 
@@ -107,7 +107,7 @@ class ListView(FastObjectListView):
     def MAJ(self, index=None):
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if index != None :
             self.SelectObject(self.GetObjectAt(index), deselectOthers=True, ensureVisible=True)
         self._ResizeSpaceFillingColumns()
@@ -122,7 +122,7 @@ class ListView(FastObjectListView):
         else:
             noSelection = False
 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ajouter
@@ -154,7 +154,7 @@ class ListView(FastObjectListView):
         menuPop.Destroy()
 
     def GetIDprovisoire(self):
-        """ Création d'un ID négatif provisoire """
+        """ CrÃ©ation d'un ID nÃ©gatif provisoire """
         self.newID -= 1
         return int(self.newID)
 
@@ -169,7 +169,7 @@ class ListView(FastObjectListView):
         
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun article à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun article Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -184,7 +184,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun article à supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun article Ã  supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -206,7 +206,7 @@ class DLG_Saisie_element(wx.Dialog):
         self.dictDonnees = {}
 
         # Titre
-        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralités"))
+        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"GÃ©nÃ©ralitÃ©s"))
         self.label_titre = wx.StaticText(self, -1, _(u"Titre de l'article :"))
         self.ctrl_titre = wx.TextCtrl(self, -1, "")
 
@@ -243,7 +243,7 @@ class DLG_Saisie_element(wx.Dialog):
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=0, hgap=10)
 
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         staticbox_generalites = wx.StaticBoxSizer(self.staticbox_generalites_staticbox, wx.VERTICAL)
         grid_sizer_generalites = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=10)
         grid_sizer_generalites.Add(self.label_titre, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -295,7 +295,7 @@ class DLG_Saisie_element(wx.Dialog):
             return
 
         if self.ctrl_date_debut.Validation() == False or self.ctrl_date_debut.GetDate() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début de publication !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de dÃ©but de publication !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
@@ -306,7 +306,7 @@ class DLG_Saisie_element(wx.Dialog):
             return
 
         if self.ctrl_date_fin.GetDate() == None :
-            dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas vouloir saisir de date de fin de publication ?"), _(u"Confirmation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Etes-vous sÃ»r de ne pas vouloir saisir de date de fin de publication ?"), _(u"Confirmation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -319,7 +319,7 @@ class DLG_Saisie_element(wx.Dialog):
             self.ctrl_editeur.SetFocus()
             return
 
-        # Fermeture fenêtre
+        # Fermeture fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def GetDonnees(self):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -31,7 +31,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -52,7 +52,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT IDregime, nom
@@ -87,7 +87,7 @@ class ListView(FastObjectListView):
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucun rÈgime social"))
+        self.SetEmptyListMsg(_(u"Aucun r√©gime social"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -101,7 +101,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -118,7 +118,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDregime
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -149,7 +149,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -167,18 +167,18 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des rÈgimes sociaux"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des r√©gimes sociaux"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des rÈgimes sociaux"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des r√©gimes sociaux"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
 
     def Ajouter(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_regimes", "creer") == False : return
-        dlg = wx.TextEntryDialog(self, _(u"Saisissez le nom du nouveau rÈgime social :"), _(u"Saisie d'un nouveau rÈgime"), u"")
+        dlg = wx.TextEntryDialog(self, _(u"Saisissez le nom du nouveau r√©gime social :"), _(u"Saisie d'un nouveau r√©gime"), u"")
         if dlg.ShowModal() == wx.ID_OK:
             nom = dlg.GetValue()
             if nom == "":
@@ -197,13 +197,13 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_regimes", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun rÈgime ‡ modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun r√©gime √† modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDregime = self.Selection()[0].IDregime
         nom = self.Selection()[0].nom
-        dlg = wx.TextEntryDialog(self, _(u"Modifiez le nom du rÈgime social :"), _(u"Modification d'un rÈgime social"), nom)
+        dlg = wx.TextEntryDialog(self, _(u"Modifiez le nom du r√©gime social :"), _(u"Modification d'un r√©gime social"), nom)
         if dlg.ShowModal() == wx.ID_OK:
             nom = dlg.GetValue()
             if nom == "":
@@ -222,13 +222,13 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_regimes", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun rÈgime social ‡ supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun r√©gime social √† supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDregime = self.Selection()[0].IDregime
         
-        # VÈrifie qu'une caisse n'est pas dÈj‡ attribuÈe
+        # V√©rifie qu'une caisse n'est pas d√©j√† attribu√©e
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDcaisse)
         FROM caisses 
@@ -238,13 +238,13 @@ class ListView(FastObjectListView):
         nbreCaisses = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreCaisses > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce rÈgime social a dÈj‡ ÈtÈ attribuÈ ‡ %d caisse(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreCaisses, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce r√©gime social a d√©j√† √©t√© attribu√© √† %d caisse(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreCaisses, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         # Confirmation
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce rÈgime social ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce r√©gime social ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("regimes", "IDregime", IDregime)
@@ -261,7 +261,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(_(u"Rechercher un rÈgime social..."))
+        self.SetDescriptiveText(_(u"Rechercher un r√©gime social..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

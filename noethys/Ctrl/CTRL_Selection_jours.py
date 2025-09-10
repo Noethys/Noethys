@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -109,7 +109,7 @@ class CTRL_Jours(wx.Panel):
 
         self.hyper_tout = Hyperlien(self, label=_(u"Tout"), infobulle=_(u"Cliquez ici pour tout cocher"), URL="tout")
         self.label_separation = wx.StaticText(self, -1, u"|")
-        self.hyper_rien = Hyperlien(self, label=_(u"Rien"), infobulle=_(u"Cliquez ici pour tout décocher"), URL="rien")
+        self.hyper_rien = Hyperlien(self, label=_(u"Rien"), infobulle=_(u"Cliquez ici pour tout dÃ©cocher"), URL="rien")
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=10, vgap=0, hgap=0)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -194,7 +194,7 @@ class CTRL_Jours(wx.Panel):
 
         self.hyper_tout = Hyperlien(self, label=_(u"Tout"), infobulle=_(u"Cliquez ici pour tout cocher"), URL="tout")
         self.label_separation = wx.StaticText(self, -1, u"|")
-        self.hyper_rien = Hyperlien(self, label=_(u"Rien"), infobulle=_(u"Cliquez ici pour tout décocher"), URL="rien")
+        self.hyper_rien = Hyperlien(self, label=_(u"Rien"), infobulle=_(u"Cliquez ici pour tout dÃ©cocher"), URL="rien")
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=10, vgap=0, hgap=0)
@@ -255,17 +255,17 @@ class Page_dates(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.dictDonnees = {}
 
-        self.radio_date = wx.RadioButton(self, -1, _(u"Copier le schéma de la date suivante :"), style=wx.RB_GROUP)
+        self.radio_date = wx.RadioButton(self, -1, _(u"Copier le schÃ©ma de la date suivante :"), style=wx.RB_GROUP)
         self.ctrl_date = CTRL_Saisie_date.Date2(self)
         self.check_ouvertures = wx.CheckBox(self, -1, _(u"Ouvertures"))
         self.check_places = wx.CheckBox(self, -1, _(u"Nbre de places max."))
-        self.check_evenements = wx.CheckBox(self, -1, _(u"Evènements"))
+        self.check_evenements = wx.CheckBox(self, -1, _(u"EvÃ¨nements"))
 
-        self.radio_calendrier = wx.RadioButton(self, -1, _(u"Copier le schéma suivant :"))
+        self.radio_calendrier = wx.RadioButton(self, -1, _(u"Copier le schÃ©ma suivant :"))
         self.ctrl_calendrier = Calendrier(self, IDactivite=IDactivite)
         self.ctrl_calendrier.SetMinSize((20, 20))
 
-        self.radio_renitialisation = wx.RadioButton(self, -1, _(u"Réinitialiser la date"))
+        self.radio_renitialisation = wx.RadioButton(self, -1, _(u"RÃ©initialiser la date"))
 
         if afficheElements == False:
             self.check_ouvertures.Show(False)
@@ -289,12 +289,12 @@ class Page_dates(wx.Panel):
         self.ctrl_calendrier.MAJ(modele=True)
 
     def __set_properties(self):
-        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Sélectionnez une date modèle. Les éléments de cette date seront copiés vers les dates cibles")))
-        self.radio_date.SetToolTip(wx.ToolTip(_(u"Sélectionnez ce mode pour copier les éléments d'une date donnée")))
-        self.radio_renitialisation.SetToolTip(wx.ToolTip(_(u"Sélectionnez ce mode pour supprimer les ouvertures, évènements et remplissages des dates")))
+        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une date modÃ¨le. Les Ã©lÃ©ments de cette date seront copiÃ©s vers les dates cibles")))
+        self.radio_date.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ce mode pour copier les Ã©lÃ©ments d'une date donnÃ©e")))
+        self.radio_renitialisation.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ce mode pour supprimer les ouvertures, Ã©vÃ¨nements et remplissages des dates")))
         self.check_ouvertures.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour modifier les ouvertures")))
         self.check_places.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour modifier les nbres de places max. (remplissage)")))
-        self.check_evenements.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour modifier les évènements (uniquement pour les unités de type évènementielles")))
+        self.check_evenements.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour modifier les Ã©vÃ¨nements (uniquement pour les unitÃ©s de type Ã©vÃ¨nementielles")))
 
     def __do_layout(self):
         sizer_base = wx.BoxSizer(wx.VERTICAL)
@@ -315,7 +315,7 @@ class Page_dates(wx.Panel):
         grid_sizer_base.Add(self.radio_calendrier, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_base.Add(self.ctrl_calendrier, 0, wx.EXPAND | wx.LEFT, 17)
 
-        # Réinit
+        # RÃ©init
         grid_sizer_base.Add(self.radio_renitialisation, 1, wx.EXPAND, 0)
 
         grid_sizer_base.AddGrowableCol(0)
@@ -335,15 +335,15 @@ class Page_dates(wx.Panel):
     def Validation(self, dictDonnees={}):
         self.dictDonnees = dictDonnees
 
-        # Vérification des données saisies
+        # VÃ©rification des donnÃ©es saisies
         if self.radio_date.GetValue() == True:
             self.dictDonnees["action"] = "date"
 
-            # Vérification de la date
+            # VÃ©rification de la date
             date = self.ctrl_date.GetDate()
             self.dictDonnees["date"] = date
             if date == None:
-                dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner une date modèle !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner une date modÃ¨le !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date.SetFocus()
@@ -356,7 +356,7 @@ class Page_dates(wx.Panel):
             if self.check_evenements.GetValue() == True: elements.append("evenements")
             self.dictDonnees["elements"] = elements
             if len(elements) == 0:
-                dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins un élément à modifier (ouvertures/places) !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins un Ã©lÃ©ment Ã  modifier (ouvertures/places) !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -389,7 +389,7 @@ class Page_evenements(wx.Panel):
         self.ctrl_calendrier = ctrl_calendrier
 
         # Ajouter
-        self.radio_ajouter = wx.RadioButton(self, -1, _(u"Ajouter les évènements suivants :"), style=wx.RB_GROUP)
+        self.radio_ajouter = wx.RadioButton(self, -1, _(u"Ajouter les Ã©vÃ¨nements suivants :"), style=wx.RB_GROUP)
 
         liste_colonnes = ["ID", "nom", "heure_debut", "heure_fin", "montant", "capacite_max"]
         self.ctrl_evenements = OL_Evenements.ListView(self, id=-1, IDactivite=IDactivite, liste_colonnes=liste_colonnes, style=wx.LC_REPORT | wx.SUNKEN_BORDER | wx.LC_SINGLE_SEL | wx.LC_HRULES | wx.LC_VRULES)
@@ -400,7 +400,7 @@ class Page_evenements(wx.Panel):
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
 
-        self.label_unite = wx.StaticText(self, -1, _(u"Unité :"))
+        self.label_unite = wx.StaticText(self, -1, _(u"UnitÃ© :"))
         self.ctrl_unite = CTRL_Unite(self, IDactivite=IDactivite)
         self.ctrl_unite.SetMinSize((50, -1))
 
@@ -409,10 +409,10 @@ class Page_evenements(wx.Panel):
         self.ctrl_groupe.SetMinSize((50, -1))
 
         # Supprimer
-        self.radio_supprimer_expression = wx.RadioButton(self, -1, _(u"Supprimer les évènements dont le nom contient l'expression suivante :"))
+        self.radio_supprimer_expression = wx.RadioButton(self, -1, _(u"Supprimer les Ã©vÃ¨nements dont le nom contient l'expression suivante :"))
         self.ctrl_expression = wx.TextCtrl(self, -1, "")
 
-        self.radio_supprimer_tout = wx.RadioButton(self, -1, _(u"Supprimer tous les évènements:"))
+        self.radio_supprimer_tout = wx.RadioButton(self, -1, _(u"Supprimer tous les Ã©vÃ¨nements:"))
 
         self.__set_properties()
         self.__do_layout()
@@ -428,14 +428,14 @@ class Page_evenements(wx.Panel):
         self.OnRadioAction(None)
 
     def __set_properties(self):
-        self.radio_ajouter.SetToolTip(wx.ToolTip(_(u"Sélectionnez ce mode pour ajouter un ou plusieurs évènements")))
-        self.radio_supprimer_expression.SetToolTip(wx.ToolTip(_(u"Sélectionnez ce mode pour supprimer un ou plusieurs évènements")))
-        self.radio_supprimer_tout.SetToolTip(wx.ToolTip(_(u"Sélectionnez ce mode pour supprimer tous les évènements")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'évènement sélectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'évènement sélectionné dans la liste")))
-        self.ctrl_unite.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'unité de consommations de type évènementiel qui sera associée aux évènements à créer")))
-        self.ctrl_groupe.SetToolTip(wx.ToolTip(_(u"Sélectionnez le groupe qui sera associé aux évènements à créer")))
-        self.ctrl_expression.SetToolTip(wx.ToolTip(_(u"Saisissez un mot ou une expression qui se trouve dans le ou les évènements à supprimer (Exemples : Patinoire, piscine...")))
+        self.radio_ajouter.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ce mode pour ajouter un ou plusieurs Ã©vÃ¨nements")))
+        self.radio_supprimer_expression.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ce mode pour supprimer un ou plusieurs Ã©vÃ¨nements")))
+        self.radio_supprimer_tout.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ce mode pour supprimer tous les Ã©vÃ¨nements")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'Ã©vÃ¨nement sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'Ã©vÃ¨nement sÃ©lectionnÃ© dans la liste")))
+        self.ctrl_unite.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez l'unitÃ© de consommations de type Ã©vÃ¨nementiel qui sera associÃ©e aux Ã©vÃ¨nements Ã  crÃ©er")))
+        self.ctrl_groupe.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le groupe qui sera associÃ© aux Ã©vÃ¨nements Ã  crÃ©er")))
+        self.ctrl_expression.SetToolTip(wx.ToolTip(_(u"Saisissez un mot ou une expression qui se trouve dans le ou les Ã©vÃ¨nements Ã  supprimer (Exemples : Patinoire, piscine...")))
 
     def __do_layout(self):
         sizer_base = wx.BoxSizer(wx.VERTICAL)
@@ -491,24 +491,24 @@ class Page_evenements(wx.Panel):
     def Validation(self, dictDonnees={}):
         self.dictDonnees = dictDonnees
 
-        # Vérification des données saisies
+        # VÃ©rification des donnÃ©es saisies
         if self.radio_ajouter.GetValue() == True:
             self.dictDonnees["action"] = "ajouter"
 
-            # Vérification de la date
+            # VÃ©rification de la date
             liste_evenements = self.ctrl_evenements.GetListeEvenements()
             self.dictDonnees["liste_evenements"] = liste_evenements
             if len(liste_evenements) == 0:
-                dlg = wx.MessageDialog(self, _(u"Vous devez saisir au moins un évènement à créer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez saisir au moins un Ã©vÃ¨nement Ã  crÃ©er !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
 
-            # Unité
+            # UnitÃ©
             IDunite = self.ctrl_unite.GetID()
             self.dictDonnees["IDunite"] = IDunite
             if IDunite == None:
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une unité de consommations à associer à ces évènements !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une unitÃ© de consommations Ã  associer Ã  ces Ã©vÃ¨nements !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_unite.SetFocus()
@@ -518,7 +518,7 @@ class Page_evenements(wx.Panel):
             IDgroupe = self.ctrl_groupe.GetID()
             self.dictDonnees["IDgroupe"] = IDgroupe
             if IDgroupe == None:
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un groupe à associer à ces évènements !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un groupe Ã  associer Ã  ces Ã©vÃ¨nements !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_groupe.SetFocus()
@@ -540,7 +540,7 @@ class Page_evenements(wx.Panel):
             if self.radio_supprimer_tout.GetValue() == True :
                 expression = None
 
-            # Recherche les évènements à supprimer
+            # Recherche les Ã©vÃ¨nements Ã  supprimer
             DB = GestionDB.DB()
             self.ctrl_calendrier.GetDictOuvertures(DB, dictDonnees["date_debut"], dictDonnees["date_fin"])
             self.ctrl_calendrier.GetDictRemplissage(DB, dictDonnees["date_debut"], dictDonnees["date_fin"])
@@ -578,7 +578,7 @@ class Page_evenements(wx.Panel):
                         dictNbreConso[IDevenement] = 0
                     dictNbreConso[IDevenement] += 1
 
-            # Demande les évènements à supprimer
+            # Demande les Ã©vÃ¨nements Ã  supprimer
             listeTemp = [(track.date, track.nom, track) for track in liste_tracks_trouves]
             listeTemp.sort()
             listeLabelsEvenements = []
@@ -591,12 +591,12 @@ class Page_evenements(wx.Panel):
             listeLabelsEvenements.sort()
 
             if len(listeLabelsEvenements) == 0:
-                dlg = wx.MessageDialog(self, _(u"Aucun évènement supprimable dont le nom contient cette expression n'a été trouvé !"), _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Aucun Ã©vÃ¨nement supprimable dont le nom contient cette expression n'a Ã©tÃ© trouvÃ© !"), _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
 
-            dlg = wx.MultiChoiceDialog(self, _(u"Voici la liste des évènements supprimables. Cochez ceux que vous souhaitez supprimer :"), _(u"Sélection des évènements"), listeLabelsEvenements)
+            dlg = wx.MultiChoiceDialog(self, _(u"Voici la liste des Ã©vÃ¨nements supprimables. Cochez ceux que vous souhaitez supprimer :"), _(u"SÃ©lection des Ã©vÃ¨nements"), listeLabelsEvenements)
             dlg.SetSelections(range(0, len(listeLabelsEvenements)))
             reponse = dlg.ShowModal()
             selections = dlg.GetSelections()
@@ -624,7 +624,7 @@ class Notebook(wx.Notebook):
 
         self.listePages = [
             (_(u"dates"), _(u"Dates"), _(u"Page_dates(self, afficheElements=afficheElements, IDactivite=IDactivite)"), "Calendrier_jour.png"),
-            (_(u"evenements"), _(u"Evènements"), _(u"Page_evenements(self, IDactivite=IDactivite, ctrl_calendrier=ctrl_calendrier)"), "Evenement.png"),
+            (_(u"evenements"), _(u"EvÃ¨nements"), _(u"Page_evenements(self, IDactivite=IDactivite, ctrl_calendrier=ctrl_calendrier)"), "Evenement.png"),
         ]
 
         # ImageList pour le NoteBook
@@ -635,7 +635,7 @@ class Notebook(wx.Notebook):
             index += 1
         self.AssignImageList(il)
 
-        # Création des pages
+        # CrÃ©ation des pages
         index = 0
         for codePage, labelPage, ctrlPage, imgPage in self.listePages:
             setattr(self, "page%s" % index, eval(ctrlPage))
@@ -675,14 +675,14 @@ class Dialog(wx.Dialog):
         self.box_action_staticbox = wx.StaticBox(self, -1, _(u"Action"))
         self.notebook = Notebook(self, afficheElements=afficheElements, IDactivite=IDactivite, ctrl_calendrier=ctrl_calendrier)
 
-        # Période
-        self.box_periode_staticbox = wx.StaticBox(self, -1, _(u"Période d'application"))
+        # PÃ©riode
+        self.box_periode_staticbox = wx.StaticBox(self, -1, _(u"PÃ©riode d'application"))
         
         self.label_date_debut = wx.StaticText(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_date_fin = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
-        self.ctrl_feries = wx.CheckBox(self, -1, _(u"Inclure les fériés"))
+        self.ctrl_feries = wx.CheckBox(self, -1, _(u"Inclure les fÃ©riÃ©s"))
 
         # Jours
         self.box_jours_staticbox = wx.StaticBox(self, -1, _(u"Jours"))
@@ -691,7 +691,7 @@ class Dialog(wx.Dialog):
         self.ctrl_scolaires = CTRL_Jours(self, "scolaire")
         self.label_vacances = wx.StaticText(self, -1, _(u"Vacances :"))
         self.ctrl_vacances = CTRL_Jours(self, "vacances")
-        self.label_semaines = wx.StaticText(self, -1, _(u"Fréquence :"))
+        self.label_semaines = wx.StaticText(self, -1, _(u"FrÃ©quence :"))
         self.ctrl_semaines = CTRL_Semaines(self)
 
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
@@ -708,10 +708,10 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie et suppression par lot"))
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Sélectionnez une date de début de période cible")))
-        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Sélectionnez une date de fin de période cible")))
-        self.ctrl_semaines.SetToolTip(wx.ToolTip(_(u"Sélectionnez une fréquence")))
-        self.ctrl_feries.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour modifier également les jours fériés")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une date de dÃ©but de pÃ©riode cible")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une date de fin de pÃ©riode cible")))
+        self.ctrl_semaines.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une frÃ©quence")))
+        self.ctrl_feries.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour modifier Ã©galement les jours fÃ©riÃ©s")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -726,7 +726,7 @@ class Dialog(wx.Dialog):
 
         grid_sizer_bas = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
 
-        # Périodes
+        # PÃ©riodes
         box_periode = wx.StaticBoxSizer(self.box_periode_staticbox, wx.VERTICAL)
         grid_sizer_periode = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=5)
         grid_sizer_periode.Add(self.label_date_debut, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -783,23 +783,23 @@ class Dialog(wx.Dialog):
         self.notebook.GetPage("dates").ctrl_date.SetDate(date)
 
     def OnBoutonOk(self, event):
-        # Période
+        # PÃ©riode
         date_debut = self.ctrl_date_debut.GetDate()
         date_fin = self.ctrl_date_fin.GetDate()
         if date_debut == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de début de période !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de dÃ©but de pÃ©riode !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
             return False
         if date_fin == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de fin de période !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de fin de pÃ©riode !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
             return False
         if date_debut > date_fin :
-            dlg = wx.MessageDialog(self, _(u"La date de début ne peut pas être supérieure à la date de fin !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de dÃ©but ne peut pas Ãªtre supÃ©rieure Ã  la date de fin !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
@@ -817,7 +817,7 @@ class Dialog(wx.Dialog):
         feries = self.ctrl_feries.GetValue()
         semaines = self.ctrl_semaines.GetValeur()
 
-        # Mémorisation des données
+        # MÃ©morisation des donnÃ©es
         self.dictDonnees = {
             "mode": self.notebook.GetCodePageActive(),
             "date_debut": date_debut,
@@ -828,13 +828,13 @@ class Dialog(wx.Dialog):
             "feries": feries,
             }
 
-        # Validation des données
+        # Validation des donnÃ©es
         page = self.notebook.GetPageActive()
         if page.Validation(dictDonnees=self.dictDonnees) == False :
             return False
         self.dictDonnees = page.GetDonnees()
 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def GetDonnees(self):

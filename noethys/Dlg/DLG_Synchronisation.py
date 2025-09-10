@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -44,15 +44,15 @@ def AnalyserFichier(nomFichier="", tailleFichier=None, typeTransfert=None):
     cheminFichier = UTILS_Fichiers.GetRepSync(nomFichier)
     listeAnomalies = []
     
-    # Vérification de la taille du fichier
+    # VÃ©rification de la taille du fichier
     if tailleFichier != None :
         tailleFinaleFichier = os.path.getsize(cheminFichier)
         if tailleFichier != tailleFinaleFichier :
-            listeAnomalies.append((nomFichier, _(u"Le fichier n'a pas été téléchargé en intégralité (%d/%d)") % (tailleFichier, tailleFinaleFichier)))
+            listeAnomalies.append((nomFichier, _(u"Le fichier n'a pas Ã©tÃ© tÃ©lÃ©chargÃ© en intÃ©gralitÃ© (%d/%d)") % (tailleFichier, tailleFinaleFichier)))
             os.remove(cheminFichier)
             return False
         
-    # Décryptage du fichier
+    # DÃ©cryptage du fichier
     if nomFichier.endswith(UTILS_Export_nomade.EXTENSION_CRYPTE) :
         nouveauCheminFichier = cheminFichier.replace(UTILS_Export_nomade.EXTENSION_CRYPTE, UTILS_Export_nomade.EXTENSION_DECRYPTE)
         mdp = base64.b64decode(UTILS_Config.GetParametre("synchro_cryptage_mdp", defaut=""))
@@ -63,9 +63,9 @@ def AnalyserFichier(nomFichier="", tailleFichier=None, typeTransfert=None):
     else :
         nouveauCheminFichier = cheminFichier
         
-    # Décompression du fichier
+    # DÃ©compression du fichier
     if zipfile.is_zipfile(nouveauCheminFichier) == False :
-        listeAnomalies.append((nomFichier, _(u"Le fichier compressé ne semble pas valide.")))
+        listeAnomalies.append((nomFichier, _(u"Le fichier compressÃ© ne semble pas valide.")))
         return False        
     
     fichierZip = zipfile.ZipFile(nouveauCheminFichier, "r")
@@ -88,8 +88,8 @@ def AnalyserFichier(nomFichier="", tailleFichier=None, typeTransfert=None):
 class CTRL_Mode(CTRL_Ultrachoice.CTRL):
     def __init__(self, parent):
         donnees=[ 
-            {"label" : _(u"Transfert par FTP"), "description" : _(u"Pour transférer les données par FTP depuis ou vers un hébergement internet"), "image" : wx.Bitmap(Chemins.GetStaticPath(u"Images/32x32/Ftp.png"), wx.BITMAP_TYPE_ANY)},
-            {"label" : _(u"Transfert manuel"), "description" : _(u"Pour sélectionner un fichier sur un support physique (disque dur, clé USB, etc...)"), "image" : wx.Bitmap(Chemins.GetStaticPath(u"Images/32x32/Sauvegarde_param.png"), wx.BITMAP_TYPE_ANY)},
+            {"label" : _(u"Transfert par FTP"), "description" : _(u"Pour transfÃ©rer les donnÃ©es par FTP depuis ou vers un hÃ©bergement internet"), "image" : wx.Bitmap(Chemins.GetStaticPath(u"Images/32x32/Ftp.png"), wx.BITMAP_TYPE_ANY)},
+            {"label" : _(u"Transfert manuel"), "description" : _(u"Pour sÃ©lectionner un fichier sur un support physique (disque dur, clÃ© USB, etc...)"), "image" : wx.Bitmap(Chemins.GetStaticPath(u"Images/32x32/Sauvegarde_param.png"), wx.BITMAP_TYPE_ANY)},
             ]
         CTRL_Ultrachoice.CTRL.__init__(self, parent, donnees=donnees) 
         self.parent = parent
@@ -118,25 +118,25 @@ class Page_serveur(wx.Panel):
         self.label_info.SetForegroundColour(wx.Colour(150, 150, 150))
         self.label_port = wx.StaticText(self, -1, _(u"Port :"))
         self.ctrl_port = wx.TextCtrl(self, -1, u"8000", size=(50, -1))
-        self.label_ip_autorisees = wx.StaticText(self, -1, _(u"IP autorisées :"))
+        self.label_ip_autorisees = wx.StaticText(self, -1, _(u"IP autorisÃ©es :"))
         self.ctrl_ip_autorisees = wx.TextCtrl(self, -1, u"")
         self.label_ip_interdites = wx.StaticText(self, -1, _(u"IP interdites :"))
         self.ctrl_ip_interdites = wx.TextCtrl(self, -1, u"")
 
-        # Propriétés
-        self.check_activer.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer/désactiver le serveur WIFI/Direct au prochain démarrage de Noethys")))
-        self.ctrl_port.SetToolTip(wx.ToolTip(_(u"Sélectionnez le port de communication")))
+        # PropriÃ©tÃ©s
+        self.check_activer.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer/dÃ©sactiver le serveur WIFI/Direct au prochain dÃ©marrage de Noethys")))
+        self.ctrl_port.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le port de communication")))
         legende_texte_ip = _(u"""
         
-Vous pouvez utiliser le symbole * comme caractère de substitution.
+Vous pouvez utiliser le symbole * comme caractÃ¨re de substitution.
 
 Exemples de saisies possibles : 
 '192.168.1.1;192.128.1.2'
 '192.168.1.12'
 '192.168.1.*;192.*;192.168.*.*;192.*.1'     
         """)
-        self.ctrl_ip_autorisees.SetToolTip(wx.ToolTip(_(u"Saisissez une suite d'adresses IP autorisées à se connecter (séparées par des points-virgules). Laissez vide pour tout autoriser.  %s") % legende_texte_ip))
-        self.ctrl_ip_interdites.SetToolTip(wx.ToolTip(_(u"Saisissez une suite d'adresses IP interdites de se connecter (séparées par des points-virgules). Laissez vide pour tout autoriser.  %s") % legende_texte_ip))
+        self.ctrl_ip_autorisees.SetToolTip(wx.ToolTip(_(u"Saisissez une suite d'adresses IP autorisÃ©es Ã  se connecter (sÃ©parÃ©es par des points-virgules). Laissez vide pour tout autoriser.  %s") % legende_texte_ip))
+        self.ctrl_ip_interdites.SetToolTip(wx.ToolTip(_(u"Saisissez une suite d'adresses IP interdites de se connecter (sÃ©parÃ©es par des points-virgules). Laissez vide pour tout autoriser.  %s") % legende_texte_ip))
 
         # Layout
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -185,7 +185,7 @@ Exemples de saisies possibles :
 
     def Validation(self):
         if self.check_activer.GetValue() == True and self.ctrl_port.GetValue() == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un numéro de port !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un numÃ©ro de port !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_port.SetFocus()
@@ -198,24 +198,24 @@ class Page_ftp(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         
-        self.label_hote = wx.StaticText(self, -1, _(u"Adresse hôte :"))
+        self.label_hote = wx.StaticText(self, -1, _(u"Adresse hÃ´te :"))
         self.ctrl_hote = wx.TextCtrl(self, -1, u"")
         self.label_identifiant = wx.StaticText(self, -1, _(u"Identifiant :"))
         self.ctrl_identifiant = wx.TextCtrl(self, -1, u"")
         self.label_mdp = wx.StaticText(self, -1, _(u"Mot de passe :"))
         self.ctrl_mdp = wx.TextCtrl(self, -1, u"", style=wx.TE_PASSWORD)
-        self.label_repertoire = wx.StaticText(self, -1, _(u"Répertoire :"))
+        self.label_repertoire = wx.StaticText(self, -1, _(u"RÃ©pertoire :"))
         self.ctrl_repertoire = wx.TextCtrl(self, -1, u"www/")
         self.bouton_test = wx.Button(self, -1, _(u"Tester la\nconnexion"))
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonTest, self.bouton_test)
         
-        # Propriétés
-        self.ctrl_hote.SetToolTip(wx.ToolTip(_(u"Saisissez l'adresse de l'hôte")))
+        # PropriÃ©tÃ©s
+        self.ctrl_hote.SetToolTip(wx.ToolTip(_(u"Saisissez l'adresse de l'hÃ´te")))
         self.ctrl_identifiant.SetToolTip(wx.ToolTip(_(u"Saisissez l'identifiant")))
         self.ctrl_mdp.SetToolTip(wx.ToolTip(_(u"Saisissez le mot de passe")))
-        self.ctrl_repertoire.SetToolTip(wx.ToolTip(_(u"Saisissez le chemin du répertoire. Exemple : 'www/mesfichiers")))
-        self.bouton_test.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour tester les paramètres de connexion"))) 
+        self.ctrl_repertoire.SetToolTip(wx.ToolTip(_(u"Saisissez le chemin du rÃ©pertoire. Exemple : 'www/mesfichiers")))
+        self.bouton_test.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour tester les paramÃ¨tres de connexion"))) 
         
         # Layout
         sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -250,11 +250,11 @@ class Page_ftp(wx.Panel):
             ftp.quit()
         except Exception as err :
             print(err)
-            dlg = wx.MessageDialog(self, _(u"La connexion n'a pas pu être établie !\n\nVérifiez les paramètres de connexion FTP dans les paramètres de synchronisation."), "Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"La connexion n'a pas pu Ãªtre Ã©tablie !\n\nVÃ©rifiez les paramÃ¨tres de connexion FTP dans les paramÃ¨tres de synchronisation."), "Erreur", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        dlg = wx.MessageDialog(None, _(u"La connexion a été établie avec succès !\n\nLes paramètres de connexion saisis sont valides."), u"Succès", wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(None, _(u"La connexion a Ã©tÃ© Ã©tablie avec succÃ¨s !\n\nLes paramÃ¨tres de connexion saisis sont valides."), u"SuccÃ¨s", wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 
@@ -288,16 +288,16 @@ class Page_cryptage(wx.Panel):
         
         self.label_activer = wx.StaticText(self, -1, _(u"Activer :"))
         self.check_activer = wx.CheckBox(self, -1, u"")
-        self.label_info = wx.StaticText(self, -1, _(u"(Les données envoyées seront cryptées avec le mot de passe)"))
+        self.label_info = wx.StaticText(self, -1, _(u"(Les donnÃ©es envoyÃ©es seront cryptÃ©es avec le mot de passe)"))
         self.label_info.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL, False))
         self.label_info.SetForegroundColour(wx.Colour(150, 150, 150))
         self.label_mdp = wx.StaticText(self, -1, _(u"Mot de passe :"))
         self.ctrl_mdp = wx.TextCtrl(self, -1, u"")
         self.ctrl_mdp.SetMinSize((200, -1)) 
         
-        # Propriétés
-        self.check_activer.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer/désactiver le cryptage des données envoyées")))
-        self.ctrl_mdp.SetToolTip(wx.ToolTip(_(u"Saisissez le mot de passe qui sera utiliser pour crypter les données envoyées et décrypter les données reçues. Recommandé si transfert sur internet.")))
+        # PropriÃ©tÃ©s
+        self.check_activer.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer/dÃ©sactiver le cryptage des donnÃ©es envoyÃ©es")))
+        self.ctrl_mdp.SetToolTip(wx.ToolTip(_(u"Saisissez le mot de passe qui sera utiliser pour crypter les donnÃ©es envoyÃ©es et dÃ©crypter les donnÃ©es reÃ§ues. RecommandÃ© si transfert sur internet.")))
         
         # Layout
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -349,15 +349,15 @@ class Page_archivage(wx.Panel):
         
         self.label_activer = wx.StaticText(self, -1, _(u"Activer :"))
         self.check_activer = wx.CheckBox(self, -1, u"")
-        self.label_info = wx.StaticText(self, -1, _(u"(Au-delà du nombre de jours indiqués, les fichiers de synchronisation archivés seront supprimés)"))
+        self.label_info = wx.StaticText(self, -1, _(u"(Au-delÃ  du nombre de jours indiquÃ©s, les fichiers de synchronisation archivÃ©s seront supprimÃ©s)"))
         self.label_info.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL, False))
         self.label_info.SetForegroundColour(wx.Colour(150, 150, 150))
         self.label_delai = wx.StaticText(self, -1, _(u"Nbre jours :"))
         self.ctrl_delai = wx.SpinCtrl(self, -1, "30")
         
-        # Propriétés
-        self.check_activer.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer la suppression automatique des fichiers de synchronisation archivés obsolètes")))
-        self.ctrl_delai.SetToolTip(wx.ToolTip(_(u"Sélectionnez un nombre de jours")))
+        # PropriÃ©tÃ©s
+        self.check_activer.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer la suppression automatique des fichiers de synchronisation archivÃ©s obsolÃ¨tes")))
+        self.ctrl_delai.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un nombre de jours")))
         
         # Layout
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -418,7 +418,7 @@ class Notebook(wx.Notebook):
             index += 1
         self.AssignImageList(il)
 
-        # Création des pages
+        # CrÃ©ation des pages
         index = 0
         for codePage, labelPage, ctrlPage, imgPage in self.listePages :
             setattr(self, "page%s" % index, eval(ctrlPage))
@@ -470,13 +470,13 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = _(u"Vous pouvez ici synchroniser les données avec Nomadhys, l'application nomade pour Noethys. Choisissez une méthode de synchronisation (Serveur direct WIFI/Internet ou FTP ou Manuel) puis renseignez les paramètres. Cliquez sur le bouton 'Lire les données' pour importer les données.")
+        intro = _(u"Vous pouvez ici synchroniser les donnÃ©es avec Nomadhys, l'application nomade pour Noethys. Choisissez une mÃ©thode de synchronisation (Serveur direct WIFI/Internet ou FTP ou Manuel) puis renseignez les paramÃ¨tres. Cliquez sur le bouton 'Lire les donnÃ©es' pour importer les donnÃ©es.")
         titre = _(u"Synchroniser Nomadhys")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Nomadhys.png")
         
-        # Paramètres
-        self.box_parametres = wx.StaticBox(self, -1, _(u"Paramètres"))
+        # ParamÃ¨tres
+        self.box_parametres = wx.StaticBox(self, -1, _(u"ParamÃ¨tres"))
         self.ctrl_parametres = Notebook(self)
 
         # Transfert
@@ -486,16 +486,16 @@ class Dialog(wx.Dialog):
         self.bouton_recevoir = CTRL_Bouton_image.CTRL(self, texte=_(u"Recevoir"), cheminImage="Images/32x32/Fleche_bas.png")
 
         # Lecture
-        self.box_lecture = wx.StaticBox(self, -1, _(u"Importation des données"))
+        self.box_lecture = wx.StaticBox(self, -1, _(u"Importation des donnÃ©es"))
         self.ctrl_fichiers = OL_Synchronisation_fichiers.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_recherche = OL_Synchronisation_fichiers.CTRL_Outils(self, listview=self.ctrl_fichiers, afficherCocher=True)
         self.check_archives = wx.CheckBox(self, -1, _(u"Afficher les archives"))
-        self.bouton_actualiser = CTRL_Bouton_image.CTRL(self, texte=_(u"Rafraîchir la liste"), cheminImage="Images/32x32/Actualiser.png")
+        self.bouton_actualiser = CTRL_Bouton_image.CTRL(self, texte=_(u"RafraÃ®chir la liste"), cheminImage="Images/32x32/Actualiser.png")
         self.bouton_lecture = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/BoutonsImages/Lire_donnees.png"), wx.BITMAP_TYPE_ANY))
         
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_googleplay = CTRL_Bouton_image.CTRL(self, texte=_(u"Télécharger Nomadhys"), cheminImage="Images/32x32/Googleplay.png")
+        self.bouton_googleplay = CTRL_Bouton_image.CTRL(self, texte=_(u"TÃ©lÃ©charger Nomadhys"), cheminImage="Images/32x32/Googleplay.png")
         self.bouton_outils = CTRL_Bouton_image.CTRL(self, texte=_(u"Outils"), cheminImage="Images/32x32/Configuration.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
@@ -523,15 +523,15 @@ class Dialog(wx.Dialog):
         #wx.CallAfter(self.AfficheAvertissement)
 
     def __set_properties(self):
-        self.ctrl_mode.SetToolTip(wx.ToolTip(_(u"Sélectionnez le mode de transfert souhaité pour envoyer/recevoir des données manuellement")))
-        self.check_archives.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher également dans la liste les fichiers de synchronisation archivés")))
-        self.bouton_envoyer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer manuellement le fichier de données")))
-        self.bouton_recevoir.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour recevoir manuellement un fichier de données")))
-        self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser la liste des fichiers à synchroniser")))
-        self.bouton_lecture.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lire le contenu des fichiers sélectionnés")))
+        self.ctrl_mode.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le mode de transfert souhaitÃ© pour envoyer/recevoir des donnÃ©es manuellement")))
+        self.check_archives.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher Ã©galement dans la liste les fichiers de synchronisation archivÃ©s")))
+        self.bouton_envoyer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer manuellement le fichier de donnÃ©es")))
+        self.bouton_recevoir.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour recevoir manuellement un fichier de donnÃ©es")))
+        self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser la liste des fichiers Ã  synchroniser")))
+        self.bouton_lecture.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lire le contenu des fichiers sÃ©lectionnÃ©s")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_googleplay.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la page de téléchargement de Nomadhys sur Google Play")))
-        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à des outils")))
+        self.bouton_googleplay.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la page de tÃ©lÃ©chargement de Nomadhys sur Google Play")))
+        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  des outils")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((700, 700))
 
@@ -539,7 +539,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
         
-        # Paramètres
+        # ParamÃ¨tres
         box_parametres = wx.StaticBoxSizer(self.box_parametres, wx.VERTICAL)
         box_parametres.Add(self.ctrl_parametres, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(box_parametres, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
@@ -608,7 +608,7 @@ class Dialog(wx.Dialog):
     def OnBoutonOutils(self, event):
         menuPop = UTILS_Adaptations.Menu()
         
-        item = wx.MenuItem(menuPop, 10, _(u"Purger le répertoire FTP"), _(u"Supprimer uniquement les fichiers liés à ce fichier de données du répertoire FTP"))
+        item = wx.MenuItem(menuPop, 10, _(u"Purger le rÃ©pertoire FTP"), _(u"Supprimer uniquement les fichiers liÃ©s Ã  ce fichier de donnÃ©es du rÃ©pertoire FTP"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Gomme.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.On_outils_purger_ftp, id=10)
@@ -617,7 +617,7 @@ class Dialog(wx.Dialog):
         menuPop.Destroy()
     
     def On_outils_purger_ftp(self, event):
-        """ Supprime tous les fichiers du répertoire FTP """
+        """ Supprime tous les fichiers du rÃ©pertoire FTP """
         hote = UTILS_Config.GetParametre("synchro_ftp_hote", defaut="")
         identifiant = UTILS_Config.GetParametre("synchro_ftp_identifiant", defaut="")
         mdp = base64.b64decode(UTILS_Config.GetParametre("synchro_ftp_mdp", defaut=""))
@@ -630,7 +630,7 @@ class Dialog(wx.Dialog):
         try :
             ftp = ftplib.FTP(hote, identifiant, mdp)
             ftp.cwd(repertoire)
-            # Récupère la liste des fichiers de synchronisation présents sur le répertoire FTP
+            # RÃ©cupÃ¨re la liste des fichiers de synchronisation prÃ©sents sur le rÃ©pertoire FTP
             for nomFichier in ftp.nlst() :
                 if IDfichier in nomFichier and (nomFichier.endswith(UTILS_Export_nomade.EXTENSION_CRYPTE) or nomFichier.endswith(UTILS_Export_nomade.EXTENSION_DECRYPTE)) :
                     ftp.delete(nomFichier)
@@ -638,12 +638,12 @@ class Dialog(wx.Dialog):
             ftp.quit()
         except Exception as err :
             print(err)
-            dlg = wx.MessageDialog(self, _(u"La connexion FTP n'a pas pu être établie !\n\nVérifiez les paramètres de connexion FTP dans les paramètres de synchronisation."), "Erreur ", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"La connexion FTP n'a pas pu Ãªtre Ã©tablie !\n\nVÃ©rifiez les paramÃ¨tres de connexion FTP dans les paramÃ¨tres de synchronisation."), "Erreur ", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
-        dlg = wx.MessageDialog(self, _(u"%d fichiers ont été supprimés dans le répertoire FTP !") % nbreFichiersSupprimes, "Suppression ", wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"%d fichiers ont Ã©tÃ© supprimÃ©s dans le rÃ©pertoire FTP !") % nbreFichiersSupprimes, "Suppression ", wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
             
@@ -660,7 +660,7 @@ class Dialog(wx.Dialog):
         event.Skip()
         
     def MemoriseParametres(self):
-        # Paramètres
+        # ParamÃ¨tres
         dictParametres = self.ctrl_parametres.GetParametres()
         UTILS_Config.SetParametres(dictParametres)
         # Mode favori
@@ -685,10 +685,10 @@ class Dialog(wx.Dialog):
             self.RecevoirFichier() 
 
     def RecevoirFichier(self):
-        """ Réception des fichiers manuels """
+        """ RÃ©ception des fichiers manuels """
         standardPath = wx.StandardPaths.Get()
         wildcard = _(u"Fichiers de synchronisation (*%s, *%s)|*%s;*%s|Tous les fichiers (*.*)|*.*") % (UTILS_Export_nomade.EXTENSION_CRYPTE, UTILS_Export_nomade.EXTENSION_DECRYPTE, UTILS_Export_nomade.EXTENSION_CRYPTE, UTILS_Export_nomade.EXTENSION_DECRYPTE)
-        dlg = wx.FileDialog(None, message=_(u"Sélectionnez un fichier de synchronisation"), defaultDir=standardPath.GetDocumentsDir(),  wildcard=wildcard, style=wx.FD_OPEN)
+        dlg = wx.FileDialog(None, message=_(u"SÃ©lectionnez un fichier de synchronisation"), defaultDir=standardPath.GetDocumentsDir(),  wildcard=wildcard, style=wx.FD_OPEN)
         chemin = None
         if dlg.ShowModal() == wx.ID_OK:
             chemin = dlg.GetPath()
@@ -701,7 +701,7 @@ class Dialog(wx.Dialog):
             resultat = AnalyserFichier(nomFichier, typeTransfert="manuel") 
             del dlgAttente
             if resultat == True :
-                dlg = wx.MessageDialog(self, _(u"Le fichier a été réceptionné avec succès !"), u"Succès", wx.OK | wx.ICON_INFORMATION)
+                dlg = wx.MessageDialog(self, _(u"Le fichier a Ã©tÃ© rÃ©ceptionnÃ© avec succÃ¨s !"), u"SuccÃ¨s", wx.OK | wx.ICON_INFORMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
 
@@ -709,8 +709,8 @@ class Dialog(wx.Dialog):
         self.ctrl_fichiers.MAJ()
 
     def RecevoirFTP(self):
-        """ Réception des fichiers FTP """
-        # Récupération des paramètres
+        """ RÃ©ception des fichiers FTP """
+        # RÃ©cupÃ©ration des paramÃ¨tres
         hote = UTILS_Config.GetParametre("synchro_ftp_hote", defaut="")
         identifiant = UTILS_Config.GetParametre("synchro_ftp_identifiant", defaut="")
         mdp = base64.b64decode(UTILS_Config.GetParametre("synchro_ftp_mdp", defaut=""))
@@ -719,13 +719,13 @@ class Dialog(wx.Dialog):
         if six.PY3:
             mdp = mdp.decode("utf-8")
         
-        # Récupération des fichiers
+        # RÃ©cupÃ©ration des fichiers
         listeFichiersRecus = []
-        dlgAttente = wx.BusyInfo(_(u"Récupération des fichiers de synchronisation depuis un répertoire FTP..."), self)
+        dlgAttente = wx.BusyInfo(_(u"RÃ©cupÃ©ration des fichiers de synchronisation depuis un rÃ©pertoire FTP..."), self)
         try :
             ftp = ftplib.FTP(hote, identifiant, mdp)
             ftp.cwd(repertoire)
-            # Récupère la liste des fichiers de synchronisation présents sur le répertoire FTP
+            # RÃ©cupÃ¨re la liste des fichiers de synchronisation prÃ©sents sur le rÃ©pertoire FTP
             for nomFichier in ftp.nlst() :
                 if "actions_%s" % IDfichier in nomFichier and (nomFichier.endswith(UTILS_Export_nomade.EXTENSION_CRYPTE) or nomFichier.endswith(UTILS_Export_nomade.EXTENSION_DECRYPTE)) :
                     try :
@@ -739,7 +739,7 @@ class Dialog(wx.Dialog):
         except Exception as err :
             print(err)
             del dlgAttente
-            dlg = wx.MessageDialog(self, _(u"La connexion FTP n'a pas pu être établie !\n\nVérifiez les paramètres de connexion FTP dans les paramètres de synchronisation."), "Erreur ", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"La connexion FTP n'a pas pu Ãªtre Ã©tablie !\n\nVÃ©rifiez les paramÃ¨tres de connexion FTP dans les paramÃ¨tres de synchronisation."), "Erreur ", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -756,7 +756,7 @@ class Dialog(wx.Dialog):
             resultat = AnalyserFichier(nomFichier=nomFichier, tailleFichier=tailleFichier, typeTransfert="ftp")
             del dlgAttente
             
-            # Suppression du fichier dans le répertoire FTP
+            # Suppression du fichier dans le rÃ©pertoire FTP
             ftp.delete(nomFichier) 
             
         ftp.quit()
@@ -771,7 +771,7 @@ class Dialog(wx.Dialog):
     def OnBoutonLecture(self, event):
         tracks = self.ctrl_fichiers.GetTracksCoches() 
         if len(tracks) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun fichier de synchronisation à lire !"), "Erreur ", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun fichier de synchronisation Ã  lire !"), "Erreur ", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -789,15 +789,15 @@ class Dialog(wx.Dialog):
         self.ctrl_fichiers.MAJ()
         
     def SuppressionArchives(self):
-        """ Supprime les archives obsolètes du répertoire Sync """
+        """ Supprime les archives obsolÃ¨tes du rÃ©pertoire Sync """
         synchro_archivage_activer = UTILS_Config.GetParametre("synchro_archivage_activer", defaut=0)
         synchro_archivage_delai = UTILS_Config.GetParametre("synchro_archivage_delai", defaut=30)
         
-        # Vérifie que la suppression auto de l'archivage est activé
+        # VÃ©rifie que la suppression auto de l'archivage est activÃ©
         if synchro_archivage_activer == 0 :
             return False
         
-        # Lecture des fichiers du répertoire SYNC
+        # Lecture des fichiers du rÃ©pertoire SYNC
         for nomFichier in os.listdir(UTILS_Fichiers.GetRepSync()) :
             if "actions_" in nomFichier and nomFichier.endswith(".archive") :
                 nomFichierCourt = nomFichier.replace(".dat", "").replace(".archive", "")
@@ -823,11 +823,11 @@ class Dialog(wx.Dialog):
 <FONT SIZE=2>
 <B>Avertissement</B>
 <BR><BR>
-Cette nouvelle fonctionnalité est expérimentale.
+Cette nouvelle fonctionnalitÃ© est expÃ©rimentale.
 <BR><BR>
-Il est conseillé de tester son efficacité et sa stabilité dans un fichier test avant de l'utiliser dans votre fichier de données. 
+Il est conseillÃ© de tester son efficacitÃ© et sa stabilitÃ© dans un fichier test avant de l'utiliser dans votre fichier de donnÃ©es. 
 <BR><BR>
-Merci de signaler tout bug rencontré dans la rubrique "Signaler un bug " du forum de Noethys.
+Merci de signaler tout bug rencontrÃ© dans la rubrique "Signaler un bug " du forum de Noethys.
 </FONT>
 </CENTER>
 """ % Chemins.GetStaticPath("Images/32x32/Information.png")

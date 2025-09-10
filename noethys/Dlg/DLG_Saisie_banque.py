@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -47,9 +47,9 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Saisie d'un établissement bancaire"))
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez le nom de l'établissement")))
-        self.ctrl_rue.SetToolTip(wx.ToolTip(_(u"Saisissez la rue de l'établissement")))
+        self.SetTitle(_(u"Saisie d'un Ã©tablissement bancaire"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez le nom de l'Ã©tablissement")))
+        self.ctrl_rue.SetToolTip(wx.ToolTip(_(u"Saisissez la rue de l'Ã©tablissement")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
@@ -117,7 +117,7 @@ class Dialog(wx.Dialog):
     
     def OnBoutonOk(self, event):
         if self.GetNom() == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucun nom pour cet établissement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucun nom pour cet Ã©tablissement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()

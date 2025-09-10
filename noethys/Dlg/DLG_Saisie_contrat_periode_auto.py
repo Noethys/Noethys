@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -24,7 +24,7 @@ from dateutil import relativedelta
 from dateutil import rrule
 
 
-LISTE_MOIS = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+LISTE_MOIS = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
 
 
 class Dialog(wx.Dialog):
@@ -35,8 +35,8 @@ class Dialog(wx.Dialog):
         self.listeTracks = listeTracks
         self.listeResultats = []
 
-        # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Généralités"))
+        # GÃ©nÃ©ralitÃ©s
+        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"GÃ©nÃ©ralitÃ©s"))
         self.label_dates = wx.StaticText(self, wx.ID_ANY, _(u"Dates :"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_au = wx.StaticText(self, wx.ID_ANY, _(u"au"))
@@ -44,11 +44,11 @@ class Dialog(wx.Dialog):
         
         # Prestation
         self.box_prestation_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Prestation"))
-        self.label_periodicite = wx.StaticText(self, wx.ID_ANY, _(u"Périodicité :"))
+        self.label_periodicite = wx.StaticText(self, wx.ID_ANY, _(u"PÃ©riodicitÃ© :"))
         self.ctrl_periodicite = wx.Choice(self, -1, choices=[_(u"Annuelle"), _(u"Mensuelle"), _(u"Hebdomadaire")])
         self.ctrl_periodicite.SetSelection(1) 
         self.label_date_prestation = wx.StaticText(self, wx.ID_ANY, _(u"Date :"))
-        self.ctrl_date_prestation = wx.Choice(self, -1, choices=[_(u"Début de période"), _(u"Fin de période")])
+        self.ctrl_date_prestation = wx.Choice(self, -1, choices=[_(u"DÃ©but de pÃ©riode"), _(u"Fin de pÃ©riode")])
         self.ctrl_date_prestation.SetSelection(0)
         self.label_label_prestation = wx.StaticText(self, wx.ID_ANY, _(u"Label :"))
         self.ctrl_label_prestation = wx.TextCtrl(self, wx.ID_ANY, u"{LABEL_AUTO}")
@@ -67,16 +67,16 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.Importation(dictValeurs)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Génération automatique de périodes"))
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début de la période")))
-        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de la période")))
-        self.ctrl_periodicite.SetToolTip(wx.ToolTip(_(u"Sélectionnez la périodicité à appliquer")))
-        self.ctrl_label_prestation.SetToolTip(wx.ToolTip(_(u"Saisissez le label de la prestation. Le mot-clé {LABEL_AUTO} permet d'insérer un label automatiquement (Ex : 'Janvier 2014'). Les mots-clés suivants sont également disponibles : {ANNEE} {NUM_MOIS} {NOM_MOIS} {NUM_SEMAINE}.")))
-        self.ctrl_date_prestation.SetToolTip(wx.ToolTip(_(u"Sélectionnez la date de la prestation")))
+        self.SetTitle(_(u"GÃ©nÃ©ration automatique de pÃ©riodes"))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de dÃ©but de la pÃ©riode")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de la pÃ©riode")))
+        self.ctrl_periodicite.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez la pÃ©riodicitÃ© Ã  appliquer")))
+        self.ctrl_label_prestation.SetToolTip(wx.ToolTip(_(u"Saisissez le label de la prestation. Le mot-clÃ© {LABEL_AUTO} permet d'insÃ©rer un label automatiquement (Ex : 'Janvier 2014'). Les mots-clÃ©s suivants sont Ã©galement disponibles : {ANNEE} {NUM_MOIS} {NOM_MOIS} {NUM_SEMAINE}.")))
+        self.ctrl_date_prestation.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez la date de la prestation")))
         self.ctrl_montant_prestation.SetToolTip(wx.ToolTip(_(u"Saisissez le montant de la prestation")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
@@ -85,7 +85,7 @@ class Dialog(wx.Dialog):
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(4, 1, 10, 10)
         
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         box_generalites = wx.StaticBoxSizer(self.box_generalites_staticbox, wx.VERTICAL)
         grid_sizer_generalites = wx.FlexGridSizer(2, 2, 10, 10)
         grid_sizer_dates = wx.FlexGridSizer(1, 4, 5, 5)
@@ -153,7 +153,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonOk(self, event):  
         if self.ctrl_date_debut.GetDate() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner la date de début !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner la date de dÃ©but !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -165,7 +165,7 @@ class Dialog(wx.Dialog):
             return
 
         if self.ctrl_date_fin.GetDate() < self.ctrl_date_debut.GetDate() :
-            dlg = wx.MessageDialog(self, _(u"La date de début ne doit pas être supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de dÃ©but ne doit pas Ãªtre supÃ©rieure Ã  la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -183,7 +183,7 @@ class Dialog(wx.Dialog):
             if reponse != wx.ID_YES :
                 return
         
-        # Génération des périodes
+        # GÃ©nÃ©ration des pÃ©riodes
         if self.Generation() == False :
             return
         
@@ -196,7 +196,7 @@ class Dialog(wx.Dialog):
         def ConvertDateToDatetime(date):
             return datetime.datetime(date.year, date.month, date.day)
             
-        # Génération des dates
+        # GÃ©nÃ©ration des dates
         date_debut = ConvertDateToDatetime(dictParametres["date_debut"])
         date_fin = ConvertDateToDatetime(dictParametres["date_fin"])
         if dictParametres["periodicite"] == 0 :
@@ -222,12 +222,12 @@ class Dialog(wx.Dialog):
                 date2 = listeDates[index+1]
             listeDates2.append((date1, date2))
         
-        # Création des périodes
+        # CrÃ©ation des pÃ©riodes
         listePeriodes = []
         for date1, date2 in listeDates2 :
             label_prestation = dictParametres["label_prestation"]
             
-            # Création du label de la prestation
+            # CrÃ©ation du label de la prestation
             if dictParametres["periodicite"] == 0 :
                 nom_auto = str(date1.year)
             if dictParametres["periodicite"] == 1 :
@@ -249,7 +249,7 @@ class Dialog(wx.Dialog):
             else :
                 date_prestation = date2.date() 
             
-            # Mémorisation
+            # MÃ©morisation
             dictPeriode = {
                 "IDprestation" : None, 
                 "date_debut" : date1.date(), 
@@ -262,11 +262,11 @@ class Dialog(wx.Dialog):
                 }
             listePeriodes.append(dictPeriode)
     
-        # Vérifie que les périodes générées ne chevauchent pas des périodes existantes
+        # VÃ©rifie que les pÃ©riodes gÃ©nÃ©rÃ©es ne chevauchent pas des pÃ©riodes existantes
         for dictPeriode in listePeriodes :
             for track in self.listeTracks :
                 if dictPeriode["date_fin"] >= track.date_debut and dictPeriode["date_debut"] <= track.date_fin :
-                    dlg = wx.MessageDialog(self, _(u"Génération impossible !\n\nLa période '%s' chevauche la période existante '%s' (du %s au %s).") % (dictPeriode["label_prestation"], track.label_prestation, UTILS_Dates.DateDDEnFr(track.date_debut), UTILS_Dates.DateDDEnFr(track.date_fin)), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"GÃ©nÃ©ration impossible !\n\nLa pÃ©riode '%s' chevauche la pÃ©riode existante '%s' (du %s au %s).") % (dictPeriode["label_prestation"], track.label_prestation, UTILS_Dates.DateDDEnFr(track.date_debut), UTILS_Dates.DateDDEnFr(track.date_fin)), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False

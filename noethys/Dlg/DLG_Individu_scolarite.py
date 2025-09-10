@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -26,7 +26,7 @@ class Panel(wx.Panel):
         self.dictFamillesRattachees = dictFamillesRattachees
         
         # scolarite
-        self.staticbox_scolarite = wx.StaticBox(self, -1, _(u"Scolarité"))
+        self.staticbox_scolarite = wx.StaticBox(self, -1, _(u"ScolaritÃ©"))
         self.ctrl_scolarite = OL_Scolarite.ListView(self, IDindividu=IDindividu, id=-1, name="OL_scolarite", style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
         self.ctrl_scolarite.SetMinSize((20, 20)) 
         self.ctrl_recherche = OL_Scolarite.CTRL_Outils(self, listview=self.ctrl_scolarite)
@@ -42,10 +42,10 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonModifier, self.bouton_modifier)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonSupprimer, self.bouton_supprimer)
         
-        # Propriétés
+        # PropriÃ©tÃ©s
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour inscrire l'individu dans une classe")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'inscription sélectionnée")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'inscription sélectionnée")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'inscription sÃ©lectionnÃ©e")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'inscription sÃ©lectionnÃ©e")))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=0, hgap=0)
@@ -103,7 +103,7 @@ class Panel(wx.Panel):
         self.ctrl_scolarite.MAJ() 
         
     def ValidationData(self):
-        """ Return True si les données sont valides et pretes à être sauvegardées """
+        """ Return True si les donnÃ©es sont valides et pretes Ã  Ãªtre sauvegardÃ©es """
         return True
     
     def Sauvegarde(self):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -25,7 +25,7 @@ from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import EVT_CELL_EDIT_STARTING, EVT_CELL_EDIT_FINISHING
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 
@@ -62,9 +62,9 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
 
-        # Récupération des conditions
+        # RÃ©cupÃ©ration des conditions
         if len(self.listeActivites) == 0 : conditionActivites = "()"
         elif len(self.listeActivites) == 1 : conditionActivites = "(%d)" % self.listeActivites[0]
         else : conditionActivites = str(tuple(self.listeActivites))
@@ -115,8 +115,8 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(_(u"Prestation"), 'left', 250, "label", typeDonnee="texte", isSpaceFilling=True, isEditable=False),
             ColumnDefn(_(u"Commentaire"), "left", 150, "commentaire", typeDonnee="texte", isEditable=True), 
-            ColumnDefn(_(u"Activité"), "left", 120, "nomActivite", typeDonnee="texte", isEditable=False), 
-            ColumnDefn(_(u"Qté"), "left", 50, "nombre", typeDonnee="entier", isEditable=False), 
+            ColumnDefn(_(u"ActivitÃ©"), "left", 120, "nomActivite", typeDonnee="texte", isEditable=False), 
+            ColumnDefn(_(u"QtÃ©"), "left", 50, "nombre", typeDonnee="entier", isEditable=False), 
             ColumnDefn(_(u"Total"), "left", 90, "montant", typeDonnee="montant", stringConverter=FormateMontant, isEditable=False),
             ]
         self.SetColumns(liste_Colonnes)
@@ -172,23 +172,23 @@ class ListView(FastObjectListView):
         
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """            
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
                 
-        # Tout sélectionner
-        item = wx.MenuItem(menuPop, 20, _(u"Tout sélectionner"))
+        # Tout sÃ©lectionner
+        item = wx.MenuItem(menuPop, 20, _(u"Tout sÃ©lectionner"))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheTout, id=20)
 
-        # Tout dé-sélectionner
-        item = wx.MenuItem(menuPop, 30, _(u"Tout dé-sélectionner"))
+        # Tout dÃ©-sÃ©lectionner
+        item = wx.MenuItem(menuPop, 30, _(u"Tout dÃ©-sÃ©lectionner"))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheRien, id=30)
         
         menuPop.AppendSeparator()
         
         # Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -222,7 +222,7 @@ class ListView(FastObjectListView):
 
     def Impression(self, mode="preview"):
         if self.donnees == None or len(self.donnees) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune donnée à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune donnÃ©e Ã  imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

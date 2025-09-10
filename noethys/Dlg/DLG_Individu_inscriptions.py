@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -56,14 +56,14 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl_contrats.Modifier, self.bouton_modifier_contrat)
         self.Bind(wx.EVT_BUTTON, self.ctrl_contrats.Supprimer, self.bouton_supprimer_contrat)
 
-        # Propriétés
-        self.bouton_ajouter_inscription.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour inscrire l'individu à une activité")))
-        self.bouton_modifier_inscription.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'inscription sélectionnée")))
-        self.bouton_supprimer_inscription.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'inscription sélectionnée")))
-        self.bouton_forfait.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir manuellement des forfaits datés")))
-        self.bouton_ajouter_contrat.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un contrat pour cet individu")))
-        self.bouton_modifier_contrat.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le contrat sélectionné")))
-        self.bouton_supprimer_contrat.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le contrat sélectionné")))
+        # PropriÃ©tÃ©s
+        self.bouton_ajouter_inscription.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour inscrire l'individu Ã  une activitÃ©")))
+        self.bouton_modifier_inscription.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'inscription sÃ©lectionnÃ©e")))
+        self.bouton_supprimer_inscription.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'inscription sÃ©lectionnÃ©e")))
+        self.bouton_forfait.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir manuellement des forfaits datÃ©s")))
+        self.bouton_ajouter_contrat.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er un contrat pour cet individu")))
+        self.bouton_modifier_contrat.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le contrat sÃ©lectionnÃ©")))
+        self.bouton_supprimer_contrat.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le contrat sÃ©lectionnÃ©")))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=0, hgap=0)
@@ -116,7 +116,7 @@ class Panel(wx.Panel):
         else:
             noSelection = False
 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Imprimer
@@ -146,7 +146,7 @@ class Panel(wx.Panel):
         menuPop.AppendSeparator()
         
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 20, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 20, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -163,20 +163,20 @@ class Panel(wx.Panel):
         menuPop.Destroy()
         
     def OnBoutonForfait(self, event):
-        """ Saisir un forfait daté """
+        """ Saisir un forfait datÃ© """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "creer") == False : return
         
-        # Recherche si l'individu est rattaché à d'autres familles
+        # Recherche si l'individu est rattachÃ© Ã  d'autres familles
         listeNoms = []
         listeFamille = []
-        # Vérifie que l'individu est rattaché comme REPRESENTANT ou ENFANT à une famille
+        # VÃ©rifie que l'individu est rattachÃ© comme REPRESENTANT ou ENFANT Ã  une famille
         if self.dictFamillesRattachees != None :
             valide = False
             for IDfamille, dictFamille in self.dictFamillesRattachees.items() :
                 if dictFamille["IDcategorie"] in (1, 2) :
                     valide = True
             if valide == False :
-                dlg = wx.MessageDialog(self, _(u"Pour être inscrit à une activité, un individu doit obligatoirement être rattaché comme représentant ou enfant à une fiche famille !"), _(u"Inscription impossible"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Pour Ãªtre inscrit Ã  une activitÃ©, un individu doit obligatoirement Ãªtre rattachÃ© comme reprÃ©sentant ou enfant Ã  une fiche famille !"), _(u"Inscription impossible"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -186,7 +186,7 @@ class Panel(wx.Panel):
             listeFamille.append(IDfamille)
             listeNoms.append(self.dictFamillesRattachees[IDfamille]["nomsTitulaires"])
         else:
-            # Si rattachée à plusieurs familles
+            # Si rattachÃ©e Ã  plusieurs familles
             for IDfamille, dictFamille in self.dictFamillesRattachees.items() :
                 IDcategorie = dictFamille["IDcategorie"]
                 if IDcategorie in (1, 2) :
@@ -196,8 +196,8 @@ class Panel(wx.Panel):
             if len(listeFamille) == 1 :
                 IDfamille = listeFamille[0]
             else:
-                # On demande à quelle famille rattacher cette inscription
-                dlg = wx.SingleChoiceDialog(self, _(u"Cet individu est rattaché à %d familles.\nA quelle famille souhaitez-vous rattacher cette inscription ?") % len(listeNoms), _(u"Rattachements multiples"), listeNoms, wx.CHOICEDLG_STYLE)
+                # On demande Ã  quelle famille rattacher cette inscription
+                dlg = wx.SingleChoiceDialog(self, _(u"Cet individu est rattachÃ© Ã  %d familles.\nA quelle famille souhaitez-vous rattacher cette inscription ?") % len(listeNoms), _(u"Rattachements multiples"), listeNoms, wx.CHOICEDLG_STYLE)
                 if dlg.ShowModal() == wx.ID_OK:
                     indexSelection = dlg.GetSelection()
                     IDfamille = listeFamille[indexSelection]
@@ -206,10 +206,10 @@ class Panel(wx.Panel):
                     dlg.Destroy()
                     return
         
-        # Récupère la liste des activités sur lesquelle l'individu est inscrit
+        # RÃ©cupÃ¨re la liste des activitÃ©s sur lesquelle l'individu est inscrit
         listeActivites = self.ctrl_inscriptions.GetListeActivites()
         
-        # Affiche la fenêtre de saisie d'un forfait daté
+        # Affiche la fenÃªtre de saisie d'un forfait datÃ©
         from Dlg import DLG_Appliquer_forfait
         dlg = DLG_Appliquer_forfait.Dialog(self, IDfamille=IDfamille, listeActivites=listeActivites, listeIndividus=[self.IDindividu,])
         if dlg.ShowModal() == wx.ID_OK :
@@ -226,7 +226,7 @@ class Panel(wx.Panel):
         self.ctrl_contrats.MAJ() 
         
     def ValidationData(self):
-        """ Return True si les données sont valides et pretes à être sauvegardées """
+        """ Return True si les donnÃ©es sont valides et pretes Ã  Ãªtre sauvegardÃ©es """
         return True
     
     def Sauvegarde(self):

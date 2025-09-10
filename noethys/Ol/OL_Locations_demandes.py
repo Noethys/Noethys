@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -35,7 +35,7 @@ class Track(object):
         self.IDfamille = donnees[2]
         self.observations = donnees[3]
 
-        # Catégories
+        # CatÃ©gories
         self.categories = UTILS_Texte.ConvertStrToListe(donnees[4], siVide=[])
         liste_labels = []
         for IDcategorie in self.categories :
@@ -57,15 +57,15 @@ class Track(object):
         # Position
         self.position = None
 
-        # Vérifie s'il y a des propositions de produits
+        # VÃ©rifie s'il y a des propositions de produits
         if self.statut == "refusee" :
-            self.texte_statut = _(u"Refusée")
+            self.texte_statut = _(u"RefusÃ©e")
         elif self.statut == "attribuee" :
             self.texte_statut = _(u"Demande satisfaite")
         elif self.statut == "attente" :
             if self.IDdemande in listview.dictPropositions :
 
-                # Recherche disponibilités
+                # Recherche disponibilitÃ©s
                 listeProduitsProposes = listview.dictPropositions[self.IDdemande]
                 if len(listeProduitsProposes) == 0 :
                     self.texte_statut = _(u"En attente")
@@ -84,7 +84,7 @@ class Track(object):
         if isinstance(self.date, str) or isinstance(self.date, six.text_type) :
             self.date = datetime.datetime.strptime(self.date, "%Y-%m-%d %H:%M:%S")
 
-        # Récupération des réponses des questionnaires
+        # RÃ©cupÃ©ration des rÃ©ponses des questionnaires
         for dictQuestion in listview.liste_questions :
             setattr(self, "question_%d" % dictQuestion["IDquestion"], listview.GetReponse(dictQuestion["IDquestion"], self.IDdemande))
         
@@ -98,7 +98,7 @@ class Track(object):
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.IDfamille = kwds.pop("IDfamille", None)
         self.checkColonne = kwds.pop("checkColonne", False)
         self.selectionID = None
@@ -139,11 +139,11 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeID = None
         DB = GestionDB.DB()
 
-        # Importation des catégories de produits
+        # Importation des catÃ©gories de produits
         req = """SELECT IDcategorie, nom
         FROM produits_categories;"""
         DB.ExecuterReq(req)
@@ -212,7 +212,7 @@ class ListView(FastObjectListView):
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
 
-        # Préparation de la listeImages
+        # PrÃ©paration de la listeImages
         self.AddNamedImages("attente", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Interdit.png"), wx.BITMAP_TYPE_PNG))
         self.AddNamedImages("refusee", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer_2.png"), wx.BITMAP_TYPE_PNG))
         self.AddNamedImages("attribuee", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok4.png"), wx.BITMAP_TYPE_PNG))
@@ -232,7 +232,7 @@ class ListView(FastObjectListView):
 
         def FormateDate(date):
             if date == None :
-                return _(u"Non définie")
+                return _(u"Non dÃ©finie")
             else :
                 return datetime.datetime.strftime(date, "%d/%m/%Y - %Hh%M")
 
@@ -242,7 +242,7 @@ class ListView(FastObjectListView):
             elif position == 1 :
                 return _(u"1er")
             else :
-                return _(u"%dème") % position
+                return _(u"%dÃ¨me") % position
 
         liste_Colonnes = [
             ColumnDefn(u"", "left", 0, "IDdemande", typeDonnee="entier"),
@@ -260,8 +260,8 @@ class ListView(FastObjectListView):
         liste_Colonnes.extend([
             ColumnDefn(_(u"Statut de la demande"), 'left', 170, "texte_statut", typeDonnee="texte", imageGetter=GetImageStatut),
             ColumnDefn(_(u"Position"), 'left', 80, "position", typeDonnee="entier", stringConverter=FormatePosition),
-            ColumnDefn(_(u"Catégories demandées"), 'left', 200, "texte_categories", typeDonnee="texte"),
-            ColumnDefn(_(u"Produits demandés"), 'left', 200, "texte_produits", typeDonnee="texte"),
+            ColumnDefn(_(u"CatÃ©gories demandÃ©es"), 'left', 200, "texte_categories", typeDonnee="texte"),
+            ColumnDefn(_(u"Produits demandÃ©s"), 'left', 200, "texte_produits", typeDonnee="texte"),
             ColumnDefn(_(u"Notes"), 'left', 200, "observations", typeDonnee="texte"),
             ])
 
@@ -302,7 +302,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -324,7 +324,7 @@ class ListView(FastObjectListView):
         else:
             noSelection = False
 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -372,7 +372,7 @@ class ListView(FastObjectListView):
 
         menuPop.AppendSeparator()
 
-        # Génération automatique des fonctions standards
+        # GÃ©nÃ©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop, titre=_(u"Liste des demandes de locations"))
 
         self.PopupMenu(menuPop)
@@ -387,7 +387,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune demande à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune demande Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -400,7 +400,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune demande à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune demande Ã  supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -435,7 +435,7 @@ class ListView(FastObjectListView):
 
     def ImprimerPDF(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune demande à imprimer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune demande Ã  imprimer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -447,7 +447,7 @@ class ListView(FastObjectListView):
     def EnvoyerEmail(self, event):
         """ Envoyer la location par Email """
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune demande à envoyer par Email !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune demande Ã  envoyer par Email !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -457,7 +457,7 @@ class ListView(FastObjectListView):
         UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=track.IDfamille, nomDoc=FonctionsPerso.GenerationNomDoc("DEMANDELOCATION", "pdf") , categorie="location_demande")
 
     def CreationPDF(self, nomDoc="", afficherDoc=True):
-        """ Création du PDF pour Email """
+        """ CrÃ©ation du PDF pour Email """
         IDdemande = self.Selection()[0].IDdemande
         from Utils import UTILS_Locations_demandes
         demande = UTILS_Locations_demandes.Demande()

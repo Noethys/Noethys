@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -71,7 +71,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.IDindividu = kwds.pop("IDindividu", None)
         self.selectionID = None
         self.selectionTrack = None
@@ -93,7 +93,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeID = None
         DB = GestionDB.DB()
         req = """SELECT IDscolarite, scolarite.IDindividu, scolarite.date_debut, scolarite.date_fin, scolarite.IDecole, ecoles.nom, scolarite.IDclasse, classes.nom, scolarite.IDniveau, niveaux_scolaires.nom, niveaux_scolaires.abrege
@@ -163,7 +163,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -181,7 +181,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDscolarite
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -212,7 +212,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -246,26 +246,26 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Scolarité"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"ScolaritÃ©"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Scolarité"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"ScolaritÃ©"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Scolarité"))
+        UTILS_Export.ExportTexte(self, titre=_(u"ScolaritÃ©"))
         
     def ExportExcel(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Scolarité"))
+        UTILS_Export.ExportExcel(self, titre=_(u"ScolaritÃ©"))
 
     def Ajouter(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_scolarite", "creer") == False : return
         
-        # Recherches des dernières dates saisies
+        # Recherches des derniÃ¨res dates saisies
         DB = GestionDB.DB()
         req = """SELECT date_debut, date_fin
         FROM scolarite 
@@ -308,7 +308,7 @@ class ListView(FastObjectListView):
             IDscolarite = DB.ReqInsert("scolarite", listeDonnees)
             DB.Close()
             
-            # Mémorise l'action dans l'historique
+            # MÃ©morise l'action dans l'historique
             UTILS_Historique.InsertActions([{
                 "IDindividu" : self.IDindividu,
                 "IDfamille" : None,
@@ -323,7 +323,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_scolarite", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune étape de scolarité à modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune Ã©tape de scolaritÃ© Ã  modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -337,7 +337,7 @@ class ListView(FastObjectListView):
         
         from Dlg import DLG_Saisie_scolarite
         dlg = DLG_Saisie_scolarite.Dialog(self, IDscolarite=IDscolarite, donneesScolarite=self.donnees)
-        dlg.SetTitle(_(u"Modification d'une étape de la scolarité"))
+        dlg.SetTitle(_(u"Modification d'une Ã©tape de la scolaritÃ©"))
         dlg.SetDateDebut(date_debut)
         dlg.SetDateFin(date_fin)
         dlg.SetEcole(IDecole)
@@ -365,7 +365,7 @@ class ListView(FastObjectListView):
             DB.ReqMAJ("scolarite", listeDonnees, "IDscolarite", IDscolarite)
             DB.Close()
             
-            # Mémorise l'action dans l'historique
+            # MÃ©morise l'action dans l'historique
             UTILS_Historique.InsertActions([{
                 "IDindividu" : self.IDindividu,
                 "IDfamille" : None,
@@ -381,7 +381,7 @@ class ListView(FastObjectListView):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_scolarite", "supprimer") == False : return
 
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune étape de scolarité à supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune Ã©tape de scolaritÃ© Ã  supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -393,13 +393,13 @@ class ListView(FastObjectListView):
         nomClasse = self.Selection()[0].nomClasse
         nomNiveau = self.Selection()[0].nomNiveau
         
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette étape de scolarité ?\n\nPériode : Du %s au %s\nEcole : %s\nClasse : %s\nNiveau : %s") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)), nomEcole, nomClasse, nomNiveau), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette Ã©tape de scolaritÃ© ?\n\nPÃ©riode : Du %s au %s\nEcole : %s\nClasse : %s\nNiveau : %s") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)), nomEcole, nomClasse, nomNiveau), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("scolarite", "IDscolarite", IDscolarite)
             DB.Close() 
             
-            # Mémorise l'action dans l'historique
+            # MÃ©morise l'action dans l'historique
             UTILS_Historique.InsertActions([{
                 "IDindividu" : self.IDindividu,
                 "IDfamille" : None,
@@ -420,7 +420,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(_(u"Rechercher une étape de la scolarité..."))
+        self.SetDescriptiveText(_(u"Rechercher une Ã©tape de la scolaritÃ©..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview
