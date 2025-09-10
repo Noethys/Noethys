@@ -311,7 +311,7 @@ class Page_noethysweb(wx.Panel):
         try:
             FonctionsPerso.LanceFichierExterne("https://www.noethysweb.com/bon_commande_noethysweb.pdf")
         except:
-            dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas ouvrir le PDF !\n\nVeuillez vérifier qu'un autre PDF n'est pas déj� ouvert en arri�re-plan..."),_(u"Erreur"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas ouvrir le PDF !\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan..."),_(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
 
