@@ -346,7 +346,7 @@ class Export_all(Export):
 
         self.Ajouter(categorie="activites", table=Table_evenements(self, nom_table="evenements", nouveau_nom_table="core.Evenement", nouveaux_noms_champs={"IDactivite": "activite", "IDgroupe": "groupe", "IDunite": "unite"}))
 
-        self.Ajouter(categorie="inscriptions", table=Table(self, nom_table="inscriptions",
+        self.Ajouter(categorie="inscriptions", table=Table_inscriptions(self, nom_table="inscriptions",
                            nouveau_nom_table="core.Inscription",
                            nouveaux_noms_champs={"IDindividu": "individu", "IDfamille": "famille", "IDactivite": "activite", "IDgroupe": "groupe", "IDcategorie_tarif": "categorie_tarif",
                                                  "date_inscription": "date_debut", "date_desinscription": "date_fin"},
@@ -683,7 +683,8 @@ class Table_tarifs(Table):
         liste_caisses = []
         if valeur:
             for IDcaisse in valeur.split(";"):
-                liste_caisses.append(int(IDcaisse))
+                if IDcaisse != "0":
+                    liste_caisses.append(int(IDcaisse))
         return liste_caisses
 
     def etats(self, valeur=None, objet=None):
@@ -849,6 +850,13 @@ class Table_individus(Table):
         req = """SELECT IDliste, IDindividu FROM abonnements WHERE IDindividu=%d;""" % data["pk"]
         self.parent.DB.ExecuterReq(req)
         return [IDliste for IDliste, IDindividu in self.parent.DB.ResultatReq()]
+
+
+class Table_inscriptions(Table):
+    def statut(self, valeur=None, objet=None):
+        if not valeur:
+            return "ok"
+        return valeur
 
 
 class Table_factures(Table):
