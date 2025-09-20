@@ -721,7 +721,7 @@ class Table_tarifs_lignes(Table):
         del self.liste_tarifs
 
     def qf_max(self, valeur=None, objet=None):
-        if valeur > 9999999:
+        if valeur and valeur > 9999999:
             return 9999999
         return valeur
 
