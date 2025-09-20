@@ -54,6 +54,8 @@ LISTE_CHAMPS = [
      "typeDonnee": "date", "align": "left", "largeur": 75, "stringConverter": "date", "actif": True, "afficher": False},
     {"label": _(u"Date désinsc."), "code": "date_desinscription", "champ": "inscriptions.date_desinscription",
      "typeDonnee": "date", "align": "left", "largeur": 75, "stringConverter": "date", "actif": True, "afficher": False},
+    {"label": _(u"Date dernière conso"), "code": "derniere_conso", "champ": None, "typeDonnee": "date", "align": "left",
+     "largeur": 75, "stringConverter": "date", "actif": True, "afficher": True},
 
     {"label": _(u"Facturé"), "code": "totalFacture", "champ": None, "typeDonnee": "montant",
      "align": "right", "largeur": 65, "stringConverter": "montant", "actif": True, "afficher": True},
@@ -271,6 +273,18 @@ class ListView(GroupListView):
         else:
             conditions = ""
 
+        # Récupère la date de la dernière conso sur l'activité
+        req = """
+        SELECT MAX(date), consommations.IDindividu, consommations.IDactivite
+        FROM consommations 
+        LEFT JOIN inscriptions ON inscriptions.IDinscription = consommations.IDinscription
+        WHERE consommations.IDindividu > 0 %s
+        GROUP BY consommations.IDindividu, consommations.IDactivite
+        ;""" % conditions
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        dict_derniere_conso = {(item[1], item[2]): UTILS_Dates.DateEngEnDateDD(item[0]) for item in listeDonnees}
+
         req = """
         SELECT %s
         FROM inscriptions 
@@ -352,6 +366,9 @@ class ListView(GroupListView):
             dictTemp["totalFacture"] = totalFacture
             dictTemp["totalRegle"] = totalRegle
             dictTemp["totalSolde"] = totalSolde
+
+            # Date dernière conso
+            dictTemp["derniere_conso"] = dict_derniere_conso.get((valeurs[1], valeurs[2]), None)
 
             # Famille
             dictTemp["nomTitulaires"] = self.dict_titulaires[dictTemp["IDfamille"]
