@@ -9,16 +9,14 @@
 #-----------------------------------------------------------
 
 
-import Chemins
+import Chemins, datetime
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
+from Utils import UTILS_Parametres
 import wx
 from Ctrl import CTRL_Bouton_image
 import GestionDB
 import wx.lib.agw.customtreectrl as CT
-
-
-
 
 
 
@@ -291,8 +289,10 @@ class CTRL_Activites(wx.CheckListBox):
         self.dictActivites = {}
         self.listeDonnees = []
         self.Bind(wx.EVT_CHECKLISTBOX, self.OnCheck)
-        
+
     def MAJ(self):
+        # Paramètres
+        self.parametres = UTILS_Parametres.ParametresCategorie(mode="get", categorie="ctrl_selection_activites", dictParametres={"tri": "date+nom", "cacher_obsoletes": False})
         self.listeDonnees = self.Importation()
         self.SetListeChoix()
 
@@ -310,12 +310,14 @@ class CTRL_Activites(wx.CheckListBox):
             index += 1
 
     def Importation(self):
-        listeDonnees = []
+        tri = "nom ASC" if self.parametres["tri"] == "nom" else "date_fin DESC, nom ASC"
+        condition = ("WHERE (date_fin>='%s' OR date_fin IS NULL)" % datetime.date.today()) if self.parametres["cacher_obsoletes"] else ""
         DB = GestionDB.DB()
         req = """SELECT IDactivite, nom
         FROM activites
-        ORDER BY date_fin DESC, nom ASC
-        ;"""
+        %s
+        ORDER BY %s
+        ;""" % (condition, tri)
         DB.ExecuterReq(req)
         listeActivites = DB.ResultatReq()      
         DB.Close() 
@@ -349,6 +351,43 @@ class CTRL_Activites(wx.CheckListBox):
     def OnCheck(self, event):
         self.parent.OnCheck() 
 
+    def OnBoutonOptionsActivites(self, event):
+        # Création du menu Options
+        menuPop = UTILS_Adaptations.Menu()
+
+        item = wx.MenuItem(menuPop, 200, _(u"Trier par date de fin et nom"), kind=wx.ITEM_RADIO)
+        menuPop.AppendItem(item)
+        if self.parametres["tri"] == "date+nom": item.Check(True)
+        self.Bind(wx.EVT_MENU, self.SetTri1, id=200)
+
+        item = wx.MenuItem(menuPop, 201, _(u"Trier par nom"), kind=wx.ITEM_RADIO)
+        menuPop.AppendItem(item)
+        if self.parametres["tri"] == "nom": item.Check(True)
+        self.Bind(wx.EVT_MENU, self.SetTri2, id=201)
+
+        menuPop.AppendSeparator()
+
+        item = wx.MenuItem(menuPop, 202, _(u"Masquer les activités obsolètes"), kind=wx.ITEM_CHECK)
+        menuPop.AppendItem(item)
+        if self.parametres["cacher_obsoletes"]: item.Check(True)
+        self.Bind(wx.EVT_MENU, self.SetMasquerObsoletes, id=202)
+
+        self.PopupMenu(menuPop)
+        menuPop.Destroy()
+
+    def SetTri1(self, event=None):
+        UTILS_Parametres.Parametres(mode="set", categorie="ctrl_selection_activites", nom="tri", valeur="date+nom")
+        self.MAJ()
+
+    def SetTri2(self, event=None):
+        UTILS_Parametres.Parametres(mode="set", categorie="ctrl_selection_activites", nom="tri", valeur="nom")
+        self.MAJ()
+
+    def SetMasquerObsoletes(self, event=None):
+        UTILS_Parametres.Parametres(mode="set", categorie="ctrl_selection_activites", nom="cacher_obsoletes", valeur=not self.parametres["cacher_obsoletes"])
+        self.MAJ()
+
+
 # -----------------------------------------------------------------------------------------------------------------------
 
 class CTRL(wx.Panel):
@@ -368,7 +407,8 @@ class CTRL(wx.Panel):
         self.ctrl_groupes_activites = CTRL_Groupes_activites(self)
         self.ctrl_groupes_activites.SetMinSize((200, 40))
         self.radio_activites = wx.RadioButton(self, -1, _(u"Les activités suivantes :"))
-        
+        self.bouton_options_activites = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Options.png"), wx.BITMAP_TYPE_ANY), style=wx.BORDER_NONE)
+
         self.ctrl_activites = CTRL_Activites(self)
         self.ctrl_activites.SetMinSize((200, 40))
         
@@ -388,14 +428,22 @@ class CTRL(wx.Panel):
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioActivites, self.radio_toutes)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioActivites, self.radio_groupes_activites)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioActivites, self.radio_activites)
-        
+        self.Bind(wx.EVT_BUTTON, self.ctrl_activites.OnBoutonOptionsActivites, self.bouton_options_activites)
+
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=7, cols=1, vgap=5, hgap=5)
         grid_sizer_base.Add(self.radio_toutes, 0, wx.BOTTOM, 5)
         grid_sizer_base.Add(self.radio_groupes_activites, 0, 0, 0)
         grid_sizer_base.Add(self.ctrl_groupes_activites, 0, wx.LEFT|wx.EXPAND, 18)
         grid_sizer_base.Add((1, 1), 0, wx.EXPAND, 0)
-        grid_sizer_base.Add(self.radio_activites, 0, 0, 0)
+
+        grid_sizer_activites = wx.FlexGridSizer(rows=1, cols=3, vgap=0, hgap=0)
+        grid_sizer_activites.Add(self.radio_activites, 0, 0, 0)
+        grid_sizer_activites.Add((5, 5), 0, 0, 0)
+        grid_sizer_activites.Add(self.bouton_options_activites, 0, 0, 0)
+        grid_sizer_activites.AddGrowableCol(1)
+        grid_sizer_base.Add(grid_sizer_activites, 0, wx.EXPAND, 0)
+
         grid_sizer_base.Add(self.ctrl_activites, 0, wx.LEFT|wx.EXPAND, 18)
         grid_sizer_base.Add(self.ctrl_groupes, 0, wx.LEFT|wx.EXPAND, 18)
         grid_sizer_base.AddGrowableRow(2)
@@ -405,7 +453,7 @@ class CTRL(wx.Panel):
 
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)
-        
+
         # Init Contrôles
         self.ctrl_groupes_activites.Enable(self.radio_groupes_activites.GetValue())
         if self.afficheToutes == False :
@@ -524,12 +572,9 @@ class CTRL(wx.Panel):
             else :
                 self.ctrl_groupes.SetGroupes(listeID)
         self.OnRadioActivites(None)
+
             
-            
-            
-            
-            
-        
+
 
 
 class MyFrame(wx.Frame):
@@ -540,7 +585,7 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.ctrl = CTRL(panel, modeGroupes=True)
+        self.ctrl = CTRL(panel, modeGroupes=False)
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         sizer_2.Add(bouton_test, 0, wx.ALL|wx.EXPAND, 4)
@@ -552,7 +597,6 @@ class MyFrame(wx.Frame):
         
     def OnBouton(self, event):
         self.ctrl.ctrl_groupes.SetGroupes([1, 3])
-        print(self.ctrl.ctrl_groupes.GetGroupes())
         
 
 if __name__ == '__main__':
