@@ -77,7 +77,8 @@ def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False, inclure_tel
     req = """SELECT IDrattachement, rattachements.IDindividu, IDfamille, IDcategorie, titulaire, etat
     FROM rattachements
     LEFT JOIN individus ON individus.IDindividu = rattachements.IDindividu
-    WHERE %s %s;""" % (conditionArchives, conditionFamilles)
+    WHERE %s %s
+    ORDER BY individus.IDcivilite;""" % (conditionArchives, conditionFamilles)
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
     DB.Close() 
