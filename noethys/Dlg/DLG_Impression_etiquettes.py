@@ -321,8 +321,10 @@ class Dialog(wx.Dialog):
         font = self.GetFont() 
         font.SetPointSize(7)
         self.ctrl_memoriser.SetFont(font)
-        self.ctrl_memoriser.SetValue(True) 
-        
+        self.ctrl_memoriser.SetValue(True)
+
+        self.label_extra = wx.StaticText(self, -1, _(u""))
+
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
@@ -345,6 +347,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
+        self.Bind(wx.EVT_CHAR_HOOK, self.OnKeyDown)
         
         # Init contrôles
         largeurPage = UTILS_Config.GetParametre("impression_etiquettes_largeurpage", defaut=210)
@@ -500,9 +503,13 @@ class Dialog(wx.Dialog):
         grid_sizer_contenu.AddGrowableCol(1)
         grid_sizer_base.Add(grid_sizer_contenu, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
 
-        # Check Mémoriser
-        grid_sizer_base.Add(self.ctrl_memoriser, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
-        
+        # Commandes extra
+        grid_sizer_commandes_extra = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
+        grid_sizer_commandes_extra.Add(self.ctrl_memoriser, 0, 0, 0)
+        grid_sizer_commandes_extra.Add((20, 20), 0, wx.EXPAND, 0)
+        grid_sizer_commandes_extra.Add(self.label_extra, 0, 0, 0)
+        grid_sizer_base.Add(grid_sizer_commandes_extra, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
+
         # Boutons
         grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
@@ -645,8 +652,14 @@ class Dialog(wx.Dialog):
                     AfficherContourEtiquette=AfficherContourEtiquette,
                     AfficherReperesDecoupe=AfficherReperesDecoupe,
                     )
-        
-        
+
+    def OnKeyDown(self, event):
+        keycode = event.GetKeyCode()
+        if keycode == wx.WXK_F3:
+            self.ctrl_donnees.listePages[1][1].listview.adaptation_smh = True
+            self.label_extra.SetLabel("<<<<<<<< Mode SMH >>>>>>>>")
+        event.Skip()
+
 
 if __name__ == u"__main__":
     app = wx.App(0)

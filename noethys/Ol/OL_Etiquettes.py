@@ -538,10 +538,18 @@ class ListView(FastObjectListView):
     
     def GetInfosCoches(self):
         listeDonnees = []
+        dict_inscrits = getattr(self, "dict_inscrits", [])
         for track in self.GetTracksCoches() :
             dictTemp = track.GetDict()
             for code, valeur in self.dictOrganisme.items() :
                 dictTemp[code] = valeur
+
+            # Adaptation SMH
+            if dict_inscrits:
+                individus = dict_inscrits.get(dictTemp["{IDFAMILLE}"], {})
+                if individus:
+                    dictTemp["{FAMILLE_NOM}"] = individus.items()[0][1]["nom_complet_individu"]
+
             listeDonnees.append(dictTemp)
         return listeDonnees
     

@@ -23,6 +23,8 @@ import six
 
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
+from Data import DATA_Civilites as Civilites
+DICT_CIVILITES = Civilites.GetDictCivilites()
 
 import ObjectListView as OLV
 from ObjectListView import EVT_CELL_EDIT_STARTING, EVT_CELL_EDIT_FINISHING, CellEditorRegistry, Filter, OLVEvent
@@ -600,11 +602,31 @@ class ObjectListView(OLV.ObjectListView):
         ;""" % (key, jointurePresents, datetime.date.today(), conditionActivites, conditionGroupes, conditionPresents, conditionDateInscription, conditionDateNaissance, key)
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
-        DB.Close() 
-        
+
         listeID = []
         for donnees in listeDonnees :
             listeID.append(donnees[0])
+
+        # Recherche des individus inscrits uniquement pour SMH
+        if getattr(self, "adaptation_smh", False):
+            req = """SELECT inscriptions.IDinscription, inscriptions.IDfamille, inscriptions.IDindividu, individus.IDcivilite, individus.nom, individus.prenom, SUM(consommations.quantite)
+            FROM consommations
+            LEFT JOIN inscriptions ON inscriptions.IDinscription = consommations.IDinscription
+            LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
+            WHERE inscriptions.statut='ok' AND (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s')  %s %s %s %s %s
+            GROUP BY inscriptions.IDinscription
+            ;""" % (datetime.date.today(), conditionActivites, conditionGroupes, conditionPresents, conditionDateInscription, conditionDateNaissance)
+            DB.ExecuterReq(req)
+            listeDonnees = DB.ResultatReq()
+            self.dict_inscrits = {}
+            for IDinscription, IDfamille, IDindividu, IDcivilite, nom, prenom, quantite in listeDonnees:
+                if quantite == 1:
+                    self.dict_inscrits.setdefault(IDfamille, {})
+                    if IDindividu not in self.dict_inscrits[IDfamille]:
+                        nom_complet_individu = "%s %s %s" % (DICT_CIVILITES[IDcivilite]["civiliteAbrege"], nom, prenom or "")
+                        self.dict_inscrits[IDfamille][IDindividu] = {"IDcivilite": IDcivilite, "nom": nom, "prenom": prenom, "nom_complet_individu": nom_complet_individu}
+
+        DB.Close()
         return listeID
 
     def SetBarreRecherche(self, ctrl=None):
