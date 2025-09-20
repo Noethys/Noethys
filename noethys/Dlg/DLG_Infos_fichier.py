@@ -131,10 +131,10 @@ class Informations():
         donnees = DBTemp.ResultatReq()
         DBTemp.Close() 
         if len(donnees) > 0 :
-            nbre = donnees[0][0]
+            nbre = str(donnees[0][0])
         else :
-            nbre = "Base non installée"
-        listeItems.append((_(u"Nombre de photos"), str(nbre)))
+            nbre = u"Base non installée"
+        listeItems.append((_(u"Nombre de photos"), nbre))
 
         # Nbre de documents scannés
         DBTemp = GestionDB.DB(suffixe="DOCUMENTS")
@@ -143,10 +143,10 @@ class Informations():
         donnees = DBTemp.ResultatReq()
         DBTemp.Close() 
         if len(donnees) > 0 :
-            nbre = donnees[0][0]
+            nbre = str(donnees[0][0])
         else :
-            nbre = "Base non installée"
-        listeItems.append((_(u"Nombre de documents scannés"), str(nbre)))
+            nbre = u"Base non installée"
+        listeItems.append((_(u"Nombre de documents scannés"), nbre))
         
         return nomCategorie, listeItems
 
