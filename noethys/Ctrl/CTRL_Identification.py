@@ -15,7 +15,10 @@ from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import datetime
-from Cryptodome.Hash import SHA256
+try:
+    from Crypto.Hash import SHA256
+except:
+    from Cryptodome.Hash import SHA256
 
 
 class CTRL(wx.SearchCtrl):

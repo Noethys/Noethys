@@ -17,7 +17,10 @@ from Ctrl import CTRL_Bouton_image
 import GestionDB
 from Ctrl import CTRL_Droits
 import wx.lib.agw.hyperlink as Hyperlink
-from Cryptodome.Hash import SHA256
+try:
+    from Crypto.Hash import SHA256
+except:
+    from Cryptodome.Hash import SHA256
 from Utils import UTILS_Internet
 from Utils import UTILS_Parametres
 from Ctrl import CTRL_Compte_internet

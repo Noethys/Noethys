@@ -47,17 +47,25 @@ from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 from Dlg.DLG_Portail_config import VALEURS_DEFAUT as VALEURS_DEFAUT_CONFIG
 from Dlg.DLG_Portail_config import LISTE_THEMES
 
-from Cryptodome.Hash import SHA256
-
+try:
+    from Crypto.Hash import SHA256
+except:
+    from Cryptodome.Hash import SHA256
 
 def patch_crypto_be_discovery():
     """ Patch pour Paramiko contre bug backends missing lors de la compilation sur Windows """
     from cryptography.hazmat import backends
 
     try:
-        from cryptography.hazmat.backends.commonCryptodome.backend import backend as be_cc
+        from cryptography.hazmat.backends.commoncrypto.backend import backend as be_cc
     except ImportError:
         be_cc = None
+
+    if not be_cc:
+        try:
+            from cryptography.hazmat.backends.commonCryptodome.backend import backend as be_cc
+        except ImportError:
+            be_cc = None
 
     try:
         from cryptography.hazmat.backends.openssl.backend import backend as be_ossl

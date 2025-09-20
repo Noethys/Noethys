@@ -19,7 +19,10 @@ import GestionDB
 from Data import DATA_Tables as Tables
 from Ctrl import CTRL_Bandeau
 import wx.lib.agw.hyperlink as hl
-from Cryptodome.Hash import SHA256
+try:
+    from Crypto.Hash import SHA256
+except:
+    from Cryptodome.Hash import SHA256
 
 
 class PanelReseau(wx.Panel):

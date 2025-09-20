@@ -78,7 +78,10 @@ except:
 import random 
 from six.moves.urllib.request import urlopen
 
-from Cryptodome.Hash import SHA256
+try:
+    from Crypto.Hash import SHA256
+except:
+    from Cryptodome.Hash import SHA256
 
 import wx.lib.agw.aui as aui
 import wx.lib.agw.advancedsplash as AS

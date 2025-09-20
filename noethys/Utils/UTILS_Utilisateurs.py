@@ -12,7 +12,10 @@
 import Chemins
 from Utils.UTILS_Traduction import _
 import wx
-from Cryptodome.Hash import SHA256
+try:
+    from Crypto.Hash import SHA256
+except:
+    from Cryptodome.Hash import SHA256
 import GestionDB
 
 

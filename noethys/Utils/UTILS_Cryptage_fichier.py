@@ -8,8 +8,12 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
-from Cryptodome.Cipher import AES
-from Cryptodome import Random
+try:
+    from Crypto.Cipher import AES
+    from Crypto import Random
+except:
+    from Cryptodome.Cipher import AES
+    from Cryptodome import Random
 
 import hashlib
 import pickle
