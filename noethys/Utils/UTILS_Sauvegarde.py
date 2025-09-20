@@ -87,7 +87,7 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
     
     # Création du fichier ZIP temporaire
     nomFichierTemp = u"%s.%s" % (nom, EXTENSIONS["decrypte"])
-    fichierZip = zipfile.ZipFile(UTILS_Fichiers.GetRepTemp(fichier=nomFichierTemp), "w", compression=zipfile.ZIP_DEFLATED)
+    fichierZip = zipfile.ZipFile(UTILS_Fichiers.GetRepTemp(fichier=nomFichierTemp), "w", allowZip64=True, compression=zipfile.ZIP_DEFLATED)
     numEtape = 1
     dlgprogress.Update(numEtape, _(u"Création du fichier de compression..."));numEtape += 1
     
