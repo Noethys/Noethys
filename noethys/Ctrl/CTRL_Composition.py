@@ -455,7 +455,7 @@ class CadreIndividu():
             if 'phoenix' in wx.PlatformInfo:
                 self.dc.DrawRoundedRectangle(wx.Rect(int(x-ecart), int(y-ecart), int(largeur+(ecart*2)), int(hauteur+(ecart*2))), radius=int(5*self.zoom))
             else :
-                self.dc.DrawRoundedRectangleRect(wx.Rect(int(x-ecart), int(y-ecart), int(largeur+(ecart*2)), int(hauteur+(ecart*2))), int(radius=5*self.zoom))
+                self.dc.DrawRoundedRectangleRect(wx.Rect(int(x-ecart), int(y-ecart), int(largeur+(ecart*2)), int(hauteur+(ecart*2))), radius=int(5*self.zoom))
 
         # Dessin du cadre
         self.dc.SetBrush(wx.Brush(couleurFondBasCadre))
