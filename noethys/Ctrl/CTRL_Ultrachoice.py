@@ -90,7 +90,7 @@ class CTRL(OwnerDrawnComboBox):
             tailleImage = (0, 0)
         else :
             tailleImage = dictItem["image"].GetSize()
-            dc.DrawBitmap(dictItem["image"], int(r.x, (r.y + 0) + ( (r.height/2) - dc.GetCharHeight() )/2))
+            dc.DrawBitmap(dictItem["image"], int(r.x), int((r.y + 0) + ( (r.height/2) - dc.GetCharHeight() )/2))
         
         # Dessin du label
         dc.SetFont(wx.Font(10, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))
