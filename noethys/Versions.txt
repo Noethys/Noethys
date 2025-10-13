@@ -1,3 +1,19 @@
+Version 1.3.4.1 (13/10/2025) :
+
+- Ajout de la norme SEPA 2019 et du circuit 10071
+
+Version 1.3.4.0 (20/09/2025) :
+
+- Ajout des options au ctrl de sélection des activités
+- Ajout de l'option allowZip64 dans la compression des sauvegardes
+- Ajout de la colonne date dernière conso dans la liste des inscriptions
+- Modification du tri dans le nom des titulaires
+- Correction sur l'intégration des cotisations dans l'export comptable
+- Corrections unicode par Olivier Bitsch
+- Correction de l'importation des forfaits si individu inconnu
+- Adaptations pour wxPython 4
+- Amélioration de l'export Noethysweb
+
 Version 1.3.3.9 (06/09/2024) :
 
 - Ajout de l'export des locations vers Noethysweb
