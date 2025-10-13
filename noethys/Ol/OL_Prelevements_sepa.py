@@ -36,6 +36,8 @@ from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTR
 from Utils import UTILS_Titulaires
 
 DICT_BANQUES = {}
+DICT_INFOS_INDIVIDUS = {}
+DICT_MANDATS = {}
 
 
 class TrackManuelle():
@@ -65,8 +67,26 @@ class Track(object):
         self.prelevement_reference_mandat =  donnees["prelevement_reference_mandat"]
         self.prelevement_date_mandat =  donnees["prelevement_date_mandat"]
         self.sequence = donnees["sequence"]
-        
+
+        # Nom du titulaire
         self.titulaire = donnees["titulaire"]
+
+        # Mandat
+        self.dict_mandat = DICT_MANDATS[self.IDmandat]
+        self.IDindividu = self.dict_mandat["IDindividu"]
+
+        # Adresse auto ou manuelle
+        if self.IDindividu:
+            adresse_auto = DICT_INFOS_INDIVIDUS[self.IDindividu]["adresse_auto"]
+            if adresse_auto != None and adresse_auto in DICT_INFOS_INDIVIDUS :
+                self.rue_resid = DICT_INFOS_INDIVIDUS[adresse_auto]["rue_resid"]
+                self.cp_resid = DICT_INFOS_INDIVIDUS[adresse_auto]["cp_resid"]
+                self.ville_resid = DICT_INFOS_INDIVIDUS[adresse_auto]["ville_resid"]
+            else:
+                self.rue_resid = DICT_INFOS_INDIVIDUS[self.IDindividu]["rue_resid"]
+                self.cp_resid = DICT_INFOS_INDIVIDUS[self.IDindividu]["cp_resid"]
+                self.ville_resid = DICT_INFOS_INDIVIDUS[self.IDindividu]["ville_resid"]
+
         self.type = donnees["type"]
         self.IDfacture = donnees["IDfacture"]
         self.libelle = donnees["libelle"]
@@ -92,18 +112,40 @@ class Track(object):
         if self.IDfamille != None :
             self.titulaires = self.dictTitulaires[self.IDfamille]["titulairesSansCivilite"]
     
-##    def MAJnomBanque(self):
-##        if DICT_BANQUES.has_key(self.prelevement_banque) :
-##            self.nomBanque = DICT_BANQUES[self.prelevement_banque]
-##        else :
-##            self.nomBanque = u""
-
-
-
 
 def GetTracks(IDlot=None):
     """ Récupération des données """
-    dictTitulaires = UTILS_Titulaires.GetTitulaires() 
+    dictTitulaires = UTILS_Titulaires.GetTitulaires()
+
+    # Importation des individus
+    global DICT_INFOS_INDIVIDUS
+    dictInfos = {}
+    db = GestionDB.DB()
+    req = """SELECT IDindividu, nom, prenom, adresse_auto, rue_resid, cp_resid, ville_resid  FROM individus;"""
+    db.ExecuterReq(req)
+    listeDonnees = db.ResultatReq()
+    db.Close()
+    for IDindividu, nom, prenom, adresse_auto, rue_resid, cp_resid, ville_resid in listeDonnees:
+        dictInfos[IDindividu] = {"nom": nom, "prenom": prenom, "rue_resid": rue_resid, "cp_resid": cp_resid,
+                                 "ville_resid": ville_resid, "adresse_auto": adresse_auto}
+    DICT_INFOS_INDIVIDUS = dictInfos
+
+    # Importation des mandats
+    global DICT_MANDATS
+    dictMandats = {}
+    db = GestionDB.DB()
+    req = """SELECT IDmandat, IDindividu, individu_nom, individu_rue, individu_cp, individu_ville, individu_service, individu_numero, individu_batiment, individu_etage, individu_boite, individu_pays FROM mandats;"""
+    db.ExecuterReq(req)
+    listeDonnees = db.ResultatReq()
+    db.Close()
+    for IDmandat, IDindividu, individu_nom, individu_rue, individu_cp, individu_ville, individu_service, individu_numero, individu_batiment, individu_etage, individu_boite, individu_pays in listeDonnees:
+        dictMandats[IDmandat] = {"IDindividu": IDindividu, "individu_nom": individu_nom, "individu_rue": individu_rue,
+                                 "individu_ville": individu_ville, "individu_cp": individu_cp,
+                                 "individu_service": individu_service, "individu_numero": individu_numero,
+                                 "individu_batiment": individu_batiment, "individu_etage": individu_etage,
+                                 "individu_boite": individu_boite, "individu_pays": individu_pays}
+    DICT_MANDATS = dictMandats
+
     if IDlot == None :
         return []
     DB = GestionDB.DB()
@@ -132,7 +174,7 @@ def GetTracks(IDlot=None):
             "prelevement_banque" : prelevement_banque, "prelevement_iban" : prelevement_iban, "prelevement_bic" : prelevement_bic, 
             "IDmandat" : IDmandat, "prelevement_reference_mandat" : prelevement_reference_mandat, "prelevement_date_mandat" : prelevement_date_mandat,
             "sequence" : sequence, "titulaire" : titulaire, "type" : type_prelevement, "IDfacture" : IDfacture, 
-            "libelle" : libelle, "montant" : montant, "statut" : statut, "IDlot" : IDlot, "IDmandat" : IDmandat, "nomBanque" : nomBanque, "etat" : None,
+            "libelle" : libelle, "montant" : montant, "statut" : statut, "IDlot" : IDlot, "nomBanque" : nomBanque, "etat" : None,
             "IDreglement" : IDreglement, "dateReglement" : dateReglement, "IDdepot" : IDdepot, "IDcompte_payeur" : IDcompte_payeur,
             }
         track = Track(dictTemp, dictTitulaires)
@@ -141,31 +183,6 @@ def GetTracks(IDlot=None):
 
 
 
-##def GetMandats():
-##    """ Récupération des mandats """
-##    DB = GestionDB.DB()
-##    req = """SELECT IDmandat, IDfamille, rum, type, date, IDbanque, mandats.IDindividu, individu_nom, iban, bic, sequence, individus.nom, individus.prenom
-##    FROM mandats
-##    LEFT JOIN individus ON individus.IDindividu = mandats.IDindividu
-##    ORDER BY date;"""
-##    DB.ExecuterReq(req)
-##    listeDonnees = DB.ResultatReq()
-##    DB.Close()
-##    dictMandats = {}
-##    for IDmandat, IDfamille, rum, type, date, IDbanque, IDindividu, individu_nom, iban, bic, sequence, nomIndividu, prenomIndividu in listeDonnees :
-##        if dictMandats.has_key(IDfamille) == False :
-##            dictMandats[IDfamille] = []
-##        dictMandats[IDfamille].append({
-##            "IDmandat" : IDmandat, "IDfamille" : IDfamille, "rum" : rum, "type" : type, "date" : date, "IDbanque" : IDbanque, 
-##            "IDindividu" : IDindividu, "individu_nom" : individu_nom, "iban" : iban, "bic" : bic, "sequence" : sequence, 
-##            "nomIndividu" : nomIndividu, "prenomIndividu" : prenomIndividu,       
-##            })
-##    return dictMandats
-
-
-
-
-    
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
         # Récupération des paramètres perso
@@ -195,32 +212,9 @@ class ListView(FastObjectListView):
         self.Modifier()
 
     def InitModel(self, tracks=None, IDcompte=None, IDmode=None):
-##        self.InitBanques() 
         if tracks != None :
             self.tracks = tracks
         self.donnees = self.tracks
-        
-##    def InitBanques(self):
-##        global DICT_BANQUES
-##        DICT_BANQUES = self.GetNomsBanques()
-    
-##    def GetNomsBanques(self):
-##        DB = GestionDB.DB()
-##        req = """SELECT IDbanque, nom
-##        FROM banques;"""
-##        DB.ExecuterReq(req)
-##        listeDonnees = DB.ResultatReq()
-##        DB.Close()
-##        dictBanques = {}
-##        for IDbanque, nom in listeDonnees :
-##            dictBanques[IDbanque] = nom
-##        return dictBanques
-    
-##    def MAJnomsBanquesTracks(self):
-##        self.InitBanques() 
-##        for track in self.GetObjects() :
-##            track.MAJnomBanque()
-##            self.RefreshObject(track)
             
     def InitObjectListView(self):            
         # Couleur en alternance des lignes

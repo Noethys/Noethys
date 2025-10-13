@@ -96,12 +96,8 @@ class ListView(FastObjectListView):
 
         liste_Colonnes = [
             ColumnDefn(u"", "left", 21, "IDcompte", typeDonnee="entier", imageGetter=GetImageDefaut),
-            ColumnDefn(_(u"Intitulé"), 'left', 200, "nom", typeDonnee="texte"),
-            ColumnDefn(_(u"Numéro"), "left", 100, "numero", typeDonnee="texte"),
-            ColumnDefn(_(u"Raison sociale"), "left", 170, "raison", typeDonnee="texte"),
-            ColumnDefn(_(u"Code Etab."), "left", 80, "code_etab", typeDonnee="texte"),
-            ColumnDefn(_(u"Code Guichet"), "left", 90, "code_guichet", typeDonnee="texte"),
-            ColumnDefn(_(u"N° NNE"), "left", 80, "code_nne", typeDonnee="texte"),
+            ColumnDefn(_(u"Intitulé"), 'left', 400, "nom", typeDonnee="texte"),
+            ColumnDefn(_(u"Numéro"), "left", 300, "numero", typeDonnee="texte"),
             ]
 
         self.SetColumns(liste_Colonnes)

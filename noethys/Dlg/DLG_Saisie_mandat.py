@@ -257,10 +257,24 @@ class Dialog(wx.Dialog):
         self.radio_individu = wx.RadioButton(self, -1, _(u"Le titulaire suivant :"))
         self.label_individu_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_individu_nom = wx.TextCtrl(self, -1, u"")
+        self.label_individu_service = wx.StaticText(self, -1, _(u"Service :"))
+        self.ctrl_individu_service = wx.TextCtrl(self, -1, "")
+        self.label_individu_numero = wx.StaticText(self, -1, _(u"Numéro :"))
+        self.ctrl_individu_numero = wx.TextCtrl(self, -1, "")
         self.label_individu_rue = wx.StaticText(self, -1, _(u"Rue :"))
-        self.ctrl_individu_rue = wx.TextCtrl(self, -1, u"")
-        self.label_individu_ville = wx.StaticText(self, -1, _(u"C.P. :"))
-        self.ctrl_individu_ville = CTRL_Saisie_adresse.Adresse(self)
+        self.ctrl_individu_rue = wx.TextCtrl(self, -1, "")
+        self.label_individu_batiment = wx.StaticText(self, -1, _(u"Bâtiment :"))
+        self.ctrl_individu_batiment = wx.TextCtrl(self, -1, "")
+        self.label_individu_etage = wx.StaticText(self, -1, _(u"Etage :"))
+        self.ctrl_individu_etage = wx.TextCtrl(self, -1, "")
+        self.label_individu_boite = wx.StaticText(self, -1, _(u"Boîte :"))
+        self.ctrl_individu_boite = wx.TextCtrl(self, -1, "")
+        self.label_individu_cp = wx.StaticText(self, -1, _(u"CP :"))
+        self.ctrl_individu_cp = wx.TextCtrl(self, -1, "")
+        self.label_individu_ville = wx.StaticText(self, -1, _(u"Ville :"))
+        self.ctrl_individu_ville = wx.TextCtrl(self, -1, "")
+        self.label_individu_pays = wx.StaticText(self, -1, _(u"Code pays :"))
+        self.ctrl_individu_pays = wx.TextCtrl(self, -1, "")
 
         # Options
         self.box_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
@@ -332,6 +346,7 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.ctrl_iban.SetMinSize((200, -1))
         self.ctrl_bic.SetMinSize((120, -1))
+        self.ctrl_membre.SetMinSize((250, -1))
         self.ctrl_controle.SetToolTip(wx.ToolTip(_(u"Une coche verte apparaît si les coordonnées bancaires sont valides")))
 ##        self.ctrl_banque.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici l'établissement du compte")))
         self.ctrl_iban.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numéro IBAN")))
@@ -341,7 +356,15 @@ class Dialog(wx.Dialog):
         self.ctrl_membre.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici un membre de la famille en tant que titulaire du compte bancaire")))
         self.radio_individu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir manuellement un titulaire de compte bancaire")))
         self.ctrl_individu_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom de titulaire pour ce compte bancaire")))
-        self.ctrl_individu_rue.SetToolTip(wx.ToolTip(_(u"Saisissez la rue de l'individu")))
+        self.ctrl_individu_service.SetToolTip(wx.ToolTip(_(u"Identité du destinataire ou du service. Exemple : Service comptabilité.")))
+        self.ctrl_individu_numero.SetToolTip(wx.ToolTip(_(u"Numéro de la voie. Exemple : 14.")))
+        self.ctrl_individu_rue.SetToolTip(wx.ToolTip(_(u"Libellé de la voie sans le numéro. Exemple : Rue des alouettes.")))
+        self.ctrl_individu_batiment.SetToolTip(wx.ToolTip(_(u"Nom de l'immeuble, du bâtiment ou de la résidence, etc... Exemple : Résidence les acacias.")))
+        self.ctrl_individu_etage.SetToolTip(wx.ToolTip(_(u"Numéro de l'étage, de l'annexe, etc... Exemple : Etage 4.")))
+        self.ctrl_individu_boite.SetToolTip(wx.ToolTip(_(u"Boîte postale, tri service arrivée, etc... Exemple : BP64.")))
+        self.ctrl_individu_cp.SetToolTip(wx.ToolTip(_(u"Code postal. Exemple : 29200.")))
+        self.ctrl_individu_ville.SetToolTip(wx.ToolTip(_(u"Nom de la ville. Exemple : BREST.")))
+        self.ctrl_individu_pays.SetToolTip(wx.ToolTip(_(u"Code du pays. Exemple : FR.")))
         self.ctrl_reference_mandat.SetToolTip(wx.ToolTip(_(u"Lors de la saisie d'un mandat, il est attribué automatiquement par Noethys en fonction du RUM du dernier mandat saisi. Mais vous pouvez le modifier en fonction de vos besoins (Ex : '004567', 'XZA-34654', etc...). Attention, il doit s'agir d'une référence alphanumérique unique.")))
         self.ctrl_date_mandat.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de signature du mandat SEPA")))
         self.ctrl_type_mandat.SetToolTip(wx.ToolTip(_(u"Utilisez le type 'Récurrent' si le mandant est utilisable pour plusieurs prélèvements ou 'Ponctuel' s'il n'était destiné qu'à un prélèvement unique.")))
@@ -361,20 +384,19 @@ class Dialog(wx.Dialog):
         # RIB
         box_rib = wx.StaticBoxSizer(self.box_rib_staticbox, wx.VERTICAL)
         
-        grid_sizer_iban = wx.FlexGridSizer(rows=2, cols=3, vgap=5, hgap=5)
+        grid_sizer_iban = wx.FlexGridSizer(rows=2, cols=6, vgap=5, hgap=5)
         grid_sizer_iban.Add(self.label_iban, 0, wx.LEFT|wx.ALIGN_CENTER_VERTICAL, 10)
-        grid_sizer_iban.Add(self.label_bic, 0, wx.LEFT|wx.ALIGN_CENTER_VERTICAL, 10)
-        grid_sizer_iban.Add( (2, 2), 0, wx.LEFT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_iban.Add(self.ctrl_iban, 0, wx.EXPAND, 0)
+        grid_sizer_iban.Add(self.label_bic, 0, wx.LEFT | wx.ALIGN_CENTER_VERTICAL, 10)
         grid_sizer_iban.Add(self.ctrl_bic, 0, wx.EXPAND, 0)
         grid_sizer_iban.AddGrowableCol(0)
-        box_rib.Add(grid_sizer_iban, 1, wx.LEFT|wx.TOP|wx.EXPAND, 10)
+        box_rib.Add(grid_sizer_iban, 1, wx.RIGHT|wx.TOP|wx.EXPAND, 10)
 
         grid_sizer_controle = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_controle.Add(self.ctrl_controle, 0, wx.LEFT, 10)
         grid_sizer_controle.Add(self.label_analyse_iban, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_controle.AddGrowableCol(1)
-        box_rib.Add(grid_sizer_controle, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
+        box_rib.Add(grid_sizer_controle, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 5)
         
         # Banque
 ##        grid_sizer_banque = wx.FlexGridSizer(rows=1, cols=3, vgap=5, hgap=5)
@@ -387,7 +409,7 @@ class Dialog(wx.Dialog):
         box_titulaire = wx.StaticBoxSizer(self.box_titulaire_staticbox, wx.VERTICAL)
         grid_sizer_titulaire = wx.FlexGridSizer(rows=5, cols=1, vgap=5, hgap=5)
 
-        grid_sizer_membre = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+        grid_sizer_membre = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
         grid_sizer_membre.Add(self.radio_membre, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_membre.Add(self.ctrl_membre, 0, wx.EXPAND, 0)
         grid_sizer_membre.AddGrowableCol(1)
@@ -395,18 +417,33 @@ class Dialog(wx.Dialog):
         
         grid_sizer_titulaire.Add(self.radio_individu, 0, 0, 0)
         
-        grid_sizer_individu = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=5)
+        grid_sizer_individu = wx.FlexGridSizer(rows=10, cols=2, vgap=8, hgap=8)
         grid_sizer_individu.Add(self.label_individu_nom, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_individu.Add(self.ctrl_individu_nom, 0, wx.EXPAND, 0)
+        grid_sizer_individu.Add(self.label_individu_service, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_individu.Add(self.ctrl_individu_service, 0, wx.EXPAND, 0)
+        grid_sizer_individu.Add(self.label_individu_numero, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_individu.Add(self.ctrl_individu_numero, 0, wx.EXPAND, 0)
         grid_sizer_individu.Add(self.label_individu_rue, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_individu.Add(self.ctrl_individu_rue, 0, wx.EXPAND, 0)
+        grid_sizer_individu.Add(self.label_individu_batiment, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_individu.Add(self.ctrl_individu_batiment, 0, wx.EXPAND, 0)
+        grid_sizer_individu.Add(self.label_individu_etage, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_individu.Add(self.ctrl_individu_etage, 0, wx.EXPAND, 0)
+        grid_sizer_individu.Add(self.label_individu_boite, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_individu.Add(self.ctrl_individu_boite, 0, wx.EXPAND, 0)
+        grid_sizer_individu.Add(self.label_individu_cp, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_individu.Add(self.ctrl_individu_cp, 0, wx.EXPAND, 0)
         grid_sizer_individu.Add(self.label_individu_ville, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_individu.Add(self.ctrl_individu_ville, 0, wx.EXPAND, 0)
+        grid_sizer_individu.Add(self.label_individu_pays, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_individu.Add(self.ctrl_individu_pays, 0, wx.EXPAND, 0)
+
         grid_sizer_individu.AddGrowableCol(1)
         grid_sizer_titulaire.Add(grid_sizer_individu, 1, wx.LEFT|wx.EXPAND, 47)
         grid_sizer_titulaire.AddGrowableCol(0)
         box_titulaire.Add(grid_sizer_titulaire, 1, wx.ALL|wx.EXPAND, 10)
-        
+
         # Mandat SEPA
         box_mandat = wx.StaticBoxSizer(self.box_mandat_staticbox, wx.VERTICAL)
         grid_sizer_mandat = wx.FlexGridSizer(rows=4, cols=2, vgap=10, hgap=10)
@@ -420,7 +457,7 @@ class Dialog(wx.Dialog):
         grid_sizer_mandat.Add(self.ctrl_actif, 0, wx.EXPAND, 0)
         grid_sizer_mandat.AddGrowableCol(1)
         box_mandat.Add(grid_sizer_mandat, 1, wx.ALL|wx.EXPAND, 10)
-        
+
         # Options
         box_options = wx.StaticBoxSizer(self.box_options_staticbox, wx.VERTICAL)
 
@@ -441,9 +478,9 @@ class Dialog(wx.Dialog):
         
         grid_sizer_gauche.Add(box_mandat, 1, wx.EXPAND, 0)
         grid_sizer_gauche.Add(box_rib, 1, wx.EXPAND, 0)
+        grid_sizer_gauche.Add(box_options, 1, wx.EXPAND, 0)
         
         grid_sizer_droite.Add(box_titulaire, 1, wx.EXPAND, 0)
-        grid_sizer_droite.Add(box_options, 1, wx.EXPAND, 0)
         grid_sizer_droite.AddGrowableRow(1)
         grid_sizer_droite.AddGrowableCol(0)
         
@@ -519,8 +556,15 @@ class Dialog(wx.Dialog):
         etat = self.radio_membre.GetValue()
         self.ctrl_membre.Enable(etat)
         self.ctrl_individu_nom.Enable(not etat)
+        self.ctrl_individu_service.Enable(not etat)
+        self.ctrl_individu_numero.Enable(not etat)
         self.ctrl_individu_rue.Enable(not etat)
+        self.ctrl_individu_batiment.Enable(not etat)
+        self.ctrl_individu_etage.Enable(not etat)
+        self.ctrl_individu_boite.Enable(not etat)
+        self.ctrl_individu_cp.Enable(not etat)
         self.ctrl_individu_ville.Enable(not etat)
+        self.ctrl_individu_pays.Enable(not etat)
 
     def OnBoutonAide(self, event):
         from Utils import UTILS_Aide
@@ -581,14 +625,15 @@ class Dialog(wx.Dialog):
         if self.IDfamille == None :
             return
         DB = GestionDB.DB()
-        req = """SELECT IDfamille, rum, type, date, IDbanque, IDindividu, individu_nom, individu_rue, individu_cp, individu_ville, iban, bic, memo, sequence, actif
+        req = """SELECT IDfamille, rum, type, date, IDbanque, IDindividu, individu_nom, individu_rue, individu_cp, individu_ville, iban, bic, memo, sequence, actif,
+        individu_service, individu_numero, individu_batiment, individu_etage, individu_boite, individu_pays
         FROM mandats 
         WHERE IDmandat=%d;""" % self.IDmandat
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) == 0 : return
-        self.IDfamille, rum, typeMandat, date, IDbanque, IDindividu, nom, rue, cp, ville, iban, bic, memo, sequence, actif = listeDonnees[0]
+        self.IDfamille, rum, typeMandat, date, IDbanque, IDindividu, nom, rue, cp, ville, iban, bic, memo, sequence, actif, individu_service, individu_numero, individu_batiment, individu_etage, individu_boite, individu_pays = listeDonnees[0]
 
         if nom == None : nom = ""
         if rue == None : rue = ""
@@ -618,10 +663,16 @@ class Dialog(wx.Dialog):
             self.ctrl_membre.SetID(IDindividu)
         else :
             self.radio_individu.SetValue(True)
-            self.ctrl_individu_nom.SetValue(nom)
-            self.ctrl_individu_rue.SetValue(rue)
-            self.ctrl_individu_ville.SetValueCP(cp)
-            self.ctrl_individu_ville.SetValueVille(ville)
+            if nom: self.ctrl_individu_nom.SetValue(nom)
+            if rue: self.ctrl_individu_rue.SetValue(rue)
+            if cp: self.ctrl_individu_cp.SetValue(cp)
+            if ville: self.ctrl_individu_ville.SetValue(ville)
+            if individu_service: self.ctrl_individu_service.SetValue(individu_service)
+            if individu_numero: self.ctrl_individu_numero.SetValue(individu_numero)
+            if individu_batiment: self.ctrl_individu_batiment.SetValue(individu_batiment)
+            if individu_etage: self.ctrl_individu_etage.SetValue(individu_etage)
+            if individu_boite: self.ctrl_individu_boite.SetValue(individu_boite)
+            if individu_pays: self.ctrl_individu_pays.SetValue(individu_pays)
         
         # Mémo
         self.ctrl_memo.SetValue(memo) 
@@ -640,21 +691,33 @@ class Dialog(wx.Dialog):
         IDindividu = self.ctrl_membre.GetID()
         nom = self.ctrl_individu_nom.GetValue()
         rue = self.ctrl_individu_rue.GetValue()
-        cp = self.ctrl_individu_ville.GetValueCP()
-        ville = self.ctrl_individu_ville.GetValueVille()
+        cp = self.ctrl_individu_cp.GetValue()
+        ville = self.ctrl_individu_ville.GetValue()
         iban = self.ctrl_iban.GetValue() 
         bic = self.ctrl_bic.GetValue() 
         rum = self.ctrl_reference_mandat.GetValue() 
         date = self.ctrl_date_mandat.GetDate() 
         typeMandat = self.ctrl_type_mandat.GetSelection() 
         memo = self.ctrl_memo.GetValue() 
-        actif = self.ctrl_actif.GetValue() 
+        actif = self.ctrl_actif.GetValue()
+        individu_service = self.ctrl_individu_service.GetValue()
+        individu_numero = self.ctrl_individu_numero.GetValue()
+        individu_batiment = self.ctrl_individu_batiment.GetValue()
+        individu_etage = self.ctrl_individu_etage.GetValue()
+        individu_boite = self.ctrl_individu_boite.GetValue()
+        individu_pays = self.ctrl_individu_pays.GetValue()
 
         if self.radio_membre.GetValue() == True :
             nom = None
             rue = None
             cp = None
             ville = None
+            individu_service = None
+            individu_numero = None
+            individu_batiment = None
+            individu_etage = None
+            individu_boite = None
+            individu_pays = None
         else :
             IDindividu = None
 
@@ -751,6 +814,12 @@ class Dialog(wx.Dialog):
                 ("memo", memo),
                 ("sequence", sequence),
                 ("actif", int(actif)),
+                ("individu_service", individu_service),
+                ("individu_numero", individu_numero),
+                ("individu_batiment", individu_batiment),
+                ("individu_etage", individu_etage),
+                ("individu_boite", individu_boite),
+                ("individu_pays", individu_pays),
             ]
         
         if self.IDmandat == None :

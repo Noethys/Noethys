@@ -1562,6 +1562,35 @@ class DB(GestionDB.DB):
 
         # =============================================================
 
+        versionFiltre = (1, 3, 4, 1)
+        if versionFichier < versionFiltre:
+            try:
+                self.AjoutChamp("comptes_bancaires", "adresse_service", "VARCHAR(400)")
+                self.AjoutChamp("comptes_bancaires", "adresse_rue", "VARCHAR(400)")
+                self.AjoutChamp("comptes_bancaires", "adresse_numero", "VARCHAR(400)")
+                self.AjoutChamp("comptes_bancaires", "adresse_batiment", "VARCHAR(400)")
+                self.AjoutChamp("comptes_bancaires", "adresse_etage", "VARCHAR(400)")
+                self.AjoutChamp("comptes_bancaires", "adresse_boite", "VARCHAR(400)")
+                self.AjoutChamp("comptes_bancaires", "adresse_cp", "VARCHAR(400)")
+                self.AjoutChamp("comptes_bancaires", "adresse_ville", "VARCHAR(400)")
+                self.AjoutChamp("comptes_bancaires", "adresse_pays", "VARCHAR(400)")
+                self.AjoutChamp("mandats", "individu_service", "VARCHAR(400)")
+                self.AjoutChamp("mandats", "individu_numero", "VARCHAR(400)")
+                self.AjoutChamp("mandats", "individu_batiment", "VARCHAR(400)")
+                self.AjoutChamp("mandats", "individu_etage", "VARCHAR(400)")
+                self.AjoutChamp("mandats", "individu_boite", "VARCHAR(400)")
+                self.AjoutChamp("mandats", "individu_pays", "VARCHAR(400)")
+                self.AjoutChamp("perceptions", "service", "VARCHAR(400)")
+                self.AjoutChamp("perceptions", "numero", "VARCHAR(400)")
+                self.AjoutChamp("perceptions", "batiment", "VARCHAR(400)")
+                self.AjoutChamp("perceptions", "etage", "VARCHAR(400)")
+                self.AjoutChamp("perceptions", "boite", "VARCHAR(400)")
+                self.AjoutChamp("perceptions", "pays", "VARCHAR(400)")
+            except Exception as err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
+
 
 
         return True

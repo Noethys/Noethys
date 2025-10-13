@@ -11,13 +11,10 @@
 
 import Chemins
 from Utils.UTILS_Traduction import _
-import datetime
-import string
-import six
+import time, string, six, re, zipfile
 from xml.dom.minidom import Document
 from six.moves.urllib.request import urlretrieve
 from Utils import UTILS_Fichiers, UTILS_Texte
-import zipfile
 from lxml import etree
 
 
@@ -213,10 +210,6 @@ def GetXMLSepa(dictDonnees):
     remise_montant = dictDonnees["remise_montant"]
     
     creancier_nom = dictDonnees["creancier_nom"]
-    creancier_rue = dictDonnees["creancier_rue"]
-    creancier_cp = dictDonnees["creancier_cp"]
-    creancier_ville = dictDonnees["creancier_ville"]
-    creancier_pays = dictDonnees["creancier_pays"]
     creancier_siret = dictDonnees["creancier_siret"]
     
     listeLots = dictDonnees["lots"]
@@ -224,7 +217,7 @@ def GetXMLSepa(dictDonnees):
     # Génération du document XML
     racine = doc.createElement("Document")
     racine.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
-    racine.setAttribute("xmlns", "urn:iso:std:iso:20022:tech:xsd:pain.008.001.02")
+    racine.setAttribute("xmlns", "urn:iso:std:iso:20022:tech:xsd:pain.008.001.%s" % "08" if dictDonnees["version_sepa"] == "2019" else "02")
     doc.appendChild(racine)
     
     # CstmrDrctDbtInitn
@@ -376,38 +369,133 @@ def GetXMLSepa(dictDonnees):
         Cdtr = doc.createElement("Cdtr")
         PmtInf.appendChild(Cdtr)
 
-        if type_remise == "prive":
-            # Cdtr
+        if dictDonnees["version_sepa"] == "2009":
+
+            if type_remise == "prive":
+                # Cdtr
+                Nm = doc.createElement("Nm")
+                Cdtr.appendChild(Nm)
+                Nm.appendChild(doc.createTextNode(creancier_nom))
+
+            if type_remise == "public_dft":
+                perception = dictDonnees["perception"]
+
+                # Cdtr
+                Nm = doc.createElement("Nm")
+                Cdtr.appendChild(Nm)
+                Nm.appendChild(doc.createTextNode(perception["nom"]))
+
+                # PstlAdr
+                PstlAdr = doc.createElement("PstlAdr")
+                Cdtr.appendChild(PstlAdr)
+
+                # Ctry
+                Ctry = doc.createElement("Ctry")
+                PstlAdr.appendChild(Ctry)
+                Ctry.appendChild(doc.createTextNode("FR"))
+
+                # AdrLine
+                AdrLine = doc.createElement("AdrLine")
+                PstlAdr.appendChild(AdrLine)
+                AdrLine.appendChild(doc.createTextNode(perception["rue_resid"]))
+
+                # AdrLine
+                AdrLine = doc.createElement("AdrLine")
+                PstlAdr.appendChild(AdrLine)
+                AdrLine.appendChild(doc.createTextNode(u"%s %s" % (perception["cp_resid"], perception["ville_resid"])))
+
+        if dictDonnees["version_sepa"] == "2019":
+
+            if type_remise == "prive":
+                detail_creancier = {
+                    "Nm": dictDonnees["creancier"]["raison"],
+                    "Dept": dictDonnees["creancier"]["adresse_service"],
+                    "StrtNm": dictDonnees["creancier"]["adresse_rue"],
+                    "BldgNb": dictDonnees["creancier"]["adresse_numero"],
+                    "BldgNm": dictDonnees["creancier"]["adresse_batiment"],
+                    "Flr": dictDonnees["creancier"]["adresse_etage"],
+                    "PstBx": dictDonnees["creancier"]["adresse_boite"],
+                    "PstCd": dictDonnees["creancier"]["adresse_cp"],
+                    "TwnNm": dictDonnees["creancier"]["adresse_ville"],
+                    "Ctry": dictDonnees["creancier"]["adresse_pays"],
+                }
+
+            if type_remise == "public_dft":
+                detail_creancier = {
+                    "Nm": dictDonnees["perception"]["nom"],
+                    "Dept": dictDonnees["perception"]["service"],
+                    "StrtNm": dictDonnees["perception"]["rue_resid"],
+                    "BldgNb": dictDonnees["perception"]["numero"],
+                    "BldgNm": dictDonnees["perception"]["batiment"],
+                    "Flr": dictDonnees["perception"]["etage"],
+                    "PstBx": dictDonnees["perception"]["boite"],
+                    "PstCd": dictDonnees["perception"]["cp_resid"],
+                    "TwnNm": dictDonnees["perception"]["ville_resid"],
+                    "Ctry": dictDonnees["perception"]["pays"],
+                }
+
+            # Nm
             Nm = doc.createElement("Nm")
             Cdtr.appendChild(Nm)
-            Nm.appendChild(doc.createTextNode(creancier_nom))
-
-        if type_remise == "public_dft":
-            perception = dictDonnees["perception"]
-
-            # Cdtr
-            Nm = doc.createElement("Nm")
-            Cdtr.appendChild(Nm)
-            Nm.appendChild(doc.createTextNode(perception["nom"]))
+            Nm.appendChild(doc.createTextNode(detail_creancier["Nm"]))
 
             # PstlAdr
             PstlAdr = doc.createElement("PstlAdr")
             Cdtr.appendChild(PstlAdr)
 
+            # Dept
+            if detail_creancier["Dept"]:
+                Dept = doc.createElement("Dept")
+                PstlAdr.appendChild(Dept)
+                Dept.appendChild(doc.createTextNode(detail_creancier["Dept"]))
+
+            # StrtNm
+            if detail_creancier["StrtNm"]:
+                StrtNm = doc.createElement("StrtNm")
+                PstlAdr.appendChild(StrtNm)
+                StrtNm.appendChild(doc.createTextNode(detail_creancier["StrtNm"]))
+
+            # BldgNb
+            if detail_creancier["BldgNb"]:
+                BldgNb = doc.createElement("BldgNb")
+                PstlAdr.appendChild(BldgNb)
+                BldgNb.appendChild(doc.createTextNode(detail_creancier["BldgNb"]))
+
+            # BldgNm
+            if detail_creancier["BldgNm"]:
+                BldgNm = doc.createElement("BldgNm")
+                PstlAdr.appendChild(BldgNm)
+                BldgNm.appendChild(doc.createTextNode(detail_creancier["BldgNm"]))
+
+            # Flr
+            if detail_creancier["Flr"]:
+                Flr = doc.createElement("Flr")
+                PstlAdr.appendChild(Flr)
+                Flr.appendChild(doc.createTextNode(detail_creancier["Flr"]))
+
+            # PstBx
+            if detail_creancier["PstBx"]:
+                PstBx = doc.createElement("PstBx")
+                PstlAdr.appendChild(PstBx)
+                PstBx.appendChild(doc.createTextNode(detail_creancier["PstBx"]))
+
+            # PstCd
+            if detail_creancier["PstCd"]:
+                PstCd = doc.createElement("PstCd")
+                PstlAdr.appendChild(PstCd)
+                PstCd.appendChild(doc.createTextNode(detail_creancier["PstCd"]))
+
+            # TwnNm
+            if detail_creancier["TwnNm"]:
+                TwnNm = doc.createElement("TwnNm")
+                PstlAdr.appendChild(TwnNm)
+                TwnNm.appendChild(doc.createTextNode(detail_creancier["TwnNm"]))
+
             # Ctry
-            Ctry = doc.createElement("Ctry")
-            PstlAdr.appendChild(Ctry)
-            Ctry.appendChild(doc.createTextNode("FR"))
-
-            # AdrLine
-            AdrLine = doc.createElement("AdrLine")
-            PstlAdr.appendChild(AdrLine)
-            AdrLine.appendChild(doc.createTextNode(perception["rue_resid"]))
-
-            # AdrLine
-            AdrLine = doc.createElement("AdrLine")
-            PstlAdr.appendChild(AdrLine)
-            AdrLine.appendChild(doc.createTextNode(u"%s %s" % (perception["cp_resid"], perception["ville_resid"])))
+            if detail_creancier["Ctry"]:
+                Ctry = doc.createElement("Ctry")
+                PstlAdr.appendChild(Ctry)
+                Ctry.appendChild(doc.createTextNode(detail_creancier["Ctry"]))
 
         # CdtrAcct
         CdtrAcct = doc.createElement("CdtrAcct")
@@ -431,7 +519,7 @@ def GetXMLSepa(dictDonnees):
         CdtrAgt.appendChild(FinInstnId)
 
         # BIC
-        BIC = doc.createElement("BIC")
+        BIC = doc.createElement("BICFI" if dictDonnees["version_sepa"] == "2019" else "BIC")
         FinInstnId.appendChild(BIC)
         BIC.appendChild(doc.createTextNode(lot_bic))
 
@@ -566,7 +654,7 @@ def GetXMLSepa(dictDonnees):
             DbtrAgt.appendChild(FinInstnId)
 
             # Dbtr
-            BIC = doc.createElement("BIC")
+            BIC = doc.createElement("BICFI" if dictDonnees["version_sepa"] == "2019" else "BIC")
             FinInstnId.appendChild(BIC)
             BIC.appendChild(doc.createTextNode(transaction_bic))
 
@@ -578,6 +666,79 @@ def GetXMLSepa(dictDonnees):
             Nm = doc.createElement("Nm")
             Dbtr.appendChild(Nm)
             Nm.appendChild(doc.createTextNode(UTILS_Texte.Supprime_accent(transaction_debiteur[:70])))
+
+            if dictDonnees["version_sepa"] == "2019":
+
+                track = dictTransaction["track"]
+                dict_mandat = track.dict_mandat
+
+                # Recherche d'une adresse structurée
+                if track.IDindividu:
+                    dict_mandat["individu_rue"] = track.rue_resid
+                    dict_mandat["individu_cp"] = track.cp_resid
+                    dict_mandat["individu_ville"] = track.ville_resid
+                    detail = Extraire_numero_rue(rue=track.rue_resid)
+                    if detail:
+                        dict_mandat["individu_numero"] = detail[0]
+                        dict_mandat["individu_rue"] = detail[1]
+
+                # PstlAdr
+                PstlAdr = doc.createElement("PstlAdr")
+                Dbtr.appendChild(PstlAdr)
+
+                # Dept
+                if dict_mandat["individu_service"]:
+                    Dept = doc.createElement("Dept")
+                    PstlAdr.appendChild(Dept)
+                    Dept.appendChild(doc.createTextNode(dict_mandat["individu_service"]))
+
+                # StrtNm
+                if dict_mandat["individu_rue"]:
+                    StrtNm = doc.createElement("StrtNm")
+                    PstlAdr.appendChild(StrtNm)
+                    StrtNm.appendChild(doc.createTextNode(dict_mandat["individu_rue"]))
+
+                # BldgNb
+                if dict_mandat["individu_numero"]:
+                    BldgNb = doc.createElement("BldgNb")
+                    PstlAdr.appendChild(BldgNb)
+                    BldgNb.appendChild(doc.createTextNode(dict_mandat["individu_numero"]))
+
+                # BldgNm
+                if dict_mandat["individu_batiment"]:
+                    BldgNm = doc.createElement("BldgNm")
+                    PstlAdr.appendChild(BldgNm)
+                    BldgNm.appendChild(doc.createTextNode(dict_mandat["individu_batiment"]))
+
+                # Flr
+                if dict_mandat["individu_etage"]:
+                    Flr = doc.createElement("Flr")
+                    PstlAdr.appendChild(Flr)
+                    Flr.appendChild(doc.createTextNode(dict_mandat["individu_etage"]))
+
+                # PstBx
+                if dict_mandat["individu_boite"]:
+                    PstBx = doc.createElement("PstBx")
+                    PstlAdr.appendChild(PstBx)
+                    PstBx.appendChild(doc.createTextNode(dict_mandat["individu_boite"]))
+
+                # PstCd
+                if dict_mandat["individu_cp"]:
+                    PstCd = doc.createElement("PstCd")
+                    PstlAdr.appendChild(PstCd)
+                    PstCd.appendChild(doc.createTextNode(dict_mandat["individu_cp"]))
+
+                # TwnNm
+                if dict_mandat["individu_ville"]:
+                    TwnNm = doc.createElement("TwnNm")
+                    PstlAdr.appendChild(TwnNm)
+                    TwnNm.appendChild(doc.createTextNode(dict_mandat["individu_ville"]))
+
+                # Ctry
+                if dict_mandat["individu_pays"]:
+                    Ctry = doc.createElement("Ctry")
+                    PstlAdr.appendChild(Ctry)
+                    Ctry.appendChild(doc.createTextNode(dict_mandat["individu_pays"]))
 
             # DbtrAcct
             DbtrAcct = doc.createElement("DbtrAcct")
@@ -615,7 +776,7 @@ def EnregistrerXML(doc=None, nomFichier=""):
         f.close()
 
 
-def ValidationXSD(xml=""):
+def ValidationXSD(xml="", dictDonnees={}):
     try :
 
         # Téléchargement du fichier XSD
@@ -630,9 +791,11 @@ def ValidationXSD(xml=""):
         z.close()
 
         # Lecture du XSD
-        fichier = rep_dest + "/pain.008.001.02.xsd"
-        xmlschema_doc = etree.parse(fichier)
-        xsd = etree.XMLSchema(xmlschema_doc)
+        if dictDonnees["version_sepa"] == "2009":
+            nom_xsd = "/pain.008.001.02.xsd"
+        if dictDonnees["version_sepa"] == "2019":
+            nom_xsd = "/pain.008.001.08.xsd"
+        xsd = etree.XMLSchema(etree.parse(rep_dest + nom_xsd))
 
         # Lecture du XML
         doc = etree.parse(six.BytesIO(xml))
@@ -652,7 +815,20 @@ def ValidationXSD(xml=""):
         print(err)
         return True
 
-    
+def Extraire_numero_rue(rue=""):
+    """ Extrait le numéro et la voie à partir d'une rue """
+    regex = "^(([0-9]+)( ?(B|b|bis|Bis|BIS|t|T|ter|Ter|TER|quater|QUATER|C|D|E|c|d|e|f|F) )?) ?(.+)?"
+    try:
+        if re.match(regex, rue):
+            blocs = re.match(regex, rue).groups()
+            numero = blocs[0].strip()
+            voie = blocs[4].strip().capitalize()
+            return numero, voie
+    except:
+        pass
+    return None
+
+
     
 if __name__ == "__main__":
     # rib = "20041010011505203J02242"

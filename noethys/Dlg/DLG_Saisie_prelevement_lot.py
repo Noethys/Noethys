@@ -122,33 +122,38 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Version SEPA"), name="version_sepa", liste_choix=[("2009", _(u"2009")), ("2019", _(u"2019"))], valeur="2019")
+        propriete.SetEditor("EditeurChoix")
+        propriete.SetHelpString(_(u"Sélectionnez une version SEPA"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
 
     def Importation(self):
         """ Importation des données """
         pass
 
-    def MAJ_comptes(self):
-        DB = GestionDB.DB()
-        req = """SELECT IDcompte, nom, numero, defaut, raison, code_etab, code_guichet, code_nne, cle_rib, cle_iban, iban, bic, code_ics, dft_titulaire, dft_iban
-        FROM comptes_bancaires
-        ORDER BY nom;"""
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()
-        DB.Close()
-        self.dictComptes = {}
-        choix = wxpg.PGChoices()
-        for IDcompte, nom, numero, defaut, raison, code_etab, code_guichet, code_nne, cle_rib, cle_iban, iban, bic, code_ics, dft_titulaire, dft_iban in listeDonnees:
-            self.dictComptes[IDcompte] = {
-                "nom": nom, "numero": numero, "defaut": defaut, "raison": raison, "code_etab": code_etab, "code_guichet": code_guichet, "code_nne": code_nne,
-                "cle_rib": cle_rib, "cle_iban": cle_iban, "iban": iban, "bic": bic, "code_ics": code_ics, "dft_titulaire": dft_titulaire, "dft_iban": dft_iban,
-                }
-            if 'phoenix' in wx.PlatformInfo:
-                choix.Add(label=nom, value=IDcompte)
-            else:
-                choix.Add(nom, IDcompte)
-        propriete = self.GetPropertyByName("IDcompte")
-        propriete.SetChoices(choix)
-        self.RefreshProperty(propriete)
+    # def MAJ_comptes(self):
+    #     DB = GestionDB.DB()
+    #     req = """SELECT IDcompte, nom, numero, defaut, raison, code_etab, code_guichet, code_nne, cle_rib, cle_iban, iban, bic, code_ics, dft_titulaire, dft_iban
+    #     FROM comptes_bancaires
+    #     ORDER BY nom;"""
+    #     DB.ExecuterReq(req)
+    #     listeDonnees = DB.ResultatReq()
+    #     DB.Close()
+    #     self.dictComptes = {}
+    #     choix = wxpg.PGChoices()
+    #     for IDcompte, nom, numero, defaut, raison, code_etab, code_guichet, code_nne, cle_rib, cle_iban, iban, bic, code_ics, dft_titulaire, dft_iban in listeDonnees:
+    #         self.dictComptes[IDcompte] = {
+    #             "nom": nom, "numero": numero, "defaut": defaut, "raison": raison, "code_etab": code_etab, "code_guichet": code_guichet, "code_nne": code_nne,
+    #             "cle_rib": cle_rib, "cle_iban": cle_iban, "iban": iban, "bic": bic, "code_ics": code_ics, "dft_titulaire": dft_titulaire, "dft_iban": dft_iban,
+    #             }
+    #         if 'phoenix' in wx.PlatformInfo:
+    #             choix.Add(label=nom, value=IDcompte)
+    #         else:
+    #             choix.Add(nom, IDcompte)
+    #     propriete = self.GetPropertyByName("IDcompte")
+    #     propriete.SetChoices(choix)
+    #     self.RefreshProperty(propriete)
 
     def MAJ_modes(self):
         DB = GestionDB.DB()
@@ -175,7 +180,8 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
 
     def MAJ_comptes(self):
         DB = GestionDB.DB()
-        req = """SELECT IDcompte, nom, numero, defaut, raison, code_etab, code_guichet, code_nne, cle_rib, cle_iban, iban, bic, code_ics, dft_titulaire, dft_iban
+        req = """SELECT IDcompte, nom, numero, defaut, raison, code_etab, code_guichet, code_nne, cle_rib, cle_iban, iban, bic, code_ics, dft_titulaire, dft_iban,
+            adresse_service, adresse_rue, adresse_numero, adresse_batiment, adresse_etage, adresse_boite, adresse_cp, adresse_ville, adresse_pays
         FROM comptes_bancaires
         ORDER BY nom;"""
         DB.ExecuterReq(req)
@@ -183,10 +189,13 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
         DB.Close()
         self.dictComptes = {}
         choix = wxpg.PGChoices()
-        for IDcompte, nom, numero, defaut, raison, code_etab, code_guichet, code_nne, cle_rib, cle_iban, iban, bic, code_ics, dft_titulaire, dft_iban in listeDonnees:
+        for IDcompte, nom, numero, defaut, raison, code_etab, code_guichet, code_nne, cle_rib, cle_iban, iban, bic, code_ics, dft_titulaire, dft_iban, adresse_service, adresse_rue, adresse_numero, adresse_batiment, adresse_etage, adresse_boite, adresse_cp, adresse_ville, adresse_pays in listeDonnees:
             self.dictComptes[IDcompte] = {
                 "nom": nom, "numero": numero, "defaut": defaut, "raison": raison, "code_etab": code_etab, "code_guichet": code_guichet, "code_nne": code_nne,
                 "cle_rib": cle_rib, "cle_iban": cle_iban, "iban": iban, "bic": bic, "code_ics": code_ics, "dft_titulaire": dft_titulaire, "dft_iban": dft_iban,
+                "adresse_service": adresse_service, "adresse_rue": adresse_rue, "adresse_numero": adresse_numero, "adresse_batiment": adresse_batiment,
+                "adresse_etage": adresse_etage, "adresse_boite": adresse_boite, "adresse_cp": adresse_cp, "adresse_ville": adresse_ville,
+                "adresse_pays": adresse_pays,
                 }
             if 'phoenix' in wx.PlatformInfo:
                 choix.Add(label=nom, value=IDcompte)
@@ -198,7 +207,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
 
     def MAJ_perceptions(self):
         DB = GestionDB.DB()
-        req = """SELECT IDperception, nom, rue_resid, cp_resid, ville_resid
+        req = """SELECT IDperception, nom, rue_resid, cp_resid, ville_resid, service, numero, batiment, etage, boite, pays
         FROM perceptions
         ORDER BY nom;"""
         DB.ExecuterReq(req)
@@ -206,8 +215,9 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
         DB.Close()
         self.dictPerceptions = {}
         choix = wxpg.PGChoices()
-        for IDperception, nom, rue_resid, cp_resid, ville_resid in listeDonnees:
-            self.dictPerceptions[IDperception] = {"IDperception" : IDperception, "nom" : nom, "rue_resid" : rue_resid, "cp_resid" : cp_resid, "ville_resid" : ville_resid}
+        for IDperception, nom, rue_resid, cp_resid, ville_resid, service, numero, batiment, etage, boite, pays in listeDonnees:
+            self.dictPerceptions[IDperception] = {"IDperception" : IDperception, "nom" : nom, "rue_resid" : rue_resid, "cp_resid" : cp_resid, "ville_resid" : ville_resid,
+                                                  "service" : service, "numero" : numero, "batiment" : batiment, "etage" : etage, "boite" : boite, "pays" : pays}
             if 'phoenix' in wx.PlatformInfo:
                 choix.Add(label=nom, value=IDperception)
             else:
@@ -714,6 +724,7 @@ class Dialog(wx.Dialog):
         IDcompte = parametres["IDcompte"]
         motif = parametres.get("motif", "")
         dictCompte = self.ctrl_parametres.dictComptes[IDcompte]
+        creancier = dictCompte
         paiement_ics = dictCompte["code_ics"]
         creancier_nom = dictCompte["raison"]
         paiement_iban = dictCompte["iban"]
@@ -721,7 +732,7 @@ class Dialog(wx.Dialog):
         dft_titulaire = dictCompte["dft_titulaire"]
         dft_iban = dictCompte["dft_iban"]
         perception = self.ctrl_parametres.dictPerceptions.get(parametres["perception"], None)
-        
+
         # Création des lots
         listeSequences = ["OOFF", "FRST", "RCUR", "FNAL"]
         
@@ -766,6 +777,7 @@ class Dialog(wx.Dialog):
                         "transaction_bic" : track.prelevement_bic,
                         "transaction_debiteur" : track.titulaire,
                         "transaction_iban" : track.prelevement_iban,
+                        "track": track,
                         }        
                     listeTransactions.append(dictTransaction)
                     montantTotal += montant
@@ -817,7 +829,8 @@ class Dialog(wx.Dialog):
             "remise_date_heure" : datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
             "remise_nbre" : str(nbreTotal),
             "remise_montant" : str(montantTotal),
-            
+
+            "creancier": creancier,
             "creancier_nom" : creancier_nom,
             "creancier_rue" : creancier_rue,
             "creancier_cp" : creancier_cp,
@@ -826,6 +839,7 @@ class Dialog(wx.Dialog):
             "creancier_siret" : creancier_siret,
 
             "type_remise": parametres["format"],
+            "version_sepa": parametres["version_sepa"],
             "perception": perception,
             
             "lots" : listeLots,
@@ -836,7 +850,7 @@ class Dialog(wx.Dialog):
         xml = doc.toprettyxml(encoding=parametres["encodage"].upper())
 
         # Validation XSD
-        valide = UTILS_Prelevements.ValidationXSD(xml)
+        valide = UTILS_Prelevements.ValidationXSD(xml, dictDonnees)
         if valide != True :
             liste_erreurs = valide
             dlg = DLG_Messagebox.Dialog(self, titre=_(u"Validation XSD"), introduction=_(u"Les %d anomalies suivantes ont été détectées :") % len(liste_erreurs),
@@ -1110,7 +1124,7 @@ class Dialog(wx.Dialog):
                 return False
 
             if not dft_iban:
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné le nom du titulaire du compte DFT !\n\nModifiez les paramètres du compte bancaire."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné le IBAN du compte DFT !\n\nModifiez les paramètres du compte bancaire."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False

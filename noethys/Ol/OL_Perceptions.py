@@ -27,7 +27,12 @@ class Track(object):
         self.rue_resid = donnees[2]
         self.cp_resid = donnees[3]
         self.ville_resid = donnees[4]
-
+        self.numero = donnees[5]
+        self.service = donnees[6]
+        self.batiment = donnees[7]
+        self.etage = donnees[8]
+        self.boite = donnees[9]
+        self.pays = donnees[10]
 
     
 class ListView(FastObjectListView):
@@ -60,7 +65,7 @@ class ListView(FastObjectListView):
         """ Récupération des données """
         listeID = None
         db = GestionDB.DB()
-        req = """SELECT IDperception, nom, rue_resid, cp_resid, ville_resid
+        req = """SELECT IDperception, nom, rue_resid, cp_resid, ville_resid, numero, service, batiment, etage, boite, pays
         FROM perceptions ORDER BY nom; """
         db.ExecuterReq(req)
         listeDonnees = db.ResultatReq()
@@ -88,6 +93,7 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(_(u"ID"), "left", 0, "IDperception", typeDonnee="entier"),
             ColumnDefn(_(u"Nom"), 'left', 290, "nom", typeDonnee="texte"),
+            ColumnDefn(_(u"N°"), 'left', 70, "numero", typeDonnee="texte"),
             ColumnDefn(_(u"Rue"), "left", 220, "rue_resid", typeDonnee="texte"),
             ColumnDefn(_(u"C.P."), "left", 45, "cp_resid", typeDonnee="texte"),
             ColumnDefn(_(u"Ville"), "left", 170, "ville_resid", typeDonnee="texte"),
@@ -187,16 +193,19 @@ class ListView(FastObjectListView):
         from Dlg import DLG_Saisie_perception
         dlg = DLG_Saisie_perception.Dialog(self)
         if dlg.ShowModal() == wx.ID_OK:
-            nom = dlg.GetNom()
-            rue = dlg.GetRue()
-            cp = dlg.GetCp()
-            ville = dlg.GetVille()
+            valeurs = dlg.GetValeurs()
             DB = GestionDB.DB()
             listeDonnees = [
-                ("nom", nom ),
-                ("rue_resid", rue),
-                ("cp_resid", cp),
-                ("ville_resid", ville),
+                ("nom", valeurs["nom"]),
+                ("rue_resid", valeurs["rue"]),
+                ("cp_resid", valeurs["cp"]),
+                ("ville_resid", valeurs["ville"]),
+                ("numero", valeurs["numero"]),
+                ("service", valeurs["service"]),
+                ("batiment", valeurs["batiment"]),
+                ("etage", valeurs["etage"]),
+                ("boite", valeurs["boite"]),
+                ("pays", valeurs["pays"]),
                 ]
             IDperception = DB.ReqInsert("perceptions", listeDonnees)
             DB.Close()
@@ -213,21 +222,32 @@ class ListView(FastObjectListView):
         from Dlg import DLG_Saisie_perception
         IDperception = self.Selection()[0].IDperception
         dlg = DLG_Saisie_perception.Dialog(self)
-        dlg.SetNom(self.Selection()[0].nom)
-        dlg.SetRue(self.Selection()[0].rue_resid)
-        dlg.SetCp(self.Selection()[0].cp_resid)
-        dlg.SetVille(self.Selection()[0].ville_resid)
+        dlg.SetValeurs({
+            "nom": self.Selection()[0].nom,
+            "rue": self.Selection()[0].rue_resid,
+            "cp": self.Selection()[0].cp_resid,
+            "ville": self.Selection()[0].ville_resid,
+            "numero": self.Selection()[0].numero,
+            "service": self.Selection()[0].service,
+            "batiment": self.Selection()[0].batiment,
+            "etage": self.Selection()[0].etage,
+            "boite": self.Selection()[0].boite,
+            "pays": self.Selection()[0].pays,
+        })
         if dlg.ShowModal() == wx.ID_OK:
-            nom = dlg.GetNom()
-            rue = dlg.GetRue()
-            cp = dlg.GetCp()
-            ville = dlg.GetVille()
+            valeurs = dlg.GetValeurs()
             DB = GestionDB.DB()
             listeDonnees = [
-                ("nom", nom ),
-                ("rue_resid", rue),
-                ("cp_resid", cp),
-                ("ville_resid", ville),
+                ("nom", valeurs["nom"]),
+                ("rue_resid", valeurs["rue"]),
+                ("cp_resid", valeurs["cp"]),
+                ("ville_resid", valeurs["ville"]),
+                ("numero", valeurs["numero"]),
+                ("service", valeurs["service"]),
+                ("batiment", valeurs["batiment"]),
+                ("etage", valeurs["etage"]),
+                ("boite", valeurs["boite"]),
+                ("pays", valeurs["pays"]),
                 ]
             DB.ReqMAJ("perceptions", listeDonnees, "IDperception", IDperception)
             DB.Close()
