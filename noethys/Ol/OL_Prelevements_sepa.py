@@ -14,7 +14,7 @@ from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
-import datetime
+import datetime, copy
 import decimal
 import GestionDB
 from Utils import UTILS_Dates
@@ -86,6 +86,19 @@ class Track(object):
                 self.rue_resid = DICT_INFOS_INDIVIDUS[self.IDindividu]["rue_resid"]
                 self.cp_resid = DICT_INFOS_INDIVIDUS[self.IDindividu]["cp_resid"]
                 self.ville_resid = DICT_INFOS_INDIVIDUS[self.IDindividu]["ville_resid"]
+
+        dict_mandat_temp = copy.copy(self.dict_mandat)
+        if self.IDindividu:
+            dict_mandat_temp["individu_rue"] = self.rue_resid
+            dict_mandat_temp["individu_cp"] = self.cp_resid
+            dict_mandat_temp["individu_ville"] = self.ville_resid
+            detail = UTILS_Prelevements.Extraire_numero_rue(rue=self.rue_resid)
+            if detail:
+                dict_mandat_temp["individu_numero"] = detail[0]
+                dict_mandat_temp["individu_rue"] = detail[1]
+
+        for champ in ["service", "rue", "numero", "batiment", "etage", "boite", "cp", "ville", "pays"]:
+            setattr(self, "individu_%s" % champ, dict_mandat_temp["individu_%s" % champ])
 
         self.type = donnees["type"]
         self.IDfacture = donnees["IDfacture"]
@@ -270,24 +283,22 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Famille"), 'left', 230, "titulaires", typeDonnee="texte"),
             ColumnDefn(_(u"Type"), 'left', 70, "type", typeDonnee="texte", stringConverter=FormateType),
             ColumnDefn(_(u"Libellé"), 'left', 110, "libelle", typeDonnee="texte"),
-##            ColumnDefn(_(u"Banque"), 'left', 120, "nomBanque"),
             ColumnDefn(_(u"Montant"), 'right', 70, "montant", typeDonnee="montant", stringConverter=FormateMontant),
             ColumnDefn(_(u"Statut"), 'left', 80, "statut", typeDonnee="texte", stringConverter=FormateStatut, imageGetter=GetImageStatut),
             ColumnDefn(_(u"Règlement"), 'left', 70, "reglement", typeDonnee="bool", stringConverter=FormateReglement, imageGetter=GetImageReglement),
+            ColumnDefn(_(u"Débiteur"), 'left', 160, "titulaire", typeDonnee="texte"),
+            ColumnDefn(_(u"Adr-n°"), 'left', 60, "individu_numero", typeDonnee="texte"),
+            ColumnDefn(_(u"Adr-Voie"), 'left', 150, "individu_rue", typeDonnee="texte"),
+            ColumnDefn(_(u"Adr-Bâtiment"), 'left', 80, "individu_batiment", typeDonnee="texte"),
+            ColumnDefn(_(u"Adr-Etage"), 'left', 80, "individu_etage", typeDonnee="texte"),
+            ColumnDefn(_(u"Adr-CP"), 'left', 60, "individu_cp", typeDonnee="texte"),
+            ColumnDefn(_(u"Adr-Ville"), 'left', 140, "individu_ville", typeDonnee="texte"),
             ColumnDefn(_(u"Séquence"), 'left', 70, "sequence", typeDonnee="texte"),
-            ColumnDefn(_(u"IBAN"), 'left', 190, "prelevement_iban", typeDonnee="texte"),
-            ColumnDefn(_(u"BIC"), 'left', 100, "prelevement_bic", typeDonnee="texte"),
-##            ColumnDefn(_(u"Etab."), 'left', 50, "prelevement_etab"),
-##            ColumnDefn(_(u"Guich."), 'left', 50, "prelevement_guichet"),
-##            ColumnDefn(_(u"Compte"), 'left', 90, "prelevement_numero"),
-##            ColumnDefn(_(u"Clé"), 'left', 30, "prelevement_cle"),
-##            ColumnDefn(_(u"Banque"), 'left', 130, "nomBanque"),
-            ColumnDefn(_(u"Titulaire du compte"), 'left', 160, "titulaire", typeDonnee="texte"),
+            #ColumnDefn(_(u"IBAN"), 'left', 190, "prelevement_iban", typeDonnee="texte"),
+            #ColumnDefn(_(u"BIC"), 'left', 100, "prelevement_bic", typeDonnee="texte"),
             ColumnDefn(_(u"Ref. mandat"), 'left', 90, "prelevement_reference_mandat", typeDonnee="texte"),
             ColumnDefn(_(u"Date mandat"), 'left', 100, "prelevement_date_mandat", typeDonnee="date", stringConverter=FormateDateCourt),
             ]
-        
-
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(1)
         self.SetEmptyListMsg(_(u"Aucun prélèvement"))
