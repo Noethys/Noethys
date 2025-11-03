@@ -224,7 +224,7 @@ class CTRL(HTL.HyperTreeList):
                     for montant in liste_montants :
                         dict_montant = dict_label["detail"][montant]
 
-                        niveauPrestation = self.AppendItem(niveauActivite, label)
+                        niveauPrestation = self.AppendItem(niveauActivite, label or "?")
                         self.SetItemText(niveauPrestation, u"%.2f %s" % (montant or 0.0, SYMBOLE), 1)
                         self.SetItemText(niveauPrestation, str(dict_montant["quantite"]), 2)
                         self.SetItemText(niveauPrestation, u"%.2f %s" % (dict_montant["total"] or 0.0, SYMBOLE), 3)
