@@ -101,6 +101,30 @@ class CTRL_Choix_caisse(wx.Choice):
 # ----------------------------------------------------------------------------------------------------------------------------------
 
 
+class CTRL_Choix_periode(wx.Choice):
+    def __init__(self, parent):
+        wx.Choice.__init__(self, parent, -1)
+        self.parent = parent
+        self.listeDonnees = [
+            {"label": _(u"Toutes les périodes"), "code": "toutes"},
+            {"label": _(u"Les périodes de vacances"), "code": "vacances"},
+            {"label": _(u"Les périodes scolaires"), "code": "scolaires"},
+        ]
+        self.MAJ()
+
+    def MAJ(self):
+        listeLabels = []
+        for dictTemp in self.listeDonnees:
+            listeLabels.append(dictTemp["label"])
+        self.SetItems(listeLabels)
+        self.Select(0)
+
+    def GetValeur(self):
+        index = self.GetSelection()
+        return self.listeDonnees[index]["code"]
+
+
+# ----------------------------------------------------------------------------------------------------------------------------------
 
 class Parametres(wx.Panel):
     def __init__(self, parent, listview=None):
@@ -128,6 +152,8 @@ class Parametres(wx.Panel):
         self.ctrl_regroupement = CTRL_Choix_regroupement(self)
         self.label_caisse = wx.StaticText(self, -1, _(u"Caisse :"))
         self.ctrl_caisse = CTRL_Choix_caisse(self)
+        self.label_periode = wx.StaticText(self, -1, _(u"Période :"))
+        self.ctrl_periode = CTRL_Choix_periode(self)
 
         # Actualiser
         self.bouton_actualiser = CTRL_Bouton_image.CTRL(self, texte=_(u"Rafraîchir la liste"), cheminImage="Images/32x32/Actualiser.png")
@@ -135,6 +161,7 @@ class Parametres(wx.Panel):
         self.__set_properties()
         self.__do_layout()
 
+        self.Bind(wx.EVT_CHOICE, self.Actualiser, self.ctrl_periode)
         self.Bind(wx.EVT_CHOICE, self.Actualiser, self.ctrl_caisse)
         self.Bind(wx.EVT_CHOICE, self.Actualiser, self.ctrl_regroupement) 
         self.Bind(wx.EVT_BUTTON, self.OnBoutonActualiser, self.bouton_actualiser)
@@ -146,6 +173,7 @@ class Parametres(wx.Panel):
         self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de période")))
         self.ctrl_regroupement.SetToolTip(wx.ToolTip(_(u"Sélectionnez le niveau de regroupement")))
         self.ctrl_caisse.SetToolTip(wx.ToolTip(_(u"Sélectionnez un filtre pour la caisse associée à l'aide")))
+        self.ctrl_periode.SetToolTip(wx.ToolTip(_(u"Sélectionnez une période")))
         self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser la liste")))
 
     def __do_layout(self):
@@ -168,11 +196,13 @@ class Parametres(wx.Panel):
         
         # affichage
         box_affichage = wx.StaticBoxSizer(self.box_affichage_staticbox, wx.VERTICAL)
-        grid_sizer_affichage = wx.FlexGridSizer(rows=4, cols=2, vgap=5, hgap=5)
+        grid_sizer_affichage = wx.FlexGridSizer(rows=5, cols=2, vgap=5, hgap=5)
         grid_sizer_affichage.Add(self.label_regroupement, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_affichage.Add(self.ctrl_regroupement, 0, wx.EXPAND|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_affichage.Add(self.label_caisse, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_affichage.Add(self.ctrl_caisse, 0, wx.EXPAND|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_affichage.Add(self.label_periode, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_affichage.Add(self.ctrl_periode, 0, wx.EXPAND | wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_affichage.AddGrowableCol(1)
         box_affichage.Add(grid_sizer_affichage, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(box_affichage, 1, wx.EXPAND, 0)
@@ -214,6 +244,7 @@ class Parametres(wx.Panel):
         listeActivites = self.ctrl_activites.GetActivites()
         affichage_caisse = self.ctrl_caisse.GetValeur()
         affichage_regroupement = self.ctrl_regroupement.GetValeur()
+        affichage_periode = self.ctrl_periode.GetValeur()
 
         # Vérifications
         if date_debut == None :
@@ -238,7 +269,7 @@ class Parametres(wx.Panel):
         # MAJ
         self.parent.ctrl_resultats.MAJ(date_debut=date_debut, date_fin=date_fin, listeActivites=listeActivites,
                                         affichage_regroupement=affichage_regroupement, affichage_caisse=affichage_caisse,
-                                        labelParametres=labelParametres)
+                                        affichage_periode=affichage_periode, labelParametres=labelParametres)
 
 
 

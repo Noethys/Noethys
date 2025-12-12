@@ -122,7 +122,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.affichage_caisse = None
         self.labelParametres = ""
 
-    def MAJ(self, date_debut=None, date_fin=None, listeActivites=[], affichage_regroupement="jour", affichage_caisse=None, labelParametres=u""):
+        # Importation des vacances
+        DB = GestionDB.DB()
+        req = """SELECT date_debut, date_fin, nom, annee FROM vacances ORDER BY date_debut;"""
+        DB.ExecuterReq(req)
+        self.listeVacances = DB.ResultatReq()
+
+    def MAJ(self, date_debut=None, date_fin=None, listeActivites=[], affichage_regroupement="jour", affichage_caisse=None, affichage_periode="toutes", labelParametres=u""):
 
         # Chargement des informations individuelles
         if self.date_debut != date_debut:
@@ -137,6 +143,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.listeActivites = listeActivites
         self.affichage_regroupement = affichage_regroupement
         self.affichage_caisse = affichage_caisse
+        self.affichage_periode = affichage_periode
         self.labelParametres = labelParametres
 
         # init grid
@@ -155,6 +162,15 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             dlg.ShowModal()
             dlg.Destroy()
             return False
+
+    def EstEnVacances(self, dateDD):
+        date = str(dateDD)
+        for valeurs in self.listeVacances:
+            date_debut = valeurs[0]
+            date_fin = valeurs[1]
+            if date >= date_debut and date <= date_fin:
+                return True
+        return False
 
     def Importation(self):
         DB = GestionDB.DB()
@@ -195,96 +211,96 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         listePrestations = []
         for IDdeduction, IDprestation, IDcompte_payeur, date, montant, label, IDaide, nomIndividu, prenomIndividu, date_naiss, labelPrestation, montantPrestation, montantInitialPrestation, IDfamille, IDactivite, abregeActivite, IDindividu, datePrestation, IDfacture, IDcaisse, num_allocataire, nomCaisse, nomAide in listeDeductions:
             date = UTILS_Dates.DateEngEnDateDD(date)
-            datePrestation = UTILS_Dates.DateEngEnDateDD(datePrestation)
-            date_naiss = UTILS_Dates.DateEngEnDateDD(date_naiss)
-            mois = date.month
-            annee = date.year
-            nom_complet_individu = u"%s %s" % (nomIndividu, prenomIndividu)
-            montantInitialPrestation = FloatToDecimal(montantInitialPrestation)
-            montant = FloatToDecimal(montant)
-            montantPrestation = FloatToDecimal(montantPrestation)
 
-            # Recherche du regroupement
-            try:
-                if self.affichage_regroupement == "jour":
-                    regroupement = date
-                if self.affichage_regroupement == "mois":
-                    regroupement = (annee, mois)
-                if self.affichage_regroupement == "annee":
-                    regroupement = annee
-                if self.affichage_regroupement == "montant_deduction":
-                    regroupement = montant
-                if self.affichage_regroupement == "nom_aide":
-                    regroupement = nomAide
-                if self.affichage_regroupement == "nom_deduction":
-                    regroupement = label
-                if self.affichage_regroupement == "ville_residence":
-                    regroupement = self.dictInfosFamilles[IDfamille]["FAMILLE_VILLE"]
-                if self.affichage_regroupement == "secteur":
-                    regroupement = self.dictInfosFamilles[IDfamille]["FAMILLE_SECTEUR"]
-                if self.affichage_regroupement == "famille":
-                    regroupement = self.dictInfosFamilles[IDfamille]["FAMILLE_NOM"]
-                if self.affichage_regroupement == "individu":
-                    regroupement = IDindividu
-                if self.affichage_regroupement == "regime":
-                    regroupement = self.dictInfosFamilles[IDfamille]["FAMILLE_NOM_REGIME"]
-                if self.affichage_regroupement == "caisse":
-                    regroupement = self.dictInfosFamilles[IDfamille]["FAMILLE_NOM_CAISSE"]
+            if self.affichage_periode == "toutes" or (self.affichage_periode == "vacances" and self.EstEnVacances(date)) or (self.affichage_periode == "scolaires" and not self.EstEnVacances(date)):
+                datePrestation = UTILS_Dates.DateEngEnDateDD(datePrestation)
+                date_naiss = UTILS_Dates.DateEngEnDateDD(date_naiss)
+                mois = date.month
+                annee = date.year
+                nom_complet_individu = u"%s %s" % (nomIndividu, prenomIndividu)
+                montantInitialPrestation = FloatToDecimal(montantInitialPrestation)
+                montant = FloatToDecimal(montant)
+                montantPrestation = FloatToDecimal(montantPrestation)
 
-                # QF
-                if self.affichage_regroupement == "qf":
+                # Recherche du regroupement
+                try:
+                    if self.affichage_regroupement == "jour":
+                        regroupement = date
+                    if self.affichage_regroupement == "mois":
+                        regroupement = (annee, mois)
+                    if self.affichage_regroupement == "annee":
+                        regroupement = annee
+                    if self.affichage_regroupement == "montant_deduction":
+                        regroupement = montant
+                    if self.affichage_regroupement == "nom_aide":
+                        regroupement = nomAide
+                    if self.affichage_regroupement == "nom_deduction":
+                        regroupement = label
+                    if self.affichage_regroupement == "ville_residence":
+                        regroupement = self.dictInfosFamilles[IDfamille]["FAMILLE_VILLE"]
+                    if self.affichage_regroupement == "secteur":
+                        regroupement = self.dictInfosFamilles[IDfamille]["FAMILLE_SECTEUR"]
+                    if self.affichage_regroupement == "famille":
+                        regroupement = self.dictInfosFamilles[IDfamille]["FAMILLE_NOM"]
+                    if self.affichage_regroupement == "individu":
+                        regroupement = IDindividu
+                    if self.affichage_regroupement == "regime":
+                        regroupement = self.dictInfosFamilles[IDfamille]["FAMILLE_NOM_REGIME"]
+                    if self.affichage_regroupement == "caisse":
+                        regroupement = self.dictInfosFamilles[IDfamille]["FAMILLE_NOM_CAISSE"]
+
+                    # QF
+                    if self.affichage_regroupement == "qf":
+                        regroupement = None
+                        qf = self.dictInfosFamilles[IDfamille]["FAMILLE_QF_ACTUEL_INT"]
+                        for x in range(0, 10000, 100):
+                            min, max = x, x+99
+                            if qf >= min and qf <= max:
+                                regroupement = (min, max)
+
+                    # Questionnaires
+                    if self.affichage_regroupement.startswith("question_") and "famille" in self.affichage_regroupement:
+                        regroupement = self.dictInfosFamilles[IDfamille]["QUESTION_%s" %
+                                                                         self.affichage_regroupement[17:]]
+
+                except:
                     regroupement = None
-                    qf = self.dictInfosFamilles[IDfamille]["FAMILLE_QF_ACTUEL_INT"]
-                    for x in range(0, 10000, 100):
-                        min, max = x, x+99
-                        if qf >= min and qf <= max:
-                            regroupement = (min, max)
 
-                # Questionnaires
-                if self.affichage_regroupement.startswith("question_") and "famille" in self.affichage_regroupement:
-                    regroupement = self.dictInfosFamilles[IDfamille]["QUESTION_%s" %
-                                                                     self.affichage_regroupement[17:]]
+                if regroupement in ("", None):
+                    regroupement = _(u"- Non renseigné -")
 
-            except:
-                regroupement = None
+                # Colonne
+                if labelPrestation not in listePrestations:
+                    listePrestations.append(labelPrestation)
 
-            if regroupement in ("", None):
-                regroupement = _(u"- Non renseigné -")
+                # Regroupement
+                if regroupement not in dictResultats:
+                    dictResultats[regroupement] = {
+                        "caisse": nomCaisse, "num_allocataire": num_allocataire, "prestations": {},
+                        "montant_initial": FloatToDecimal(0), "montant_deduction": FloatToDecimal(0), "montant_final": FloatToDecimal(0),
+                        "liste_dates": [], "individu": nom_complet_individu, "famille": self.dictInfosFamilles[IDfamille]["FAMILLE_NOM"],
+                        "liste_individus": [],
+                    }
+                dictResultats[regroupement]["montant_initial"] += montantInitialPrestation
+                dictResultats[regroupement]["montant_deduction"] += montant
+                dictResultats[regroupement]["montant_final"] += montantPrestation
+                if date not in dictResultats[regroupement]["liste_dates"]:
+                    dictResultats[regroupement]["liste_dates"].append(date)
+                if IDindividu not in dictResultats[regroupement]["liste_individus"]:
+                    dictResultats[regroupement]["liste_individus"].append(IDindividu)
 
-            # Colonne
-            if labelPrestation not in listePrestations:
-                listePrestations.append(labelPrestation)
-
-            # Regroupement
-            if regroupement not in dictResultats:
-                dictResultats[regroupement] = {
-                    "caisse": nomCaisse, "num_allocataire": num_allocataire, "prestations": {},
-                    "montant_initial": FloatToDecimal(0), "montant_deduction": FloatToDecimal(0), "montant_final": FloatToDecimal(0),
-                    "liste_dates": [], "individu": nom_complet_individu, "famille": self.dictInfosFamilles[IDfamille]["FAMILLE_NOM"],
-                    "liste_individus": [],
-                }
-            dictResultats[regroupement]["montant_initial"] += montantInitialPrestation
-            dictResultats[regroupement]["montant_deduction"] += montant
-            dictResultats[regroupement]["montant_final"] += montantPrestation
-            if date not in dictResultats[regroupement]["liste_dates"]:
-                dictResultats[regroupement]["liste_dates"].append(date)
-            if IDindividu not in dictResultats[regroupement]["liste_individus"]:
-                dictResultats[regroupement]["liste_individus"].append(
-                    IDindividu)
-
-            # Prestations
-            if labelPrestation not in dictResultats[regroupement]["prestations"]:
-                dictResultats[regroupement]["prestations"][labelPrestation] = {
-                    "nbre": 0, "liste_dates": [], "montant_initial": montantInitialPrestation,
-                    "montant_deduction": montant, "montant_final": montantPrestation,
-                }
-            dictResultats[regroupement]["prestations"][labelPrestation]["nbre"] += 1
-            if date not in dictResultats[regroupement]["prestations"][labelPrestation]["liste_dates"]:
-                dictResultats[regroupement]["prestations"][labelPrestation]["liste_dates"].append(
-                    date)
-            dictResultats[regroupement]["prestations"][labelPrestation]["montant_initial"] += montantInitialPrestation
-            dictResultats[regroupement]["prestations"][labelPrestation]["montant_deduction"] += montant
-            dictResultats[regroupement]["prestations"][labelPrestation]["montant_final"] += montantPrestation
+                # Prestations
+                if labelPrestation not in dictResultats[regroupement]["prestations"]:
+                    dictResultats[regroupement]["prestations"][labelPrestation] = {
+                        "nbre": 0, "liste_dates": [], "montant_initial": montantInitialPrestation,
+                        "montant_deduction": montant, "montant_final": montantPrestation,
+                    }
+                dictResultats[regroupement]["prestations"][labelPrestation]["nbre"] += 1
+                if date not in dictResultats[regroupement]["prestations"][labelPrestation]["liste_dates"]:
+                    dictResultats[regroupement]["prestations"][labelPrestation]["liste_dates"].append(date)
+                dictResultats[regroupement]["prestations"][labelPrestation]["montant_initial"] += montantInitialPrestation
+                dictResultats[regroupement]["prestations"][labelPrestation]["montant_deduction"] += montant
+                dictResultats[regroupement]["prestations"][labelPrestation]["montant_final"] += montantPrestation
 
         return dictResultats, listePrestations
 
