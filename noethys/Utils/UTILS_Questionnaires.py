@@ -38,7 +38,7 @@ def GetReponse(dictReponses={}, IDquestion=None, ID=None):
     if IDquestion in dictReponses :
         if ID in dictReponses[IDquestion] :
             return dictReponses[IDquestion][ID]
-    return u""
+    return None
 
 def FormateDate(date):
     if date in (None, "") : return ""
@@ -170,7 +170,8 @@ class Questionnaires():
         listeResultats = []
         for IDquestion, label, type, controle, defaut in listeQuestions :
             if avec_filtre == False or self.GetFiltre(controle) != None :
-                listeResultats.append({"IDquestion":IDquestion, "label":label, "type":type, "controle":controle, "defaut":defaut, "filtre":self.GetFiltre(controle)})
+                textDefaut = self.FormatageReponse(defaut, controle)
+                listeResultats.append({"IDquestion":IDquestion, "label":label, "type":type, "controle":controle, "defaut":defaut, "textDefaut": textDefaut, "filtre":self.GetFiltre(controle)})
         return listeResultats
 
 
@@ -255,7 +256,8 @@ class ChampsEtReponses():
             champ = "{QUESTION_%d}" % dictQuestion["IDquestion"]
             dictReponse = {
                 "champ":champ, "reponse":reponse, "IDquestion":dictQuestion["IDquestion"], "label":dictQuestion["label"], 
-                "type":dictQuestion["type"], "controle":dictQuestion["controle"], "defaut":dictQuestion["defaut"]
+                "type":dictQuestion["type"], "controle":dictQuestion["controle"], "defaut":dictQuestion["defaut"],
+                "textDefaut": dictQuestion["textDefaut"]
                 }
             listeDonnees.append(dictReponse)
         return listeDonnees
