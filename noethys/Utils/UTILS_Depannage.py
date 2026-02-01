@@ -159,7 +159,7 @@ class CorrigerHeuresConso(Anomalie):
         individu = self.kwds["individu"]
         
         if heure_debut != None : 
-            dlg = wx.TextEntryDialog(None, _(u"Corrigez l'heure de début de la consommation du %s de %s :\n\n(Obligatoirement au format HH:MM)") % (date.strftime("%d/%m/%Y"), individu), _(u"Correction d'une heure"), heure_debut)
+            dlg = wx.TextEntryDialog(None, _(u"Corrigez l'heure de début de la consommation du %s de %s :\n\n(Obligatoirement au format HH:MM)") % (date.strftime("%d/%m/%Y"), individu), _(u"Correction d'une heure"), str(heure_debut))
             if dlg.ShowModal() == wx.ID_OK:
                 DB.ReqMAJ("consommations", [("heure_debut", dlg.GetValue()),], "IDconso", IDconso)
                 self.corrige = True
@@ -167,8 +167,8 @@ class CorrigerHeuresConso(Anomalie):
                 self.corrige = False
             dlg.Destroy()
         
-        if heure_fin != None : 
-            dlg = wx.TextEntryDialog(None, _(u"Corrigez l'heure de fin de la consommation du %s de %s :\n\n(Obligatoirement au format HH:MM)") % (date.strftime("%d/%m/%Y"), individu), _(u"Correction d'une heure"), heure_fin)
+        if heure_fin != None :
+            dlg = wx.TextEntryDialog(None, _(u"Corrigez l'heure de fin de la consommation du %s de %s :\n\n(Obligatoirement au format HH:MM)") % (date.strftime("%d/%m/%Y"), individu), _(u"Correction d'une heure"), str(heure_fin))
             if dlg.ShowModal() == wx.ID_OK:
                 DB.ReqMAJ("consommations", [("heure_fin", dlg.GetValue()),], "IDconso", IDconso)
                 self.corrige = True
