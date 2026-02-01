@@ -1,3 +1,12 @@
+Version 1.3.4.2 (01/02/2026) :
+
+- Ajout des périodes dans la synthèse des déductions
+- Ajout de l'affichage des adresses structurées dans la liste des prélèvements
+- Ajout de nouvelles banques pour les mandats SEPA
+- Correction activité inconnue dans détail d'un dépôt
+- Correction version XSD dans export des prélèvements
+- Corrections diverses
+
 Version 1.3.4.1 (13/10/2025) :
 
 - Ajout de la norme SEPA 2019 et du circuit 10071
