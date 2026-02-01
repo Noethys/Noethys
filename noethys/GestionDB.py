@@ -374,11 +374,15 @@ class DB:
         if self.isNetwork == True :
             # Version MySQL
             if INTERFACE_MYSQL == "mysqldb" :
-                blob = MySQLdb.escape_string(blobPhoto)
-                sql = "INSERT INTO photos (IDindividu, photo) VALUES (%d, '%s')" % (IDindividu, blob)
-                self.cursor.execute(sql)
+                # blob = MySQLdb.escape_string(blobPhoto)
+                # sql = "INSERT INTO photos (IDindividu, photo) VALUES (%d, '%s')" % (IDindividu, blob)
+                # self.cursor.execute(sql)
+                sql = "INSERT INTO photos (IDindividu, photo) VALUES (%s, %s)"
+                self.cursor.execute(sql, (IDindividu, blobPhoto))
             if INTERFACE_MYSQL == "mysql.connector" :
-                self.cursor.execute("INSERT INTO photos (IDindividu, photo) VALUES (%s, %s)", (IDindividu, blobPhoto))
+                # self.cursor.execute("INSERT INTO photos (IDindividu, photo) VALUES (%s, %s)", (IDindividu, blobPhoto))
+                sql = "INSERT INTO photos (IDindividu, photo) VALUES (%s, %s)"
+                self.cursor.execute(sql, (IDindividu, blobPhoto))
             self.connexion.commit()
             self.cursor.execute("SELECT LAST_INSERT_ID();")
         else:
@@ -392,13 +396,15 @@ class DB:
 
     def MAJPhoto(self, IDphoto=None, IDindividu=None, blobPhoto=None):
         if self.isNetwork == True :
-            # Version MySQL
-            if INTERFACE_MYSQL == "mysqldb" :
-                blob = MySQLdb.escape_string(blobPhoto)
-                sql = "UPDATE photos SET IDindividu=%d, photo='%s' WHERE IDphoto=%d" % (IDindividu, blob, IDphoto)
-                self.cursor.execute(sql)
-            if INTERFACE_MYSQL == "mysql.connector" :
-                self.cursor.execute("UPDATE photos SET IDindividu=%s, photo=%s WHERE IDphoto=%s", (IDindividu, blobPhoto, IDphoto))
+            # # Version MySQL
+            # if INTERFACE_MYSQL == "mysqldb" :
+            #     blob = MySQLdb.escape_string(blobPhoto)
+            #     sql = "UPDATE photos SET IDindividu=%d, photo='%s' WHERE IDphoto=%d" % (IDindividu, blob, IDphoto)
+            #     self.cursor.execute(sql)
+            # if INTERFACE_MYSQL == "mysql.connector" :
+            #     self.cursor.execute("UPDATE photos SET IDindividu=%s, photo=%s WHERE IDphoto=%s", (IDindividu, blobPhoto, IDphoto))
+            sql = "UPDATE photos SET IDindividu=%s, photo=%s WHERE IDphoto=%s"
+            self.cursor.execute(sql, (IDindividu, blobPhoto, IDphoto))
             self.connexion.commit()
         else:
             # Version Sqlite
@@ -410,21 +416,23 @@ class DB:
     def MAJimage(self, table=None, key=None, IDkey=None, blobImage=None, nomChampBlob="image"):
         """ Enregistre une image dans les modes de règlement ou emetteurs """
         if self.isNetwork == True :
-            # Version MySQL
-            if INTERFACE_MYSQL == "mysqldb" :
-                if six.PY2:
-                    blob = MySQLdb.escape_string(blobImage)
-                    sql = "UPDATE %s SET %s='%s' WHERE %s=%d" % (table, nomChampBlob, blob, key, IDkey)
-                    self.cursor.execute(sql)
-                else:
-                    req = "UPDATE %s SET %s=XXBLOBXX WHERE %s=%s" % (table, nomChampBlob, key, IDkey)
-                    req = req.replace("XXBLOBXX", "%s")
-                    self.cursor.execute(req, (blobImage,))
-            # Version Connector
-            if INTERFACE_MYSQL == "mysql.connector" :
-                req = "UPDATE %s SET %s=XXBLOBXX WHERE %s=%s" % (table, nomChampBlob, key, IDkey)
-                req = req.replace("XXBLOBXX", "%s")
-                self.cursor.execute(req, (blobImage,))
+            # # Version MySQL
+            # if INTERFACE_MYSQL == "mysqldb" :
+            #     if six.PY2:
+            #         blob = MySQLdb.escape_string(blobImage)
+            #         sql = "UPDATE %s SET %s='%s' WHERE %s=%d" % (table, nomChampBlob, blob, key, IDkey)
+            #         self.cursor.execute(sql)
+            #     else:
+            #         req = "UPDATE %s SET %s=XXBLOBXX WHERE %s=%s" % (table, nomChampBlob, key, IDkey)
+            #         req = req.replace("XXBLOBXX", "%s")
+            #         self.cursor.execute(req, (blobImage,))
+            # # Version Connector
+            # if INTERFACE_MYSQL == "mysql.connector" :
+            #     req = "UPDATE %s SET %s=XXBLOBXX WHERE %s=%s" % (table, nomChampBlob, key, IDkey)
+            #     req = req.replace("XXBLOBXX", "%s")
+            #     self.cursor.execute(req, (blobImage,))
+            sql = "UPDATE %s SET %s=%%s WHERE %s=%%s" % (table, nomChampBlob, key)
+            self.cursor.execute(sql, (blobImage, IDkey))
             self.connexion.commit()
         else:
             # Version Sqlite
@@ -461,11 +469,13 @@ class DB:
         
     def ReqDEL(self, nomTable="", nomChampID="", ID="", commit=True, IDestChaine=False):
         """ Suppression d'un enregistrement """
-        if IDestChaine == False:
-            req = "DELETE FROM %s WHERE %s=%d" % (nomTable, nomChampID, ID)
-        else:
-            req = "DELETE FROM %s WHERE %s='%s'" % (nomTable, nomChampID, ID)
+        # if IDestChaine == False:
+        #     req = "DELETE FROM %s WHERE %s=%d" % (nomTable, nomChampID, ID)
+        # else:
+        #     req = "DELETE FROM %s WHERE %s='%s'" % (nomTable, nomChampID, ID)
         try:
+            sql = "DELETE FROM %s WHERE %s=?" % (nomTable, nomChampID)
+            self.cursor.execute(sql, (ID,))
             self.cursor.execute(req)
             if commit == True :
                 self.Commit()
