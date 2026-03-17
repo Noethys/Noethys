@@ -4178,6 +4178,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     if label != None and label != "" :
                         if "{TAUX}" in label : 
                             label = label.replace("{TAUX}", str(taux))
+                        if "{TAUX_HORAIRE}" in label:
+                            taux_horaire = ""
+                            try:
+                                duree, heure_debut_delta, heure_fin_delta = self.CalculeDuree(IDindividu, date, combinaisons_unites)
+                                taux_horaire = montant_tarif / UTILS_Dates.DeltaEnFloat(duree)
+                                label = label.replace("{TAUX_HORAIRE}", "%.2f" % taux_horaire)
+                            except:
+                                pass
                         nom_tarif = label
                         
                     break
