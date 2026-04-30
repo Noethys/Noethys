@@ -892,6 +892,9 @@ class Informations() :
         """ Attribue les valeurs en tant que attribut à un module. Sert pour les tracks des objectlistview """
         dictDonnees = self.GetDictValeurs(mode=mode, ID=ID, formatChamp=False)
         for code, valeur in dictDonnees.items():
+            if valeur is None and code.startswith("QUESTION_"):
+                question = next((q for q in dictDonnees["questionnaires"] if q["champ"] == '{%s}' % code), None)
+                if question: valeur = question["textDefaut"]
             setattr(parent, code, valeur)
     
     def StockageTable(self, mode="famille"):
