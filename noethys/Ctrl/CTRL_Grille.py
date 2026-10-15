@@ -4186,6 +4186,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                 label = label.replace("{TAUX_HORAIRE}", "%.2f" % taux_horaire)
                             except:
                                 pass
+                        if "{TAUX_HORAIRE_11}" in label:
+                            taux_horaire = ""
+                            try:
+                                taux_horaire = montant_tarif / 11.0
+                                label = label.replace("{TAUX_HORAIRE_11}", "%.2f" % taux_horaire)
+                            except:
+                                pass
                         nom_tarif = label
                         
                     break
