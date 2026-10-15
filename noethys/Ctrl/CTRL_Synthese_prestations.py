@@ -114,14 +114,61 @@ class CTRL(HTL.HyperTreeList):
         else :
             TR_COLUMN_LINES = wx.TR_COLUMN_LINES
         self.SetAGWWindowStyleFlag(wx.TR_HIDE_ROOT  | wx.TR_ROW_LINES | TR_COLUMN_LINES | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT ) # HTL.TR_NO_HEADER
-        
+
+        # Cache des informations individuelles
+        self.dictInfosIndividus = {}
+        self.dictInfosFamilles = {}
+        self.cache_infos = None # (date_reference, set des options chargées)
+
+    def GetBesoinsInfos(self):
+        """ Détermine les données individuelles/familiales nécessaires aux regroupements choisis """
+        besoins = set()
+        for key_code in (self.key_colonne, self.key_ligne1, self.key_ligne2) :
+            if not key_code :
+                continue
+            if key_code in ("ville_residence", "secteur", "age", "ville_naissance", "regime", "caisse") :
+                besoins.add("base")
+            elif key_code in ("nom_ecole", "nom_classe", "nom_niveau_scolaire") :
+                besoins.update(("base", "scolarite"))
+            elif key_code.startswith("qf") :
+                besoins.update(("base", "qf"))
+            elif key_code.startswith("question_") :
+                besoins.update(("base", "questionnaires"))
+        return besoins
+
+    def ChargementInfosIndividus(self):
+        """ Charge les infos individuelles uniquement si un regroupement en a besoin, avec mise en cache """
+        besoins = self.GetBesoinsInfos()
+        if not besoins :
+            return
+
+        # Réutilisation du cache si la date de référence est identique et les options déjà chargées
+        if self.cache_infos is not None :
+            date_cache, options_cache = self.cache_infos
+            if date_cache == self.date_debut and besoins.issubset(options_cache) :
+                return
+            if date_cache == self.date_debut :
+                besoins = besoins | options_cache
+
+        infos = UTILS_Infos_individus.Informations(
+            date_reference=self.date_debut, qf="qf" in besoins, inscriptions=False, messages=False,
+            infosMedicales=False, cotisationsManquantes=False, piecesManquantes=False,
+            questionnaires="questionnaires" in besoins, scolarite="scolarite" in besoins, cotisations=False,
+            liens=False, rattachements=False, dictTitulaires=self.dict_titulaires)
+        self.dictInfosIndividus = infos.GetDictValeurs(mode="individu", ID=None, formatChamp=False)
+        self.dictInfosFamilles = infos.GetDictValeurs(mode="famille", ID=None, formatChamp=False)
+        self.cache_infos = (self.date_debut, besoins)
+
+    def ViderCache(self):
+        self.cache_infos = None
+        self.dictInfosIndividus = {}
+        self.dictInfosFamilles = {}
+
     def Importation_prestations(self):
         """ Importation des données """
 
-        # Chargement des informations individuelles
-        self.infosIndividus = UTILS_Infos_individus.Informations(date_reference=self.date_debut, qf=True, inscriptions=True, messages=False, infosMedicales=False, cotisationsManquantes=False, piecesManquantes=False, questionnaires=True, scolarite=True)
-        self.dictInfosIndividus = self.infosIndividus.GetDictValeurs(mode="individu", ID=None, formatChamp=False)
-        self.dictInfosFamilles = self.infosIndividus.GetDictValeurs(mode="famille", ID=None, formatChamp=False)
+        # Chargement des informations individuelles (uniquement si nécessaire)
+        self.ChargementInfosIndividus()
 
         DB = GestionDB.DB()
 
@@ -209,7 +256,6 @@ class CTRL(HTL.HyperTreeList):
         DB.Close()
         
         dictPrestations = {}
-        listeRegroupements = []
         dictLabelsRegroupements = {}
         for IDprestation, date, categorie, label, montant, IDactivite, IDcategorie_tarif, IDfamille, IDindividu, IDfacture, num_facture in listePrestations :
             date = UTILS_Dates.DateEngEnDateDD(date)
@@ -218,6 +264,9 @@ class CTRL(HTL.HyperTreeList):
 
             if montant == None :
                 montant = 0.0
+
+            infos_individu = self.dictInfosIndividus.get(IDindividu, {})
+            infos_famille = self.dictInfosFamilles.get(IDfamille, {})
 
             def GetKey(key_code=""):
                 key = None
@@ -277,50 +326,55 @@ class CTRL(HTL.HyperTreeList):
                     key_tri = key_label
 
                 if key_code == "ville_residence" and IDindividu not in (0, None) :
-                    key = self.dictInfosIndividus[IDindividu]["INDIVIDU_VILLE"]
+                    key = infos_individu.get("INDIVIDU_VILLE")
+                    key_label = key
+                    key_tri = key
+
+                if key_code == "ville_naissance" and IDindividu not in (0, None) :
+                    key = infos_individu.get("INDIVIDU_VILLE_NAISS")
                     key_label = key
                     key_tri = key
 
                 if key_code == "secteur" and IDindividu not in (0, None) :
-                    key = self.dictInfosIndividus[IDindividu]["INDIVIDU_SECTEUR"]
+                    key = infos_individu.get("INDIVIDU_SECTEUR")
                     key_label = key
                     key_tri = key
 
                 if key_code == "age" and IDindividu not in (0, None) :
-                    key = self.dictInfosIndividus[IDindividu]["INDIVIDU_AGE_INT"]
+                    key = infos_individu.get("INDIVIDU_AGE_INT")
                     key_label = str(key)
                     key_tri = key
 
                 if key_code == "nom_ecole" and IDindividu not in (0, None) :
-                    key = self.dictInfosIndividus[IDindividu]["SCOLARITE_NOM_ECOLE"]
+                    key = infos_individu.get("SCOLARITE_NOM_ECOLE")
                     key_label = key
                     key_tri = key
 
                 if key_code == "nom_classe" and IDindividu not in (0, None) :
-                    key = self.dictInfosIndividus[IDindividu]["SCOLARITE_NOM_CLASSE"]
+                    key = infos_individu.get("SCOLARITE_NOM_CLASSE")
                     key_label = key
                     key_tri = key
 
                 if key_code == "nom_niveau_scolaire" and IDindividu not in (0, None) :
-                    key = self.dictInfosIndividus[IDindividu]["SCOLARITE_NOM_NIVEAU"]
+                    key = infos_individu.get("SCOLARITE_NOM_NIVEAU")
                     key_label = key
                     key_tri = key
 
                 if key_code == "regime":
-                    key = self.dictInfosFamilles[IDfamille]["FAMILLE_NOM_REGIME"]
+                    key = infos_famille.get("FAMILLE_NOM_REGIME")
                     key_label = key
                     key_tri = key
 
                 if key_code == "caisse":
-                    key = self.dictInfosFamilles[IDfamille]["FAMILLE_NOM_CAISSE"]
+                    key = infos_famille.get("FAMILLE_NOM_CAISSE")
                     key_label = key
                     key_tri = key
 
                 # QF
                 if key_code.startswith("qf"):
                     key = None
-                    if "FAMILLE_QF_ACTUEL_INT" in self.dictInfosFamilles[IDfamille]:
-                        qf = self.dictInfosFamilles[IDfamille]["FAMILLE_QF_ACTUEL_INT"]
+                    if "FAMILLE_QF_ACTUEL_INT" in infos_famille:
+                        qf = infos_famille.get("FAMILLE_QF_ACTUEL_INT")
 
                         # Tranches de 100
                         if key_code == "qf_100" :
@@ -357,12 +411,12 @@ class CTRL(HTL.HyperTreeList):
 
                 # Questionnaires
                 if key_code.startswith("question_") and "famille" in key_code:
-                    key = self.dictInfosFamilles[IDfamille]["QUESTION_%s" % key_code[17:]]
+                    key = infos_famille.get("QUESTION_%s" % key_code[17:])
                     key_label = six.text_type(key)
                     key_tri = key_label
 
                 if key_code.startswith("question_") and "individu" in key_code and IDindividu not in (0, None) :
-                    key = self.dictInfosIndividus[IDindividu]["QUESTION_%s" % key_code[18:]]
+                    key = infos_individu.get("QUESTION_%s" % key_code[18:])
                     key_label = six.text_type(key)
                     key_tri = key_label
 
@@ -379,8 +433,7 @@ class CTRL(HTL.HyperTreeList):
             key2, key2_label, key2_tri = GetKey(self.key_ligne2)
 
             # Mémorisation du regroupement
-            if regroupement not in listeRegroupements :
-                listeRegroupements.append(regroupement)
+            if regroupement not in dictLabelsRegroupements :
                 dictLabelsRegroupements[regroupement] = labelRegroupement
 
 
@@ -413,7 +466,7 @@ class CTRL(HTL.HyperTreeList):
             dictPrestations[key1]["regroupements"][regroupement]["impaye"] = dictPrestations[key1]["regroupements"][regroupement]["regle"] - dictPrestations[key1]["regroupements"][regroupement]["facture"]
             dictPrestations[key1]["regroupements"][regroupement]["key2"][key2]["impaye"] = dictPrestations[key1]["regroupements"][regroupement]["key2"][key2]["regle"] - dictPrestations[key1]["regroupements"][regroupement]["key2"][key2]["facture"]
 
-        listeRegroupements.sort()
+        listeRegroupements = sorted(dictLabelsRegroupements.keys())
 
         return dictPrestations, listeRegroupements, dictLabelsRegroupements
     
@@ -439,6 +492,14 @@ class CTRL(HTL.HyperTreeList):
         self.SetColumnAlignment(numColonne, wx.ALIGN_CENTRE)
         
     def MAJ(self):
+        # Gel de l'affichage pendant la reconstruction de l'arbre
+        self.Freeze()
+        try :
+            self.Remplissage()
+        finally :
+            self.Thaw()
+
+    def Remplissage(self):
         dlgAttente = wx.BusyInfo(_(u"Recherche des données..."), self)
 
         # Importation des données
@@ -508,13 +569,12 @@ class CTRL(HTL.HyperTreeList):
             
             # ----------------- Branches key2 -------------
 
-            listeKeys2 = []
+            dictKeys2 = {}
             for regroupement in regroupements:
                 for key2, dictKey2 in dictPrestations[key1]["regroupements"][regroupement]["key2"].items():
                     key = (dictKey2["tri"], key2, dictKey2["label"])
-                    if key not in listeKeys2:
-                        listeKeys2.append(key)
-            listeKeys2.sort()
+                    dictKeys2[key] = None
+            listeKeys2 = sorted(dictKeys2.keys())
 
             for key2_tri, key2, key2_label in listeKeys2 :
                 if self.key_ligne2 != "" :

@@ -257,6 +257,9 @@ class Informations() :
             scolarite = True,
             mode_adresse_facturation = False,
             cotisations = True,
+            liens = True,
+            rattachements = True,
+            dictTitulaires = None,
             ) :
         self.date_reference = date_reference
         self.qf = qf
@@ -268,9 +271,14 @@ class Informations() :
         self.questionnaires = questionnaires
         self.scolarite = scolarite
         self.cotisations = cotisations
-        
+        self.liens = liens
+        self.rattachements = rattachements
+
         # Lancement du calcul
-        self.dictTitulaires = UTILS_Titulaires.GetTitulaires(mode_adresse_facturation=mode_adresse_facturation)
+        if dictTitulaires is not None :
+            self.dictTitulaires = dictTitulaires
+        else :
+            self.dictTitulaires = UTILS_Titulaires.GetTitulaires(mode_adresse_facturation=mode_adresse_facturation)
         self.Run() 
         
     def Run(self):
@@ -281,8 +289,8 @@ class Informations() :
         # Lecture des données de base
         self.dictIndividus = self.GetDictIndividus() 
         self.dictFamilles = self.GetDictFamilles() 
-        self.dictLiens = self.GetLiens() 
-        self.dictRattachements = self.GetRattachements() 
+        self.dictLiens = self.GetLiens() if self.liens else {}
+        self.dictRattachements = self.GetRattachements() if self.rattachements else {"familles" : {}, "individus" : {}}
 
         # Lecture des autres types de données
         if self.qf : self.RechercheQF() 
