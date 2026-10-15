@@ -1451,6 +1451,8 @@ class Table_payeurs(Table):
         valide = True
         if not self.dict_familles.get(data["pk"], None):
             valide = False
+        if data["IDcompte_payeur"] not in self.parent.dictComptesPayeurs:
+            valide = False
         return valide
 
     def famille(self, data={}):
