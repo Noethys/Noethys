@@ -136,8 +136,8 @@ class MyFrame(wx.Frame):
     def Plus(self, evt):
         if self.imgORIG != None:
             self.ratio = self.ratio + self.inc
-            largeur = (self.imgORIX * self.ratio)/100
-            hauteur = (self.imgORIY * self.ratio)/100
+            largeur = int((self.imgORIX * self.ratio)/100)
+            hauteur = int((self.imgORIY * self.ratio)/100)
             self.bmpRESU = self.imgORIG.Scale(largeur, hauteur).ConvertToBitmap()
             self.panneau.Affiche(self.bmpRESU, self.ratio)
             self.barre.SetStatusText("(%s, %s) %s %%"%(self.imgORIX, self.imgORIY, self.ratio), 1)
@@ -145,8 +145,8 @@ class MyFrame(wx.Frame):
     def Moins(self, evt):
         if self.ratio > 5 and self.imgORIG != None:
             self.ratio = self.ratio - self.inc
-            largeur = (self.imgORIX * self.ratio)/100
-            hauteur = (self.imgORIY * self.ratio)/100
+            largeur = int((self.imgORIX * self.ratio)/100)
+            hauteur = int((self.imgORIY * self.ratio)/100)
             self.bmpRESU = self.imgORIG.Scale(largeur, hauteur).ConvertToBitmap()
             self.panneau.Affiche(self.bmpRESU, self.ratio)
             self.barre.SetStatusText("(%s, %s) %s %%"%(self.imgORIX, self.imgORIY, self.ratio), 1)

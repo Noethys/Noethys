@@ -42,14 +42,14 @@ def RecadreImg(img=None):
     largeur, hauteur = img.GetSize()
     if max(largeur, hauteur) > tailleMaxi :
         if largeur > hauteur :
-            hauteur = hauteur * tailleMaxi / largeur
+            hauteur = int(hauteur * tailleMaxi / largeur)
             largeur = tailleMaxi
         else:
-            largeur = largeur * tailleMaxi / hauteur
+            largeur = int(largeur * tailleMaxi / hauteur)
             hauteur = tailleMaxi
-    img.Rescale(width=largeur, height=hauteur, quality=wx.IMAGE_QUALITY_HIGH)
-    position = (((TAILLE_IMAGE[0]/2.0) - (largeur/2.0)), ((TAILLE_IMAGE[1]/2.0) - (hauteur/2.0)))
-    img.Resize(TAILLE_IMAGE, position, 255, 255, 255)
+    img.Rescale(width=int(largeur), height=int(hauteur), quality=wx.IMAGE_QUALITY_HIGH)
+    position = (int((TAILLE_IMAGE[0]/2.0) - (largeur/2.0)), int((TAILLE_IMAGE[1]/2.0) - (hauteur/2.0)))
+    img.Resize((int(TAILLE_IMAGE[0]), int(TAILLE_IMAGE[1])), position, 255, 255, 255)
     return img
 
 
