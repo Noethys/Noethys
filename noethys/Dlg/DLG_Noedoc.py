@@ -3163,13 +3163,13 @@ class MovingScaledBitmap(FloatCanvas.ScaledBitmap, MovingObjectMixin):
     def _Draw(self, dc , WorldToPixel, ScaleWorldToPixel, HTdc=None):
         """ Surcharge pour contrer le bug des images trop petites """
         XY = WorldToPixel(self.XY)
-        H = ScaleWorldToPixel(self.Height)[0]
-        W = H * (1.0 * self.bmpWidth / self.bmpHeight)
+        H = int(ScaleWorldToPixel(self.Height)[0])
+        W = int(round(H * (1.0 * self.bmpWidth / self.bmpHeight)))
+        if W < 1 : W = 1
+        if H < 1 : H = 1
         if (self.ScaledBitmap is None) or (H != self.ScaledHeight) :
             self.ScaledHeight = H
-            if W < 1 : W = 1
-            if H < 1 : H = 1
-            Img = self.Image.Scale(float(W), float(H))
+            Img = self.Image.Scale(int(W), int(H))
             if 'phoenix' in wx.PlatformInfo:
                 self.ScaledBitmap = wx.Bitmap(Img)
             else :
@@ -4555,12 +4555,12 @@ class Panel_canvas(wx.Panel):
                 largeur, hauteur = img.GetSize()
                 if max(largeur, hauteur) > tailleMaxi:
                     if largeur > hauteur:
-                        hauteur = hauteur * tailleMaxi / largeur
+                        hauteur = int(hauteur * tailleMaxi / largeur)
                         largeur = tailleMaxi
                     else:
-                        largeur = largeur * tailleMaxi / hauteur
+                        largeur = int(largeur * tailleMaxi / hauteur)
                         hauteur = tailleMaxi
-                img.Rescale(width=largeur, height=hauteur, quality=wx.IMAGE_QUALITY_HIGH)
+                img.Rescale(width=int(largeur), height=int(hauteur), quality=wx.IMAGE_QUALITY_HIGH)
                 if 'phoenix' in wx.PlatformInfo:
                     bmp = wx.Bitmap(img)
                 else :
@@ -5209,8 +5209,8 @@ class Dialog(wx.Dialog):
         self.IDmodele = IDmodele
         self.taille_page = taille_page
 
-        # DLG Attente
-        dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant l'initialisation de Noedoc..."), self.parent)
+        # Curseur attente
+        busy = wx.BusyCursor()
 
         # Recherche des données de la catégorie
         if categorie == "fond" : self.infosCategorie = Fond()
@@ -5308,7 +5308,7 @@ class Dialog(wx.Dialog):
         self.CenterOnScreen()
         self.ctrl_canvas.Init_canvas()
         
-        del dlgAttente
+        del busy
 
         # Importation
         if self.IDmodele != None :
@@ -5439,11 +5439,16 @@ class Dialog(wx.Dialog):
     def OnClose(self, event):
         self.Quitter()
 
+    def Destroy(self):
+        if hasattr(self, "_mgr"):
+            try:
+                self._mgr.UnInit()
+            except Exception:
+                pass
+        return super(Dialog, self).Destroy()
+
     def Quitter(self, enregistrer=True):
         UTILS_Dialogs.SaveSizePerso(self, __file__)
-        # Quitter
-        self._mgr.UnInit()
-        del self._mgr
         self.Destroy()
 
     def OnAide(self, event):

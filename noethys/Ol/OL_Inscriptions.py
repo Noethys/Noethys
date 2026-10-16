@@ -26,24 +26,26 @@ from Dlg.DLG_Inscription import STATUTS
 
 from Utils import UTILS_Utilisateurs
 
-##TAILLE_IMAGE = (40, 40)
-##LOGO_ORGANISATEUR = None
+TAILLE_IMAGE = (40, 40)
+LOGO_ORGANISATEUR = None
 
 
 def RecadreImg(img=None):
+    if img is None:
+        return None
     # Recadre l'image en fonction de la taille du staticBitmap
     tailleMaxi = max(TAILLE_IMAGE)
     largeur, hauteur = img.GetSize()
     if max(largeur, hauteur) > tailleMaxi :
         if largeur > hauteur :
-            hauteur = hauteur * tailleMaxi / largeur
+            hauteur = int(hauteur * tailleMaxi / largeur)
             largeur = tailleMaxi
         else:
-            largeur = largeur * tailleMaxi / hauteur
+            largeur = int(largeur * tailleMaxi / hauteur)
             hauteur = tailleMaxi
-    img.Rescale(width=largeur, height=hauteur, quality=wx.IMAGE_QUALITY_HIGH)
-    position = (((TAILLE_IMAGE[0]/2.0) - (largeur/2.0)), ((TAILLE_IMAGE[1]/2.0) - (hauteur/2.0)))
-    img.Resize(TAILLE_IMAGE, position, 255, 255, 255)
+    img.Rescale(width=int(largeur), height=int(hauteur), quality=wx.IMAGE_QUALITY_HIGH)
+    position = (int((TAILLE_IMAGE[0]/2.0) - (largeur/2.0)), int((TAILLE_IMAGE[1]/2.0) - (hauteur/2.0)))
+    img.Resize((int(TAILLE_IMAGE[0]), int(TAILLE_IMAGE[1])), position, 255, 255, 255)
     return img
 
 
@@ -75,7 +77,7 @@ class Track(object):
                 self.nomTitulaires = parent.dictFamillesRattachees[self.IDfamille]["nomsTitulaires"]
 
         # Validité de la pièce
-        if (datetime.date.today() <= self.date_fin and (self.date_desinscription is None or self.date_desinscription >= datetime.date.today())):
+        if (self.date_fin is not None and datetime.date.today() <= self.date_fin and (self.date_desinscription is None or self.date_desinscription >= datetime.date.today())):
             self.valide = True
         else:
             self.valide = False

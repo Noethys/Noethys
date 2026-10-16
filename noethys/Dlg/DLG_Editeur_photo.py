@@ -104,6 +104,7 @@ class ImgBox(wx.Window):
         self.dragging = False
         self.largeurDC = None
         self.hauteurDC = None
+        self._Buffer = None
         
         
     def ReinitImage(self):
@@ -148,26 +149,26 @@ class ImgBox(wx.Window):
             largeurDC, hauteurDC = self.GetClientSize()
         else :
             largeurDC, hauteurDC = self.GetClientSizeTuple()
-        self.posxCadre = (largeurDC / 2.0) - (self.tailleCadre[0] / 2.0)
-        self.posyCadre = (hauteurDC / 2.0) - (self.tailleCadre[1] / 2.0)
+        self.posxCadre = int((largeurDC / 2.0) - (self.tailleCadre[0] / 2.0))
+        self.posyCadre = int((hauteurDC / 2.0) - (self.tailleCadre[1] / 2.0))
         
         # mémorise la sélection de la photo avant de dessiner le cadre
-        self.selection = dc.GetAsBitmap((self.posxCadre, self.posyCadre, self.tailleCadre[0], self.tailleCadre[1]))
+        self.selection = dc.GetAsBitmap((self.posxCadre, self.posyCadre, int(self.tailleCadre[0]), int(self.tailleCadre[1])))
                 
         # Dessine le cadre de sélection
         dc.SetPen(wx.CYAN_PEN)
         dc.SetBrush(wx.TRANSPARENT_BRUSH)
-        dc.DrawRectangle(self.posxCadre, self.posyCadre, self.tailleCadre[0], self.tailleCadre[1])
+        dc.DrawRectangle(self.posxCadre, self.posyCadre, int(self.tailleCadre[0]), int(self.tailleCadre[1]))
         dc.SetFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
         dc.SetTextForeground("CYAN")
         dc.DrawText(_(u"Cadre de sélection"), self.posxCadre+3, self.posyCadre+1) 
         
         # Dessine l'aperçu
-        largeurApercu = 100.0
-        tailleApercu = (largeurApercu, largeurApercu * self.tailleCadre[1] / self.tailleCadre[0])
+        largeurApercu = 100
+        tailleApercu = (int(largeurApercu), int(largeurApercu * self.tailleCadre[1] / self.tailleCadre[0]))
         posxApercu, posyApercu = (10, 10)
         self.apercu = self.selection.ConvertToImage()
-        self.apercu = self.apercu.Rescale(width=tailleApercu[0], height=tailleApercu[1], quality=wx.IMAGE_QUALITY_HIGH) 
+        self.apercu = self.apercu.Rescale(int(tailleApercu[0]), int(tailleApercu[1]), wx.IMAGE_QUALITY_HIGH) 
         self.apercu = self.apercu.ConvertToBitmap()
         dc.DrawBitmap(self.apercu, int(posxApercu), int(posyApercu), 0)
         dc.SetTextForeground("RED")
@@ -177,11 +178,14 @@ class ImgBox(wx.Window):
         # Dessine le cadre de l'aperçu
         dc.SetPen(wx.RED_PEN)
         dc.SetBrush(wx.TRANSPARENT_BRUSH)
-        dc.DrawRectangle(posxApercu, posyApercu, tailleApercu[0], tailleApercu[1])
+        dc.DrawRectangle(posxApercu, posyApercu, int(tailleApercu[0]), int(tailleApercu[1]))
 
     def evt_paint(self, event):
         """Paint event handler with double buffering"""
-        dc = wx.BufferedPaintDC(self, self._Buffer)
+        if getattr(self, '_Buffer', None) is not None:
+            dc = wx.BufferedPaintDC(self, self._Buffer)
+        else:
+            dc = wx.PaintDC(self)
 
     def evt_size(self,event):
         """ OnSize """
@@ -197,8 +201,8 @@ class ImgBox(wx.Window):
         # Redimensionne la photo 
             self.ResizePhoto()
             # Détermine le nouveau point central de la photo
-            self.posxPhoto = self.posxPhoto + (self.largeurDC-ancLargeurDC)/2
-            self.posyPhoto = self.posyPhoto + (self.hauteurDC-ancHauteurDC)/2
+            self.posxPhoto = self.posxPhoto + int((self.largeurDC-ancLargeurDC)/2)
+            self.posyPhoto = self.posyPhoto + int((self.hauteurDC-ancHauteurDC)/2)
         # Redessine toute l'image
         if 'phoenix' in wx.PlatformInfo:
             self._Buffer = wx.Bitmap(self.largeurDC, self.hauteurDC)
@@ -211,8 +215,8 @@ class ImgBox(wx.Window):
         """ Redimensionne la photo"""
         largeurImg, hauteurImg = self.source.GetSize()
         # Réduction de l'image
-        newLargeur = largeurImg * self.zoom
-        newHauteur = hauteurImg * self.zoom
+        newLargeur = int(largeurImg * self.zoom)
+        newHauteur = int(hauteurImg * self.zoom)
         # Redimensionne l'image
         if newLargeur > 1 and newHauteur > 1 :
             source = self.source.Scale(newLargeur, newHauteur)
@@ -242,8 +246,8 @@ class ImgBox(wx.Window):
         self.source = self.source.Rotate90(VersDroite)
         # Réduction de l'image
         largeurImg, hauteurImg = self.source.GetSize()
-        newLargeur = largeurImg * self.zoom
-        newHauteur = hauteurImg * self.zoom
+        newLargeur = int(largeurImg * self.zoom)
+        newHauteur = int(hauteurImg * self.zoom)
         source = self.source.Scale(newLargeur, newHauteur)
         if 'phoenix' in wx.PlatformInfo:
             self.bmp = wx.Bitmap(source)
@@ -425,8 +429,10 @@ class Dialog(wx.Dialog):
 
     def GetBmp(self, qualite=wx.IMAGE_QUALITY_HIGH):
         buffer = self.GetBuffer()
-        img = wx.ImageFromStream(buffer, wx.BITMAP_TYPE_ANY)
-##        img = img.Rescale(width=taillePhoto[0], height=taillePhoto[1], quality=qualite) 
+        if 'phoenix' in wx.PlatformInfo:
+            img = wx.Image(buffer, wx.BITMAP_TYPE_ANY)
+        else:
+            img = wx.ImageFromStream(buffer, wx.BITMAP_TYPE_ANY)
         bmp = img.ConvertToBitmap()
         return bmp
     
