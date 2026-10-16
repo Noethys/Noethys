@@ -46,6 +46,7 @@ from Utils import UTILS_Fichiers
 from Utils import UTILS_Dates
 from Utils import UTILS_Divers
 from Utils import UTILS_Infos_individus
+from Utils import UTILS_Memos_journee
 
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
 from reportlab.platypus.flowables import ParagraphAndImage, Image
@@ -60,6 +61,20 @@ from reportlab.graphics.barcode import code39
 COULEUR_FOND_TITRE = (204, 204, 255) # version PDF : (0.8, 0.8, 1) # Vert -> (0.5, 1, 0.2)
 
 DICT_CIVILITES = Civilites.GetDictCivilites()
+
+
+def NettoyerEmojis(texte=u""):
+    """ Retire les émojis non affichables par les polices PDF standard (Helvetica) """
+    if not texte:
+        return texte
+    resultat = []
+    for car in texte:
+        code = ord(car)
+        if code > 0xFFFF or 0x2600 <= code <= 0x27BF or 0x2B00 <= code <= 0x2BFF or 0x25A0 <= code <= 0x25FF                 or code in (0xFE0F, 0xFE0E, 0x200D, 0x20E3):
+            continue
+        resultat.append(car)
+    return u"".join(resultat).strip()
+
 
 
 def FormateCondition(listeDonnees=[]):
@@ -152,7 +167,8 @@ class PANEL_Calendrier(wx.Panel):
         self.ctrl_calendrier.Bind(CTRL_Calendrier.EVT_SELECT_DATES, self.OnDateSelected)
         
     def OnDateSelected(self, event):
-        self.GetParent().SetDates(self.GetDates())
+        if hasattr(self.GetParent(), "ctrl_parametres"):
+            self.GetParent().SetDates(self.GetDates())
     
     def GetDates(self):
         selections = self.ctrl_calendrier.GetSelections() 
@@ -554,10 +570,13 @@ class Page_Activites(wx.Panel):
         self.label_saut_activites = wx.StaticText(self, -1, _(u"Sauts de page :"))
         self.checkbox_saut_activites = wx.CheckBox(self, -1, _(u"Après l'activité"))
         self.checkbox_saut_groupes = wx.CheckBox(self, -1, _(u"Après le groupe"))
+        self.checkbox_masquer_vides = wx.CheckBox(self, -1, _(u"Masquer si vide"))
+        self.checkbox_masquer_vides.SetValue(True)
         
         # Propriétés
         self.checkbox_saut_activites.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour insérer un saut de page après chaque activité")))
         self.checkbox_saut_groupes.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour insérer un saut de page après chaque groupe")))
+        self.checkbox_masquer_vides.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour ne pas imprimer les activités et groupes sans aucun individu (0 individu)")))
         self.ctrl_cocher = CTRL_Cocher(self, ctrl_liste=self.ctrl_activites)
 
         # Layout
@@ -566,13 +585,14 @@ class Page_Activites(wx.Panel):
         
         grid_sizer_base.Add(self.ctrl_activites, 1, wx.EXPAND, 0)
         
-        grid_sizer_options = wx.FlexGridSizer(rows=1, cols=5, vgap=2, hgap=5)
+        grid_sizer_options = wx.FlexGridSizer(rows=1, cols=6, vgap=2, hgap=5)
         grid_sizer_options.Add(self.label_saut_activites, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_options.Add(self.checkbox_saut_activites, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_options.Add(self.checkbox_saut_groupes, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.Add(self.checkbox_masquer_vides, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_options.Add( (5, 5), 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_options.Add(self.ctrl_cocher, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_options.AddGrowableCol(3)
+        grid_sizer_options.AddGrowableCol(4)
         grid_sizer_base.Add(grid_sizer_options, 1, wx.EXPAND, 0)
 
         grid_sizer_base.AddGrowableRow(0)
@@ -585,15 +605,18 @@ class Page_Activites(wx.Panel):
         dictParametres = {}
         dictParametres["saut_activites"] = int(self.checkbox_saut_activites.GetValue())
         dictParametres["saut_groupes"] = int(self.checkbox_saut_groupes.GetValue())
+        dictParametres["masquer_vides"] = self.checkbox_masquer_vides.GetValue()
         return dictParametres
 
     def SetParametres(self, dictParametres={}):
         if dictParametres == None :
             self.checkbox_saut_activites.SetValue(True)
             self.checkbox_saut_groupes.SetValue(True)
+            self.checkbox_masquer_vides.SetValue(True)
         else :
             if "saut_activites" in dictParametres : self.checkbox_saut_activites.SetValue(dictParametres["saut_activites"])
             if "saut_groupes" in dictParametres : self.checkbox_saut_groupes.SetValue(dictParametres["saut_groupes"])
+            if "masquer_vides" in dictParametres : self.checkbox_masquer_vides.SetValue(bool(dictParametres["masquer_vides"]))
 
 # -----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1026,6 +1049,333 @@ class Page_Options(wx.Panel):
 
 
 
+
+# ----------------------------------------------------------------------------------------------------------------------------------------------
+
+class Page_Memos(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
+        self.parent = parent
+        self.date = datetime.date.today()
+        self.listeMemos = []
+
+        # Alerte du jour
+        self.staticbox_pb_staticbox = wx.StaticBox(self, -1, _(u"Alerte du jour"))
+        self.label_date_pb = wx.StaticText(self, -1, _(u"Alerte pour la journée :"))
+        self.label_date_pb.SetFont(wx.Font(9, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
+        self.ctrl_pense_bete = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE)
+        self.ctrl_pense_bete.SetMinSize((-1, 45))
+        self.ctrl_pense_bete.SetToolTip(wx.ToolTip(_(u"Cette alerte apparaîtra sur la liste imprimée de la journée.")))
+
+        # Choix des activités pour l'alerte
+        self.radio_pb_toutes = wx.RadioButton(self, -1, _(u"Afficher sur toutes les activités"), style=wx.RB_GROUP)
+        self.radio_pb_certaines = wx.RadioButton(self, -1, _(u"Afficher uniquement sur les activités cochées ci-dessous :"))
+        self.listeActivitesDispos = []
+        self.check_activites = wx.CheckListBox(self, -1, size=(-1, 65))
+        self.bouton_cocher_tout = wx.Button(self, -1, _(u"Tout cocher"), size=(-1, 20))
+        self.bouton_decocher_tout = wx.Button(self, -1, _(u"Tout décocher"), size=(-1, 20))
+        self.bouton_save_pb = CTRL_Bouton_image.CTRL(self, texte=_(u"Enregistrer"), cheminImage="Images/16x16/Sauvegarder.png")
+
+        # Personnes à signaler / avec un souci
+        self.staticbox_alertes_staticbox = wx.StaticBox(self, -1, _(u"Personnes à surligner / avec un souci (Attention ++) "))
+        self.ctrl_liste = wx.ListCtrl(self, -1, style=wx.LC_REPORT | wx.SUNKEN_BORDER | wx.LC_SINGLE_SEL | wx.LC_HRULES | wx.LC_VRULES)
+        self.ctrl_liste.InsertColumn(0, _(u"Individu"), width=160)
+        self.ctrl_liste.InsertColumn(1, _(u"Mémo / Note du jour"), width=230)
+        self.ctrl_liste.InsertColumn(2, _(u"Surlignage PDF"), width=160)
+
+        # Boutons pour les alertes (horizontaux, toujours visibles)
+        self.bouton_toggle_rouge = CTRL_Bouton_image.CTRL(self, texte=_(u"Attention ++ (Rouge)"), cheminImage="Images/16x16/Information.png")
+        self.bouton_modifier = CTRL_Bouton_image.CTRL(self, texte=_(u"Changer couleur"), cheminImage="Images/16x16/Modifier.png")
+        self.bouton_retirer_couleur = CTRL_Bouton_image.CTRL(self, texte=_(u"Aucun surlignage"), cheminImage="Images/16x16/Supprimer.png")
+        self.bouton_ajouter = CTRL_Bouton_image.CTRL(self, texte=_(u"Ajouter"), cheminImage="Images/16x16/Ajouter.png")
+        self.bouton_supprimer = CTRL_Bouton_image.CTRL(self, texte=_(u"Supprimer mémo"), cheminImage="Images/16x16/Supprimer_2.png")
+
+        self.bouton_toggle_rouge.SetToolTip(wx.ToolTip(_(u"Activer ou désactiver rapidement l'alerte 'Attention ++' (rouge) pour la personne sélectionnée")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Choisir une couleur spécifique (Rouge, Orange, Jaune...) ou modifier le texte du mémo")))
+        self.bouton_retirer_couleur.SetToolTip(wx.ToolTip(_(u"Conserver le mémo mais retirer tout surlignage couleur sur la liste imprimée (texte normal)")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Ajouter un signalement / mémo pour une personne")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Supprimer définitivement ce mémo")))
+
+        # Binds
+        self.Bind(wx.EVT_BUTTON, self.OnSavePenseBete, self.bouton_save_pb)
+        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioPBToutes, self.radio_pb_toutes)
+        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioPBCertaines, self.radio_pb_certaines)
+        self.Bind(wx.EVT_BUTTON, self.OnCocherTout, self.bouton_cocher_tout)
+        self.Bind(wx.EVT_BUTTON, self.OnDecocherTout, self.bouton_decocher_tout)
+        self.Bind(wx.EVT_BUTTON, self.OnToggleRouge, self.bouton_toggle_rouge)
+        self.Bind(wx.EVT_BUTTON, self.OnModifier, self.bouton_modifier)
+        self.Bind(wx.EVT_BUTTON, self.OnRetirerCouleur, self.bouton_retirer_couleur)
+        self.Bind(wx.EVT_BUTTON, self.OnAjouter, self.bouton_ajouter)
+        self.Bind(wx.EVT_BUTTON, self.OnSupprimer, self.bouton_supprimer)
+        self.ctrl_liste.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnModifier)
+        self.ctrl_liste.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.OnContextMenuListe)
+        self.ctrl_pense_bete.Bind(wx.EVT_TEXT, self.OnPenseBeteModifie)
+
+        # Layout
+        sizer = wx.BoxSizer(wx.VERTICAL)
+
+        sb_pb = wx.StaticBoxSizer(self.staticbox_pb_staticbox, wx.VERTICAL)
+        sb_pb.Add(self.label_date_pb, 0, wx.ALL, 3)
+        sb_pb.Add(self.ctrl_pense_bete, 0, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 3)
+
+        sizer_radios = wx.BoxSizer(wx.HORIZONTAL)
+        sizer_radios.Add(self.radio_pb_toutes, 0, wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, 15)
+        sizer_radios.Add(self.radio_pb_certaines, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        sb_pb.Add(sizer_radios, 0, wx.LEFT | wx.RIGHT | wx.BOTTOM, 3)
+
+        sizer_act_row = wx.BoxSizer(wx.HORIZONTAL)
+        sizer_act_row.Add(self.check_activites, 1, wx.EXPAND | wx.RIGHT, 5)
+
+        sizer_act_btns = wx.BoxSizer(wx.VERTICAL)
+        sizer_act_btns.Add(self.bouton_cocher_tout, 0, wx.BOTTOM | wx.EXPAND, 2)
+        sizer_act_btns.Add(self.bouton_decocher_tout, 0, wx.BOTTOM | wx.EXPAND, 2)
+        sizer_act_btns.AddStretchSpacer()
+        sizer_act_btns.Add(self.bouton_save_pb, 0, wx.ALIGN_RIGHT, 0)
+        sizer_act_row.Add(sizer_act_btns, 0, wx.EXPAND, 0)
+
+        sb_pb.Add(sizer_act_row, 0, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 3)
+        sizer.Add(sb_pb, 0, wx.ALL | wx.EXPAND, 5)
+
+        sb_alertes = wx.StaticBoxSizer(self.staticbox_alertes_staticbox, wx.VERTICAL)
+        sb_alertes.Add(self.ctrl_liste, 1, wx.ALL | wx.EXPAND, 5)
+
+        sizer_btns = wx.BoxSizer(wx.HORIZONTAL)
+        sizer_btns.Add(self.bouton_toggle_rouge, 0, wx.RIGHT, 5)
+        sizer_btns.Add(self.bouton_modifier, 0, wx.RIGHT, 5)
+        sizer_btns.Add(self.bouton_retirer_couleur, 0, wx.RIGHT, 5)
+        sizer_btns.Add(self.bouton_ajouter, 0, wx.RIGHT, 5)
+        sizer_btns.Add(self.bouton_supprimer, 0, 0, 0)
+        sb_alertes.Add(sizer_btns, 0, wx.LEFT | wx.RIGHT | wx.BOTTOM, 5)
+
+        sizer.Add(sb_alertes, 1, wx.ALL | wx.EXPAND, 5)
+
+        self.SetSizer(sizer)
+        self.Layout()
+
+    def SetDate(self, date=None):
+        if date:
+            self.date = date
+        self.MAJ()
+
+    def GetActivitesDisponibles(self):
+        if not self.date:
+            return []
+        import GestionDB
+        DB = GestionDB.DB()
+        req = """SELECT activites.IDactivite, activites.nom 
+                 FROM activites
+                 LEFT JOIN ouvertures ON ouvertures.IDactivite = activites.IDactivite
+                 WHERE ouvertures.date = '%s'
+                 GROUP BY activites.IDactivite
+                 ORDER BY activites.nom;""" % str(self.date)
+        DB.ExecuterReq(req)
+        res = DB.ResultatReq()
+        DB.Close()
+        if not res:
+            DB = GestionDB.DB()
+            req = """SELECT IDactivite, nom FROM activites ORDER BY nom;"""
+            DB.ExecuterReq(req)
+            res = DB.ResultatReq()
+            DB.Close()
+        return res or []
+
+    def OnRadioPBToutes(self, event=None):
+        self.check_activites.Enable(False)
+        self.bouton_cocher_tout.Enable(False)
+        self.bouton_decocher_tout.Enable(False)
+
+    def OnRadioPBCertaines(self, event=None):
+        self.check_activites.Enable(True)
+        self.bouton_cocher_tout.Enable(True)
+        self.bouton_decocher_tout.Enable(True)
+
+    def OnCocherTout(self, event=None):
+        for i in range(self.check_activites.GetCount()):
+            self.check_activites.Check(i, True)
+
+    def OnDecocherTout(self, event=None):
+        for i in range(self.check_activites.GetCount()):
+            self.check_activites.Check(i, False)
+
+    def GetActivitesCochees(self):
+        if self.radio_pb_toutes.GetValue() == True:
+            return "all"
+        coches = []
+        for i, (IDact, nom) in enumerate(self.listeActivitesDispos):
+            if self.check_activites.IsChecked(i):
+                coches.append(IDact)
+        if len(coches) == 0 or len(coches) == len(self.listeActivitesDispos):
+            return "all"
+        return coches
+
+    def GetIndexSelectionne(self):
+        idx = self.ctrl_liste.GetFirstSelected()
+        if idx == -1:
+            idx = self.ctrl_liste.GetFocusedItem()
+        return idx
+
+    def MAJ(self, selectionIndex=None):
+        from Utils import UTILS_Memos_journee, UTILS_Dates
+        if selectionIndex is None:
+            selectionIndex = self.GetIndexSelectionne()
+
+        self.label_date_pb.SetLabel(_(u"Alerte pour le %s :") % UTILS_Dates.DateComplete(self.date))
+        pb = UTILS_Memos_journee.GetPenseBeteJour(self.date)
+        self.ctrl_pense_bete.ChangeValue(pb["texte"] if pb else "")
+        targetAct = UTILS_Memos_journee.ParseActivitesPenseBete(pb.get("couleur") if pb else "all")
+
+        # Remplissage des activités
+        self.listeActivitesDispos = self.GetActivitesDisponibles()
+        self.check_activites.Clear()
+        for idx, (IDact, nomAct) in enumerate(self.listeActivitesDispos):
+            self.check_activites.Append(nomAct)
+            if targetAct == "all" or IDact in targetAct:
+                self.check_activites.Check(idx, True)
+
+        if targetAct == "all":
+            self.radio_pb_toutes.SetValue(True)
+            self.check_activites.Enable(False)
+            self.bouton_cocher_tout.Enable(False)
+            self.bouton_decocher_tout.Enable(False)
+        else:
+            self.radio_pb_certaines.SetValue(True)
+            self.check_activites.Enable(True)
+            self.bouton_cocher_tout.Enable(True)
+            self.bouton_decocher_tout.Enable(True)
+
+        self.ctrl_liste.DeleteAllItems()
+        self.listeMemos = UTILS_Memos_journee.GetMemosIndividusDate(self.date)
+        for index, m in enumerate(self.listeMemos):
+            nomComplet = u"%s %s" % (m.get("nom", ""), m.get("prenom", ""))
+            self.ctrl_liste.InsertItem(index, nomComplet)
+            self.ctrl_liste.SetItem(index, 1, m.get("texte", ""))
+            stylesC = UTILS_Memos_journee.GetStylesCouleurPDF(m.get("couleur"))
+            if stylesC:
+                labelCouleur = stylesC.get("label", m.get("couleur", ""))
+            else:
+                labelCouleur = _(u"⚪ Aucun (non surligné)")
+            self.ctrl_liste.SetItem(index, 2, labelCouleur)
+            self.ctrl_liste.SetItemData(index, index)
+
+        if selectionIndex is not None and 0 <= selectionIndex < len(self.listeMemos):
+            self.ctrl_liste.Select(selectionIndex)
+            self.ctrl_liste.Focus(selectionIndex)
+
+    def OnSavePenseBete(self, event=None):
+        from Utils import UTILS_Memos_journee
+        targetAct = self.GetActivitesCochees()
+        codeCouleur = UTILS_Memos_journee.FormatActivitesPenseBete(targetAct)
+        UTILS_Memos_journee.SetPenseBeteJour(self.date, self.ctrl_pense_bete.GetValue(), couleur=codeCouleur)
+        dlgGrandParent = self.GetGrandParent()
+        if hasattr(dlgGrandParent, "ctrl_pense_bete"):
+            dlgGrandParent.ctrl_pense_bete.ChangeValue(self.ctrl_pense_bete.GetValue())
+
+    def OnPenseBeteModifie(self, event=None):
+        dlgGrandParent = self.GetGrandParent()
+        if hasattr(dlgGrandParent, "ctrl_pense_bete"):
+            if dlgGrandParent.ctrl_pense_bete.GetValue() != self.ctrl_pense_bete.GetValue():
+                dlgGrandParent.ctrl_pense_bete.ChangeValue(self.ctrl_pense_bete.GetValue())
+
+    def OnContextMenuListe(self, event):
+        idx = event.GetIndex()
+        if idx != -1:
+            self.ctrl_liste.Select(idx)
+            self.ctrl_liste.Focus(idx)
+        else:
+            idx = self.GetIndexSelectionne()
+            if idx == -1:
+                return
+
+        menu = wx.Menu()
+        item1 = menu.Append(-1, _(u"🔴 Mettre en alerte Attention ++ (Rouge)"))
+        item2 = menu.Append(-1, _(u"⚪ Aucun surlignage (texte normal)"))
+        item3 = menu.Append(-1, _(u"🎨 Changer la couleur / Modifier le texte..."))
+        menu.AppendSeparator()
+        item4 = menu.Append(-1, _(u"❌ Supprimer ce mémo"))
+
+        self.Bind(wx.EVT_MENU, self.OnToggleRouge, item1)
+        self.Bind(wx.EVT_MENU, self.OnRetirerCouleur, item2)
+        self.Bind(wx.EVT_MENU, self.OnModifier, item3)
+        self.Bind(wx.EVT_MENU, self.OnSupprimer, item4)
+
+        self.PopupMenu(menu)
+        menu.Destroy()
+
+    def OnToggleRouge(self, event=None):
+        idx = self.GetIndexSelectionne()
+        if idx == -1 or idx >= len(self.listeMemos):
+            wx.MessageBox(_(u"Veuillez d'abord cliquer sur une personne dans la liste."), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
+            return
+        from Utils import UTILS_Memos_journee
+        itemData = self.ctrl_liste.GetItemData(idx)
+        memo = self.listeMemos[itemData]
+        nouvelleCouleur = None if memo.get("couleur") == "red" else "red"
+        UTILS_Memos_journee.SetMemoIndividuDate(memo["IDindividu"], self.date, memo["texte"], nouvelleCouleur)
+        self.MAJ(selectionIndex=idx)
+
+    def OnRetirerCouleur(self, event=None):
+        idx = self.GetIndexSelectionne()
+        if idx == -1 or idx >= len(self.listeMemos):
+            wx.MessageBox(_(u"Veuillez d'abord cliquer sur une personne dans la liste."), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
+            return
+        from Utils import UTILS_Memos_journee
+        itemData = self.ctrl_liste.GetItemData(idx)
+        memo = self.listeMemos[itemData]
+        UTILS_Memos_journee.SetMemoIndividuDate(memo["IDindividu"], self.date, memo["texte"], None)
+        self.MAJ(selectionIndex=idx)
+
+    def OnAjouter(self, event=None):
+        from Dlg import DLG_Grille_ajouter_individu
+        from Utils import UTILS_Memos_journee
+        dlg = DLG_Grille_ajouter_individu.Dialog(self)
+        if dlg.ShowModal() == wx.ID_OK:
+            IDindividu = dlg.GetIDindividu()
+            dlg.Destroy()
+            if IDindividu:
+                dlgMemo = UTILS_Memos_journee.DLG_Saisie_memo(self, texte="", couleur="red")
+                if dlgMemo.ShowModal() == wx.ID_OK:
+                    UTILS_Memos_journee.SetMemoIndividuDate(IDindividu, self.date, dlgMemo.texte, dlgMemo.couleur)
+                    self.MAJ()
+                dlgMemo.Destroy()
+        else:
+            dlg.Destroy()
+
+    def OnModifier(self, event=None):
+        idx = self.GetIndexSelectionne()
+        if idx == -1 or idx >= len(self.listeMemos):
+            wx.MessageBox(_(u"Veuillez d'abord cliquer sur une personne dans la liste."), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
+            return
+        from Utils import UTILS_Memos_journee
+        itemData = self.ctrl_liste.GetItemData(idx)
+        memo = self.listeMemos[itemData]
+        dlgMemo = UTILS_Memos_journee.DLG_Saisie_memo(self, texte=memo["texte"], couleur=memo["couleur"])
+        if dlgMemo.ShowModal() == wx.ID_OK:
+            UTILS_Memos_journee.SetMemoIndividuDate(memo["IDindividu"], self.date, dlgMemo.texte, dlgMemo.couleur)
+            self.MAJ(selectionIndex=idx)
+        dlgMemo.Destroy()
+
+    def OnSupprimer(self, event=None):
+        idx = self.GetIndexSelectionne()
+        if idx == -1 or idx >= len(self.listeMemos):
+            wx.MessageBox(_(u"Veuillez d'abord cliquer sur une personne dans la liste."), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
+            return
+        from Utils import UTILS_Memos_journee
+        itemData = self.ctrl_liste.GetItemData(idx)
+        memo = self.listeMemos[itemData]
+        dlg = wx.MessageDialog(self, _(u"Confirmez-vous la suppression de ce signalement ?"), _(u"Confirmation"), wx.YES_NO | wx.NO_DEFAULT | wx.ICON_QUESTION)
+        reponse = dlg.ShowModal()
+        dlg.Destroy()
+        if reponse == wx.ID_YES:
+            UTILS_Memos_journee.SupprimerMemo(memo["IDmemo"])
+            self.MAJ()
+
+    def GetParametres(self):
+        return {}
+
+    def SetParametres(self, dictParametres={}):
+        pass
+
+
 # ----------------------------------------------------------------------------------------------------------------------------------------------
 
 class CTRL_Parametres(wx.Notebook):
@@ -1040,6 +1390,7 @@ class CTRL_Parametres(wx.Notebook):
             {"code" : "etiquettes", "ctrl" : Page_Etiquettes(self), "label" : _(u"Etiquettes"), "image" : "Etiquette.png"},
             {"code" : "unites", "ctrl" : Page_Unites(self), "label" : _(u"Unités"), "image" : "Tableau_colonne.png"},
             {"code" : "colonnes", "ctrl": Page_Colonnes(self), "label": _(u"Colonnes perso."), "image": "Tableau_colonne.png"},
+            {"code" : "memos", "ctrl": Page_Memos(self), "label": _(u"Alertes"), "image": "Information.png"},
             {"code" : "options", "ctrl" : Page_Options(self), "label" : _(u"Options"), "image" : "Options.png"},
             ]
             
@@ -1109,6 +1460,14 @@ class Dialog(wx.Dialog):
         self.staticbox_profil_staticbox = wx.StaticBox(self, -1, _(u"Profil de configuration"))
         self.ctrl_profil = CTRL_profil_perso(self, categorie="impression_conso", dlg=self)
 
+        # Alerte du jour
+        self.staticbox_pense_bete_staticbox = wx.StaticBox(self, -1, _(u"Alerte du jour"))
+        self.ctrl_pense_bete = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE)
+        self.ctrl_pense_bete.SetMinSize((250, 60))
+        self.ctrl_pense_bete.SetToolTip(wx.ToolTip(_(u"Cette alerte apparaîtra sur la liste imprimée pour la journée.")))
+        self.datePenseBeteActuelle = None
+        self.ctrl_pense_bete.Bind(wx.EVT_TEXT, self.OnPenseBeteGaucheModifie)
+
         # Paramètres
         self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
         self.ctrl_parametres = CTRL_Parametres(self) 
@@ -1163,7 +1522,7 @@ class Dialog(wx.Dialog):
         
         grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=3, vgap=10, hgap=10)
         
-        grid_sizer_gauche = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
+        grid_sizer_gauche = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
 
         # Profil
         staticbox_profil = wx.StaticBoxSizer(self.staticbox_profil_staticbox, wx.VERTICAL)
@@ -1179,7 +1538,12 @@ class Dialog(wx.Dialog):
         staticbox_type = wx.StaticBoxSizer(self.staticbox_type_staticbox, wx.HORIZONTAL)
         staticbox_type.Add(self.radio_journ, 0, wx.ALL|wx.EXPAND, 5)
         staticbox_type.Add(self.radio_period, 0, wx.ALL|wx.EXPAND, 5)
-        grid_sizer_gauche.Add(staticbox_type, 1, wx.EXPAND, 0)
+        grid_sizer_gauche.Add(staticbox_type, 0, wx.EXPAND, 0)
+
+        # Pense-bête
+        staticbox_pense_bete = wx.StaticBoxSizer(self.staticbox_pense_bete_staticbox, wx.VERTICAL)
+        staticbox_pense_bete.Add(self.ctrl_pense_bete, 1, wx.ALL|wx.EXPAND, 5)
+        grid_sizer_gauche.Add(staticbox_pense_bete, 0, wx.EXPAND, 0)
 
         grid_sizer_gauche.AddGrowableRow(1)
         grid_sizer_contenu.Add(grid_sizer_gauche, 1, wx.EXPAND, 0)
@@ -1211,9 +1575,35 @@ class Dialog(wx.Dialog):
         self.Layout()
         self.SetSize(self.GetMinSize())
         self.CenterOnScreen() 
-    
+
+    def SauvegardePenseBete(self):
+        if getattr(self, "datePenseBeteActuelle", None) and hasattr(self, "ctrl_pense_bete"):
+            from Utils import UTILS_Memos_journee
+            codeCouleur = "all"
+            try:
+                pageMemos = self.GetPage("memos")
+                if pageMemos and hasattr(pageMemos, "GetActivitesCochees"):
+                    codeCouleur = UTILS_Memos_journee.FormatActivitesPenseBete(pageMemos.GetActivitesCochees())
+                else:
+                    pbExistant = UTILS_Memos_journee.GetPenseBeteJour(self.datePenseBeteActuelle)
+                    if pbExistant:
+                        codeCouleur = pbExistant.get("couleur", "all")
+            except:
+                pass
+            UTILS_Memos_journee.SetPenseBeteJour(self.datePenseBeteActuelle, self.ctrl_pense_bete.GetValue(), couleur=codeCouleur)
+
+    def OnPenseBeteGaucheModifie(self, event):
+        try:
+            pageMemos = self.GetPage("memos")
+            if pageMemos and pageMemos.ctrl_pense_bete.GetValue() != self.ctrl_pense_bete.GetValue():
+                pageMemos.ctrl_pense_bete.ChangeValue(self.ctrl_pense_bete.GetValue())
+        except:
+            pass
+
     def GetPage(self, code=""):
         """ Retourne le ctrl page du notebook selon le code page """
+        if not hasattr(self, "ctrl_parametres"):
+            return None
         return self.ctrl_parametres.GetPageAvecCode(code)
 
     def OnRadioJourn(self, event):
@@ -1235,7 +1625,21 @@ class Dialog(wx.Dialog):
         self.SetDates([date,]) 
         
     def SetDates(self, listeDates=[]):
+        if not hasattr(self, "ctrl_parametres"):
+            return
         if listeDates == None : listeDates = []
+        self.SauvegardePenseBete()
+        if len(listeDates) > 0:
+            self.datePenseBeteActuelle = listeDates[0]
+            from Utils import UTILS_Memos_journee
+            pb = UTILS_Memos_journee.GetPenseBeteJour(self.datePenseBeteActuelle)
+            self.ctrl_pense_bete.ChangeValue(pb["texte"] if pb else "")
+            try:
+                pageMemos = self.GetPage("memos")
+                if pageMemos:
+                    pageMemos.SetDate(self.datePenseBeteActuelle)
+            except:
+                pass
         self.GetPage("activites").ctrl_activites.SetDates(listeDates)
         self.SetUnites(self.GetPage("activites").ctrl_activites.GetListeActivites())
         self.GetPage("scolarite").ctrl_ecoles.SetDates(listeDates)
@@ -1259,12 +1663,15 @@ class Dialog(wx.Dialog):
         self.OnBoutonAnnuler(None)
 
     def OnBoutonAnnuler(self, event):
+        self.SauvegardePenseBete()
         self.EndModal(wx.ID_CANCEL)
         
     def OnBoutonOk(self, event):
+        self.SauvegardePenseBete()
         self.Impression() 
     
     def OnBoutonExport(self, event=None):
+        self.SauvegardePenseBete()
         typeListe = self.GetTypeListe()
 ##        if typeListe != "journ" :
 ##            dlg = wx.MessageDialog(self, _(u"L'export sous Excel n'est disponible que pour le mode journalier !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
@@ -1342,6 +1749,8 @@ class Dialog(wx.Dialog):
                     # Si c'est un Paragraph
                     if isinstance(valeur, Paragraph) :
                         valeur = valeur.text
+                        import re
+                        valeur = re.sub(r'<[^>]*>', ' ', valeur).strip()
                     # Largeur colonne
                     if type(valeur) == six.text_type and (_(u"Nom - ") in valeur or valeur == "Informations") :
                         feuille.set_column(numColonne, numColonne, 50)
@@ -1736,11 +2145,15 @@ class Dialog(wx.Dialog):
         DB.ExecuterReq(req)
         listeMemos = DB.ResultatReq()
         dictMemos = {}
+        dictPenseBetes = {}
         for IDmemo, IDindividu, date, texte, couleur in listeMemos :
             date = UTILS_Dates.DateEngEnDateDD(date)
-            if (IDindividu in dictMemos) == False :
-                dictMemos[IDindividu] = {}
-            dictMemos[IDindividu][date] = {"texte": texte, "couleur": couleur}
+            if IDindividu is None or IDindividu == 0:
+                dictPenseBetes[date] = {"texte": texte, "couleur": couleur}
+            else:
+                if (IDindividu in dictMemos) == False :
+                    dictMemos[IDindividu] = {}
+                dictMemos[IDindividu][date] = {"texte": texte, "couleur": couleur}
 
         # Récupération des photos individuelles
         dictPhotos = {}
@@ -1861,7 +2274,50 @@ class Dialog(wx.Dialog):
             tableau = Table(dataTableau, largeursColonnes)
             tableau.setStyle(style)
             story.append(tableau)
-            story.append(Spacer(0,20))
+
+            story.append(Spacer(0, 15))
+
+        # Affichage du Pense-bête associé à une activité
+        def CreationPenseBeteTableau(IDactivite):
+            if not dictPenseBetes:
+                return
+            textePB = None
+            targetActivites = "all"
+            if typeListe == "journ" and len(listeDates) > 0 and listeDates[0] in dictPenseBetes:
+                textePB = dictPenseBetes[listeDates[0]].get("texte")
+                targetActivites = UTILS_Memos_journee.ParseActivitesPenseBete(dictPenseBetes[listeDates[0]].get("couleur"))
+            elif min(listeDates) in dictPenseBetes:
+                textePB = dictPenseBetes[min(listeDates)].get("texte")
+                targetActivites = UTILS_Memos_journee.ParseActivitesPenseBete(dictPenseBetes[min(listeDates)].get("couleur"))
+            
+            if not textePB:
+                return
+            
+            # Vérifie si le pense-bête doit apparaître sur cette activité
+            if targetActivites != "all" and IDactivite not in targetActivites:
+                return
+            
+            stylePB = ParagraphStyle(
+                name="pense_bete", fontName="Helvetica", fontSize=9, leading=12, textColor=colors.black
+            )
+            texteAffichage = NettoyerEmojis(textePB)
+            if not texteAffichage.lower().startswith(u"alerte"):
+                texteAffichage = u"<b>Alerte :</b> " + texteAffichage
+            texteAffichage = u"<img src='%s' width='10' height='10' valign='middle'/> %s" % (Chemins.GetStaticPath("Images/16x16/Attention.png"), texteAffichage)
+            paraPB = Paragraph(texteAffichage, stylePB)
+            tablePB = Table([[paraPB]], [largeurContenu])
+            tablePB.setStyle(TableStyle([
+                ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#FFF9C4')), # Jaune doux post-it
+                ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#FBC02D')),
+                ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+                ('TOPPADDING', (0,0), (-1,-1), 4),
+                ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+                ('LEFTPADDING', (0,0), (-1,-1), 8),
+                ('RIGHTPADDING', (0,0), (-1,-1), 8),
+            ]))
+            story.append(Spacer(0, 3))
+            story.append(tablePB)
+            story.append(Spacer(0, 5))
 
         # Création du titre des tableaux
         def CreationTitreTableau(nomActivite="", nomGroupe="", nomEcole="", nomClasse="", couleurFond=couleur_fond_titre, couleurTexte=colors.black, tailleGroupe=14):
@@ -1909,8 +2365,10 @@ class Dialog(wx.Dialog):
 
         def CreationSautPage():
             try :
+                if len(story) <= 2 :
+                    return
                 element = str(story[-3])
-                if element != "PageBreak()" :
+                if "PageBreak" not in element :
                     story.append(PageBreak())
                     CreationTitreDocument()
             except :
@@ -2014,6 +2472,150 @@ class Dialog(wx.Dialog):
 
                             for IDetiquette in listeIDetiquette :
 
+                                # Création d'une liste temporaire pour le tri
+                                listeIndividus = []
+                                if IDactivite in dictConso :
+                                    if IDgroupe in dictConso[IDactivite] :
+                                        if scolarite in dictConso[IDactivite][IDgroupe] :
+                                            if IDevenement in dictConso[IDactivite][IDgroupe][scolarite] :
+                                                if IDetiquette in dictConso[IDactivite][IDgroupe][scolarite][IDevenement]:
+                                                    for IDindividu, dictIndividu in dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette].items() :
+                                                        valeursTri = (IDindividu, dictIndividu["nom"], dictIndividu["prenom"], dictIndividu["age"])
+                                                        listeIndividus.append(valeursTri)
+
+                                # Masquer les listes sans aucun individu
+                                if dictParametres.get("masquer_vides", True) and len(listeIndividus) == 0 :
+                                    continue
+
+                                if dictParametres["tri"] == "nom" : paramTri = 1 # Nom
+                                if dictParametres["tri"] == "prenom" : paramTri = 2 # Prénom
+                                if dictParametres["tri"] == "age" : paramTri = 3 # Age
+                                if dictParametres["ordre"] == "croissant" :
+                                    ordreDecroissant = False
+                                else:
+                                    ordreDecroissant = True
+                                listeIndividus = sorted(listeIndividus, key=operator.itemgetter(paramTri), reverse=ordreDecroissant)
+
+                                # Fonctions pour détecter si une unité ou une colonne a des données pour ce groupe
+                                dictGroupeConso = dictConso.get(IDactivite, {}).get(IDgroupe, {}).get(scolarite, {}).get(IDevenement, {}).get(IDetiquette, {})
+
+                                def IndividuAConsoUnite(dictIndividu, date, typeTemp, IDunite):
+                                    if not dictIndividu or "listeConso" not in dictIndividu:
+                                        return False
+                                    listeConso = dictIndividu["listeConso"]
+                                    if date not in listeConso:
+                                        return False
+                                    consoDate = listeConso[date]
+                                    if typeTemp == "conso":
+                                        if IDunite in consoDate and len(consoDate[IDunite]) > 0:
+                                            return True
+                                        return False
+                                    else:
+                                        # Remplissage
+                                        if IDunite in dictUnitesRemplissage:
+                                            unitesLiees = dictUnitesRemplissage[IDunite]["unites"]
+                                            etiquettesUnitesRemplissage = dictUnitesRemplissage[IDunite]["etiquettes"]
+                                        else:
+                                            unitesLiees = []
+                                            etiquettesUnitesRemplissage = []
+                                        for IDuniteLiee in unitesLiees:
+                                            if IDuniteLiee in consoDate:
+                                                for dictConsoTemp in consoDate[IDuniteLiee]:
+                                                    valide = True
+                                                    if len(etiquettesUnitesRemplissage) > 0:
+                                                        valide = False
+                                                        for IDetiquetteTemp in etiquettesUnitesRemplissage:
+                                                            if IDetiquetteTemp in dictConsoTemp.get("etiquettes", []):
+                                                                valide = True
+                                                                break
+                                                    if valide:
+                                                        try:
+                                                            heure_min = dictUnitesRemplissage[IDunite]["heure_min"]
+                                                            heure_max = dictUnitesRemplissage[IDunite]["heure_max"]
+                                                            heure_debut = dictConsoTemp.get("heure_debut")
+                                                            heure_fin = dictConsoTemp.get("heure_fin")
+                                                            if heure_min != None and heure_max != None and heure_debut != None and heure_fin != None:
+                                                                heure_min_TM = UTILS_Dates.HeureStrEnTime(heure_min)
+                                                                heure_max_TM = UTILS_Dates.HeureStrEnTime(heure_max)
+                                                                heure_debut_TM = UTILS_Dates.HeureStrEnTime(heure_debut)
+                                                                heure_fin_TM = UTILS_Dates.HeureStrEnTime(heure_fin)
+                                                                if heure_debut_TM <= heure_max_TM and heure_fin_TM >= heure_min_TM:
+                                                                    valide = True
+                                                                else:
+                                                                    valide = False
+                                                        except:
+                                                            pass
+                                                    if valide:
+                                                        return True
+                                        return False
+
+                                def UniteAConso(date, typeTemp, IDunite):
+                                    for IDindividu, nomIndiv, prenomIndiv, ageIndiv in listeIndividus:
+                                        dictIndividu = dictGroupeConso.get(IDindividu)
+                                        if dictIndividu and IndividuAConsoUnite(dictIndividu, date, typeTemp, IDunite):
+                                            return True
+                                    return False
+
+                                def TableAConso():
+                                    for IDindividu, nomIndiv, prenomIndiv, ageIndiv in listeIndividus:
+                                        dictIndividu = dictGroupeConso.get(IDindividu)
+                                        if not dictIndividu or "listeConso" not in dictIndividu:
+                                            continue
+                                        for d in listeDates:
+                                            if d not in dictIndividu["listeConso"]:
+                                                continue
+                                            for typeTemp, IDunite, affichage in dictChoixUnites.get(IDactivite, []):
+                                                if IndividuAConsoUnite(dictIndividu, d, typeTemp, IDunite):
+                                                    return True
+                                    return False
+
+                                def ColonnePersoAData(dictColonnePerso):
+                                    if dictColonnePerso.get("donnee_code") in (None, "", "aucun"):
+                                        return True
+                                    for IDindividu, nomIndiv, prenomIndiv, ageIndiv in listeIndividus:
+                                        IDfamille = dictIndividus.get(IDindividu, {}).get("IDfamille")
+                                        donnee = ""
+                                        donnee_code = dictColonnePerso.get("donnee_code")
+                                        try:
+                                            if donnee_code == "ville_residence": donnee = dictInfosIndividus[IDindividu]["INDIVIDU_VILLE"]
+                                            elif donnee_code == "secteur": donnee = dictInfosIndividus[IDindividu]["INDIVIDU_SECTEUR"]
+                                            elif donnee_code == "genre": donnee = dictInfosIndividus[IDindividu]["INDIVIDU_SEXE"]
+                                            elif donnee_code == "ville_naissance": donnee = dictInfosIndividus[IDindividu]["INDIVIDU_VILLE_NAISS"]
+                                            elif donnee_code == "nom_ecole": donnee = dictInfosIndividus[IDindividu]["SCOLARITE_NOM_ECOLE"]
+                                            elif donnee_code == "nom_classe": donnee = dictInfosIndividus[IDindividu]["SCOLARITE_NOM_CLASSE"]
+                                            elif donnee_code == "nom_niveau_scolaire": donnee = dictInfosIndividus[IDindividu]["SCOLARITE_NOM_NIVEAU"]
+                                            elif donnee_code == "famille": donnee = dictInfosFamilles[IDfamille]["FAMILLE_NOM"]
+                                            elif donnee_code == "regime": donnee = dictInfosFamilles[IDfamille]["FAMILLE_NOM_REGIME"]
+                                            elif donnee_code == "caisse": donnee = dictInfosFamilles[IDfamille]["FAMILLE_NOM_CAISSE"]
+                                            elif donnee_code == "quotient_familial": donnee = dictInfosFamilles[IDfamille]["FAMILLE_QF_ACTUEL"]
+                                            elif donnee_code == "date_naiss": donnee = dictInfosIndividus[IDindividu]["INDIVIDU_DATE_NAISS"]
+                                            elif donnee_code == "medecin_nom": donnee = dictInfosIndividus[IDindividu]["MEDECIN_NOM"]
+                                            elif donnee_code == "tel_mobile": donnee = dictInfosIndividus[IDindividu]["INDIVIDU_TEL_MOBILE"]
+                                            elif donnee_code == "tel_domicile": donnee = dictInfosIndividus[IDindividu]["INDIVIDU_TEL_DOMICILE"]
+                                            elif donnee_code == "mail": donnee = dictInfosIndividus[IDindividu]["INDIVIDU_MAIL"]
+                                            elif donnee_code == "adresse_residence":
+                                                rue = dictInfosIndividus[IDindividu].get("INDIVIDU_RUE") or ""
+                                                cp = dictInfosIndividus[IDindividu].get("INDIVIDU_CP") or ""
+                                                ville = dictInfosIndividus[IDindividu].get("INDIVIDU_VILLE") or ""
+                                                donnee = (u"%s %s %s" % (rue, cp, ville)).strip()
+                                            elif donnee_code.startswith("question_") and "famille" in donnee_code:
+                                                donnee = dictInfosFamilles[IDfamille].get("QUESTION_%s" % donnee_code[17:])
+                                            elif donnee_code.startswith("question_") and "individu" in donnee_code:
+                                                donnee = dictInfosIndividus[IDindividu].get("QUESTION_%s" % donnee_code[18:])
+                                            elif donnee_code == "codebarres_individu":
+                                                donnee = IDindividu
+                                        except:
+                                            donnee = ""
+                                        if donnee not in (None, "") and six.text_type(donnee).strip() != "":
+                                            return True
+                                    return False
+
+                                table_has_any_conso = TableAConso()
+                                masquerColonnesVides = (
+                                    dictParametres.get("masquer_colonnes_vides", True)
+                                    and table_has_any_conso
+                                )
+
                                 # Initialisation du tableau
                                 dataTableau = []
                                 largeursColonnes = []
@@ -2054,6 +2656,9 @@ class Dialog(wx.Dialog):
                                         positionG = indexCol
                                         for typeTemp, IDunite, affichage in dictChoixUnites[IDactivite] :
                                             if (affichage == "utilise" and IDunite in listeUnites) or (affichage == "conso" and IDunite in dictUnitesAvecConso.get(date, [])) or affichage == "toujours" :
+                                                if masquerColonnesVides and affichage != "toujours" and not UniteAConso(date, typeTemp, IDunite):
+                                                    continue
+
                                                 if typeTemp == "conso" :
                                                     abregeUnite = dictUnites[IDunite]["abrege"]
                                                 else:
@@ -2079,10 +2684,16 @@ class Dialog(wx.Dialog):
                                                 largeursColonnes.append(largeur)
                                                 indexCol += 1
                                         positionD = indexCol-1
-                                        listePositionsDates.append((date, positionG, positionD))
+                                        if positionD >= positionG:
+                                            listePositionsDates.append((date, positionG, positionD))
+
+                                colPremiereUnite = positionCol1
+                                colDerniereUnite = indexCol - 1 if indexCol > positionCol1 else None
 
                                 # Colonnes personnalisées
                                 for dictColonnePerso in dictParametres["colonnes"]:
+                                    if masquerColonnesVides and not ColonnePersoAData(dictColonnePerso):
+                                        continue
                                     labelsColonnes.append(Paragraph(dictColonnePerso["nom"], styleEntetes))
                                     if dictColonnePerso["largeur"] == "automatique" :
                                         largeurColonnePerso = int(dictParametres["largeur_colonne_perso"])
@@ -2103,6 +2714,7 @@ class Dialog(wx.Dialog):
 
                                 # ------ Création de l'entete de groupe ------
                                 CreationTitreTableau(nomActivite, nomGroupe, nomEcole, nomClasse)
+                                CreationPenseBeteTableau(IDactivite)
 
                                 if IDevenement != None :
                                     nomEvenement = dictEvenements[IDevenement]["nom"]
@@ -2124,7 +2736,7 @@ class Dialog(wx.Dialog):
                                     ligneTempExport = []
                                     styleDate = ParagraphStyle(name="date", fontName="Helvetica-Bold", fontSize=8, spaceAfter=0, leading=9)
                                     ligne = []
-                                    for index in range(0, len(labelsColonnes)-1):
+                                    for index in range(0, len(labelsColonnes)):
                                         ligne.append("")
                                         ligneTempExport.append("")
 
@@ -2157,28 +2769,9 @@ class Dialog(wx.Dialog):
 
                                 # --------- Création des lignes -----------
 
-                                # Création d'une liste temporaire pour le tri
-                                listeIndividus = []
-                                if IDactivite in dictConso :
-                                    if IDgroupe in dictConso[IDactivite] :
-                                        if scolarite in dictConso[IDactivite][IDgroupe] :
-                                            if IDevenement in dictConso[IDactivite][IDgroupe][scolarite] :
-                                                if IDetiquette in dictConso[IDactivite][IDgroupe][scolarite][IDevenement]:
-                                                    for IDindividu, dictIndividu in dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette].items() :
-                                                        valeursTri = (IDindividu, dictIndividu["nom"], dictIndividu["prenom"], dictIndividu["age"])
-                                                        listeIndividus.append(valeursTri)
-
-                                if dictParametres["tri"] == "nom" : paramTri = 1 # Nom
-                                if dictParametres["tri"] == "prenom" : paramTri = 2 # Prénom
-                                if dictParametres["tri"] == "age" : paramTri = 3 # Age
-                                if dictParametres["ordre"] == "croissant" :
-                                    ordreDecroissant = False
-                                else:
-                                    ordreDecroissant = True
-                                listeIndividus = sorted(listeIndividus, key=operator.itemgetter(paramTri), reverse=ordreDecroissant)
-
                                 # Récupération des lignes individus
                                 dictTotauxColonnes = {}
+                                listeStylesIndividus = []
                                 indexLigne = 0
                                 for IDindividu, nom, prenom, age in listeIndividus :
 
@@ -2187,14 +2780,32 @@ class Dialog(wx.Dialog):
                                     indexColonne = 0
                                     ligneVide = True
 
+                                    # Vérifie si cet individu a une couleur d'alerte active pour surlignage
+                                    memo_individu = None
+                                    memo_date = None
+                                    stylesCouleur = None
+                                    if IDindividu in dictMemos:
+                                        for d in listeDates:
+                                            if d in dictMemos[IDindividu] and dictMemos[IDindividu][d].get("texte"):
+                                                memoTemp = dictMemos[IDindividu][d]
+                                                memo_date = d
+                                                memo_individu = memoTemp
+                                                if memoTemp.get("couleur"):
+                                                    stylesCouleur = UTILS_Memos_journee.GetStylesCouleurPDF(memoTemp.get("couleur"))
+                                                    if stylesCouleur is not None:
+                                                        break
+
                                     # Photo
                                     if dictParametres["afficher_photos"] != "non" and IDindividu in dictPhotos :
                                         img = dictPhotos[IDindividu]
                                         ligne.append(img)
                                         indexColonne += 1
 
-                                    # Nom
-                                    ligne.append(Paragraph(u"%s %s" % (nom, prenom), styleNormal))
+                                    # Nom (le mémo est affiché uniquement dans la colonne Informations)
+                                    if stylesCouleur is not None:
+                                        ligne.append(Paragraph(u"<b>%s %s</b>" % (nom, prenom), styleNormal))
+                                    else:
+                                        ligne.append(Paragraph(u"%s %s" % (nom, prenom), styleNormal))
                                     indexColonne += 1
 
                                     # Age
@@ -2212,6 +2823,8 @@ class Dialog(wx.Dialog):
 
                                             for typeTemp, IDunite, affichage in dictChoixUnites[IDactivite] :
                                                 if (affichage == "utilise" and IDunite in listeUnites) or (affichage == "conso" and IDunite in dictUnitesAvecConso.get(date, [])) or affichage == "toujours" :
+                                                    if masquerColonnesVides and affichage != "toujours" and not UniteAConso(date, typeTemp, IDunite):
+                                                        continue
                                                     listeLabels = []
                                                     quantite = None
 
@@ -2358,6 +2971,8 @@ class Dialog(wx.Dialog):
 
                                     # Colonnes personnalisées
                                     for dictColonnePerso in dictParametres["colonnes"]:
+                                        if masquerColonnesVides and not ColonnePersoAData(dictColonnePerso):
+                                            continue
                                         IDfamille = dictIndividus[IDindividu]["IDfamille"]
                                         type_donnee = "unicode"
                                         if dictColonnePerso["donnee_code"] == None :
@@ -2424,12 +3039,17 @@ class Dialog(wx.Dialog):
                                     if IDindividu in dictMemos :
                                         for date in listeDates :
                                             if date in dictMemos[IDindividu] :
-                                                memo_texte = dictMemos[IDindividu][date]["texte"]
+                                                memo_texte = NettoyerEmojis(dictMemos[IDindividu][date]["texte"])
                                                 memo_couleur = dictMemos[IDindividu][date]["couleur"]
                                                 if typeListe == "period" :
                                                     memo_texte = u"%02d/%02d/%04d : %s" % (date.day, date.month, date.year, memo_texte)
                                                 if len(memo_texte) > 0 and memo_texte[-1] != "." : memo_texte += u"."
-                                                listeInfos.append(ParagraphAndImage(Paragraph("<FONT color='%s'>%s</FONT>" % (memo_couleur or "black", memo_texte), paraStyle), Image(Chemins.GetStaticPath("Images/16x16/Information.png"),width=8, height=8), xpad=1, ypad=0, side="left"))
+                                                stylesCoul = UTILS_Memos_journee.GetStylesCouleurPDF(memo_couleur)
+                                                if stylesCoul is not None:
+                                                    coulHex = stylesCoul.get("hex_texte", "#C0392B")
+                                                    listeInfos.append(ParagraphAndImage(Paragraph(u"<FONT color='%s'><b>%s</b></FONT>" % (coulHex, memo_texte), paraStyle), Image(Chemins.GetStaticPath("Images/16x16/Information.png"),width=8, height=8), xpad=1, ypad=0, side="left"))
+                                                else:
+                                                    listeInfos.append(ParagraphAndImage(Paragraph(memo_texte, paraStyle), Image(Chemins.GetStaticPath("Images/16x16/Information.png"),width=8, height=8), xpad=1, ypad=0, side="left"))
 
                                     # Messages individuels
                                     if IDindividu in dictMessagesIndividus:
@@ -2518,6 +3138,9 @@ class Dialog(wx.Dialog):
                                         dataTableau.append(ligne)
                                         # Mémorise les lignes pour export Excel
                                         listeLignesExport.append(ligne)
+                                        if stylesCouleur is not None:
+                                            numLigneTableau = len(dataTableau) - 1
+                                            listeStylesIndividus.append(('BACKGROUND', (0, numLigneTableau), (-1, numLigneTableau), stylesCouleur["fond"]))
                                         indexLigne += 1
 
                                 # Création des lignes vierges
@@ -2526,14 +3149,6 @@ class Dialog(wx.Dialog):
                                     for col in labelsColonnes :
                                         ligne.append("")
                                     dataTableau.append(ligne)
-
-                                # Style du tableau
-                                colPremiereUnite = 1
-                                if dictParametres["afficher_photos"] != "non" :
-                                    colPremiereUnite += 1
-                                if dictParametres["afficher_age"] == True :
-                                    colPremiereUnite += 1
-
 
                                 style = [
                                         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'), # Centre verticalement toutes les cases
@@ -2558,12 +3173,17 @@ class Dialog(wx.Dialog):
                                     style.append( ('ALIGN', (0, 1), (-1, 1), 'CENTRE') )
                                     style.append( ('FONT',(0,0),(-1,0), "Helvetica-Bold", 8) )
                                     for date, positionG, positionD in listePositionsDates :
-                                        style.append( ('SPAN', (positionG, 0), (positionD, 0) ) )
+                                        if positionD > positionG:
+                                            style.append( ('SPAN', (positionG, 0), (positionD, 0) ) )
                                         style.append( ('BACKGROUND', (positionG, 0), (positionD, 0), (1, 1, 1)) )
                                         style.append( ('BOX', (positionG, 0), (positionD, -1), 1, colors.black) ) # Entoure toutes les colonnes Dates
                                 else:
                                     style.append( ('GRID', (0,0), (-1,-1), 0.25, colors.black) )
                                     style.append(('BACKGROUND', (0, 0), (-1, 0), couleur_fond_entetes))
+
+                                # Surlignage couleur pastel pour les individus avec un mémo / alerte
+                                for styleIndiv in listeStylesIndividus:
+                                    style.append(styleIndiv)
 
                                 # Vérifie si la largeur du tableau est inférieure à la largeur de la page
                                 if modeExport == False :
@@ -2615,18 +3235,14 @@ class Dialog(wx.Dialog):
                                     ligne.append(valeur)
                                 listeLignesExport.append(ligne)
 
-                                if dictParametres["afficher_informations"] == True :
-                                    colDerniereUnite = -2
-                                else :
-                                    colDerniereUnite = -1
-
                                 style = [
                                         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'), # Centre verticalement toutes les cases
                                         ('FONT',(0,0),(-1,-1), "Helvetica", 7), # Donne la police de caract. + taille de police
                                         ('ALIGN', (0,0), (-1,-1), 'CENTRE'), # Centre les cases
-                                        ('GRID', (colPremiereUnite,-1), (colDerniereUnite,-1), 0.25, colors.black),
-                                        ('BACKGROUND', (colPremiereUnite, -1), (colDerniereUnite, -1), couleur_fond_total)
                                         ]
+                                if colPremiereUnite is not None and colDerniereUnite is not None and colPremiereUnite <= colDerniereUnite:
+                                    style.append(('GRID', (colPremiereUnite,-1), (colDerniereUnite,-1), 0.25, colors.black))
+                                    style.append(('BACKGROUND', (colPremiereUnite, -1), (colDerniereUnite, -1), couleur_fond_total))
 
                                 if typeListe == "period" :
                                     for date, positionG, positionD in listePositionsDates :
@@ -2692,7 +3308,7 @@ class Dialog(wx.Dialog):
         # Suppression de la dernière page si elle est vide
         try :
             element = str(story[-3])
-            if element == "PageBreak()" :
+            if "PageBreak" in element :
                 story.pop(-1)
                 story.pop(-1)
                 story.pop(-1)
@@ -2709,6 +3325,13 @@ class Dialog(wx.Dialog):
 
         # Destruction de la DlgAttente
         del DlgAttente
+
+        # Si aucune donnée à imprimer
+        if len(listeExport) == 0 :
+            dlg = wx.MessageDialog(self, _(u"Aucune consommation trouvée pour la sélection demandée !"), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
 
         # Si mode export Excel
         if modeExport == True :
@@ -2782,13 +3405,13 @@ class Dialog(wx.Dialog):
         """ Récupération des paramètres """
         dictParametres = {}
         dictParametres["type_liste"] = self.GetTypeListe()
-        dictParametres.update(self.GetPage("activites").GetParametres())
         dictParametres.update(self.GetPage("scolarite").GetParametres())
         dictParametres.update(self.GetPage("etiquettes").GetParametres())
         dictParametres.update(self.GetPage("evenements").GetParametres())
         dictParametres.update(self.GetPage("unites").GetParametres())
         dictParametres.update(self.GetPage("colonnes").GetParametres())
         dictParametres.update(self.GetPage("options").GetParametres())
+        dictParametres.update(self.GetPage("activites").GetParametres())
         return dictParametres
 
     def SetParametres(self, dictParametres={}):

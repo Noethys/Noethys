@@ -70,6 +70,12 @@ class CTRL(CTRL_Propertygrid.CTRL):
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
+        # Masquer les listes vides (0 individu)
+        propriete = wxpg.BoolProperty(label=_(u"Masquer si aucun individu"), name="masquer_vides", value=True)
+        propriete.SetHelpString(_(u"Cochez cette case pour ne pas imprimer les activités ou groupes sans aucun individu (0 individu)"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
         # Hauteur ligne individu
         liste_choix = [("automatique", _(u"Automatique")),]
         for x in range(5, 205, 5):
@@ -167,6 +173,12 @@ class CTRL(CTRL_Propertygrid.CTRL):
         # Masquer les consommations
         propriete = wxpg.BoolProperty(label=_(u"Masquer les consommations"), name="masquer_consommations", value=False)
         propriete.SetHelpString(_(u"Cochez cette case pour masquer les consommations"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Masquer les colonnes sans consommations
+        propriete = wxpg.BoolProperty(label=_(u"Masquer les colonnes sans consommations"), name="masquer_colonnes_vides", value=True)
+        propriete.SetHelpString(_(u"Cochez cette case pour masquer automatiquement les colonnes qui ne contiennent aucune présence ou consommation"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
