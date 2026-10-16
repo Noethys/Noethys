@@ -407,6 +407,11 @@ class Dialog(wx.Dialog):
         self.ctrl_mode = CTRL_Mode(self)
 
         # Options
+        self.box_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
+        self.check_exclure_archives = wx.CheckBox(self, -1, _(u"Exclure les individus archivés ou effacés"))
+        self.check_exclure_archives.SetValue(False)
+
+        # Options
 ##        self.box_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
 ##        self.label_presents = wx.StaticText(self, -1, _(u"Méthode de calcul :"))
 ##        self.radio_presents_1 = wx.RadioButton(self, -1, _(u"Présents"), style = wx.RB_GROUP)
@@ -437,10 +442,11 @@ class Dialog(wx.Dialog):
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
-        self.SetMinSize((460, 600))
+        self.check_exclure_archives.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour ne pas compter les individus dont la fiche est actuellement archivée ou effacée.\nAttention : l'état pris en compte est celui d'aujourd'hui, pas celui de la période analysée.")))
+        self.SetMinSize((460, 640))
 
     def __do_layout(self):
-        grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
+        grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
         
         # Activités
         box_activites = wx.StaticBoxSizer(self.box_activites_staticbox, wx.VERTICAL)
@@ -451,7 +457,12 @@ class Dialog(wx.Dialog):
         box_mode = wx.StaticBoxSizer(self.box_mode_staticbox, wx.VERTICAL)
         box_mode.Add(self.ctrl_mode, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(box_mode, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
-        
+
+        # Options
+        box_options = wx.StaticBoxSizer(self.box_options_staticbox, wx.VERTICAL)
+        box_options.Add(self.check_exclure_archives, 0, wx.ALL|wx.EXPAND, 10)
+        grid_sizer_base.Add(box_options, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
+
 ##        # Options
 ##        box_options = wx.StaticBoxSizer(self.box_options_staticbox, wx.VERTICAL)
 ##        grid_sizer_options = wx.FlexGridSizer(rows=4, cols=2, vgap=5, hgap=5)
@@ -502,7 +513,11 @@ class Dialog(wx.Dialog):
             listeActivites = []
             
         self.ctrl_mode.SetParametres(mode, periode)
-        self.ctrl_activites.SetActivites(listeActivites) 
+        if "modeActivites" in dictParametres and "valeursActivites" in dictParametres :
+            self.ctrl_activites.SetValeurs(dictParametres["modeActivites"], dictParametres["valeursActivites"])
+        else :
+            self.ctrl_activites.SetActivites(listeActivites)
+        self.check_exclure_archives.SetValue(dictParametres.get("exclure_archives", False))
 
     def OnBoutonOk(self, event): 
         self.dictParametres = {"init":datetime.datetime.now()}
@@ -525,11 +540,13 @@ class Dialog(wx.Dialog):
         
         self.dictParametres["listeActivites"] = self.listeActivites
         self.dictParametres["dictActivites"] = self.dictActivites
+        mode_activites, valeurs_activites = self.ctrl_activites.GetValeurs()
+        self.dictParametres["modeActivites"] = mode_activites
+        self.dictParametres["valeursActivites"] = valeurs_activites
         
         # Options
+        self.dictParametres["exclure_archives"] = self.check_exclure_archives.GetValue()
 
-
-        
         # Fermer fenêtre
         self.EndModal(wx.ID_OK)
         
