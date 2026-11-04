@@ -252,9 +252,33 @@ class Dialog(wx.Dialog):
         if not UTILS_Export_noethysweb.Verifications(parent=self):
             return False
 
-        # Générer du fichier de données
-        dlgAttente = wx.BusyInfo(_(u"Cette opération peut prendre quelques minutes. Veuillez patienter..."), self)
-        UTILS_Export_noethysweb.Export_all(dlg=self, nom_fichier=os.path.join(repertoire, nom + ".nweb"), mdp=motdepasse, options=options)
+        # Préparation des données
+        dlgAttente = wx.BusyInfo(_(u"Préparation et vérification des données. Cette opération peut prendre quelques minutes. Veuillez patienter..."), self)
+        export = UTILS_Export_noethysweb.Export_all(dlg=self, nom_fichier=os.path.join(repertoire, nom + ".nweb"), mdp=motdepasse, options=options, finaliser=False)
+
+        # Vérification des données avant création du fichier
+        anomalies = export.Verifier()
+        del dlgAttente
+        if anomalies is None:
+            dlg = wx.MessageDialog(self, _(u"La vérification des données est impossible :\n%s\n\nSouhaitez-vous quand même générer le fichier sans vérification ?") % export.erreur_verification,
+                                   _(u"Vérification impossible"), wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse != wx.ID_YES:
+                export.Nettoyer()
+                return False
+        elif anomalies:
+            from Dlg import DLG_Verif_export_noethysweb
+            dlg = DLG_Verif_export_noethysweb.Dialog(self, anomalies=anomalies)
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse != wx.ID_OK:
+                export.Nettoyer()
+                return False
+
+        # Création du fichier d'export
+        dlgAttente = wx.BusyInfo(_(u"Création du fichier d'export. Veuillez patienter..."), self)
+        export.Finaliser()
         del dlgAttente
 
         # Confirmation de réussite

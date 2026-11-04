@@ -14,7 +14,7 @@ import six, os, copy, json, datetime, uuid, base64, re, shutil
 import GestionDB
 from Data.DATA_Tables import DB_DATA as DICT_CHAMPS
 from PIL import Image
-from Utils import UTILS_Fichiers, UTILS_Cryptage_fichier
+from Utils import UTILS_Fichiers, UTILS_Cryptage_fichier, UTILS_Verif_export_noethysweb, UTILS_Schema_noethysweb
 
 
 
@@ -157,15 +157,20 @@ class MyEncoder(json.JSONEncoder):
 
 
 class Export:
-    def __init__(self, dlg=None, nom_fichier="", mdp=None, options=None):
+    def __init__(self, dlg=None, nom_fichier="", mdp=None, options=None, finaliser=True):
         self.dlg = dlg
         self.nom_fichier = nom_fichier
         self.mdp = mdp
         self.options = options
+        self.finaliser = finaliser
         self.liste_objets = []
+        self.modeles_exportes = set()
+        self.erreur_verification = None
 
-        # Création du répertoire de travail
+        # Création du répertoire de travail (suppression des restes d'un export précédent interrompu)
         self.rep = UTILS_Fichiers.GetRepTemp(fichier="noethysweb")
+        if os.path.exists(self.rep):
+            shutil.rmtree(self.rep, ignore_errors=True)
         if not os.path.exists(self.rep):
             os.makedirs(self.rep)
 
@@ -176,7 +181,26 @@ class Export:
 
     def Ajouter(self, categorie=None, table=None):
         if not categorie or not self.options or categorie in self.options:
-            self.liste_objets.extend(table.Get_objets())
+            objets = table.Get_objets()
+            self.liste_objets.extend(objets)
+            # Mémorisation des modèles inclus dans l'export (même si la table est vide)
+            if table.nouveau_nom_table:
+                self.modeles_exportes.add(table.nouveau_nom_table)
+            self.modeles_exportes.update(objet["model"] for objet in objets)
+
+    def Verifier(self):
+        """ Contrôle des données avant création du fichier : renvoie la liste des anomalies,
+            ou None si la vérification est impossible (voir self.erreur_verification) """
+        # Téléchargement des modèles Noethysweb depuis GitHub
+        schema, self.erreur_verification = UTILS_Schema_noethysweb.Get_schema()
+        if not schema:
+            return None
+        return UTILS_Verif_export_noethysweb.Verifier(liste_objets=self.liste_objets, modeles_exportes=self.modeles_exportes, schema=schema)
+
+    def Nettoyer(self):
+        """ Suppression du répertoire de travail (en cas d'abandon de l'export) """
+        if os.path.exists(self.rep):
+            shutil.rmtree(self.rep, ignore_errors=True)
 
     def Finaliser(self):
         # Création du fichier json
@@ -497,7 +521,10 @@ class Export_all(Export):
                                             exclure_champs=["IDlocation_portail", "partage", "description"]))
 
         self.DB.Close()
-        self.Finaliser()
+
+        # Création du fichier (sinon, appeler Verifier() puis Finaliser() depuis l'appelant)
+        if self.finaliser:
+            self.Finaliser()
 
 
 class Table_structures(Table):
