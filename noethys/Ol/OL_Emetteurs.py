@@ -21,7 +21,7 @@ from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 from Utils import UTILS_Utilisateurs
 
-TAILLE_IMAGE = (132/2.0, 72/2.0)
+TAILLE_IMAGE = (int(132 / 2), int(72 / 2))
 IMAGE_DEFAUT = Chemins.GetStaticPath("Images/Special/Image_non_disponible.png")
 
 
@@ -44,7 +44,7 @@ class Track(object):
                 img = wx.Image(io, wx.BITMAP_TYPE_JPEG)
             else :
                 img = wx.ImageFromStream(io, wx.BITMAP_TYPE_JPEG)
-            bmp = img.Rescale(width=TAILLE_IMAGE[0], height=TAILLE_IMAGE[1], quality=wx.IMAGE_QUALITY_HIGH) 
+            bmp = img.Rescale(int(TAILLE_IMAGE[0]), int(TAILLE_IMAGE[1]), wx.IMAGE_QUALITY_HIGH) 
             bmp = bmp.ConvertToBitmap()
             return bmp
         else:
@@ -56,7 +56,7 @@ class Track(object):
         if os.path.isfile(IMAGE_DEFAUT):
             bmp = wx.Bitmap(IMAGE_DEFAUT, wx.BITMAP_TYPE_ANY)
             bmp = bmp.ConvertToImage()
-            bmp = bmp.Rescale(width=TAILLE_IMAGE[0], height=TAILLE_IMAGE[1], quality=wx.IMAGE_QUALITY_HIGH) 
+            bmp = bmp.Rescale(int(TAILLE_IMAGE[0]), int(TAILLE_IMAGE[1]), wx.IMAGE_QUALITY_HIGH) 
             bmp = bmp.ConvertToBitmap()
             return bmp
         return None
@@ -118,7 +118,7 @@ class ListView(FastObjectListView):
         
         # Création du imageList avec une taille personnalisée
         dictImages = {}
-        imageList = wx.ImageList(TAILLE_IMAGE[0], TAILLE_IMAGE[1])
+        imageList = wx.ImageList(int(TAILLE_IMAGE[0]), int(TAILLE_IMAGE[1]))
         for track in self.donnees :
             indexImg = imageList.Add(track.bmp)            
             dictImages[track.IDemetteur] = indexImg
@@ -129,7 +129,7 @@ class ListView(FastObjectListView):
                     
         liste_Colonnes = [
             ColumnDefn(_(u"IDemetteur"), "left", 0, "IDemetteur", typeDonnee="entier"),
-            ColumnDefn(_(u"Image"), 'left', TAILLE_IMAGE[0]+1, "", imageGetter=GetImage),
+            ColumnDefn(_(u"Image"), 'left', int(TAILLE_IMAGE[0])+1, "", imageGetter=GetImage),
             ColumnDefn(_(u"Mode de règlement"), 'left', 0, "label_mode", typeDonnee="texte"),
             ColumnDefn(_(u"Nom de l'émetteur"), 'left', 410, "nom", typeDonnee="texte"),
             ]

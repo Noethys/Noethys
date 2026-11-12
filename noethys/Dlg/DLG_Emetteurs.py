@@ -26,7 +26,7 @@ else :
     from wx.combo import BitmapComboBox
 
 
-TAILLE_IMAGE = (132/2.0, 72/2.0)
+TAILLE_IMAGE = (int(132 / 2), int(72 / 2))
 IMAGE_DEFAUT = Chemins.GetStaticPath("Images/Special/Image_non_disponible.png")
 
 
@@ -74,7 +74,7 @@ class CTRL_Mode(BitmapComboBox):
                 img = wx.Image(io, wx.BITMAP_TYPE_JPEG)
             else :
                 img = wx.ImageFromStream(io, wx.BITMAP_TYPE_JPEG)
-            bmp = img.Rescale(width=TAILLE_IMAGE[0], height=TAILLE_IMAGE[1], quality=qualite) 
+            bmp = img.Rescale(int(TAILLE_IMAGE[0]), int(TAILLE_IMAGE[1]), quality=qualite) 
             bmp = bmp.ConvertToBitmap()
             return bmp
         else:
@@ -92,7 +92,7 @@ class CTRL_Mode(BitmapComboBox):
         if os.path.isfile(IMAGE_DEFAUT):
             bmp = wx.Bitmap(IMAGE_DEFAUT, wx.BITMAP_TYPE_ANY)
             bmp = bmp.ConvertToImage()
-            bmp = bmp.Rescale(width=TAILLE_IMAGE[0], height=TAILLE_IMAGE[1], quality=qualite) 
+            bmp = bmp.Rescale(int(TAILLE_IMAGE[0]), int(TAILLE_IMAGE[1]), quality=qualite) 
             bmp = bmp.ConvertToBitmap()
             return bmp
         return None

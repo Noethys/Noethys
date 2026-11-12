@@ -287,7 +287,7 @@ class ListView(FastObjectListView):
     def Ajouter(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_modeles_docs", "creer") == False : return
         from Dlg import DLG_Noedoc
-        dlg = DLG_Noedoc.Dialog(self, IDmodele=None,
+        dlg = DLG_Noedoc.Dialog(self.GetTopLevelParent(), IDmodele=None,
                 nom=u"", observations=u"", IDfond=None,
                 categorie=self.categorie, taille_page=(210, 297),
                 )
@@ -306,7 +306,7 @@ class ListView(FastObjectListView):
         track = self.Selection()[0]
         IDmodele = track.IDmodele
         from Dlg import DLG_Noedoc
-        dlg = DLG_Noedoc.Dialog(self, IDmodele=IDmodele,
+        dlg = DLG_Noedoc.Dialog(self.GetTopLevelParent(), IDmodele=IDmodele,
                 nom=track.nom, observations=track.observations, IDfond=track.IDfond,
                 categorie=self.categorie, taille_page=track.taille,
                 )
