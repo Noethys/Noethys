@@ -18,20 +18,96 @@ import base64
 import datetime
 import random
 import six
+import time
+import threading
 from Data import DATA_Tables as Tables
 from Utils import UTILS_Fichiers
 
 MODE_TEAMWORKS = False
 DICT_CONNEXIONS = {}
 
+# Réutilisation des connexions MySQL pour l'interface mysqldb (qui n'a pas de pool) :
+# sur un réseau lent, ouvrir une connexion coûte près d'une seconde
+POOL_MYSQLDB = {} # {cle : [(connexion, base_courante, heure_liberation), ...]}
+LOCK_POOL_MYSQLDB = threading.Lock()
+TAILLE_POOL_MYSQLDB = 5
+DELAI_PING_POOL_MYSQLDB = 60 # Secondes d'inactivité au-delà desquelles on vérifie la connexion
+
+def GetClePoolMySQLdb(nomFichier=""):
+    pos = nomFichier.index("[RESEAU]")
+    return nomFichier[:pos]
+
+def PrendreConnexionPool(cle):
+    """ Renvoie (connexion, base_courante) depuis le pool, ou (None, None) """
+    while True:
+        with LOCK_POOL_MYSQLDB:
+            liste = POOL_MYSQLDB.get(cle, [])
+            if len(liste) == 0:
+                return None, None
+            connexion, base, heure = liste.pop()
+        if time.time() - heure < DELAI_PING_POOL_MYSQLDB:
+            return connexion, base
+        try:
+            connexion.ping()
+            return connexion, base
+        except Exception:
+            try: connexion.close()
+            except Exception: pass
+
+def RendreConnexionPool(cle, connexion, base):
+    """ Remet une connexion dans le pool """
+    # Une connexion qui n'a fait que lire est restée en autocommit : aucune transaction à terminer.
+    # Sinon le rollback annule ce qui n'a pas été validé, comme le ferait une fermeture.
+    if getattr(connexion, "noethys_ecriture", False) == True :
+        try:
+            connexion.rollback()
+            connexion.autocommit(True)
+            connexion.noethys_ecriture = False
+        except Exception:
+            try: connexion.close()
+            except Exception: pass
+            return
+    with LOCK_POOL_MYSQLDB:
+        liste = POOL_MYSQLDB.setdefault(cle, [])
+        if len(liste) < TAILLE_POOL_MYSQLDB:
+            liste.append((connexion, base, time.time()))
+            return
+    try: connexion.close()
+    except Exception: pass
+
 # Import MySQLdb
 try :
     import MySQLdb
     from MySQLdb.constants import FIELD_TYPE
     from MySQLdb.converters import conversions
+    import MySQLdb.cursors
     IMPORT_MYSQLDB_OK = True
 except Exception as err :
     IMPORT_MYSQLDB_OK = False
+
+def EstRequeteLecture(req):
+    if isinstance(req, bytes):
+        req = req.decode("utf-8", "ignore")
+    mots = req.strip().split(None, 1)
+    return len(mots) > 0 and mots[0].upper().rstrip(";") in ("SELECT", "SHOW", "USE", "SET", "DESCRIBE", "DESC", "EXPLAIN")
+
+if IMPORT_MYSQLDB_OK :
+    class CurseurPoolMySQLdb(MySQLdb.cursors.Cursor):
+        """ Les connexions du pool sont en autocommit tant qu'elles ne font que lire.
+        Avant la première écriture, l'autocommit est désactivé : les écritures restent transactionnelles comme avant. """
+        def AvantRequete(self, req):
+            connexion = self._get_db()
+            if getattr(connexion, "noethys_ecriture", False) == False and EstRequeteLecture(req) == False :
+                connexion.autocommit(False)
+                connexion.noethys_ecriture = True
+
+        def execute(self, query, args=None):
+            self.AvantRequete(query)
+            return MySQLdb.cursors.Cursor.execute(self, query, args)
+
+        def executemany(self, query, args):
+            self.AvantRequete(query)
+            return MySQLdb.cursors.Cursor.executemany(self, query, args)
 
 # import mysql.connector
 try :
@@ -151,10 +227,27 @@ class DB:
     def OuvertureFichierReseau(self, nomFichier, suffixe):
         """ Version RESEAU avec MYSQL """
         self.echec = 0
+        self.cle_pool = None
+        self.base_courante = None
 
         try :
-            self.connexion, nomFichier = GetConnexionReseau(nomFichier, self.pooling)
-            self.cursor = self.connexion.cursor()
+            connexion, base = None, None
+            if INTERFACE_MYSQL == "mysqldb" and self.pooling == True and self.modeCreation == False :
+                self.cle_pool = GetClePoolMySQLdb(nomFichier)
+                connexion, base = PrendreConnexionPool(self.cle_pool)
+            if connexion != None :
+                self.connexion = connexion
+                self.base_courante = base
+                nomFichier = nomFichier[nomFichier.index("[RESEAU]"):].replace("[RESEAU]", "").lower()
+            else :
+                self.connexion, nomFichier = GetConnexionReseau(nomFichier, self.pooling)
+                if self.cle_pool != None :
+                    self.connexion.autocommit(True)
+                    self.connexion.noethys_ecriture = False
+            if self.cle_pool != None :
+                self.cursor = self.connexion.cursor(CurseurPoolMySQLdb)
+            else :
+                self.cursor = self.connexion.cursor()
         except Exception as err:
             print("La connexion a MYSQL a echouee. Erreur :")
             print((err,))
@@ -174,9 +267,10 @@ class DB:
                 return
 
         # Utilisation
-        if nomFichier not in ("", None, "_data") :
+        if nomFichier not in ("", None, "_data") and nomFichier != self.base_courante :
             try:
                 self.cursor.execute("USE %s;" % nomFichier)
+                self.base_courante = nomFichier
             except Exception as err:
                 print("L'ouverture de la base MYSQL a echouee. Erreur :")
                 print((err,))
@@ -301,10 +395,15 @@ class DB:
             self.connexion.commit()
 
     def Close(self):
-        try :
-            self.connexion.close()
-        except Exception as err :
-            pass
+        if getattr(self, "cle_pool", None) != None and getattr(self, "connexion", None) != None :
+            # Remise dans le pool plutôt que fermeture
+            connexion, self.connexion = self.connexion, None
+            RendreConnexionPool(self.cle_pool, connexion, self.base_courante)
+        else :
+            try :
+                self.connexion.close()
+            except Exception as err :
+                pass
 
         if self.IDconnexion in DICT_CONNEXIONS :
             del DICT_CONNEXIONS[self.IDconnexion]
@@ -1030,6 +1129,19 @@ def GetConnexionReseau(nomFichier="", pooling=True):
             params["pool_size"] = POOL_MYSQL
 
         connexion = mysql.connector.connect(**params)
+
+    # Desactivation de ONLY_FULL_GROUP_BY pour la compatibilite des requetes Noethys
+    try:
+        cur = connexion.cursor()
+        cur.execute("SELECT @@sql_mode;")
+        row = cur.fetchone()
+        if row and row[0]:
+            modes = [m for m in row[0].split(',') if m and m != 'ONLY_FULL_GROUP_BY']
+            new_mode = ','.join(modes)
+            cur.execute("SET SESSION sql_mode='%s';" % new_mode)
+        cur.close()
+    except Exception as err:
+        print("Erreur adaptation sql_mode :", err)
 
     return connexion, nomFichier
 
