@@ -22,6 +22,7 @@ from Utils import UTILS_Stats_modeles as MODELES
 
 DICT_COMPARATIF_NOMBRE = {"dictParametres" : {}, "dictResultats" : {} }
 
+@MODELES.Memoriser
 def GetComparatifNombre(DB, dictParametres) :
     dictResultats = {}
     
@@ -36,7 +37,8 @@ def GetComparatifNombre(DB, dictParametres) :
     # Recherche des paramètres
     date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
     conditionsActivites = MODELES.GetConditionActivites(dictParametres)
-    
+    conditionArchives = MODELES.GetConditionArchives(dictParametres)
+
     # Recherche des périodes de comparaison
     req = """SELECT MIN(date), MAX(date) 
     FROM consommations 
@@ -59,13 +61,15 @@ def GetComparatifNombre(DB, dictParametres) :
     indexPeriodeReference = 0
     index = 0
     for dictPeriode in listePeriodes :
-        req = """SELECT COUNT(IDindividu)
-        FROM consommations 
-        WHERE date>='%s' AND date<='%s' 
+        req = """SELECT COUNT(consommations.IDindividu)
+        FROM consommations
+        LEFT JOIN individus ON individus.IDindividu = consommations.IDindividu
+        WHERE date>='%s' AND date<='%s'
         AND consommations.etat IN ('reservation', 'present')
         AND IDactivite IN %s
-        GROUP BY IDindividu
-        ;""" % (dictPeriode["date_debut"], dictPeriode["date_fin"], conditionsActivites)
+        %s
+        GROUP BY consommations.IDindividu
+        ;""" % (dictPeriode["date_debut"], dictPeriode["date_fin"], conditionsActivites, conditionArchives)
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         nbreIndividus = len(listeDonnees)
@@ -133,6 +137,35 @@ def GetDictGenres(DB, dictParametres) :
 
 DICT_AGES = {"dictParametres" : {}, "dictAges" : {}, "dictAnnees" : {} }
 
+LISTE_CODES_TRANCHES = ["-60", "60-69", "70-79", "80-89", "90-99", "100+", "inconnu"]
+
+DICT_LABELS_TRANCHES = {
+    "-60": _(u"-60 ans"),
+    "60-69": _(u"60-69 ans"),
+    "70-79": _(u"70-79 ans"),
+    "80-89": _(u"80-89 ans"),
+    "90-99": _(u"90-99 ans"),
+    "100+": _(u"100 et 100+"),
+    "inconnu": _(u"Âge inconnu"),
+}
+
+def GetCodeTrancheAge(age):
+    if age is None:
+        return "inconnu"
+    if age < 60:
+        return "-60"
+    elif 60 <= age <= 69:
+        return "60-69"
+    elif 70 <= age <= 79:
+        return "70-79"
+    elif 80 <= age <= 89:
+        return "80-89"
+    elif 90 <= age <= 99:
+        return "90-99"
+    else:
+        return "100+"
+
+@MODELES.Memoriser
 def GetDictAges(DB, dictParametres, mode_tranches=False) :
     # Vérifie si les données n'existent pas déjà
     # global DICT_AGES
@@ -142,6 +175,7 @@ def GetDictAges(DB, dictParametres, mode_tranches=False) :
     # Recherche des paramètres
     date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
     conditionsActivites = MODELES.GetConditionActivites(dictParametres)
+    conditionArchives = MODELES.GetConditionArchives(dictParametres)
 
     from Data import DATA_Civilites
     dictCivilites = DATA_Civilites.GetDictCivilites()
@@ -154,15 +188,17 @@ def GetDictAges(DB, dictParametres, mode_tranches=False) :
         WHERE date>='%s' AND date<='%s' 
         AND consommations.etat IN ('reservation', 'present')
         AND IDactivite IN %s
+        %s
         GROUP BY individus.IDindividu
-        ;""" % (date_debut, date_fin, conditionsActivites)
+        ;""" % (date_debut, date_fin, conditionsActivites, conditionArchives)
     else:
         req = """SELECT individus.IDindividu, IDcivilite, date_naiss
         FROM individus
         LEFT JOIN inscriptions ON inscriptions.IDindividu = individus.IDindividu 
         WHERE inscriptions.statut='ok' AND IDactivite IN %s
+        %s
         GROUP BY individus.IDindividu
-        ;""" % conditionsActivites
+        ;""" % (conditionsActivites, conditionArchives)
         
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
@@ -172,17 +208,19 @@ def GetDictAges(DB, dictParametres, mode_tranches=False) :
     dictAges = {}
     dictAgesGenres = {}
     dictAnnees = {}
+    # Date de référence pour le calcul des âges (calculée une seule fois)
+    if str(date_fin) == "2999-01-01" :
+        datedujour = MODELES.GetDateExtremeActivites(DB, listeActivites=dictParametres["listeActivites"], typeDate="date_milieu", mode="max")
+    else :
+        datedujour = date_fin
+    if datedujour == None :
+        datedujour = datetime.date.today() 
+
     for IDindividu, IDcivilite, date_naiss in listeDonnees :
         genre = str(dictCivilites[IDcivilite]["sexe"])
 
         if date_naiss != None and date_naiss != "" :
             date_naiss = datetime.date(int(date_naiss[:4]), int(date_naiss[5:7]), int(date_naiss[8:10]))
-            if str(date_fin) == "2999-01-01" :
-                datedujour = MODELES.GetDateExtremeActivites(DB, listeActivites=dictParametres["listeActivites"], typeDate="date_milieu", mode="max")
-            else :
-                datedujour = date_fin
-            if datedujour == None :
-                datedujour = datetime.date.today() 
             age = (datedujour.year - date_naiss.year) - int((datedujour.month, datedujour.day) < (date_naiss.month, date_naiss.day))
             annee = date_naiss.year
         else:
@@ -197,7 +235,7 @@ def GetDictAges(DB, dictParametres, mode_tranches=False) :
             dictAnnees[annee] = 0
         dictAnnees[annee] += 1
 
-        tranche = age / 10 if age else None
+        tranche = GetCodeTrancheAge(age)
         dictAgesGenres.setdefault(tranche, {})
         dictAgesGenres[tranche].setdefault(genre, 0)
         dictAgesGenres[tranche][genre] += 1
@@ -205,8 +243,10 @@ def GetDictAges(DB, dictParametres, mode_tranches=False) :
     # Mémorisation des résultats
     DICT_AGES["dictParametres"] = dictParametres
     DICT_AGES["dictAges"] = dictAges
-    DICT_AGES["dictAnnees"] = dictAnnees
-    return dictAgesGenres if mode_tranches else dictAges, dictAnnees
+    if mode_tranches:
+        return dictAgesGenres, dictAnnees
+    else:
+        return dictAges, dictAnnees
 
 
 DICT_DISTANCES_VILLES = {"dictParametres" : {}, "dictDistances" : {} }
@@ -379,6 +419,7 @@ def GetListeActivitesPro(DB, dictParametres) :
 
 DICT_ANCIENNETE = {"dictParametres" : {}, "dictResultats" : {}, "listeMoisPeriode" : [] }
 
+@MODELES.Memoriser
 def GetAnciennete(DB, dictParametres):
     # Vérifie si les données n'existent pas déjà
     global DICT_ANCIENNETE
@@ -388,17 +429,20 @@ def GetAnciennete(DB, dictParametres):
     # Recherche des paramètres
     date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
     conditionsActivites = MODELES.GetConditionActivites(dictParametres)
+    conditionArchives = MODELES.GetConditionArchives(dictParametres)
     
     if dictParametres["mode"] != "presents" :
         return {}, []
         
-    req = """SELECT IDindividu, MIN(date), MAX(date)
+    req = """SELECT consommations.IDindividu, MIN(date), MAX(date)
     FROM consommations
+    LEFT JOIN individus ON individus.IDindividu = consommations.IDindividu
     WHERE date<='%s' 
     AND consommations.etat IN ('reservation', 'present')
     AND IDactivite IN %s
-    GROUP BY IDindividu
-    ;""" % (date_fin, conditionsActivites)
+    %s
+    GROUP BY consommations.IDindividu
+    ;""" % (date_fin, conditionsActivites, conditionArchives)
         
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
@@ -434,6 +478,7 @@ def GetAnciennete(DB, dictParametres):
 DICT_DESINSCRITS = {"dictParametres": {}, "dictResultats": {}, "listeMoisPeriode": []}
 
 
+@MODELES.Memoriser
 def GetDesinscrits(DB, dictParametres):
     # Vérifie si les données n'existent pas déjà
     global DICT_DESINSCRITS
@@ -479,6 +524,207 @@ def GetDesinscrits(DB, dictParametres):
     DICT_DESINSCRITS["dictResultats"] = dictResultats
     DICT_DESINSCRITS["listeMoisPeriode"] = listeMoisPeriode
     return dictResultats, listeMoisPeriode
+
+
+DICT_INSCRITS_PERIODE = {"dictParametres": {}, "nbre": 0}
+
+
+@MODELES.Memoriser
+def GetNombreInscritsPeriode(DB, dictParametres):
+    # Vérifie si les données n'existent pas déjà
+    global DICT_INSCRITS_PERIODE
+    if DICT_INSCRITS_PERIODE["dictParametres"] == dictParametres:
+        return DICT_INSCRITS_PERIODE["nbre"]
+
+    # Recherche des paramètres
+    date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
+    conditionsActivites = MODELES.GetConditionActivites(dictParametres)
+    conditionArchives = MODELES.GetConditionArchives(dictParametres)
+
+    if conditionsActivites in ("", "()"):
+        return 0
+
+    if dictParametres.get("mode") == "inscrits":
+        req = """SELECT COUNT(DISTINCT consommations.IDindividu)
+        FROM consommations
+        LEFT JOIN individus ON individus.IDindividu = consommations.IDindividu
+        WHERE consommations.etat IN ('reservation', 'present')
+        AND IDactivite IN %s
+        %s
+        ;""" % (conditionsActivites, conditionArchives)
+    else:
+        req = """SELECT COUNT(DISTINCT consommations.IDindividu)
+        FROM consommations
+        LEFT JOIN individus ON individus.IDindividu = consommations.IDindividu
+        WHERE date>='%s' AND date<='%s'
+        AND consommations.etat IN ('reservation', 'present')
+        AND IDactivite IN %s
+        %s
+        ;""" % (str(date_debut), str(date_fin), conditionsActivites, conditionArchives)
+
+    DB.ExecuterReq(req)
+    listeDonnees = DB.ResultatReq()
+    nbre = 0
+    if len(listeDonnees) > 0 and listeDonnees[0][0] is not None:
+        nbre = int(listeDonnees[0][0])
+
+    # Mémorisation des résultats
+    DICT_INSCRITS_PERIODE["dictParametres"] = dictParametres
+    DICT_INSCRITS_PERIODE["nbre"] = nbre
+    return nbre
+
+
+def GetParametresN_1(dictParametres):
+    """ Renvoie les paramètres pour la période N-1 """
+    if not dictParametres:
+        return None
+    import copy
+    dictN_1 = copy.deepcopy(dictParametres)
+    periode = dictN_1.get("periode")
+    if not periode:
+        return None
+    type_p = periode.get("type")
+    if type_p == "annee":
+        annee = periode.get("annee")
+        if annee is None and "date_debut" in periode:
+            annee = periode["date_debut"].year
+        if annee is None:
+            return None
+        annee -= 1
+        periode["annee"] = annee
+        periode["date_debut"] = datetime.date(annee, 1, 1)
+        periode["date_fin"] = datetime.date(annee, 12, 31)
+        periode["label"] = _(u"Année %d") % annee
+    elif type_p == "mois":
+        import calendar
+        annee = periode.get("annee")
+        if annee is None and "date_debut" in periode:
+            annee = periode["date_debut"].year
+        mois = periode.get("mois")
+        if mois is None and "date_debut" in periode:
+            mois = periode["date_debut"].month
+        if annee is None or mois is None:
+            return None
+        annee -= 1
+        nbreJours = calendar.monthrange(annee, mois)[1]
+        periode["annee"] = annee
+        periode["date_debut"] = datetime.date(annee, mois, 1)
+        periode["date_fin"] = datetime.date(annee, mois, nbreJours)
+        labelMois = MODELES.LISTE_NOMS_MOIS[mois - 1] if hasattr(MODELES, "LISTE_NOMS_MOIS") else str(mois)
+        periode["label"] = u"%s %d" % (labelMois, annee)
+    elif type_p in ("dates", "vacances"):
+        date_debut = periode.get("date_debut")
+        date_fin = periode.get("date_fin")
+        if not date_debut or not date_fin:
+            return None
+        try:
+            d_deb = datetime.date(date_debut.year - 1, date_debut.month, date_debut.day)
+        except ValueError:
+            d_deb = datetime.date(date_debut.year - 1, date_debut.month, 28)
+        try:
+            d_fin = datetime.date(date_fin.year - 1, date_fin.month, date_fin.day)
+        except ValueError:
+            d_fin = datetime.date(date_fin.year - 1, date_fin.month, 28)
+        periode["date_debut"] = d_deb
+        periode["date_fin"] = d_fin
+        if "annee" in periode and periode["annee"] is not None:
+            periode["annee"] = periode["annee"] - 1
+        periode["label"] = _(u"Période N-1")
+    else:
+        return None
+    return dictN_1
+
+
+def GetLabelsComparaisonN_N1(dictParametres, dictParametresN1):
+    dictPeriode = dictParametres.get("periode", {})
+    typePeriode = dictPeriode.get("type")
+    if typePeriode == "annee":
+        annee = dictPeriode.get("annee")
+        if annee is None and "date_debut" in dictPeriode:
+            annee = dictPeriode["date_debut"].year
+        return _(u"%d (N-1)") % (annee - 1), _(u"%d (N)") % annee
+    elif typePeriode == "mois":
+        annee = dictPeriode.get("annee")
+        if annee is None and "date_debut" in dictPeriode:
+            annee = dictPeriode["date_debut"].year
+        mois = dictPeriode.get("mois")
+        if mois is None and "date_debut" in dictPeriode:
+            mois = dictPeriode["date_debut"].month
+        nomMois = MODELES.LISTE_NOMS_MOIS[mois - 1] if hasattr(MODELES, "LISTE_NOMS_MOIS") else str(mois)
+        return u"%s %d" % (nomMois, annee - 1), u"%s %d" % (nomMois, annee)
+    elif typePeriode == "vacances":
+        annee = dictPeriode.get("annee", 0)
+        nomVacances = dictPeriode.get("vacances", "")
+        return u"%s %d" % (nomVacances, annee - 1), u"%s %d" % (nomVacances, annee)
+    else:
+        return _(u"Période N-1"), _(u"Période N")
+
+
+DICT_INSCRIPTIONS_ACTIVITES = {"dictParametres": {}, "dictAct": {}, "tot": 0}
+
+
+@MODELES.Memoriser
+def GetInscriptionsActivitesEtTotal(DB, dictParametres):
+    global DICT_INSCRIPTIONS_ACTIVITES
+    if DICT_INSCRIPTIONS_ACTIVITES["dictParametres"] == dictParametres:
+        return DICT_INSCRIPTIONS_ACTIVITES["dictAct"], DICT_INSCRIPTIONS_ACTIVITES["tot"]
+
+    date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
+    conditionsActivites = MODELES.GetConditionActivites(dictParametres)
+    conditionArchives = MODELES.GetConditionArchives(dictParametres)
+    if conditionsActivites in ("", "()"):
+        return {}, 0
+
+    if dictParametres.get("mode") == "inscrits":
+        req_act = """SELECT consommations.IDactivite, COUNT(DISTINCT consommations.IDindividu)
+        FROM consommations
+        LEFT JOIN individus ON individus.IDindividu = consommations.IDindividu
+        WHERE consommations.etat IN ('reservation', 'present')
+        AND IDactivite IN %s
+        %s
+        GROUP BY consommations.IDactivite
+        ;""" % (conditionsActivites, conditionArchives)
+
+        req_tot = """SELECT COUNT(DISTINCT consommations.IDindividu)
+        FROM consommations
+        LEFT JOIN individus ON individus.IDindividu = consommations.IDindividu
+        WHERE consommations.etat IN ('reservation', 'present')
+        AND IDactivite IN %s
+        %s
+        ;""" % (conditionsActivites, conditionArchives)
+    else:
+        req_act = """SELECT consommations.IDactivite, COUNT(DISTINCT consommations.IDindividu)
+        FROM consommations
+        LEFT JOIN individus ON individus.IDindividu = consommations.IDindividu
+        WHERE date>='%s' AND date<='%s'
+        AND consommations.etat IN ('reservation', 'present')
+        AND IDactivite IN %s
+        %s
+        GROUP BY consommations.IDactivite
+        ;""" % (str(date_debut), str(date_fin), conditionsActivites, conditionArchives)
+
+        req_tot = """SELECT COUNT(DISTINCT consommations.IDindividu)
+        FROM consommations
+        LEFT JOIN individus ON individus.IDindividu = consommations.IDindividu
+        WHERE date>='%s' AND date<='%s'
+        AND consommations.etat IN ('reservation', 'present')
+        AND IDactivite IN %s
+        %s
+        ;""" % (str(date_debut), str(date_fin), conditionsActivites, conditionArchives)
+
+    DB.ExecuterReq(req_act)
+    dictAct = {}
+    for IDactivite, nbre in DB.ResultatReq():
+        dictAct[IDactivite] = nbre
+
+    DB.ExecuterReq(req_tot)
+    res = DB.ResultatReq()
+    tot = res[0][0] if (res and res[0][0] is not None) else 0
+
+    DICT_INSCRIPTIONS_ACTIVITES["dictParametres"] = dictParametres
+    DICT_INSCRIPTIONS_ACTIVITES["dictAct"] = dictAct
+    DICT_INSCRIPTIONS_ACTIVITES["tot"] = tot
+    return dictAct, tot
 
 
 
@@ -595,22 +841,27 @@ class Texte_nombre_individus(MODELES.Texte):
         
         date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
         conditionsActivites = MODELES.GetConditionActivites(dictParametres)
+        conditionArchives = MODELES.GetConditionArchives(dictParametres)
         
         # Recherche du nombre d'individus présents
         if dictParametres["mode"] == "presents" :
-            req = """SELECT COUNT(IDindividu)
+            req = """SELECT COUNT(consommations.IDindividu)
             FROM consommations 
+            LEFT JOIN individus ON individus.IDindividu = consommations.IDindividu
             WHERE date>='%s' AND date<='%s' 
             AND consommations.etat IN ('reservation', 'present')
             AND IDactivite IN %s
-            GROUP BY IDindividu
-            ;""" % (date_debut, date_fin, conditionsActivites)
+            %s
+            GROUP BY consommations.IDindividu
+            ;""" % (date_debut, date_fin, conditionsActivites, conditionArchives)
         else :
-            req = """SELECT COUNT(IDindividu)
+            req = """SELECT COUNT(inscriptions.IDindividu)
             FROM inscriptions 
+            LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
             WHERE inscriptions.statut='ok' AND IDactivite IN %s
-            GROUP BY IDindividu
-            ;""" % conditionsActivites
+            %s
+            GROUP BY inscriptions.IDindividu
+            ;""" % (conditionsActivites, conditionArchives)
 
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
@@ -641,22 +892,27 @@ class Tableau_nombre_individus(MODELES.Tableau):
         # Recherche des paramètres
         date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
         conditionsActivites = MODELES.GetConditionActivites(dictParametres)
+        conditionArchives = MODELES.GetConditionArchives(dictParametres)
 
         # Recherche du nombre d'individus présents
         if dictParametres["mode"] == "presents" :
-            req = """SELECT IDactivite, COUNT(IDindividu)
+            req = """SELECT IDactivite, COUNT(consommations.IDindividu)
             FROM consommations 
+            LEFT JOIN individus ON individus.IDindividu = consommations.IDindividu
             WHERE date>='%s' AND date<='%s' 
             AND consommations.etat IN ('reservation', 'present')
             AND IDactivite IN %s
-            GROUP BY IDactivite, IDindividu
-            ;""" % (date_debut, date_fin, conditionsActivites)
+            %s
+            GROUP BY IDactivite, consommations.IDindividu
+            ;""" % (date_debut, date_fin, conditionsActivites, conditionArchives)
         else:
-            req = """SELECT IDactivite, COUNT(IDindividu)
+            req = """SELECT IDactivite, COUNT(inscriptions.IDindividu)
             FROM inscriptions 
+            LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
             WHERE inscriptions.statut='ok' AND IDactivite IN %s
-            GROUP BY IDactivite, IDindividu
-            ;""" % conditionsActivites
+            %s
+            GROUP BY IDactivite, inscriptions.IDindividu
+            ;""" % (conditionsActivites, conditionArchives)
 
         # req = """
         # SELECT IDactivite, COUNT(IDindividu)
@@ -685,9 +941,9 @@ class Tableau_nombre_individus(MODELES.Tableau):
         # Création du tableau
         self.largeur = "400"
         self.colonnes = [ (_(u"Activité"), "250"), (_(u"Nombre d'individus"), "150") ]
-        self.lignes = []
+        dictNoms = dictParametres.get("dictActivites") or {}
         for IDactivite, listeIndividus in dictActiTemp.items() :
-            nomActivite = dictParametres["dictActivites"][IDactivite]
+            nomActivite = dictNoms.get(IDactivite) or (u"Activité %d" % IDactivite)
             self.lignes.append((nomActivite, listeIndividus))
 
 class Graphe_nombre_individus(MODELES.Graphe):
@@ -745,7 +1001,98 @@ class Graphe_nombre_individus(MODELES.Graphe):
         return figure
 
 
-        
+class Tableau_evolution_inscriptions(MODELES.Tableau):
+    """ Évolution des inscriptions N / N-1 (Tendance) """
+
+    def __init__(self):
+        MODELES.Tableau.__init__(self)
+        self.nom = _(u"Évolution des usagers N / N-1 (Tendance)")
+        self.code = "tableau_evolution_inscriptions"
+
+    def MAJ(self, DB=None, dictParametres={}):
+        self.dictParametres = dictParametres
+        self.colonnes = []
+        self.lignes = []
+        self.totaux = []
+
+        dictParametresN1 = GetParametresN_1(dictParametres)
+        if dictParametresN1 is None:
+            return
+
+        labelN1, labelN = GetLabelsComparaisonN_N1(dictParametres, dictParametresN1)
+
+        dictInscritsN, totalN = GetInscriptionsActivitesEtTotal(DB, dictParametres)
+        dictInscritsN1, totalN1 = GetInscriptionsActivitesEtTotal(DB, dictParametresN1)
+
+        self.largeur = "620"
+        self.colonnes = [
+            (_(u"Activité"), "240"),
+            (labelN1, "95"),
+            (labelN, "95"),
+            (_(u"Évolution"), "90"),
+            (_(u"Tendance"), "100"),
+        ]
+        self.lignes = []
+
+        dictNoms = dictParametres.get("dictActivites") or {}
+        listeIDactivites = list(dictParametres.get("listeActivites", []))
+        listeIDactivites.sort(key=lambda x: str(dictNoms.get(x) or u""))
+
+        for IDactivite in listeIDactivites:
+            nomAct = dictNoms.get(IDactivite) or (u"Activité %d" % IDactivite)
+            n1 = dictInscritsN1.get(IDactivite, 0)
+            n = dictInscritsN.get(IDactivite, 0)
+
+            if n1 == 0 and n == 0:
+                continue
+
+            diff = n - n1
+            if diff > 0:
+                diff_str = u"+%d" % diff
+            elif diff < 0:
+                diff_str = str(diff)
+            else:
+                diff_str = u"0"
+
+            if n1 > 0:
+                pct = ((float(n) - float(n1)) / float(n1)) * 100.0
+                if pct > 0:
+                    tendance_str = u"+%.1f %%" % pct
+                elif pct < 0:
+                    tendance_str = u"%.1f %%" % pct
+                else:
+                    tendance_str = u"0.0 %"
+            elif n > 0:
+                tendance_str = _(u"+100.0 % (Nouveau)")
+            else:
+                tendance_str = u"-"
+
+            self.lignes.append((nomAct, n1, n, diff_str, tendance_str))
+
+        diff_tot = totalN - totalN1
+        if diff_tot > 0:
+            diff_tot_str = u"+%d" % diff_tot
+        elif diff_tot < 0:
+            diff_tot_str = str(diff_tot)
+        else:
+            diff_tot_str = u"0"
+
+        if totalN1 > 0:
+            pct_tot = ((float(totalN) - float(totalN1)) / float(totalN1)) * 100.0
+            if pct_tot > 0:
+                pct_tot_str = u"+%.1f %%" % pct_tot
+            elif pct_tot < 0:
+                pct_tot_str = u"%.1f %%" % pct_tot
+            else:
+                pct_tot_str = u"0.0 %"
+        elif totalN > 0:
+            pct_tot_str = u"+100.0 %"
+        else:
+            pct_tot_str = u"-"
+
+        self.totaux = [_(u"Total usagers uniques"), totalN1, totalN, diff_tot_str, pct_tot_str]
+
+
 class Tableau_repartition_genre(MODELES.Tableau):
     """ Répartition des individus par âge """
     def __init__(self):
@@ -808,10 +1155,10 @@ class Graphe_repartition_genre(MODELES.Graphe):
 
 
 class Tableau_repartition_ages(MODELES.Tableau):
-    """ Répartition des individus par âge """
+    """ Répartition des individus par tranches d'âge """
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = _(u"Répartition des individus par âge")
+        self.nom = _(u"Répartition des individus par tranches d'âge")
         self.code = "tableau_repartition_ages"
     def MAJ(self, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
@@ -821,21 +1168,26 @@ class Tableau_repartition_ages(MODELES.Tableau):
         
         dictAges, dictAnnees = GetDictAges(DB, dictParametres)
         
+        dictTranches = {}
+        total = 0
+        for age, nbre in dictAges.items():
+            code = GetCodeTrancheAge(age)
+            dictTranches[code] = dictTranches.get(code, 0) + nbre
+            total += nbre
+
         # Création du tableau
-        self.largeur = "400"
-        self.colonnes = [ (_(u"Age"), "250"), (_(u"Nombre d'individus"), "150") ]
+        self.largeur = "450"
+        self.colonnes = [ (_(u"Tranche d'âge"), "220"), (_(u"Nombre d'individus"), "120"), (_(u"Pourcentage"), "110") ]
         self.lignes = []
         
-        listeAges = list(dictAges.keys()) 
-        listeAges.sort() 
+        for code in LISTE_CODES_TRANCHES:
+            nbre = dictTranches.get(code, 0)
+            if nbre > 0 or code in ("-60", "60-69", "70-79", "80-89", "90-99", "100+"):
+                pct = (float(nbre) / float(total) * 100.0) if total > 0 else 0.0
+                label = DICT_LABELS_TRANCHES.get(code, code)
+                self.lignes.append((label, nbre, u"%.1f %%" % pct))
         
-        for age in listeAges :
-            nbreIndividus = dictAges[age]
-            if age == None : 
-                age = _(u"Date de naissance inconnue")
-            else :
-                age = str(age)
-            self.lignes.append((age, nbreIndividus))
+        self.totaux = [_(u"Total"), total, u"100.0 %"]
 
 
 
@@ -843,7 +1195,7 @@ class Tableau_repartition_ages(MODELES.Tableau):
 class Graphe_repartition_ages(MODELES.Graphe):
     def __init__(self):
         MODELES.Graphe.__init__(self)
-        self.nom = _(u"Répartition des individus par âge")
+        self.nom = _(u"Répartition des individus par tranches d'âge")
         self.code = "graphe_repartition_ages"
         self.taille = (470, 280)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
@@ -853,19 +1205,24 @@ class Graphe_repartition_ages(MODELES.Graphe):
         
         dictAges, dictAnnees = GetDictAges(DB, dictParametres)
         
-        listeAges = list(dictAges.keys()) 
-        listeAges.sort() 
+        dictTranches = {}
+        for age, nbre in dictAges.items():
+            code = GetCodeTrancheAge(age)
+            dictTranches[code] = dictTranches.get(code, 0) + nbre
         
         listeLabels = [] 
         listeValeurs = []
-        for age in listeAges :
-            nbreIndividus = dictAges[age]
-            if age == None : 
-                age = _(u"N.C.")
-            else :
-                age = str(age)
-            listeLabels.append(age)
-            listeValeurs.append(nbreIndividus)
+        for code in LISTE_CODES_TRANCHES:
+            nbre = dictTranches.get(code, 0)
+            if code != "inconnu" or nbre > 0:
+                if code == "100+":
+                    lbl = "100 et 100+"
+                elif code == "inconnu":
+                    lbl = _(u"Inconnu")
+                else:
+                    lbl = code
+                listeLabels.append(lbl)
+                listeValeurs.append(nbre)
         
         # Création du graph
         ind = arange(len(listeLabels)) + self.decalage_x
@@ -873,7 +1230,7 @@ class Graphe_repartition_ages(MODELES.Graphe):
         barres = ax.bar(ind, listeValeurs, width, color=MODELES.ConvertitCouleur2(MODELES.COULEUR_VERT_POMME))
         
         # Axe horizontal
-        ax.set_xlabel(_(u"Ages"), fontsize=8)
+        ax.set_xlabel(_(u"Tranches d'âge"), fontsize=8)
         ind = arange(len(listeLabels)) 
         ax.set_xticks(ind + width) 
         ax.set_xticklabels(listeLabels)
@@ -887,10 +1244,10 @@ class Graphe_repartition_ages(MODELES.Graphe):
         matplotlib.pyplot.setp(labels, rotation=0, fontsize=9) 
         
         # Titre
-        title = ax.set_title(_(u"Répartition par âge"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
+        title = ax.set_title(_(u"Répartition par tranches d'âge"), weight="bold", horizontalalignment='center')
         matplotlib.pyplot.setp(title, rotation=0, fontsize=9)
         
-        figure.subplots_adjust(left=None, bottom=0.12, right=None, wspace=None, hspace=None)
+        figure.subplots_adjust(left=None, bottom=0.15, right=None, wspace=None, hspace=None)
         
         # Affiche les grilles
         ax.grid(True, linestyle=":")
@@ -993,11 +1350,11 @@ class Graphe_repartition_annees_naiss(MODELES.Graphe):
 
 
 class Tableau_repartition_tranches_ages(MODELES.Tableau):
-    """ Répartition des individus par age """
+    """ Répartition des individus par tranches d'âge et par genre """
 
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = _(u"Répartition des individus par tranches d'age et par genre")
+        self.nom = _(u"Répartition des individus par tranches d'âge et par genre")
         self.code = "tableau_repartition_tranches_ages"
 
     def MAJ(self, DB=None, dictParametres={}):
@@ -1006,22 +1363,31 @@ class Tableau_repartition_tranches_ages(MODELES.Tableau):
         self.lignes = []
         self.totaux = []
 
-        dictAges, dictAnnees = GetDictAges(DB, dictParametres, mode_tranches=True)
+        dictAgesGenres, dictAnnees = GetDictAges(DB, dictParametres, mode_tranches=True)
 
         # Création du tableau
-        self.largeur = "400"
-        self.colonnes = [(_(u"Tranche d'age"), "200"), (_(u"H"), "50"), (_(u"F"), "50"), (_(u"?"), "50"), (_(u"Total"), "50")]
+        self.largeur = "480"
+        self.colonnes = [(_(u"Tranche d'âge"), "200"), (_(u"Hommes"), "70"), (_(u"Femmes"), "70"), (_(u"Inconnu"), "70"), (_(u"Total"), "70")]
         self.lignes = []
 
-        listeTranches = list(dictAges.keys())
-        listeTranches.sort()
+        totH = 0
+        totF = 0
+        totI = 0
 
-        for tranche in listeTranches:
-            label_tranche = ("%d - %d" % (tranche*10, tranche*10 + 9)) if tranche else "Age inconnu"
-            nbreM = dictAges[tranche].get("M", 0)
-            nbreF = dictAges[tranche].get("F", 0)
-            nbreI = dictAges[tranche].get("None", 0)
-            self.lignes.append((label_tranche, nbreM, nbreF, nbreI, nbreM + nbreF + nbreI))
+        for code in LISTE_CODES_TRANCHES:
+            dictGenre = dictAgesGenres.get(code, {})
+            nbreM = dictGenre.get("M", 0)
+            nbreF = dictGenre.get("F", 0)
+            nbreI = dictGenre.get("None", 0)
+            nbreTotal = nbreM + nbreF + nbreI
+            if nbreTotal > 0 or code in ("-60", "60-69", "70-79", "80-89", "90-99", "100+"):
+                label = DICT_LABELS_TRANCHES.get(code, code)
+                self.lignes.append((label, nbreM, nbreF, nbreI, nbreTotal))
+                totH += nbreM
+                totF += nbreF
+                totI += nbreI
+
+        self.totaux = [_(u"Total"), totH, totF, totI, totH + totF + totI]
 
 
 class Tableau_repartition_villes(MODELES.Tableau):
@@ -1434,6 +1800,168 @@ class Tableau_anciens_individus(MODELES.Tableau):
             if (annee, mois) in dictResultats:
                 label = u"%s %s" % (MODELES.LISTE_NOMS_MOIS[mois - 1], annee)
                 self.lignes.append((label, dictResultats[(annee, mois)]))
+
+
+class Tableau_mouvements_individus(MODELES.Tableau):
+    """ Synthèse mensuelle des mouvements (Arrivées et Départs) """
+
+    def __init__(self):
+        MODELES.Tableau.__init__(self)
+        self.nom = _(u"Synthèse mensuelle des mouvements (Arrivées et Départs)")
+        self.code = "tableau_mouvements_individus"
+
+    def MAJ(self, DB=None, dictParametres={}):
+        self.dictParametres = dictParametres
+        self.colonnes = []
+        self.lignes = []
+        self.totaux = []
+
+        if dictParametres.get("mode") != "presents":
+            return
+
+        date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
+        dictResultatsArrivees, listeMoisPeriode = GetAnciennete(DB, dictParametres)
+        dictResultatsDeparts, listeMoisDeparts = GetDesinscrits(DB, dictParametres)
+
+        # Création du tableau
+        self.largeur = "560"
+        self.colonnes = [
+            (_(u"Mois"), "170"),
+            (_(u"Arrivées (Nouveaux)"), "130"),
+            (_(u"Départs (Désinscrits)"), "130"),
+            (_(u"Solde net"), "130"),
+        ]
+        self.lignes = []
+
+        total_arrivees = 0
+        total_departs = 0
+
+        for annee, mois in listeMoisPeriode:
+            nbreArrivees = dictResultatsArrivees.get((annee, mois), 0)
+            nbreDeparts = dictResultatsDeparts.get((annee, mois), 0)
+            solde = nbreArrivees - nbreDeparts
+            if nbreArrivees > 0 or nbreDeparts > 0:
+                label = u"%s %s" % (MODELES.LISTE_NOMS_MOIS[mois - 1], annee)
+                if solde > 0:
+                    solde_str = u"+%d" % solde
+                elif solde < 0:
+                    solde_str = str(solde)
+                else:
+                    solde_str = u"0"
+                self.lignes.append((label, nbreArrivees, nbreDeparts, solde_str))
+                total_arrivees += nbreArrivees
+                total_departs += nbreDeparts
+
+        total_solde = total_arrivees - total_departs
+        if total_solde > 0:
+            total_solde_str = u"+%d" % total_solde
+        elif total_solde < 0:
+            total_solde_str = str(total_solde)
+        else:
+            total_solde_str = u"0"
+        self.totaux = [_(u"Total"), total_arrivees, total_departs, total_solde_str]
+
+
+class Tableau_taux_rotation(MODELES.Tableau):
+    """ Indicateurs de renouvellement et de rotation """
+
+    def __init__(self):
+        MODELES.Tableau.__init__(self)
+        self.nom = _(u"Indicateurs de renouvellement et de rotation")
+        self.code = "tableau_taux_rotation"
+
+    def MAJ(self, DB=None, dictParametres={}):
+        self.dictParametres = dictParametres
+        self.colonnes = []
+        self.lignes = []
+        self.totaux = []
+
+        if dictParametres.get("mode") != "presents":
+            return
+
+        dictResultatsArrivees, listeMoisPeriode = GetAnciennete(DB, dictParametres)
+        dictResultatsDeparts, listeMoisDeparts = GetDesinscrits(DB, dictParametres)
+
+        total_arrivees = sum(dictResultatsArrivees.get(m, 0) for m in listeMoisPeriode)
+        total_departs = sum(dictResultatsDeparts.get(m, 0) for m in listeMoisPeriode)
+        total_inscrits = GetNombreInscritsPeriode(DB, dictParametres)
+
+        if total_inscrits > 0:
+            taux_renouvellement = (float(total_arrivees) / float(total_inscrits)) * 100.0
+            taux_rotation = (float(total_arrivees + total_departs) / float(total_inscrits)) * 100.0
+            str_renouvellement = u"%.2f %%" % taux_renouvellement
+            str_rotation = u"%.2f %%" % taux_rotation
+        else:
+            taux_renouvellement = None
+            taux_rotation = None
+            str_renouvellement = u"-"
+            str_rotation = u"-"
+
+        dictParametresN1 = GetParametresN_1(dictParametres)
+        if dictParametresN1 is not None:
+            labelN1, labelN = GetLabelsComparaisonN_N1(dictParametres, dictParametresN1)
+            dictArrN1, listeMoisN1 = GetAnciennete(DB, dictParametresN1)
+            dictDepN1, listeMoisDepN1 = GetDesinscrits(DB, dictParametresN1)
+            total_arrivees_n1 = sum(dictArrN1.get(m, 0) for m in listeMoisN1)
+            total_departs_n1 = sum(dictDepN1.get(m, 0) for m in listeMoisDepN1)
+            total_inscrits_n1 = GetNombreInscritsPeriode(DB, dictParametresN1)
+
+            if total_inscrits_n1 > 0:
+                taux_renouvellement_n1 = (float(total_arrivees_n1) / float(total_inscrits_n1)) * 100.0
+                taux_rotation_n1 = (float(total_arrivees_n1 + total_departs_n1) / float(total_inscrits_n1)) * 100.0
+                str_renouvellement_n1 = u"%.2f %%" % taux_renouvellement_n1
+                str_rotation_n1 = u"%.2f %%" % taux_rotation_n1
+            else:
+                taux_renouvellement_n1 = None
+                taux_rotation_n1 = None
+                str_renouvellement_n1 = u"-"
+                str_rotation_n1 = u"-"
+
+            diff_inscrits = total_inscrits - total_inscrits_n1
+            diff_inscrits_str = (u"+%d" % diff_inscrits) if diff_inscrits > 0 else str(diff_inscrits)
+
+            diff_arr = total_arrivees - total_arrivees_n1
+            diff_arr_str = (u"+%d" % diff_arr) if diff_arr > 0 else str(diff_arr)
+
+            diff_dep = total_departs - total_departs_n1
+            diff_dep_str = (u"+%d" % diff_dep) if diff_dep > 0 else str(diff_dep)
+
+            if taux_renouvellement is not None and taux_renouvellement_n1 is not None:
+                diff_renouv = taux_renouvellement - taux_renouvellement_n1
+                diff_renouv_str = (u"+%.2f pts" % diff_renouv) if diff_renouv > 0 else (u"%.2f pts" % diff_renouv)
+            else:
+                diff_renouv_str = u"-"
+
+            if taux_rotation is not None and taux_rotation_n1 is not None:
+                diff_rot = taux_rotation - taux_rotation_n1
+                diff_rot_str = (u"+%.2f pts" % diff_rot) if diff_rot > 0 else (u"%.2f pts" % diff_rot)
+            else:
+                diff_rot_str = u"-"
+
+            self.largeur = "620"
+            self.colonnes = [
+                (_(u"Indicateur"), "290"),
+                (labelN1, "100"),
+                (labelN, "100"),
+                (_(u"Évolution"), "130"),
+            ]
+            self.lignes = [
+                (_(u"Total des usagers (consommé au moins 1 fois)"), total_inscrits_n1, total_inscrits, diff_inscrits_str),
+                (_(u"Nouveaux usagers (arrivées)"), total_arrivees_n1, total_arrivees, diff_arr_str),
+                (_(u"Usagers désinscrits (départs)"), total_departs_n1, total_departs, diff_dep_str),
+                (_(u"Taux de renouvellement (Nouveaux / Usagers)"), str_renouvellement_n1, str_renouvellement, diff_renouv_str),
+                (_(u"Taux de rotation ((Nouveaux + Départs) / Usagers)"), str_rotation_n1, str_rotation, diff_rot_str),
+            ]
+        else:
+            self.largeur = "560"
+            self.colonnes = [(_(u"Indicateur"), "380"), (_(u"Valeur"), "180")]
+            self.lignes = [
+                (_(u"Total des usagers sur la période (consommé au moins 1 fois)"), total_inscrits),
+                (_(u"Nouveaux usagers sur la période"), total_arrivees),
+                (_(u"Usagers désinscrits (départs) sur la période"), total_departs),
+                (_(u"Taux de renouvellement (Nouveaux / Usagers)"), str_renouvellement),
+                (_(u"Taux de rotation ((Nouveaux + Départs) / Usagers)"), str_rotation),
+            ]
 
 
 
