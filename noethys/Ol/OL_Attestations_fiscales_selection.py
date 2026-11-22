@@ -107,10 +107,10 @@ class ListView(FastObjectListView):
                 
                 # Applique les éventuels ajustements
                 montant = dictPrestation["montant"] + ajustement
-                if montant < FloatToDecimal(0.0) : 
+                if dictPrestation["montant"] > FloatToDecimal(0.0) and montant < FloatToDecimal(0.0) :
                     montant = FloatToDecimal(0.0)
                 regle = dictPrestation["regle"] + ajustement
-                if regle < FloatToDecimal(0.0) : 
+                if dictPrestation["regle"] > FloatToDecimal(0.0) and regle < FloatToDecimal(0.0) :
                     regle = FloatToDecimal(0.0)
                 impaye = montant - regle
                 if impaye < FloatToDecimal(0.0) : 
