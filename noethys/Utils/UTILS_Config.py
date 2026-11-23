@@ -12,6 +12,7 @@
 import Chemins
 import wx
 import os
+import sys
 import six
 import shutil
 import random
@@ -36,7 +37,7 @@ def GenerationFichierConfig():
     nom_fichier_dat = UTILS_Fichiers.GetRepUtilisateur("Config.dat")
     if os.path.isfile(nom_fichier_dat) and six.PY2:
         print("Importation de l'ancien config de config dat")
-        nom_fichier_dat = nom_fichier_dat.encode("utf8")
+        nom_fichier_dat = nom_fichier_dat.encode(sys.getfilesystemencoding())
 
         import shelve
         db = shelve.open(nom_fichier_dat, "r")
@@ -88,10 +89,7 @@ def SupprimerFichier():
 
 class FichierConfig():
     def __init__(self):
-        nomFichier = GetNomFichierConfig()
-        if six.PY2:
-            nomFichier = nomFichier.encode("utf8")
-        self.nomFichier = nomFichier
+        self.nomFichier = GetNomFichierConfig()
         
     def GetDictConfig(self):
         """ Recupere une copie du dictionnaire du fichier de config """

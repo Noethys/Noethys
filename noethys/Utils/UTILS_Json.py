@@ -11,6 +11,7 @@
 import Chemins
 import wx
 import os
+import sys
 import datetime
 import decimal
 import json
@@ -111,7 +112,10 @@ def Lire(nom_fichier="", conversion_auto=False):
     # Essaye d'ouvrir le fichier au format shelve
     if is_json == False:
         try:
-            fichier = shelve.open(nom_fichier, "r")
+            nom_fichier_shelve = nom_fichier
+            if six.PY2 and isinstance(nom_fichier_shelve, unicode):
+                nom_fichier_shelve = nom_fichier_shelve.encode(sys.getfilesystemencoding())
+            fichier = shelve.open(nom_fichier_shelve, "r")
             data = {}
             for key, valeur in fichier.items():
                 if type(key) == str:
