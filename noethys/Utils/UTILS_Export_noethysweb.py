@@ -108,7 +108,10 @@ class Table():
                         if image.size[0] > largeur_max:
                             wpercent = (largeur_max / float(image.size[0]))
                             hsize = int((float(image.size[1]) * float(wpercent)))
-                            image.resize((largeur_max, hsize), Image.LANCZOS)
+                            # resize() renvoie une nouvelle image sans format : on conserve le format d'origine
+                            format_image = image.format
+                            image = image.resize((largeur_max, hsize), Image.LANCZOS)
+                            image.format = format_image
 
                         # Création du nom du fichier image
                         nom_fichier_image = u"%s.%s" % (uuid.uuid4(), image.format.lower())
@@ -868,7 +871,8 @@ class Table_individus(Table):
             image = Image.open(six.BytesIO(self.dictPhotos[IDindividu]))
             nom_fichier_image = u"%s.%s" % (uuid.uuid4(), image.format.lower())
             image.save(os.path.join(self.rep_images_complet, nom_fichier_image), format=image.format)
-            valeur = os.path.join(self.rep_images, nom_fichier_image)
+            # Chemin enregistré dans Noethysweb : toujours avec des slashs (os.path.join produirait des antislashs sous Windows)
+            valeur = self.rep_images + "/" + nom_fichier_image
             return valeur
         return None
 
