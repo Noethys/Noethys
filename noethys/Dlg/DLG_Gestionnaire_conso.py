@@ -287,12 +287,14 @@ class PanelGrille(wx.Panel):
 
         ID_AJOUTER_INDIVIDU = wx.Window.NewControlId()
         ID_AFFICHER_TOUS_INSCRITS = wx.Window.NewControlId()
+        self.ID_PENSE_BETE = wx.Window.NewControlId()
         self.ID_MODE_RESERVATION = wx.Window.NewControlId()
         self.ID_MODE_ATTENTE = wx.Window.NewControlId()
         self.ID_MODE_REFUS = wx.Window.NewControlId()
 
         AddTool(self.barreOutils, ID_AJOUTER_INDIVIDU, label=_(u"Ajouter un individu"), bitmap=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Femme.png"), wx.BITMAP_TYPE_PNG))
         AddTool(self.barreOutils, ID_AFFICHER_TOUS_INSCRITS, label=_(u"Afficher tous les inscrits"), bitmap=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Famille.png"), wx.BITMAP_TYPE_PNG))
+        AddTool(self.barreOutils, self.ID_PENSE_BETE, label=_(u"Alerte du jour"), bitmap=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Information.png"), wx.BITMAP_TYPE_PNG))
 
         try:
             self.barreOutils.AddStretchableSpace()
@@ -305,6 +307,7 @@ class PanelGrille(wx.Panel):
 
         self.Bind(wx.EVT_TOOL, self.AjouterIndividu, id=ID_AJOUTER_INDIVIDU)
         self.Bind(wx.EVT_TOOL, self.AfficherTousInscrits, id=ID_AFFICHER_TOUS_INSCRITS)
+        self.Bind(wx.EVT_TOOL, self.OnPenseBete, id=self.ID_PENSE_BETE)
         self.barreOutils.Realize()
 
         # Layout
@@ -316,6 +319,19 @@ class PanelGrille(wx.Panel):
         grid_sizer_base.AddGrowableRow(1)
         self.SetSizer(grid_sizer_base)
         self.Layout()
+
+    def OnPenseBete(self, event=None):
+        if not self.date:
+            return
+        from Utils import UTILS_Memos_journee
+        pb = UTILS_Memos_journee.GetPenseBeteJour(self.date)
+        texteActuel = pb["texte"] if pb else ""
+        couleurActuelle = pb["couleur"] if pb else "all"
+        dlg = UTILS_Memos_journee.DLG_Saisie_pense_bete(self, date=self.date, texte=texteActuel, couleur=couleurActuelle)
+        if dlg.ShowModal() == wx.ID_OK:
+            UTILS_Memos_journee.SetPenseBeteJour(self.date, dlg.texte, couleur=dlg.couleur)
+            self.SetDate(self.date)
+        dlg.Destroy()
 
     def Reinitialisation_grille(self):
         """ A utiliser après une sauvegarde de la grille """
@@ -332,7 +348,13 @@ class PanelGrille(wx.Panel):
             dateStr = u""
         else:
             dateStr = DateComplete(self.date)
-        self.ctrl_titre.SetTexte(dateStr)
+        from Utils import UTILS_Memos_journee
+        pb = UTILS_Memos_journee.GetPenseBeteJour(self.date)
+        if pb and pb["texte"]:
+            htmlTexte = u"%s &nbsp;&nbsp;&nbsp;&nbsp;<FONT SIZE=3 COLOR='#FFF9C4'>📌 <b>Alerte :</b> %s</FONT>" % (dateStr, pb["texte"])
+        else:
+            htmlTexte = dateStr
+        self.ctrl_titre.SetTexte(htmlTexte)
 
     def SetActivites(self, listeActivites=[]):
         self.listeActivites = listeActivites
@@ -867,6 +889,7 @@ class Dialog(wx.Dialog):
         dlg = DLG_Impression_conso.Dialog(self, date=date)
         dlg.ShowModal()
         dlg.Destroy()
+        self.panel_grille.SetDate(date)
 
     def On_outils_recalculer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier") is False:
