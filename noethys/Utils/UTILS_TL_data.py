@@ -314,7 +314,7 @@ class IconEventDataPlugin(EventDataPlugin):
                             factor = float(H) / float(h)
                             w = w * factor
                             h = h * factor
-                        image = image.Scale(w, h, wx.IMAGE_QUALITY_HIGH)
+                        image = image.Scale(int(w), int(h), wx.IMAGE_QUALITY_HIGH)
                         self.set_icon(image.ConvertToBitmap())
             dialog.Destroy()
         def _btn_clear_on_click(self, evt):

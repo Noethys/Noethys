@@ -95,7 +95,7 @@ class CTRL_Image(wx.StaticBitmap):
                         img = wx.Image(io, wx.BITMAP_TYPE_JPEG)
                     else :
                         img = wx.ImageFromStream(io, wx.BITMAP_TYPE_JPEG)
-                    bmp = img.Rescale(width=self.tailleImage[0], height=self.tailleImage[1], quality=wx.IMAGE_QUALITY_HIGH) 
+                    bmp = img.Rescale(int(self.tailleImage[0]), int(self.tailleImage[1]), wx.IMAGE_QUALITY_HIGH) 
                     bmp = bmp.ConvertToBitmap()
                     return bmp
         
@@ -110,7 +110,7 @@ class CTRL_Image(wx.StaticBitmap):
         if os.path.isfile(imageDefaut):
             bmp = wx.Bitmap(Chemins.GetStaticPath(imageDefaut), wx.BITMAP_TYPE_ANY) 
             bmp = bmp.ConvertToImage()
-            bmp = bmp.Rescale(width=self.tailleImage[0], height=self.tailleImage[1], quality=wx.IMAGE_QUALITY_HIGH) 
+            bmp = bmp.Rescale(int(self.tailleImage[0]), int(self.tailleImage[1]), wx.IMAGE_QUALITY_HIGH) 
             bmp = bmp.ConvertToBitmap()
             return bmp
         return None
