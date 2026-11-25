@@ -4445,7 +4445,10 @@ class MyApp(wx.App):
 
         # Démarrage du serveur Nomadhys
         if hasattr(frame, 'ctrl_serveur_nomade') == True:
-            frame.ctrl_serveur_nomade.StartServeur()
+            try:
+                frame.ctrl_serveur_nomade.StartServeur()
+            except Exception as err:
+                print(("Erreur lancement serveur Nomadhys :", repr(err)))
 
         print("Temps de chargement ouverture de Noethys = ", time.time() - heure_debut)
         return True

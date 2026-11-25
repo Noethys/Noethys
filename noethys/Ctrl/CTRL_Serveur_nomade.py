@@ -35,6 +35,31 @@ IP_AUTORISEES = None
 IP_INTERDITES = None
 
 
+def ConvertitUnicode(texte):
+    """ Convertit n'importe quel objet (texte, exception...) en unicode sans jamais lever d'exception.
+    Les messages d'erreur Windows sont souvent encodés en cp1252 (ex : apostrophe 0x92). """
+    if isinstance(texte, six.text_type):
+        return texte
+    if isinstance(texte, BaseException):
+        if six.PY3:
+            return six.text_type(texte)
+        try:
+            texte = str(texte)
+        except UnicodeEncodeError:
+            return u" ".join([ConvertitUnicode(arg) for arg in texte.args])
+    if not isinstance(texte, six.binary_type):
+        try:
+            return six.text_type(texte)
+        except UnicodeDecodeError:
+            texte = str(texte)
+    for encodage in ("utf-8", "cp1252", "latin-1"):
+        try:
+            return texte.decode(encodage)
+        except UnicodeDecodeError:
+            pass
+    return texte.decode("utf-8", "replace")
+
+
 class Erreur:
     pass
     
@@ -234,9 +259,11 @@ def StartServer(log=None):
         port = int(UTILS_Config.GetParametre("synchro_serveur_port", defaut=PORT_DEFAUT))
         reactor.listenTCP(port, factory)
     except Exception as err:
-        print(("Erreur lancement serveur Nomadhys :", err))
+        print(("Erreur lancement serveur Nomadhys :", repr(err)))
         log.EcritLog(_(u"Erreur dans le lancement du serveur Nomadhys [factory] :") )
         log.EcritLog(err)
+        log.SetImage("off")
+        return
 
     try :
         # IP locale
@@ -247,7 +274,7 @@ def StartServer(log=None):
         s.close()
         log.EcritLog(_(u"IP locale : %s") % ip_local)
     except Exception as err:
-        print(("Erreur lancement serveur Nomadhys :", err))
+        print(("Erreur lancement serveur Nomadhys :", repr(err)))
         log.EcritLog(_(u"Erreur dans le lancement du serveur Nomadhys [IP locale] :"))
         log.EcritLog(err)
 
@@ -256,7 +283,7 @@ def StartServer(log=None):
         ip_internet = json.loads(urlopen("https://jsonip.com", timeout=1).read())["ip"]
         log.EcritLog(_(u"IP internet : %s") % ip_internet)
     except Exception as err:
-        print(("Erreur lancement serveur Nomadhys :", err))
+        print(("Erreur lancement serveur Nomadhys :", repr(err)))
         log.EcritLog(_(u"Erreur dans le lancement du serveur Nomadhys [IP internet] :"))
         log.EcritLog(err)
 
@@ -267,7 +294,7 @@ def StartServer(log=None):
     try :
         reactor.run()
     except Exception as err :
-        print(("Erreur lancement serveur Nomadhys :", err))
+        print(("Erreur lancement serveur Nomadhys :", repr(err)))
         log.EcritLog(_(u"Erreur dans le lancement du serveur Nomadhys [reactor] :") )
         log.EcritLog(err)
 
@@ -356,7 +383,16 @@ class Panel(wx.Panel):
             self.bouton_analyse.Enable(True)
         
     def StartServeur(self):
-        StartServer(log=self)
+        try:
+            StartServer(log=self)
+        except Exception as err:
+            print(("Erreur lancement serveur Nomadhys :", repr(err)))
+            try:
+                self.EcritLog(_(u"Erreur dans le lancement du serveur Nomadhys :"))
+                self.EcritLog(err)
+                self.SetImage("off")
+            except Exception:
+                pass
         
     def OnBoutonAnalyse(self, event=None):
         from Dlg import DLG_Synchronisation
@@ -387,10 +423,7 @@ class Panel(wx.Panel):
             texte = u"\n"
         else :
             texte = u""
-        try :
-            texte += u"[%s] %s" % (horodatage, message)
-        except :
-            texte += u"[%s] %s" % (horodatage, str(message).decode("utf8"))
+        texte += u"[%s] %s" % (horodatage, ConvertitUnicode(message))
         self.log.AppendText(texte)
         
     def SetGauge(self, valeur=0):
