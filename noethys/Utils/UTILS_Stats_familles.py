@@ -24,6 +24,7 @@ if six.PY3:
 
 DICT_COMPARATIF_NOMBRE = {"dictParametres" : {}, "dictResultats" : {} }
 
+@MODELES.Memoriser
 def GetComparatifNombre(DB, dictParametres) :
     dictResultats = {}
     

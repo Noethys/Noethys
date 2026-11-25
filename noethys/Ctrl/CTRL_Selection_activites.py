@@ -260,12 +260,9 @@ class CTRL_Groupes_activites(wx.CheckListBox):
             index += 1
 
     def SetIDcoches(self, listeIDcoches=[]):
-        index = 0
-        for index in range(0, len(self.listeDonnees)):
+        for index in range(len(self.listeDonnees)):
             ID = self.dictIndex[index]
-            if ID in listeIDcoches :
-                self.Check(index)
-            index += 1
+            self.Check(index, ID in listeIDcoches)
     
     def OnCheck(self, event):
         self.parent.OnCheck() 
@@ -341,12 +338,9 @@ class CTRL_Activites(wx.CheckListBox):
             index += 1
 
     def SetIDcoches(self, listeIDcoches=[]):
-        index = 0
-        for index in range(0, len(self.listeDonnees)):
+        for index in range(len(self.listeDonnees)):
             ID = self.dictIndex[index]
-            if ID in listeIDcoches :
-                self.Check(index)
-            index += 1
+            self.Check(index, ID in listeIDcoches)
     
     def OnCheck(self, event):
         self.parent.OnCheck() 
